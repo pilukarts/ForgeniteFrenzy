@@ -14,7 +14,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
   
   const imageUrl = commanderSex === 'male' 
     ? "https://i.imgur.com/zBtG9vy.png" 
-    : "https://i.imgur.com/iuRJVBZ.png"; // Updated female commander image
+    : "https://i.imgur.com/BQHeVWp.png"; // Updated female commander image
   
   const altText = commanderSex === 'male' ? "Male Commander" : "Female Commander";
   const dataAiHint = commanderSex === 'male' ? "fullbody male commander" : "fullbody female commander";
