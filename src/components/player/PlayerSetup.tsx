@@ -18,9 +18,11 @@ const PlayerSetup: React.FC = () => {
   const [sex, setSex] = useState<'male' | 'female'>('female');
   const [country, setCountry] = useState(COUNTRIES[0].code);
 
+  const isFormValid = name.trim() !== '';
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (name.trim() && country) {
+    if (isFormValid && country) {
       completeInitialSetup(name.trim(), sex, country);
     }
   };
@@ -84,7 +86,11 @@ const PlayerSetup: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 text-lg">
+            <Button 
+              type="submit" 
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 text-lg"
+              disabled={!isFormValid}
+            >
               Engage Protocol
             </Button>
           </form>
