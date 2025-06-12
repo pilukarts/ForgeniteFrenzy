@@ -142,9 +142,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       let updatedActiveTapBonuses = [...(prev.activeTapBonuses || [])];
 
       if (isTap && updatedActiveTapBonuses.length > 0) {
-        let totalBonusMultiplierFactor = 0; // e.g., if one bonus is 1.5 (+50%), this will be 0.5
-                                          // if another is 1.2 (+20%), this will be 0.2
-                                          // total effective multiplier will be 1 + 0.5 + 0.2 = 1.7
+        let totalBonusMultiplierFactor = 0; 
 
         updatedActiveTapBonuses = updatedActiveTapBonuses.map(bonus => {
           totalBonusMultiplierFactor += (bonus.bonusMultiplier - 1);
@@ -153,10 +151,11 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         
         finalAmount = amount * (1 + totalBonusMultiplierFactor);
 
-        // Notify if any bonus expired
         (prev.activeTapBonuses || []).forEach(oldBonus => {
             if (!updatedActiveTapBonuses.find(b => b.id === oldBonus.id)) {
-                toast({ title: "Bonus Expired", description: `${oldBonus.name} has worn off.` });
+                setTimeout(() => {
+                    toast({ title: "Bonus Expired", description: `${oldBonus.name} has worn off.` });
+                }, 0);
             }
         });
       }
@@ -166,7 +165,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const newPoints = prev.points + finalAmount;
       const newSeasonProgress = (prev.seasonProgress[currentSeason.id] || 0) + finalAmount;
       
-      let newXp = prev.xp + finalAmount; // Grant XP based on final points earned
+      let newXp = prev.xp + finalAmount; 
       let newLevel = prev.level;
       let newXpToNextLevel = prev.xpToNextLevel;
       let newRankTitle = prev.rankTitle;
@@ -176,7 +175,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         newLevel++;
         newXpToNextLevel = Math.floor(newXpToNextLevel * XP_LEVEL_MULTIPLIER);
         newRankTitle = getRankTitle(newLevel);
-        toast({ title: "Rank Up!", description: `Congratulations Commander, you've reached Level ${newLevel} - ${newRankTitle}!` });
+        const levelUpMessage = `Congratulations Commander, you've reached Level ${newLevel} - ${newRankTitle}!`;
+        setTimeout(() => {
+            toast({ title: "Rank Up!", description: levelUpMessage });
+        }, 0);
       }
       
       return {
@@ -327,7 +329,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const isCritical = Math.random() < criticalTapChance;
     if (isCritical) {
       pointsToEarn *= criticalTapMultiplier;
-      toast({ title: "Critical Tap!", description: `+${Math.round(pointsToEarn * comboMultiplierValue)} points!`, duration: 1500 });
+       setTimeout(() => {
+          toast({ title: "Critical Tap!", description: `+${Math.round(pointsToEarn * comboMultiplierValue)} points!`, duration: 1500 });
+       }, 0);
     }
     
     pointsToEarn *= comboMultiplierValue;
@@ -335,8 +339,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setComboCount(prev => prev + 1);
     setTimeout(() => setComboCount(0), 3000); // Reset combo after 3s of inactivity
 
-    addPoints(pointsPerTap, true); // Pass base pointsPerTap, bonus multipliers handled in addPoints
-                                 // Also pass 'isTap = true' to trigger bonus consumption
+    addPoints(pointsPerTap, true); 
   }, [addPoints, pointsPerTap, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, toast]);
 
 
