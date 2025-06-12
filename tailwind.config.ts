@@ -11,7 +11,7 @@ export default {
     extend: {
       fontFamily: {
         body: ['Inter', 'sans-serif'],
-        headline: ['Inter', 'sans-serif'],
+        headline: ['Poppins', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {
@@ -26,7 +26,7 @@ export default {
           foreground: 'hsl(var(--popover-foreground))',
         },
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
+          DEFAULT: 'hsl(var(--primary))', // Neon Blue
           foreground: 'hsl(var(--primary-foreground))',
         },
         secondary: {
@@ -38,7 +38,7 @@ export default {
           foreground: 'hsl(var(--muted-foreground))',
         },
         accent: {
-          DEFAULT: 'hsl(var(--accent))',
+          DEFAULT: 'hsl(var(--accent))', // Fiery Orange
           foreground: 'hsl(var(--accent-foreground))',
         },
         destructive: {
@@ -65,6 +65,8 @@ export default {
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))',
         },
+        'radiant-purple': 'hsl(var(--radiant-purple))',
+        'bright-gold': 'hsl(var(--bright-gold))',
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -88,10 +90,28 @@ export default {
             height: '0',
           },
         },
+        'pulse-neon-blue': {
+          '0%, 100%': {
+            boxShadow: '0 0 5px hsl(var(--primary)/0.7), 0 0 10px hsl(var(--primary)/0.5), 0 0 15px hsl(var(--primary)/0.3)',
+          },
+          '50%': {
+            boxShadow: '0 0 10px hsl(var(--primary)/0.9), 0 0 20px hsl(var(--primary)/0.7), 0 0 30px hsl(var(--primary)/0.5)',
+          },
+        },
+        'core-glow': {
+          '0%, 100%': {
+            filter: 'drop-shadow(0 0 3px hsl(var(--bright-gold)/0.7)) drop-shadow(0 0 6px hsl(var(--bright-gold)/0.5))',
+          },
+          '50%': {
+            filter: 'drop-shadow(0 0 6px hsl(var(--bright-gold)/0.9)) drop-shadow(0 0 12px hsl(var(--bright-gold)/0.7))',
+          }
+        }
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'pulse-neon-blue': 'pulse-neon-blue 1.5s infinite ease-in-out',
+        'core-glow': 'core-glow 2s infinite ease-in-out',
       },
     },
   },

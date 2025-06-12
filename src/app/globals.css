@@ -2,79 +2,94 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
+    --background: 220 3% 35%; /* Gunmetal Gray */
+    --foreground: 210 20% 95%; /* Light grayish blue for text */
+
+    --card: 220 3% 40%;
+    --card-foreground: 210 20% 95%;
+
+    --popover: 220 3% 30%;
+    --popover-foreground: 210 20% 95%;
+
+    --primary: 180 100% 65%; /* Neon Blue */
+    --primary-foreground: 180 100% 5%; /* Dark Blue/Black for text on Neon Blue */
+
+    --secondary: 220 5% 45%; 
+    --secondary-foreground: 180 100% 65%; /* Neon Blue for text on secondary */
+
+    --muted: 220 5% 30%;
+    --muted-foreground: 210 15% 65%;
+
+    --accent: 16 100% 50%; /* Fiery Orange */
+    --accent-foreground: 0 0% 100%; /* White for text on Fiery Orange */
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
+
+    --border: 220 3% 45%;
+    --input: 220 3% 48%;
+    --ring: 180 100% 65%; /* Neon Blue */
+    
+    --radius: 0.5rem;
+
+    /* Custom colors from palette */
+    --radiant-purple: 326 58% 39%;
+    --bright-gold: 51 100% 50%;
+
+    /* Sidebar specific colors, can be kept or adjusted if sidebar is not used */
+    --sidebar-background: 220 3% 32%; /* Darker Gunmetal */
+    --sidebar-foreground: 210 20% 90%;
+    --sidebar-primary: 180 100% 65%; /* Neon Blue */
+    --sidebar-primary-foreground: 180 100% 5%;
+    --sidebar-accent: 16 100% 50%; /* Fiery Orange */
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 220 3% 40%;
+    --sidebar-ring: 180 100% 65%;
+
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Define dark theme if needed, or make it same as light if dark mode is not a primary feature */
+    --background: 220 3% 15%; /* Darker Gunmetal */
+    --foreground: 210 20% 90%;
+
+    --card: 220 3% 20%;
+    --card-foreground: 210 20% 90%;
+
+    --popover: 220 3% 10%;
+    --popover-foreground: 210 20% 90%;
+
+    --primary: 180 100% 65%; /* Neon Blue */
+    --primary-foreground: 180 100% 5%;
+
+    --secondary: 220 5% 25%;
+    --secondary-foreground: 180 100% 65%;
+
+    --muted: 220 5% 20%;
+    --muted-foreground: 210 15% 60%;
+
+    --accent: 16 100% 50%; /* Fiery Orange */
+    --accent-foreground: 0 0% 100%;
+
+    --border: 220 3% 25%;
+    --input: 220 3% 28%;
+    --ring: 180 100% 65%;
+
+    --sidebar-background: 220 3% 12%;
+    --sidebar-foreground: 210 20% 85%;
+    --sidebar-primary: 180 100% 65%;
+    --sidebar-primary-foreground: 180 100% 5%;
+    --sidebar-accent: 16 100% 50%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 220 3% 22%;
+    --sidebar-ring: 180 100% 65%;
   }
 }
 
@@ -83,6 +98,49 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-body;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
+
+  main {
+    flex-grow: 1;
+  }
+  
+  /* Sharp and angular UI elements */
+  .rounded-md, .rounded-lg, .rounded-full {
+    border-radius: var(--radius); /* Or less for sharper corners, e.g., 0.25rem */
+  }
+  .btn { /* Example for sharp buttons if needed */
+    border-radius: 0.25rem; /* Sharper corners */
+  }
+}
+
+/* Pulsing animation for Commander Portrait */
+@keyframes pulse-neon-blue {
+  0%, 100% {
+    box-shadow: 0 0 5px hsla(var(--primary) / 0.7), 0 0 10px hsla(var(--primary) / 0.5), 0 0 15px hsla(var(--primary) / 0.3);
+  }
+  50% {
+    box-shadow: 0 0 10px hsla(var(--primary) / 0.9), 0 0 20px hsla(var(--primary) / 0.7), 0 0 30px hsla(var(--primary) / 0.5);
+  }
+}
+
+.animate-pulse-neon-blue {
+  animation: pulse-neon-blue 1.5s infinite ease-in-out;
+}
+
+/* C.O.R.E. hexagon glow */
+@keyframes core-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 3px hsl(var(--bright-gold)/0.7)) drop-shadow(0 0 6px hsl(var(--bright-gold)/0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 6px hsl(var(--bright-gold)/0.9)) drop-shadow(0 0 12px hsl(var(--bright-gold)/0.7));
+  }
+}
+
+.core-hexagon-glow {
+  animation: core-glow 2s infinite ease-in-out;
 }
