@@ -32,7 +32,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
       onTouchStart={handleInteraction} // For mobile tap feel
       className={cn(
         "relative rounded-full focus:outline-none transition-transform duration-100 active:scale-95",
-        "w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64", // Responsive size
+        "w-56 h-56 md:w-64 md:h-64 lg:w-72 lg:h-72", // Responsive size increased
         "border-0 shadow-none bg-transparent" // Make the circle invisible and ensure no background color interferes
       )}
       aria-label="Tap Commander"
@@ -41,9 +41,9 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
         src={imageUrl}
         alt={altText}
         data-ai-hint={dataAiHint}
-        width={256}
-        height={256}
-        className="rounded-full object-contain w-full h-full" // Changed to object-contain and ensure it fills the button
+        width={288} // Adjusted to match new largest size (lg:w-72 which is 288px)
+        height={288} // Adjusted to match new largest size (lg:h-72 which is 288px)
+        className="rounded-full object-contain w-full h-full" 
         priority
       />
       {/* C.O.R.E. icon on chest */}
