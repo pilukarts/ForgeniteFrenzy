@@ -27,6 +27,10 @@ const PlayerSetup: React.FC = () => {
     }
   };
 
+  const femaleCommanderImg = "https://i.imgur.com/BQHeVWp.png";
+  const maleCommanderImg = "https://i.imgur.com/zBtG9vy.png";
+
+
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4">
       <Card className="w-full max-w-md bg-card text-card-foreground shadow-2xl">
@@ -59,13 +63,13 @@ const PlayerSetup: React.FC = () => {
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="female" id="female" className="text-primary focus:ring-primary data-[state=checked]:bg-primary"/>
                   <Label htmlFor="female" className="cursor-pointer">
-                    <Image src="https://placehold.co/80x80.png" alt="Female Commander" width={60} height={60} className={cn("rounded-md border-2", sex === 'female' ? 'border-primary' : 'border-transparent opacity-70 hover:opacity-100')} data-ai-hint="female soldier" />
+                    <Image src={femaleCommanderImg} alt="Female Commander" width={60} height={60} className={cn("rounded-md border-2 object-contain", sex === 'female' ? 'border-primary' : 'border-transparent opacity-70 hover:opacity-100')} data-ai-hint="female soldier" />
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="male" id="male" className="text-primary focus:ring-primary data-[state=checked]:bg-primary"/>
                   <Label htmlFor="male" className="cursor-pointer">
-                    <Image src="https://placehold.co/80x80.png" alt="Male Commander" width={60} height={60} className={cn("rounded-md border-2", sex === 'male' ? 'border-primary' : 'border-transparent opacity-70 hover:opacity-100')} data-ai-hint="male soldier" />
+                    <Image src={maleCommanderImg} alt="Male Commander" width={60} height={60} className={cn("rounded-md border-2 object-contain", sex === 'male' ? 'border-primary' : 'border-transparent opacity-70 hover:opacity-100')} data-ai-hint="male soldier" />
                   </Label>
                 </div>
               </RadioGroup>
@@ -104,3 +108,5 @@ const PlayerSetup: React.FC = () => {
 };
 
 export default PlayerSetup;
+
+    
