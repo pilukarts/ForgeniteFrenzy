@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { COUNTRIES } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
+import { cn } from '@/lib/utils';
 
 const PlayerSetup: React.FC = () => {
   const { completeInitialSetup } = useGame();
