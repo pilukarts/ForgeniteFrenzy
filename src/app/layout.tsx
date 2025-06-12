@@ -4,7 +4,7 @@ import { GameProvider } from '@/contexts/GameContext';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Ark Evac',
+  title: 'Alliance Forge: Forgeite Frenzy',
   description: 'Alliance Forge: Operation Exodus - Lead humanity\'s escape from Earth.',
 };
 
