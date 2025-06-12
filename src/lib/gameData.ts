@@ -1,6 +1,6 @@
 
 import type { Season, Upgrade, ArkUpgrade, MarketplaceItem } from './types';
-import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Coin as CoinIcon } from 'lucide-react';
+import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign } from 'lucide-react';
 
 export const SEASONS_DATA: Season[] = [
   {
@@ -167,6 +167,28 @@ export const MULE_DRONE_BASE_RATE = 1; // Points per minute per drone
 
 export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
   {
+    id: 'tap_boost_quick',
+    name: 'Impulso Rápido',
+    description: 'Aumenta ligeramente el poder de tus taps por un corto tiempo.',
+    costInAuron: 25,
+    bonusEffect: {
+      durationTaps: 20,
+      multiplier: 1.10, // +10%
+    },
+    icon: Zap,
+  },
+  {
+    id: 'tap_boost_mini_pack',
+    name: 'Mini Paquete de Energía',
+    description: 'Un pequeño paquete para potenciar tus taps.',
+    costInAuron: 50,
+    bonusEffect: {
+      durationTaps: 30,
+      multiplier: 1.15, // +15%
+    },
+    icon: Package,
+  },
+  {
     id: 'tap_boost_minor',
     name: 'Minor Power Surge',
     description: 'Boosts tap power by 25% for the next 50 taps.',
@@ -175,7 +197,7 @@ export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
       durationTaps: 50,
       multiplier: 1.25,
     },
-    icon: CoinIcon, // Changed from CircleDollarSign
+    icon: CircleDollarSign,
   },
   {
     id: 'tap_boost_standard',
@@ -186,7 +208,7 @@ export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
       durationTaps: 100,
       multiplier: 1.5,
     },
-    icon: Coins, // Kept as Coins (stack of coins)
+    icon: Coins,
   },
   {
     id: 'tap_boost_major',
@@ -197,6 +219,7 @@ export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
       durationTaps: 150,
       multiplier: 2.0,
     },
-    icon: Container, // Kept as Container (proxy for gold bar / valuable container)
+    icon: Container,
   },
 ];
+
