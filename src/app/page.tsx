@@ -6,6 +6,7 @@ import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Skeleton } from '@/components/ui/skeleton';
+import { CheckCircle2, ShieldEllipsis } from 'lucide-react'; // Added ShieldEllipsis for uniform title
 
 export default function HomePage() {
   const { playerProfile, isLoading, isInitialSetupDone, handleTap } = useGame();
@@ -47,8 +48,34 @@ export default function HomePage() {
         <p className="text-sm text-muted-foreground">
           Current Objective: {playerProfile.currentSeasonId ? playerProfile.seasonProgress[playerProfile.currentSeasonId] || 0 : 0} Points
         </p>
+
+        {playerProfile.equippedUniformPieces && playerProfile.equippedUniformPieces.length > 0 && (
+          <div className="mt-6 text-center w-full max-w-xs p-3 bg-card/50 rounded-lg shadow">
+            <h3 className="text-md font-semibold text-accent flex items-center justify-center">
+              <ShieldEllipsis className="h-5 w-5 mr-2"/>
+              Black Uniform Progress
+            </h3>
+            <ul className="mt-2 text-sm text-muted-foreground list-none p-0 space-y-1">
+              {playerProfile.equippedUniformPieces.map(piece => (
+                <li key={piece} className="flex items-center justify-center">
+                  <CheckCircle2 className="h-4 w-4 mr-2 text-green-400 flex-shrink-0" />
+                  <span>{piece}</span>
+                </li>
+              ))}
+            </ul>
+            {playerProfile.equippedUniformPieces.length < 5 && ( // Assuming 5 pieces total
+                 <p className="text-xs text-muted-foreground/70 mt-2">
+                    Next piece at: { (playerProfile.equippedUniformPieces.length + 1) * 2000 } taps
+                </p>
+            )}
+             {playerProfile.equippedUniformPieces.length === 5 && (
+                 <p className="text-xs text-green-400 font-semibold mt-2">
+                    Black Uniform Complete!
+                </p>
+            )}
+          </div>
+        )}
       </div>
     </AppLayout>
   );
 }
-

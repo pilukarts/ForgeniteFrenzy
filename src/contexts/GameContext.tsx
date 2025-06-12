@@ -9,6 +9,8 @@ import { getCoreBriefing } from '@/ai/flows/core-briefings';
 import { getCoreLoreSnippet } from '@/ai/flows/core-lore-snippets';
 import { getCoreProgressUpdate } from '@/ai/flows/core-progress-updates';
 
+const TAPS_PER_UNIFORM_PIECE = 2000;
+const UNIFORM_PIECES_ORDER = ["Tactical Gloves", "Combat Boots", "Utility Belt", "Chest Rig", "Stealth Helmet"];
 
 interface GameContextType {
   playerProfile: PlayerProfile | null;
@@ -59,6 +61,8 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
   arkHangarFullyUpgraded: false,
   lastLoginTimestamp: Date.now(),
   activeTapBonuses: [],
+  totalTapsForUniform: 0,
+  equippedUniformPieces: [],
 };
 
 export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -77,10 +81,16 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     const savedProfile = localStorage.getItem('playerProfile');
     if (savedProfile) {
-      const parsedProfile = JSON.parse(savedProfile) as PlayerProfile;
-      // Ensure activeTapBonuses is initialized if it's not in saved data
-      if (!parsedProfile.activeTapBonuses) {
+      let parsedProfile = JSON.parse(savedProfile) as PlayerProfile;
+      // Ensure new fields are initialized if not present in saved data
+      if (parsedProfile.activeTapBonuses === undefined) {
         parsedProfile.activeTapBonuses = [];
+      }
+      if (parsedProfile.totalTapsForUniform === undefined) {
+        parsedProfile.totalTapsForUniform = 0;
+      }
+      if (parsedProfile.equippedUniformPieces === undefined) {
+        parsedProfile.equippedUniformPieces = [];
       }
       setPlayerProfile(parsedProfile);
       setIsInitialSetupDone(true);
@@ -98,12 +108,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     if (playerProfile) {
       localStorage.setItem('playerProfile', JSON.stringify(playerProfile));
-      // Update current season based on profile, could be more complex if seasons progress
       const season = SEASONS_DATA.find(s => s.id === playerProfile.currentSeasonId) || SEASONS_DATA[0];
       setCurrentSeason(season);
       const coreIsNowUnlocked = SEASONS_DATA.slice(0, SEASONS_DATA.findIndex(s => s.id === season.id) + 1).some(s => s.unlocksCore);
       setIsCoreUnlocked(coreIsNowUnlocked);
-
     }
   }, [playerProfile]);
 
@@ -121,7 +129,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       currentSeasonId: SEASONS_DATA[0].id,
       rankTitle: getRankTitle(1),
       lastLoginTimestamp: Date.now(),
-      activeTapBonuses: [], // Initialize activeTapBonuses
+      activeTapBonuses: [],
+      totalTapsForUniform: 0,
+      equippedUniformPieces: [],
     };
     setPlayerProfile(newProfile);
     setIsInitialSetupDone(true);
@@ -312,7 +322,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const baseTapPower = POINTS_PER_TAP;
   const tapPowerUpgradeLevel = getUpgradeLevel('tapPower');
-  const pointsPerTap = baseTapPower + tapPowerUpgradeLevel;
+  const pointsPerTapValue = baseTapPower + tapPowerUpgradeLevel;
 
   const critChanceUpgradeLevel = getUpgradeLevel('critChance');
   const criticalTapChance = critChanceUpgradeLevel * 0.005; // 0.5% per level
@@ -325,22 +335,111 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 
   const handleTap = useCallback(() => {
-    let pointsToEarn = pointsPerTap;
-    const isCritical = Math.random() < criticalTapChance;
-    if (isCritical) {
-      pointsToEarn *= criticalTapMultiplier;
-       setTimeout(() => {
-          toast({ title: "Critical Tap!", description: `+${Math.round(pointsToEarn * comboMultiplierValue)} points!`, duration: 1500 });
-       }, 0);
-    }
-    
-    pointsToEarn *= comboMultiplierValue;
-    
+    setPlayerProfile(prev => {
+        if (!prev) return null;
+
+        let pointsToEarn = pointsPerTapValue;
+        const isCritical = Math.random() < criticalTapChance;
+
+        if (isCritical) {
+            pointsToEarn *= criticalTapMultiplier;
+            setTimeout(() => {
+                toast({ title: "Critical Tap!", description: `+${Math.round(pointsToEarn * comboMultiplierValue)} points!`, duration: 1500 });
+            }, 0);
+        }
+        
+        pointsToEarn *= comboMultiplierValue;
+        
+        const newTotalTapsForUniform = (prev.totalTapsForUniform || 0) + 1;
+        let newEquippedUniformPieces = [...(prev.equippedUniformPieces || [])];
+        const currentlyEquippedCount = newEquippedUniformPieces.length;
+        const targetEquippedCount = Math.floor(newTotalTapsForUniform / TAPS_PER_UNIFORM_PIECE);
+
+        if (targetEquippedCount > currentlyEquippedCount && currentlyEquippedCount < UNIFORM_PIECES_ORDER.length) {
+            const newPiece = UNIFORM_PIECES_ORDER[currentlyEquippedCount];
+            newEquippedUniformPieces.push(newPiece);
+            setTimeout(() => {
+                toast({ title: "Uniform Piece Unlocked!", description: `Acquired: ${newPiece}`});
+                addCoreMessage({ type: 'system_alert', content: `Commander, your combat readiness has increased. New gear acquired: ${newPiece}.` });
+            }, 0);
+        }
+        
+        // Apply points (original addPoints logic handles this for points accumulation)
+        // We call addPoints separately to keep its logic focused
+        // addPoints(pointsToEarn, true); // This was slightly problematic due to immediate state update cycle.
+        // The points calculation needs to be integrated here or addPoints needs to be able to take the modified profile.
+        // For now, let's directly update points and related fields based on the logic from addPoints.
+        
+        let finalAmount = pointsPerTapValue; // Start with base tap power for this tap
+        let updatedActiveTapBonuses = [...(prev.activeTapBonuses || [])];
+  
+        if (updatedActiveTapBonuses.length > 0) { // isTap is true
+          let totalBonusMultiplierFactor = 0; 
+  
+          updatedActiveTapBonuses = updatedActiveTapBonuses.map(bonus => {
+            totalBonusMultiplierFactor += (bonus.bonusMultiplier - 1);
+            return { ...bonus, remainingTaps: bonus.remainingTaps - 1 };
+          }).filter(bonus => bonus.remainingTaps > 0);
+          
+          finalAmount = finalAmount * (1 + totalBonusMultiplierFactor); // Apply marketplace bonus before crit/combo
+  
+          (prev.activeTapBonuses || []).forEach(oldBonus => {
+              if (!updatedActiveTapBonuses.find(b => b.id === oldBonus.id)) {
+                  setTimeout(() => {
+                      toast({ title: "Bonus Expired", description: `${oldBonus.name} has worn off.` });
+                  }, 0);
+              }
+          });
+        }
+        
+        if (isCritical) {
+            finalAmount *= criticalTapMultiplier; // Apply critical multiplier
+        }
+        finalAmount *= comboMultiplierValue; // Apply combo multiplier
+        finalAmount = Math.round(finalAmount);
+
+
+        const newPoints = prev.points + finalAmount;
+        const newSeasonProgress = (prev.seasonProgress[currentSeason.id] || 0) + finalAmount;
+        
+        let newXp = prev.xp + finalAmount; 
+        let newLevel = prev.level;
+        let newXpToNextLevel = prev.xpToNextLevel;
+        let newRankTitle = prev.rankTitle;
+  
+        while (newXp >= newXpToNextLevel) {
+          newXp -= newXpToNextLevel;
+          newLevel++;
+          newXpToNextLevel = Math.floor(newXpToNextLevel * XP_LEVEL_MULTIPLIER);
+          newRankTitle = getRankTitle(newLevel);
+          const levelUpMessage = `Congratulations Commander, you've reached Level ${newLevel} - ${newRankTitle}!`;
+          setTimeout(() => {
+              toast({ title: "Rank Up!", description: levelUpMessage });
+          }, 0);
+        }
+
+        return {
+            ...prev,
+            points: newPoints,
+            xp: newXp,
+            level: newLevel,
+            xpToNextLevel: newXpToNextLevel,
+            rankTitle: newRankTitle,
+            seasonProgress: {
+              ...prev.seasonProgress,
+              [currentSeason.id]: newSeasonProgress,
+            },
+            activeTapBonuses: updatedActiveTapBonuses,
+            totalTapsForUniform: newTotalTapsForUniform,
+            equippedUniformPieces: newEquippedUniformPieces,
+            // comboCount will be handled by setComboCount call below
+        };
+    });
+
     setComboCount(prev => prev + 1);
     setTimeout(() => setComboCount(0), 3000); // Reset combo after 3s of inactivity
 
-    addPoints(pointsPerTap, true); 
-  }, [addPoints, pointsPerTap, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, toast]);
+  }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, toast, addCoreMessage, currentSeason.id]);
 
 
   // AI Interactions
@@ -363,7 +462,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           };
           const progressUpdate = await getCoreProgressUpdate(progressUpdateInput);
           addCoreMessage({ type: 'advice', content: progressUpdate.advice });
-          addCoreMessage({ type: 'lore_snippet', content: progressUpdate.loreSnippet });
+          if (progressUpdate.loreSnippet) { // Ensure lore snippet is not empty
+            addCoreMessage({ type: 'lore_snippet', content: progressUpdate.loreSnippet });
+          }
           
           if(playerProfile.lastLoginTimestamp) {
             const timeAwayMinutes = Math.floor((Date.now() - playerProfile.lastLoginTimestamp) / 60000);
@@ -376,20 +477,22 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                     resourcesGained,
                 };
                 const loreSnippet = await getCoreLoreSnippet(loreSnippetInput);
-                addCoreMessage({ type: 'lore_snippet', content: loreSnippet.snippet });
+                 if (loreSnippet.snippet) { // Ensure snippet is not empty
+                    addCoreMessage({ type: 'lore_snippet', content: loreSnippet.snippet });
+                 }
             }
           }
           setPlayerProfile(p => p ? {...p, lastLoginTimestamp: Date.now()} : null);
           setCoreLastInteractionTime(Date.now());
-        } catch (error) {
+        } catch (error: any) {
           console.error("C.O.R.E. API Error:", error);
           let errorMessage = "C.O.R.E. systems experiencing interference. Stand by, Commander.";
-          if (error instanceof Error && error.message.includes("429")) {
+          // Check for GoogleGenerativeAI specific error structure or message content for 429
+          if (error.message && (error.message.includes("429") || error.message.includes("Too Many Requests") || (error.toString && error.toString().includes("429")))) {
             errorMessage = "C.O.R.E. uplink temporarily disrupted due to high traffic. Recalibrating. Please stand by.";
           }
           addCoreMessage({ type: 'briefing', content: errorMessage });
-          // Optionally, set a shorter retry or indicate a longer cooldown if 429 specifically.
-           setCoreLastInteractionTime(Date.now()); // Still update time to prevent immediate retry
+          setCoreLastInteractionTime(Date.now()); 
         }
       })();
     }
@@ -440,4 +543,3 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
-
