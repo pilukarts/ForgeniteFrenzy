@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { ScrollArea } from '@/components/ui/scroll-area';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Sparkles, TrendingUp, Zap, Bolt, Tag } from 'lucide-react';
+import { Sparkles, HelpCircle } from 'lucide-react'; // Changed default icon from Tag to HelpCircle
 import type { MarketplaceItem } from '@/lib/types';
 
 const MarketplacePage: React.FC = () => {
@@ -55,7 +55,7 @@ const MarketplacePage: React.FC = () => {
         <ScrollArea className="h-[calc(100vh-250px)] px-4"> {/* Adjust height as needed */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {marketplaceItems.map(item => {
-              const Icon = item.icon || Tag;
+              const Icon = item.icon || HelpCircle; // Use HelpCircle as a fallback
               return (
                 <Card key={item.id} className="bg-card text-card-foreground shadow-lg flex flex-col">
                   <CardHeader>
