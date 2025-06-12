@@ -4,49 +4,49 @@
 
 @layer base {
   :root {
-    --background: 220 3% 35%; /* Gunmetal Gray */
-    --foreground: 210 20% 95%; /* Light grayish blue for text */
+    --background: 220 25% 20%; /* Dark Slate Blue */
+    --foreground: 16 80% 65%; /* Coral */
 
-    --card: 220 3% 40%;
-    --card-foreground: 210 20% 95%;
+    --card: 220 15% 28%; /* Darker Slate, slightly lighter than bg */
+    --card-foreground: 16 80% 65%; /* Coral */
 
-    --popover: 220 3% 30%;
-    --popover-foreground: 210 20% 95%;
+    --popover: 220 15% 15%; /* Even Darker Slate */
+    --popover-foreground: 16 80% 65%; /* Coral */
 
-    --primary: 180 100% 65%; /* Neon Blue */
-    --primary-foreground: 180 100% 5%; /* Dark Blue/Black for text on Neon Blue */
+    --primary: 45 100% 50%; /* Gold */
+    --primary-foreground: 220 100% 10%; /* Very Dark Blue/Black for text on Gold */
 
-    --secondary: 220 5% 45%; 
-    --secondary-foreground: 180 100% 65%; /* Neon Blue for text on secondary */
+    --secondary: 210 15% 60%; /* Silver / Light Grayish Blue */
+    --secondary-foreground: 45 100% 50%; /* Gold for text on Silver */
 
-    --muted: 220 5% 30%;
-    --muted-foreground: 210 15% 65%;
+    --muted: 220 15% 30%; /* Muted Slate */
+    --muted-foreground: 210 15% 70%; /* Light Silver/Gray for muted text */
 
-    --accent: 16 100% 50%; /* Fiery Orange */
-    --accent-foreground: 0 0% 100%; /* White for text on Fiery Orange */
+    --accent: 45 100% 50%; /* Gold - for main accents */
+    --accent-foreground: 220 100% 10%; /* Very Dark Blue/Black for text on Gold Accent */
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 84.2% 60.2%; /* Kept original red for destructive actions */
+    --destructive-foreground: 0 0% 98%; /* Kept original light text for destructive */
 
-    --border: 220 3% 45%;
-    --input: 220 3% 48%;
-    --ring: 180 100% 65%; /* Neon Blue */
+    --border: 220 15% 35%; /* Medium Slate/Silver border */
+    --input: 220 15% 40%; /* Slightly Lighter Slate/Silver for input background */
+    --ring: 45 100% 50%; /* Gold - for focus rings */
     
     --radius: 0.5rem;
 
     /* Custom colors from palette */
-    --radiant-purple: 326 58% 39%;
-    --bright-gold: 51 100% 50%;
+    --radiant-purple: 326 58% 39%; /* Kept original - can be reviewed if not used */
+    --bright-gold: 45 100% 50%; /* Unified Gold color */
 
-    /* Sidebar specific colors, can be kept or adjusted if sidebar is not used */
-    --sidebar-background: 220 3% 32%; /* Darker Gunmetal */
-    --sidebar-foreground: 210 20% 90%;
-    --sidebar-primary: 180 100% 65%; /* Neon Blue */
-    --sidebar-primary-foreground: 180 100% 5%;
-    --sidebar-accent: 16 100% 50%; /* Fiery Orange */
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 220 3% 40%;
-    --sidebar-ring: 180 100% 65%;
+    /* Sidebar specific colors */
+    --sidebar-background: 220 25% 18%; /* Slightly darker than main bg */
+    --sidebar-foreground: 16 80% 65%; /* Coral */
+    --sidebar-primary: 45 100% 50%; /* Gold */
+    --sidebar-primary-foreground: 220 100% 10%; /* Very Dark Blue/Black */
+    --sidebar-accent: 45 100% 50%; /* Gold */
+    --sidebar-accent-foreground: 220 100% 10%; /* Very Dark Blue/Black */
+    --sidebar-border: 220 15% 30%; /* Darker slate/silver border for sidebar */
+    --sidebar-ring: 45 100% 50%; /* Gold */
 
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
@@ -56,40 +56,42 @@
   }
 
   .dark {
-    /* Define dark theme if needed, or make it same as light if dark mode is not a primary feature */
-    --background: 220 3% 15%; /* Darker Gunmetal */
-    --foreground: 210 20% 90%;
+    --background: 220 30% 10%; /* Very Dark Blue */
+    --foreground: 16 80% 65%; /* Coral */
 
-    --card: 220 3% 20%;
-    --card-foreground: 210 20% 90%;
+    --card: 220 20% 15%; /* Darker Blue/Gray card */
+    --card-foreground: 16 80% 65%; /* Coral */
 
-    --popover: 220 3% 10%;
-    --popover-foreground: 210 20% 90%;
+    --popover: 220 20% 8%; /* Very Dark Popover */
+    --popover-foreground: 16 80% 65%; /* Coral */
 
-    --primary: 180 100% 65%; /* Neon Blue */
-    --primary-foreground: 180 100% 5%;
+    --primary: 45 100% 50%; /* Gold */
+    --primary-foreground: 220 100% 10%; /* Very Dark Blue/Black */
 
-    --secondary: 220 5% 25%;
-    --secondary-foreground: 180 100% 65%;
+    --secondary: 210 10% 40%; /* Dark Silver/Gray */
+    --secondary-foreground: 45 100% 50%; /* Gold */
 
-    --muted: 220 5% 20%;
-    --muted-foreground: 210 15% 60%;
+    --muted: 220 20% 20%; /* Dark Muted Blue/Gray */
+    --muted-foreground: 210 10% 55%; /* Muted Silver/Gray text */
 
-    --accent: 16 100% 50%; /* Fiery Orange */
-    --accent-foreground: 0 0% 100%;
+    --accent: 45 100% 50%; /* Gold */
+    --accent-foreground: 220 100% 10%; /* Very Dark Blue/Black */
 
-    --border: 220 3% 25%;
-    --input: 220 3% 28%;
-    --ring: 180 100% 65%;
+    --destructive: 0 70% 50%; /* Adjusted destructive for dark theme if needed */
+    --destructive-foreground: 0 0% 95%;
 
-    --sidebar-background: 220 3% 12%;
-    --sidebar-foreground: 210 20% 85%;
-    --sidebar-primary: 180 100% 65%;
-    --sidebar-primary-foreground: 180 100% 5%;
-    --sidebar-accent: 16 100% 50%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 220 3% 22%;
-    --sidebar-ring: 180 100% 65%;
+    --border: 220 15% 25%; /* Darker Border */
+    --input: 220 15% 30%; /* Darker Input */
+    --ring: 45 100% 50%; /* Gold */
+
+    --sidebar-background: 220 30% 8%; /* Even darker blue for dark sidebar */
+    --sidebar-foreground: 16 80% 65%; /* Coral */
+    --sidebar-primary: 45 100% 50%; /* Gold */
+    --sidebar-primary-foreground: 220 100% 10%; /* Very Dark Blue/Black */
+    --sidebar-accent: 45 100% 50%; /* Gold */
+    --sidebar-accent-foreground: 220 100% 10%; /* Very Dark Blue/Black */
+    --sidebar-border: 220 20% 22%; /* Darker sidebar border */
+    --sidebar-ring: 45 100% 50%; /* Gold */
   }
 }
 
@@ -118,7 +120,7 @@
 }
 
 /* Pulsing animation for Commander Portrait */
-@keyframes pulse-neon-blue {
+@keyframes pulse-neon-gold { /* Renamed to reflect gold */
   0%, 100% {
     box-shadow: 0 0 5px hsla(var(--primary) / 0.7), 0 0 10px hsla(var(--primary) / 0.5), 0 0 15px hsla(var(--primary) / 0.3);
   }
@@ -127,11 +129,11 @@
   }
 }
 
-.animate-pulse-neon-blue {
-  animation: pulse-neon-blue 1.5s infinite ease-in-out;
+.animate-pulse-neon-blue { /* Consider renaming class if primary is now gold */
+  animation: pulse-neon-gold 1.5s infinite ease-in-out;
 }
 
-/* C.O.R.E. hexagon glow */
+/* C.O.R.E. hexagon glow - uses bright-gold which is now unified gold */
 @keyframes core-glow {
   0%, 100% {
     filter: drop-shadow(0 0 3px hsl(var(--bright-gold)/0.7)) drop-shadow(0 0 6px hsl(var(--bright-gold)/0.5));
