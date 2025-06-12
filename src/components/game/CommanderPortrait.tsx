@@ -17,7 +17,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
     : "https://placehold.co/200x200.png";
   
   const altText = commanderSex === 'male' ? "Male Commander" : "Female Commander";
-  const dataAiHint = commanderSex === 'male' ? "male leader" : "female leader";
+  const dataAiHint = commanderSex === 'male' ? "fullbody male" : "fullbody female";
 
   const handleInteraction = () => {
     onTap();
