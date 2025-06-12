@@ -13,11 +13,11 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
   const [isTapped, setIsTapped] = useState(false);
   
   const imageUrl = commanderSex === 'male' 
-    ? "https://placehold.co/200x200.png" 
-    : "https://placehold.co/200x200.png";
+    ? "https://i.imgur.com/zBtG9vy.png" 
+    : "https://i.imgur.com/dXHw4zJ.png";
   
   const altText = commanderSex === 'male' ? "Male Commander" : "Female Commander";
-  const dataAiHint = commanderSex === 'male' ? "fullbody male" : "fullbody female";
+  const dataAiHint = commanderSex === 'male' ? "fullbody male commander" : "fullbody female commander"; // Updated hint
 
   const handleInteraction = () => {
     onTap();
@@ -31,8 +31,8 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
       onTouchStart={handleInteraction} // For mobile tap feel
       className={cn(
         "relative rounded-full focus:outline-none transition-transform duration-100 active:scale-95",
-        "w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64", // Responsive size
-        "border-4 border-primary/50 shadow-lg"
+        "w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64" // Responsive size
+        // Removed: "border-4 border-primary/50 shadow-lg"
       )}
       aria-label="Tap Commander"
     >
