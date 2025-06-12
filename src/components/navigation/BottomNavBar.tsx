@@ -22,14 +22,16 @@ const BottomNavBar: React.FC = () => {
         {navItems.map(({ href, label, icon: Icon }) => {
           const isActive = pathname === href;
           return (
-            <Link key={href} href={href} legacyBehavior>
-              <a className={cn(
+            <Link
+              key={href}
+              href={href}
+              className={cn(
                 "flex flex-col items-center justify-center text-xs p-2 rounded-md transition-colors",
                 isActive ? "text-primary font-semibold" : "text-muted-foreground hover:text-foreground",
-              )}>
-                <Icon className={cn("h-6 w-6 mb-0.5", isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} />
-                {label}
-              </a>
+              )}
+            >
+              <Icon className={cn("h-6 w-6 mb-0.5", isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} />
+              {label}
             </Link>
           );
         })}
