@@ -20,6 +20,7 @@ export interface PlayerProfile {
   isWalletConnected: boolean;
   arkHangarFullyUpgraded: boolean;
   lastLoginTimestamp: number | null;
+  activeTapBonuses: ActiveTapBonus[];
 }
 
 export interface Season {
@@ -80,3 +81,24 @@ export const COUNTRIES = [
   { code: 'CN', name: 'China', flag: '🇨🇳' },
   // Add more countries as needed
 ];
+
+export interface MarketplaceItem {
+  id: string;
+  name: string;
+  description: string;
+  costInAuron: number;
+  bonusEffect: {
+    durationTaps: number;
+    multiplier: number; // e.g., 1.25 for +25%, 2.0 for +100% (double)
+  };
+  icon?: LucideIcon;
+}
+
+export interface ActiveTapBonus {
+  id: string; // Unique ID for this instance of the bonus
+  marketItemId: string; // ID of the MarketplaceItem that granted this
+  name: string;
+  remainingTaps: number;
+  bonusMultiplier: number; // e.g., 1.25 for +25%
+  originalDurationTaps: number;
+}

@@ -1,5 +1,5 @@
-import type { Season, Upgrade, ArkUpgrade } from './types';
-import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle } from 'lucide-react';
+import type { Season, Upgrade, ArkUpgrade, MarketplaceItem } from './types';
+import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Zap, Bolt, TrendingUp } from 'lucide-react';
 
 export const SEASONS_DATA: Season[] = [
   {
@@ -163,3 +163,39 @@ export function getRankTitle(level: number): string {
 export const POINTS_PER_TAP = 1;
 export const AURON_PER_WALLET_CONNECT = 100;
 export const MULE_DRONE_BASE_RATE = 1; // Points per minute per drone
+
+export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
+  {
+    id: 'tap_boost_minor',
+    name: 'Minor Power Surge',
+    description: 'Boosts tap power by 25% for the next 50 taps.',
+    costInAuron: 100,
+    bonusEffect: {
+      durationTaps: 50,
+      multiplier: 1.25,
+    },
+    icon: Zap,
+  },
+  {
+    id: 'tap_boost_standard',
+    name: 'Standard Power Surge',
+    description: 'Boosts tap power by 50% for the next 100 taps.',
+    costInAuron: 300,
+    bonusEffect: {
+      durationTaps: 100,
+      multiplier: 1.5,
+    },
+    icon: Bolt,
+  },
+  {
+    id: 'tap_boost_major',
+    name: 'Major Power Surge',
+    description: 'Doubles tap power for the next 150 taps.',
+    costInAuron: 750,
+    bonusEffect: {
+      durationTaps: 150,
+      multiplier: 2.0,
+    },
+    icon: TrendingUp,
+  },
+];

@@ -1,8 +1,8 @@
 
 "use client";
 
-import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage } from '@/lib/types';
-import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE } from '@/lib/gameData';
+import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus } from '@/lib/types';
+import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE } from '@/lib/gameData';
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getCoreBriefing } from '@/ai/flows/core-briefings';
@@ -22,7 +22,7 @@ interface GameContextType {
   arkUpgrades: ArkUpgrade[];
   purchaseArkUpgrade: (upgradeId: string) => void;
   getArkUpgradeById: (upgradeId: string) => ArkUpgrade | undefined;
-  addPoints: (amount: number) => void;
+  addPoints: (amount: number, isTap?: boolean) => void;
   isLoading: boolean;
   isInitialSetupDone: boolean;
   completeInitialSetup: (name: string, sex: 'male' | 'female', country: string) => void;
@@ -38,6 +38,8 @@ interface GameContextType {
   comboMultiplier: number;
   comboCount: number;
   setComboCount: React.Dispatch<React.SetStateAction<number>>;
+  marketplaceItems: MarketplaceItem[];
+  purchaseMarketplaceItem: (itemId: string) => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -56,6 +58,7 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
   isWalletConnected: false,
   arkHangarFullyUpgraded: false,
   lastLoginTimestamp: Date.now(),
+  activeTapBonuses: [],
 };
 
 export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -75,6 +78,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const savedProfile = localStorage.getItem('playerProfile');
     if (savedProfile) {
       const parsedProfile = JSON.parse(savedProfile) as PlayerProfile;
+      // Ensure activeTapBonuses is initialized if it's not in saved data
+      if (!parsedProfile.activeTapBonuses) {
+        parsedProfile.activeTapBonuses = [];
+      }
       setPlayerProfile(parsedProfile);
       setIsInitialSetupDone(true);
       const season = SEASONS_DATA.find(s => s.id === parsedProfile.currentSeasonId) || SEASONS_DATA[0];
@@ -114,6 +121,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       currentSeasonId: SEASONS_DATA[0].id,
       rankTitle: getRankTitle(1),
       lastLoginTimestamp: Date.now(),
+      activeTapBonuses: [], // Initialize activeTapBonuses
     };
     setPlayerProfile(newProfile);
     setIsInitialSetupDone(true);
@@ -126,13 +134,39 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
 
-  const addPoints = useCallback((amount: number) => {
+  const addPoints = useCallback((amount: number, isTap: boolean = false) => {
     setPlayerProfile(prev => {
       if (!prev) return null;
-      const newPoints = prev.points + amount;
-      const newSeasonProgress = (prev.seasonProgress[currentSeason.id] || 0) + amount;
+
+      let finalAmount = amount;
+      let updatedActiveTapBonuses = [...(prev.activeTapBonuses || [])];
+
+      if (isTap && updatedActiveTapBonuses.length > 0) {
+        let totalBonusMultiplierFactor = 0; // e.g., if one bonus is 1.5 (+50%), this will be 0.5
+                                          // if another is 1.2 (+20%), this will be 0.2
+                                          // total effective multiplier will be 1 + 0.5 + 0.2 = 1.7
+
+        updatedActiveTapBonuses = updatedActiveTapBonuses.map(bonus => {
+          totalBonusMultiplierFactor += (bonus.bonusMultiplier - 1);
+          return { ...bonus, remainingTaps: bonus.remainingTaps - 1 };
+        }).filter(bonus => bonus.remainingTaps > 0);
+        
+        finalAmount = amount * (1 + totalBonusMultiplierFactor);
+
+        // Notify if any bonus expired
+        (prev.activeTapBonuses || []).forEach(oldBonus => {
+            if (!updatedActiveTapBonuses.find(b => b.id === oldBonus.id)) {
+                toast({ title: "Bonus Expired", description: `${oldBonus.name} has worn off.` });
+            }
+        });
+      }
       
-      let newXp = prev.xp + amount;
+      finalAmount = Math.round(finalAmount);
+
+      const newPoints = prev.points + finalAmount;
+      const newSeasonProgress = (prev.seasonProgress[currentSeason.id] || 0) + finalAmount;
+      
+      let newXp = prev.xp + finalAmount; // Grant XP based on final points earned
       let newLevel = prev.level;
       let newXpToNextLevel = prev.xpToNextLevel;
       let newRankTitle = prev.rankTitle;
@@ -155,7 +189,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         seasonProgress: {
           ...prev.seasonProgress,
           [currentSeason.id]: newSeasonProgress,
-        }
+        },
+        activeTapBonuses: updatedActiveTapBonuses,
       };
     });
   }, [currentSeason, toast]);
@@ -228,6 +263,39 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   }, [toast]);
 
+  const purchaseMarketplaceItem = useCallback((itemId: string) => {
+    setPlayerProfile(prev => {
+      if (!prev) return null;
+      const item = MARKETPLACE_ITEMS_DATA.find(i => i.id === itemId);
+      if (!item) {
+        toast({ title: "Item not found", variant: "destructive" });
+        return prev;
+      }
+
+      if (prev.auron < item.costInAuron) {
+        toast({ title: "Insufficient Auron", description: `You need ${item.costInAuron} Auron to purchase ${item.name}.`, variant: "destructive" });
+        return prev;
+      }
+
+      const newBonus: ActiveTapBonus = {
+        id: crypto.randomUUID(),
+        marketItemId: item.id,
+        name: item.name,
+        remainingTaps: item.bonusEffect.durationTaps,
+        bonusMultiplier: item.bonusEffect.multiplier,
+        originalDurationTaps: item.bonusEffect.durationTaps,
+      };
+      
+      toast({ title: "Purchase Successful!", description: `${item.name} activated.` });
+      return {
+        ...prev,
+        auron: prev.auron - item.costInAuron,
+        activeTapBonuses: [...(prev.activeTapBonuses || []), newBonus],
+      };
+    });
+  }, [toast]);
+
+
   const connectWallet = useCallback(() => {
     setPlayerProfile(prev => {
       if (!prev || prev.isWalletConnected) return prev;
@@ -251,7 +319,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const criticalTapMultiplier = 1 + (critMultiplierUpgradeLevel * 0.1); // Base crit is 2x, +10% per level from base (e.g. 2.1x, 2.2x)
 
   const comboBonusUpgradeLevel = getUpgradeLevel('comboBonus');
-  const comboMultiplier = 1 + (comboBonusUpgradeLevel * 0.02) + (comboCount * 0.01); // +2% per upgrade level, +1% per combo hit
+  const comboMultiplierValue = 1 + (comboBonusUpgradeLevel * 0.02) + (comboCount * 0.01); // +2% per upgrade level, +1% per combo hit
 
 
   const handleTap = useCallback(() => {
@@ -259,16 +327,17 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const isCritical = Math.random() < criticalTapChance;
     if (isCritical) {
       pointsToEarn *= criticalTapMultiplier;
-      toast({ title: "Critical Tap!", description: `+${Math.round(pointsToEarn)} points!`, duration: 1500 });
+      toast({ title: "Critical Tap!", description: `+${Math.round(pointsToEarn * comboMultiplierValue)} points!`, duration: 1500 });
     }
     
-    pointsToEarn *= comboMultiplier;
+    pointsToEarn *= comboMultiplierValue;
     
     setComboCount(prev => prev + 1);
     setTimeout(() => setComboCount(0), 3000); // Reset combo after 3s of inactivity
 
-    addPoints(Math.round(pointsToEarn));
-  }, [addPoints, pointsPerTap, criticalTapChance, criticalTapMultiplier, comboMultiplier, toast]);
+    addPoints(pointsPerTap, true); // Pass base pointsPerTap, bonus multipliers handled in addPoints
+                                 // Also pass 'isTap = true' to trigger bonus consumption
+  }, [addPoints, pointsPerTap, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, toast]);
 
 
   // AI Interactions
@@ -342,9 +411,11 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         handleTap,
         criticalTapChance,
         criticalTapMultiplier,
-        comboMultiplier,
+        comboMultiplier: comboMultiplierValue,
         comboCount,
         setComboCount,
+        marketplaceItems: MARKETPLACE_ITEMS_DATA,
+        purchaseMarketplaceItem,
     }}>
       {children}
     </GameContext.Provider>
@@ -358,3 +429,4 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
+

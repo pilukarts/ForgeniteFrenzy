@@ -9,8 +9,8 @@ const navItems = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/upgrades', label: 'Upgrades', icon: ChevronsUp },
   { href: '/leaderboard', label: 'Leaders', icon: Trophy },
+  { href: '/marketplace', label: 'Shop', icon: ShoppingCart },
   // { href: '/alliance', label: 'Alliance', icon: Users }, // Phase 2
-  // { href: '/shop', label: 'Shop', icon: ShoppingCart }, // Phase 4
 ];
 
 const BottomNavBar: React.FC = () => {
