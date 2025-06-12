@@ -1,3 +1,4 @@
+
 import type { LucideIcon } from 'lucide-react';
 
 export interface PlayerProfile {
@@ -21,6 +22,8 @@ export interface PlayerProfile {
   arkHangarFullyUpgraded: boolean;
   lastLoginTimestamp: number | null;
   activeTapBonuses: ActiveTapBonus[];
+  totalTapsForUniform: number; // New: Tracks taps for uniform progression
+  equippedUniformPieces: string[]; // New: Lists names of equipped uniform pieces
 }
 
 export interface Season {
@@ -63,7 +66,7 @@ export interface LeaderboardEntry {
 }
 
 export interface CoreMessage {
-  type: 'briefing' | 'progress_update' | 'lore_snippet' | 'advice';
+  type: 'briefing' | 'progress_update' | 'lore_snippet' | 'advice' | 'system_alert';
   content: string;
   timestamp: number;
 }
