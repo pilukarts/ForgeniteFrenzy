@@ -1,5 +1,5 @@
 import type { Season, Upgrade, ArkUpgrade, MarketplaceItem } from './types';
-import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Zap, Bolt, TrendingUp } from 'lucide-react';
+import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, CircleDollarSign, Coins, Container, TrendingUp } from 'lucide-react';
 
 export const SEASONS_DATA: Season[] = [
   {
@@ -174,7 +174,7 @@ export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
       durationTaps: 50,
       multiplier: 1.25,
     },
-    icon: Zap,
+    icon: CircleDollarSign, // Coin icon
   },
   {
     id: 'tap_boost_standard',
@@ -185,7 +185,7 @@ export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
       durationTaps: 100,
       multiplier: 1.5,
     },
-    icon: Bolt,
+    icon: Coins, // Stack of coins icon
   },
   {
     id: 'tap_boost_major',
@@ -196,6 +196,6 @@ export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
       durationTaps: 150,
       multiplier: 2.0,
     },
-    icon: TrendingUp,
+    icon: Container, // Proxy for gold bar / valuable container
   },
 ];
