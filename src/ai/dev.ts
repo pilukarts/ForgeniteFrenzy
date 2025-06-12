@@ -1,1 +1,6 @@
-// Flows will be imported for their side effects in this file.
+import { config } from 'dotenv';
+config();
+
+import '@/ai/flows/core-briefings.ts';
+import '@/ai/flows/core-lore-snippets.ts';
+import '@/ai/flows/core-progress-updates.ts';

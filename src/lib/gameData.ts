@@ -1,0 +1,165 @@
+import type { Season, Upgrade, ArkUpgrade } from './types';
+import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle } from 'lucide-react';
+
+export const SEASONS_DATA: Season[] = [
+  {
+    id: 'chapter1',
+    chapter: 1,
+    title: "The Concord's Shadow",
+    description: "Gather 'Ark Construction Materials' to build the massive StarForge Arks on Earth.",
+    objectiveResourceName: 'Ark Construction Materials',
+    objectiveResourceIcon: Ship,
+    coreBriefingObjective: "construct StarForge Arks to escape Earth before the Cyber Concord attacks",
+    unlocksCore: true,
+  },
+  {
+    id: 'chapter2',
+    chapter: 2,
+    title: 'The Quantum Beacon',
+    description: "Generate 'Scanner Triangulation Data' to pinpoint the elusive Sanctaris system.",
+    objectiveResourceName: 'Scanner Triangulation Data',
+    objectiveResourceIcon: BarChartBig,
+    coreBriefingObjective: "triangulate the Sanctaris system coordinates using Quantum Scanners",
+    unlocksCore: false,
+  },
+  {
+    id: 'chapter3',
+    chapter: 3,
+    title: 'First Wave',
+    description: "Generate 'Planetary Shield Energy' to repel the Cyber Concord's vanguard.",
+    objectiveResourceName: 'Planetary Shield Energy',
+    objectiveResourceIcon: ShieldAlert,
+    coreBriefingObjective: "defend Earth by generating planetary shield energy against the Concord's first wave",
+    unlocksCore: false,
+  },
+  {
+    id: 'chapter4',
+    chapter: 4,
+    title: 'Sanctaris Foundation',
+    description: "Gather Forgeite to establish a new home in the Sanctaris system.",
+    objectiveResourceName: 'Forgeite',
+    objectiveResourceIcon: Landmark,
+    coreBriefingObjective: "gather Forgeite to begin building a new home on Sanctaris",
+    unlocksCore: false,
+  },
+  {
+    id: 'chapter5',
+    chapter: 5,
+    title: 'Asteroid Belt Expedition',
+    description: "Generate 'Ancient Relic Fragments' by exploring a mysterious Asteroid Belt.",
+    objectiveResourceName: 'Ancient Relic Fragments',
+    objectiveResourceIcon: Gem,
+    coreBriefingObjective: "explore the asteroid belt and recover ancient relic fragments",
+    unlocksCore: false,
+  },
+  {
+    id: 'chapter6',
+    chapter: 6,
+    title: 'The Aetheris Rush',
+    description: "Gather 'Aetherian Crystals' from the volatile planet Aetheris.",
+    objectiveResourceName: 'Aetherian Crystals',
+    objectiveResourceIcon: Atom,
+    coreBriefingObjective: "brave Aetheris to mine valuable Aetherian Crystals for advanced crafting",
+    unlocksCore: false,
+  },
+  {
+    id: 'chapter7',
+    chapter: 7,
+    title: 'The Plutonium Crisis',
+    description: "Gather Plutonium, the rare resource for Legendary and Core units.",
+    objectiveResourceName: 'Plutonium',
+    objectiveResourceIcon: HelpCircle, // Placeholder, replace with a better icon
+    coreBriefingObjective: "secure Plutonium, vital for advanced military units",
+    unlocksCore: false,
+  },
+  {
+    id: 'finalChapter',
+    chapter: 8,
+    title: 'Token Unleashed',
+    description: "Generate 'Token Fragments' to solidify your Founder's Score for the airdrop.",
+    objectiveResourceName: 'Token Fragments',
+    objectiveResourceIcon: Sparkles,
+    coreBriefingObjective: "collect Token Fragments to forge into Alliance Forge tokens and secure your airdrop",
+    unlocksCore: false,
+  },
+];
+
+export const UPGRADES_DATA: Upgrade[] = [
+  {
+    id: 'tapPower',
+    name: 'Enhanced Tapping Servos',
+    description: 'Increases points generated per tap.',
+    baseCost: 10,
+    costMultiplier: 1.5,
+    effectDescription: (level) => `+${level} Points per tap.`,
+    icon: HelpCircle, // Placeholder
+  },
+  {
+    id: 'critChance',
+    name: 'Precision Targeting Matrix',
+    description: 'Increases the chance of a Critical Tap.',
+    baseCost: 50,
+    costMultiplier: 2,
+    effectDescription: (level) => `+${level * 0.5}% Critical Tap Chance.`,
+    icon: HelpCircle, // Placeholder
+  },
+  {
+    id: 'critMultiplier',
+    name: 'Overcharge Capacitors',
+    description: 'Increases the point multiplier for Critical Taps.',
+    baseCost: 100,
+    costMultiplier: 2.5,
+    effectDescription: (level) => `+${level * 10}% Critical Tap Bonus.`,
+    icon: HelpCircle, // Placeholder
+  },
+  {
+    id: 'comboBonus',
+    name: 'Synergy Uplink',
+    description: 'Increases the combo meter bonus.',
+    baseCost: 75,
+    costMultiplier: 1.8,
+    effectDescription: (level) => `+${level * 2}% Combo Multiplier.`,
+    icon: HelpCircle, // Placeholder
+  },
+];
+
+
+export const ARK_UPGRADES_DATA: ArkUpgrade[] = [
+  { id: 'hullPlating1', name: 'Basic Hull Plating', description: 'Reinforce the Ark structure.', cost: 1000, visualStage: 1, isPurchased: false },
+  { id: 'engineModules1', name: 'Auxiliary Engines', description: 'Install initial engine modules.', cost: 2500, visualStage: 2, isPurchased: false },
+  { id: 'cargoBays1', name: 'Expandable Cargo Bays', description: 'Increase resource storage capacity.', cost: 5000, visualStage: 3, isPurchased: false },
+  // Add more Ark upgrades, leading to the "Founder's Ark"
+];
+
+export const INITIAL_XP_TO_NEXT_LEVEL = 100;
+export const XP_LEVEL_MULTIPLIER = 1.5;
+
+export const RANK_TITLES: { [level: number]: string } = {
+  1: 'Recruit',
+  5: 'Cadet',
+  10: 'Officer',
+  15: 'Veteran Officer',
+  20: 'Commander',
+  25: 'Section Commander',
+  30: 'Battalion Commander',
+  40: 'Fleet Commander',
+  50: 'High Commander',
+  60: 'Vanguard Commander',
+  // ... and so on
+};
+
+export function getRankTitle(level: number): string {
+  let currentRank = 'Recruit';
+  for (const rankLevel in RANK_TITLES) {
+    if (level >= parseInt(rankLevel)) {
+      currentRank = RANK_TITLES[parseInt(rankLevel)];
+    } else {
+      break;
+    }
+  }
+  return currentRank;
+}
+
+export const POINTS_PER_TAP = 1;
+export const AURON_PER_WALLET_CONNECT = 100;
+export const MULE_DRONE_BASE_RATE = 1; // Points per minute per drone
