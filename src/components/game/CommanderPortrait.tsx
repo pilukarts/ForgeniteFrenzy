@@ -33,7 +33,8 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
       className={cn(
         "relative rounded-full focus:outline-none transition-transform duration-100 active:scale-95",
         "w-56 h-56 md:w-64 md:h-64 lg:w-72 lg:h-72", // Responsive size
-        "border-0 shadow-none bg-transparent" 
+        "border-0 shadow-none bg-transparent",
+        "animate-pulse-neon-blue" // Added pulsing animation
       )}
       aria-label="Tap Commander"
     >
@@ -79,3 +80,4 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
 };
 
 export default CommanderPortrait;
+
