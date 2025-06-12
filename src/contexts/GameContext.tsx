@@ -348,18 +348,20 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (isInitialSetupDone && playerProfile && isCoreUnlocked && Date.now() - coreLastInteractionTime > 300000) { // 5 minutes
       (async () => {
         try {
-          const briefing = await getCoreBriefing({
+          const briefingInput = {
             season: currentSeason.title,
             playerProgress: `Level ${playerProfile.level}, Objective Progress: ${playerProfile.seasonProgress[currentSeason.id] || 0}`,
-          });
+          };
+          const briefing = await getCoreBriefing(briefingInput);
           addCoreMessage({ type: 'briefing', content: briefing.briefing });
 
-          const progressUpdate = await getCoreProgressUpdate({
+          const progressUpdateInput = {
             seasonObjective: currentSeason.coreBriefingObjective,
             playerProgress: playerProfile.points,
             playerLevel: playerProfile.level,
             availableUpgrades: UPGRADES_DATA.map(u => `${u.name} (Cost: ${getUpgradeCost(u.id)})`).join(', '),
-          });
+          };
+          const progressUpdate = await getCoreProgressUpdate(progressUpdateInput);
           addCoreMessage({ type: 'advice', content: progressUpdate.advice });
           addCoreMessage({ type: 'lore_snippet', content: progressUpdate.loreSnippet });
           
@@ -368,21 +370,27 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             if (timeAwayMinutes > 5) { // If away for more than 5 minutes
                 const resourcesGained = playerProfile.muleDrones * MULE_DRONE_BASE_RATE * timeAwayMinutes;
                 if (resourcesGained > 0) addPoints(resourcesGained); // Add passively gained points
-                const loreSnippet = await getCoreLoreSnippet({
+                
+                const loreSnippetInput = {
                     timeAway: timeAwayMinutes,
                     resourcesGained,
-                });
+                };
+                const loreSnippet = await getCoreLoreSnippet(loreSnippetInput);
                 addCoreMessage({ type: 'lore_snippet', content: loreSnippet.snippet });
             }
           }
           setPlayerProfile(p => p ? {...p, lastLoginTimestamp: Date.now()} : null);
-
-
+          setCoreLastInteractionTime(Date.now());
         } catch (error) {
-          console.error("Error fetching C.O.R.E. data:", error);
-          addCoreMessage({ type: 'briefing', content: "C.O.R.E. systems experiencing interference. Stand by, Commander." });
+          console.error("C.O.R.E. API Error:", error);
+          let errorMessage = "C.O.R.E. systems experiencing interference. Stand by, Commander.";
+          if (error instanceof Error && error.message.includes("429")) {
+            errorMessage = "C.O.R.E. uplink temporarily disrupted due to high traffic. Recalibrating. Please stand by.";
+          }
+          addCoreMessage({ type: 'briefing', content: errorMessage });
+          // Optionally, set a shorter retry or indicate a longer cooldown if 429 specifically.
+           setCoreLastInteractionTime(Date.now()); // Still update time to prevent immediate retry
         }
-        setCoreLastInteractionTime(Date.now());
       })();
     }
   }, [isInitialSetupDone, playerProfile, currentSeason, isCoreUnlocked, coreLastInteractionTime, addCoreMessage, getUpgradeCost, addPoints]);
