@@ -41,7 +41,7 @@ export default function HomePage() {
           commanderSex={playerProfile.commanderSex} 
           onTap={handleTap} 
         />
-        <p className="mt-16 text-lg font-semibold text-primary font-headline">
+        <p className="mt-20 text-lg font-semibold text-primary font-headline">
           Tap Commander to Generate Points
         </p>
         <p className="text-sm text-muted-foreground">
