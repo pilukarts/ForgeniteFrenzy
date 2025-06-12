@@ -42,6 +42,7 @@ interface GameContextType {
   setComboCount: React.Dispatch<React.SetStateAction<number>>;
   marketplaceItems: MarketplaceItem[];
   purchaseMarketplaceItem: (itemId: string) => void;
+  switchCommanderSex: () => void; // New function
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -338,39 +339,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setPlayerProfile(prev => {
         if (!prev) return null;
 
-        let pointsToEarn = pointsPerTapValue;
+        let pointsToEarn = pointsPerTapValue; // This will be the base for marketplace bonuses
         const isCritical = Math.random() < criticalTapChance;
-
-        if (isCritical) {
-            pointsToEarn *= criticalTapMultiplier;
-            setTimeout(() => {
-                toast({ title: "Critical Tap!", description: `+${Math.round(pointsToEarn * comboMultiplierValue)} points!`, duration: 1500 });
-            }, 0);
-        }
         
-        pointsToEarn *= comboMultiplierValue;
-        
-        const newTotalTapsForUniform = (prev.totalTapsForUniform || 0) + 1;
-        let newEquippedUniformPieces = [...(prev.equippedUniformPieces || [])];
-        const currentlyEquippedCount = newEquippedUniformPieces.length;
-        const targetEquippedCount = Math.floor(newTotalTapsForUniform / TAPS_PER_UNIFORM_PIECE);
-
-        if (targetEquippedCount > currentlyEquippedCount && currentlyEquippedCount < UNIFORM_PIECES_ORDER.length) {
-            const newPiece = UNIFORM_PIECES_ORDER[currentlyEquippedCount];
-            newEquippedUniformPieces.push(newPiece);
-            setTimeout(() => {
-                toast({ title: "Uniform Piece Unlocked!", description: `Acquired: ${newPiece}`});
-                addCoreMessage({ type: 'system_alert', content: `Commander, your combat readiness has increased. New gear acquired: ${newPiece}.` });
-            }, 0);
-        }
-        
-        // Apply points (original addPoints logic handles this for points accumulation)
-        // We call addPoints separately to keep its logic focused
-        // addPoints(pointsToEarn, true); // This was slightly problematic due to immediate state update cycle.
-        // The points calculation needs to be integrated here or addPoints needs to be able to take the modified profile.
-        // For now, let's directly update points and related fields based on the logic from addPoints.
-        
-        let finalAmount = pointsPerTapValue; // Start with base tap power for this tap
+        let finalAmount = pointsToEarn; // Start with base tap power for this tap
         let updatedActiveTapBonuses = [...(prev.activeTapBonuses || [])];
   
         if (updatedActiveTapBonuses.length > 0) { // isTap is true
@@ -394,11 +366,29 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         
         if (isCritical) {
             finalAmount *= criticalTapMultiplier; // Apply critical multiplier
+            setTimeout(() => {
+                 toast({ title: "Critical Tap!", description: `+${Math.round(finalAmount * comboMultiplierValue)} points!`, duration: 1500 });
+            },0);
         }
+
         finalAmount *= comboMultiplierValue; // Apply combo multiplier
         finalAmount = Math.round(finalAmount);
 
 
+        const newTotalTapsForUniform = (prev.totalTapsForUniform || 0) + 1;
+        let newEquippedUniformPieces = [...(prev.equippedUniformPieces || [])];
+        const currentlyEquippedCount = newEquippedUniformPieces.length;
+        const targetEquippedCount = Math.floor(newTotalTapsForUniform / TAPS_PER_UNIFORM_PIECE);
+
+        if (targetEquippedCount > currentlyEquippedCount && currentlyEquippedCount < UNIFORM_PIECES_ORDER.length) {
+            const newPiece = UNIFORM_PIECES_ORDER[currentlyEquippedCount];
+            newEquippedUniformPieces.push(newPiece);
+            setTimeout(() => {
+                toast({ title: "Uniform Piece Unlocked!", description: `Acquired: ${newPiece}`});
+                addCoreMessage({ type: 'system_alert', content: `Commander, your combat readiness has increased. New gear acquired: ${newPiece}.` });
+            }, 0);
+        }
+        
         const newPoints = prev.points + finalAmount;
         const newSeasonProgress = (prev.seasonProgress[currentSeason.id] || 0) + finalAmount;
         
@@ -432,7 +422,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             activeTapBonuses: updatedActiveTapBonuses,
             totalTapsForUniform: newTotalTapsForUniform,
             equippedUniformPieces: newEquippedUniformPieces,
-            // comboCount will be handled by setComboCount call below
         };
     });
 
@@ -441,6 +430,17 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, toast, addCoreMessage, currentSeason.id]);
 
+  const switchCommanderSex = useCallback(() => {
+    setPlayerProfile(prev => {
+      if (!prev) return null;
+      const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
+      toast({ title: "Commander Profile Updated", description: `Switched to ${newSex === 'male' ? 'Male' : 'Female'} Commander.` });
+      return {
+        ...prev,
+        commanderSex: newSex,
+      };
+    });
+  }, [toast]);
 
   // AI Interactions
   useEffect(() => {
@@ -462,22 +462,22 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           };
           const progressUpdate = await getCoreProgressUpdate(progressUpdateInput);
           addCoreMessage({ type: 'advice', content: progressUpdate.advice });
-          if (progressUpdate.loreSnippet) { // Ensure lore snippet is not empty
+          if (progressUpdate.loreSnippet) { 
             addCoreMessage({ type: 'lore_snippet', content: progressUpdate.loreSnippet });
           }
           
           if(playerProfile.lastLoginTimestamp) {
             const timeAwayMinutes = Math.floor((Date.now() - playerProfile.lastLoginTimestamp) / 60000);
-            if (timeAwayMinutes > 5) { // If away for more than 5 minutes
+            if (timeAwayMinutes > 5) { 
                 const resourcesGained = playerProfile.muleDrones * MULE_DRONE_BASE_RATE * timeAwayMinutes;
-                if (resourcesGained > 0) addPoints(resourcesGained); // Add passively gained points
+                if (resourcesGained > 0) addPoints(resourcesGained);
                 
                 const loreSnippetInput = {
                     timeAway: timeAwayMinutes,
                     resourcesGained,
                 };
                 const loreSnippet = await getCoreLoreSnippet(loreSnippetInput);
-                 if (loreSnippet.snippet) { // Ensure snippet is not empty
+                 if (loreSnippet.snippet) { 
                     addCoreMessage({ type: 'lore_snippet', content: loreSnippet.snippet });
                  }
             }
@@ -487,8 +487,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         } catch (error: any) {
           console.error("C.O.R.E. API Error:", error);
           let errorMessage = "C.O.R.E. systems experiencing interference. Stand by, Commander.";
-          // Check for GoogleGenerativeAI specific error structure or message content for 429
-          if (error.message && (error.message.includes("429") || error.message.includes("Too Many Requests") || (error.toString && error.toString().includes("429")))) {
+           if (error.message && (error.message.includes("429") || error.message.includes("Too Many Requests") || (error.toString && error.toString().includes("429")))) {
             errorMessage = "C.O.R.E. uplink temporarily disrupted due to high traffic. Recalibrating. Please stand by.";
           }
           addCoreMessage({ type: 'briefing', content: errorMessage });
@@ -530,6 +529,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setComboCount,
         marketplaceItems: MARKETPLACE_ITEMS_DATA,
         purchaseMarketplaceItem,
+        switchCommanderSex, // Expose new function
     }}>
       {children}
     </GameContext.Provider>
@@ -543,3 +543,5 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
+
+    
