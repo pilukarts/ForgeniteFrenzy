@@ -101,7 +101,8 @@ const UpgradesPage: React.FC = () => {
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-sm">Status: <span className={isPurchased ? "text-green-400 font-semibold" : "text-orange-400 font-semibold"}>{isPurchased ? 'Installed' : 'Pending Installation'}</span></VCardContent>
+                        <p className="text-sm">Status: <span className={isPurchased ? "text-green-400 font-semibold" : "text-orange-400 font-semibold"}>{isPurchased ? 'Installed' : 'Pending Installation'}</span></p>
+                      </CardContent>
                       <CardFooter>
                         <Button 
                           onClick={() => purchaseArkUpgrade(arkUpgrade.id)} 
