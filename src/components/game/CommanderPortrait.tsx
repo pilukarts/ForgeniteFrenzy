@@ -13,10 +13,10 @@ interface CommanderPortraitProps {
 const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onTap }) => {
   const [isTapped, setIsTapped] = useState(false);
   
-  const imageUrl = commanderSex === 'male' 
-    ? "https://i.imgur.com/zBtG9vy.png" 
-    : "https://i.imgur.com/BQHeVWp.png"; 
+  const maleImageUrl = "https://i.imgur.com/zBtG9vy.png";
+  const femaleImageUrl = "https://i.imgur.com/BQHeVWp.png";
   
+  const imageUrl = commanderSex === 'male' ? maleImageUrl : femaleImageUrl;
   const altText = commanderSex === 'male' ? "Male Commander" : "Female Commander";
   const dataAiHint = commanderSex === 'male' ? "fullbody male commander" : "fullbody female commander";
 
@@ -33,7 +33,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
       className={cn(
         "relative rounded-full focus:outline-none transition-transform duration-100 active:scale-95",
         "w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64", // Responsive size
-        "border-0 shadow-none" // Make the circle invisible
+        "border-0 shadow-none bg-transparent" // Make the circle invisible and ensure no background color interferes
       )}
       aria-label="Tap Commander"
     >
@@ -43,14 +43,14 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
         data-ai-hint={dataAiHint}
         width={256}
         height={256}
-        className="rounded-full object-cover"
+        className="rounded-full object-contain w-full h-full" // Changed to object-contain and ensure it fills the button
         priority
       />
       {/* C.O.R.E. icon on chest */}
       <Hexagon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[25%] h-10 w-10 text-bright-gold/70 opacity-80 pointer-events-none core-hexagon-glow" />
       
       {isTapped && (
-        <div className="absolute inset-0 rounded-full bg-bright-gold/40 animate-ping-once" style={{ animationDuration: '150ms' }}></div>
+        <div className="absolute inset-0 rounded-full bg-bright-gold/30 animate-ping-once" style={{ animationDuration: '150ms' }}></div>
       )}
       <style jsx>{`
         @keyframes ping-once {
@@ -79,4 +79,3 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
 };
 
 export default CommanderPortrait;
-
