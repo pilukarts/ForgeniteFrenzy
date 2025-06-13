@@ -32,7 +32,7 @@ interface GameContextType {
   addCoreMessage: (message: Omit<CoreMessage, 'timestamp'>) => void;
   isCoreUnlocked: boolean;
   coreLastInteractionTime: number;
-  setCoreLastInteractionTime: (time: number) => void;
+  // setCoreLastInteractionTime: (time: number) => void; // No longer directly exposed, managed internally
   connectWallet: () => void;
   handleTap: () => void;
   criticalTapChance: number;
@@ -42,7 +42,7 @@ interface GameContextType {
   setComboCount: React.Dispatch<React.SetStateAction<number>>;
   marketplaceItems: MarketplaceItem[];
   purchaseMarketplaceItem: (itemId: string) => void;
-  switchCommanderSex: () => void; // New function
+  switchCommanderSex: () => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -75,6 +75,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isCoreUnlocked, setIsCoreUnlocked] = useState(false);
   const [coreLastInteractionTime, setCoreLastInteractionTime] = useState<number>(0);
   const [comboCount, setComboCount] = useState(0);
+  const [isAICallInProgress, setIsAICallInProgress] = useState(false);
 
 
   const { toast } = useToast();
@@ -83,7 +84,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const savedProfile = localStorage.getItem('playerProfile');
     if (savedProfile) {
       let parsedProfile = JSON.parse(savedProfile) as PlayerProfile;
-      // Ensure new fields are initialized if not present in saved data
       if (parsedProfile.activeTapBonuses === undefined) {
         parsedProfile.activeTapBonuses = [];
       }
@@ -98,6 +98,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const season = SEASONS_DATA.find(s => s.id === parsedProfile.currentSeasonId) || SEASONS_DATA[0];
       setCurrentSeason(season);
       setIsCoreUnlocked(!!parsedProfile.upgrades['coreUnlocked'] || SEASONS_DATA.slice(0, SEASONS_DATA.indexOf(season)).some(s => s.unlocksCore));
+      
+      // Set initial coreLastInteractionTime from profile or now, to allow first AI call if conditions met
+      setCoreLastInteractionTime(parsedProfile.lastLoginTimestamp || Date.now());
     }
     const savedCoreMessages = localStorage.getItem('coreMessages');
     if (savedCoreMessages) {
@@ -138,10 +141,11 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsInitialSetupDone(true);
     setCurrentSeason(SEASONS_DATA[0]);
     addCoreMessage({ type: 'briefing', content: `Welcome, Commander ${name}! Your mission begins now.`});
+    setCoreLastInteractionTime(Date.now()); // Initialize for AI calls
   };
   
   const addCoreMessage = useCallback((message: Omit<CoreMessage, 'timestamp'>) => {
-    setCoreMessages(prev => [{ ...message, timestamp: Date.now() }, ...prev.slice(0, 19)]); // Keep last 20 messages
+    setCoreMessages(prev => [{ ...message, timestamp: Date.now() }, ...prev.slice(0, 19)]);
   }, []);
 
 
@@ -348,13 +352,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const pointsPerTapValue = baseTapPower + tapPowerUpgradeLevel;
 
   const critChanceUpgradeLevel = getUpgradeLevel('critChance');
-  const criticalTapChance = critChanceUpgradeLevel * 0.005; // 0.5% per level
+  const criticalTapChance = critChanceUpgradeLevel * 0.005; 
 
   const critMultiplierUpgradeLevel = getUpgradeLevel('critMultiplier');
-  const criticalTapMultiplier = 1 + (critMultiplierUpgradeLevel * 0.1); // Base crit is 2x, +10% per level from base (e.g. 2.1x, 2.2x)
+  const criticalTapMultiplier = 1 + (critMultiplierUpgradeLevel * 0.1); 
 
   const comboBonusUpgradeLevel = getUpgradeLevel('comboBonus');
-  const comboMultiplierValue = 1 + (comboBonusUpgradeLevel * 0.02) + (comboCount * 0.01); // +2% per upgrade level, +1% per combo hit
+  const comboMultiplierValue = 1 + (comboBonusUpgradeLevel * 0.02) + (comboCount * 0.01);
 
 
   const handleTap = useCallback(() => {
@@ -448,7 +452,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
 
     setComboCount(prev => prev + 1);
-    setTimeout(() => setComboCount(0), 3000); // Reset combo after 3s of inactivity
+    setTimeout(() => setComboCount(0), 3000); 
 
   }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, toast, addCoreMessage, currentSeason.id]);
 
@@ -468,7 +472,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   // AI Interactions
   useEffect(() => {
-    if (isInitialSetupDone && playerProfile && isCoreUnlocked && Date.now() - coreLastInteractionTime > 300000) { // 5 minutes
+    if (isInitialSetupDone && playerProfile && isCoreUnlocked && !isAICallInProgress && Date.now() - coreLastInteractionTime > 300000) { // 5 minutes
+      setIsAICallInProgress(true);
       (async () => {
         try {
           const briefingInput = {
@@ -507,7 +512,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             }
           }
           setPlayerProfile(p => p ? {...p, lastLoginTimestamp: Date.now()} : null);
-          setCoreLastInteractionTime(Date.now());
+          // setCoreLastInteractionTime(Date.now()); // Moved to finally
         } catch (error: any) {
           console.error("C.O.R.E. API Error:", error);
           let errorMessage = "C.O.R.E. systems experiencing interference. Stand by, Commander.";
@@ -515,11 +520,14 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             errorMessage = "C.O.R.E. uplink temporarily disrupted due to high traffic. Recalibrating. Please stand by.";
           }
           addCoreMessage({ type: 'briefing', content: errorMessage });
-          setCoreLastInteractionTime(Date.now()); 
+          // setCoreLastInteractionTime(Date.now()); // Moved to finally
+        } finally {
+            setCoreLastInteractionTime(Date.now()); // Update time after attempt, regardless of outcome
+            setIsAICallInProgress(false);
         }
       })();
     }
-  }, [isInitialSetupDone, playerProfile, currentSeason, isCoreUnlocked, coreLastInteractionTime, addCoreMessage, getUpgradeCost, addPoints]);
+  }, [isInitialSetupDone, playerProfile, currentSeason, isCoreUnlocked, coreLastInteractionTime, addCoreMessage, getUpgradeCost, addPoints, isAICallInProgress]);
 
 
   return (
@@ -543,7 +551,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         addCoreMessage,
         isCoreUnlocked,
         coreLastInteractionTime,
-        setCoreLastInteractionTime,
+        // setCoreLastInteractionTime, // Internal now
         connectWallet,
         handleTap,
         criticalTapChance,
@@ -553,7 +561,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setComboCount,
         marketplaceItems: MARKETPLACE_ITEMS_DATA,
         purchaseMarketplaceItem,
-        switchCommanderSex, // Expose new function
+        switchCommanderSex,
     }}>
       {children}
     </GameContext.Provider>
