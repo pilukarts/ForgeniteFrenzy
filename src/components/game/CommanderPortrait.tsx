@@ -13,7 +13,7 @@ interface CommanderPortraitProps {
 const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onTap }) => {
   const [isTapped, setIsTapped] = useState(false);
   
-  const maleImageUrl = "https://i.imgur.com/zBtG9vy.png";
+  const maleImageUrl = "https://i.imgur.com/iuRJVBZ.png"; // Updated
   const femaleImageUrl = "https://i.imgur.com/BQHeVWp.png";
   
   const imageUrl = commanderSex === 'male' ? maleImageUrl : femaleImageUrl;
