@@ -32,7 +32,6 @@ interface GameContextType {
   addCoreMessage: (message: Omit<CoreMessage, 'timestamp'>) => void;
   isCoreUnlocked: boolean;
   coreLastInteractionTime: number;
-  // setCoreLastInteractionTime: (time: number) => void; // No longer directly exposed, managed internally
   connectWallet: () => void;
   handleTap: () => void;
   criticalTapChance: number;
@@ -99,7 +98,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setCurrentSeason(season);
       setIsCoreUnlocked(!!parsedProfile.upgrades['coreUnlocked'] || SEASONS_DATA.slice(0, SEASONS_DATA.indexOf(season)).some(s => s.unlocksCore));
       
-      // Set initial coreLastInteractionTime from profile or now, to allow first AI call if conditions met
       setCoreLastInteractionTime(parsedProfile.lastLoginTimestamp || Date.now());
     }
     const savedCoreMessages = localStorage.getItem('coreMessages');
@@ -141,7 +139,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsInitialSetupDone(true);
     setCurrentSeason(SEASONS_DATA[0]);
     addCoreMessage({ type: 'briefing', content: `Welcome, Commander ${name}! Your mission begins now.`});
-    setCoreLastInteractionTime(Date.now()); // Initialize for AI calls
+    setCoreLastInteractionTime(Date.now()); 
   };
   
   const addCoreMessage = useCallback((message: Omit<CoreMessage, 'timestamp'>) => {
@@ -512,17 +510,19 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             }
           }
           setPlayerProfile(p => p ? {...p, lastLoginTimestamp: Date.now()} : null);
-          // setCoreLastInteractionTime(Date.now()); // Moved to finally
         } catch (error: any) {
           console.error("C.O.R.E. API Error:", error);
           let errorMessage = "C.O.R.E. systems experiencing interference. Stand by, Commander.";
-           if (error.message && (error.message.includes("429") || error.message.includes("Too Many Requests") || (error.toString && error.toString().includes("429")))) {
-            errorMessage = "C.O.R.E. uplink temporarily disrupted due to high traffic. Recalibrating. Please stand by.";
+          const errorString = error.message ? error.message.toLowerCase() : (error.toString ? error.toString().toLowerCase() : "");
+
+           if (errorString.includes("503") || errorString.includes("service unavailable") || errorString.includes("overloaded")) {
+            errorMessage = "C.O.R.E. uplink temporarily disrupted due to high traffic. Systems recalibrating. Please stand by, Commander.";
+          } else if (errorString.includes("429") || errorString.includes("too many requests")) {
+            errorMessage = "C.O.R.E. communication channels are currently saturated. Please allow a moment for recalibration, Commander.";
           }
-          addCoreMessage({ type: 'briefing', content: errorMessage });
-          // setCoreLastInteractionTime(Date.now()); // Moved to finally
+          addCoreMessage({ type: 'system_alert', content: errorMessage });
         } finally {
-            setCoreLastInteractionTime(Date.now()); // Update time after attempt, regardless of outcome
+            setCoreLastInteractionTime(Date.now()); 
             setIsAICallInProgress(false);
         }
       })();
@@ -551,7 +551,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         addCoreMessage,
         isCoreUnlocked,
         coreLastInteractionTime,
-        // setCoreLastInteractionTime, // Internal now
         connectWallet,
         handleTap,
         criticalTapChance,
