@@ -223,14 +223,20 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setPlayerProfile(prev => {
       if (!prev) return null;
       const cost = getUpgradeCost(upgradeId);
+      const upgradeInfo = UPGRADES_DATA.find(u => u.id === upgradeId);
+
       if (prev.points >= cost) {
         const currentLevel = prev.upgrades[upgradeId] || 0;
-        const upgradeInfo = UPGRADES_DATA.find(u => u.id === upgradeId);
+        
         if (upgradeInfo?.maxLevel && currentLevel >= upgradeInfo.maxLevel) {
-          toast({ title: "Max Level Reached", description: `${upgradeInfo.name} is already at its maximum level.`, variant: "default" });
+          setTimeout(() => {
+            toast({ title: "Max Level Reached", description: `${upgradeInfo.name} is already at its maximum level.`, variant: "default" });
+          }, 0);
           return prev;
         }
-        toast({ title: "Upgrade Purchased!", description: `Successfully upgraded ${UPGRADES_DATA.find(u=>u.id===upgradeId)?.name}.` });
+        setTimeout(() => {
+          toast({ title: "Upgrade Purchased!", description: `Successfully upgraded ${upgradeInfo?.name}.` });
+        }, 0);
         return {
           ...prev,
           points: prev.points - cost,
@@ -240,7 +246,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           }
         };
       } else {
-        toast({ title: "Insufficient Points", description: "Not enough points to purchase this upgrade.", variant: "destructive" });
+        setTimeout(() => {
+          toast({ title: "Insufficient Points", description: "Not enough points to purchase this upgrade.", variant: "destructive" });
+        }, 0);
         return prev;
       }
     });
@@ -254,13 +262,17 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setPlayerProfile(prev => {
       if (!prev) return null;
       const arkUpgrade = ARK_UPGRADES_DATA.find(u => u.id === upgradeId);
-      if (!arkUpgrade || prev.upgrades[upgradeId]) { // Already purchased
-        toast({ title: "Upgrade Invalid", description: "This Ark upgrade is already purchased or does not exist.", variant: "default" });
+      if (!arkUpgrade || prev.upgrades[upgradeId]) { 
+        setTimeout(() => {
+          toast({ title: "Upgrade Invalid", description: "This Ark upgrade is already purchased or does not exist.", variant: "default" });
+        }, 0);
         return prev;
       }
       if (prev.points >= arkUpgrade.cost) {
-        toast({ title: "Ark Upgrade Complete!", description: `${arkUpgrade.name} installed on your StarForge Ark.` });
-        const newUpgrades = { ...prev.upgrades, [upgradeId]: 1 }; // Mark as purchased
+        setTimeout(() => {
+          toast({ title: "Ark Upgrade Complete!", description: `${arkUpgrade.name} installed on your StarForge Ark.` });
+        }, 0);
+        const newUpgrades = { ...prev.upgrades, [upgradeId]: 1 }; 
         const allArkUpgradesPurchased = ARK_UPGRADES_DATA.every(u => newUpgrades[u.id]);
         
         return {
@@ -270,7 +282,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           arkHangarFullyUpgraded: allArkUpgradesPurchased,
         };
       } else {
-        toast({ title: "Insufficient Points", description: "Not enough points for this Ark upgrade.", variant: "destructive" });
+        setTimeout(() => {
+          toast({ title: "Insufficient Points", description: "Not enough points for this Ark upgrade.", variant: "destructive" });
+        }, 0);
         return prev;
       }
     });
@@ -281,12 +295,16 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (!prev) return null;
       const item = MARKETPLACE_ITEMS_DATA.find(i => i.id === itemId);
       if (!item) {
-        toast({ title: "Item not found", variant: "destructive" });
+        setTimeout(() => {
+          toast({ title: "Item not found", variant: "destructive" });
+        }, 0);
         return prev;
       }
 
       if (prev.auron < item.costInAuron) {
-        toast({ title: "Insufficient Auron", description: `You need ${item.costInAuron} Auron to purchase ${item.name}.`, variant: "destructive" });
+        setTimeout(() => {
+          toast({ title: "Insufficient Auron", description: `You need ${item.costInAuron} Auron to purchase ${item.name}.`, variant: "destructive" });
+        }, 0);
         return prev;
       }
 
@@ -299,7 +317,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         originalDurationTaps: item.bonusEffect.durationTaps,
       };
       
-      toast({ title: "Purchase Successful!", description: `${item.name} activated.` });
+      setTimeout(() => {
+        toast({ title: "Purchase Successful!", description: `${item.name} activated.` });
+      }, 0);
       return {
         ...prev,
         auron: prev.auron - item.costInAuron,
@@ -312,7 +332,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const connectWallet = useCallback(() => {
     setPlayerProfile(prev => {
       if (!prev || prev.isWalletConnected) return prev;
-      toast({ title: "Wallet Connected!", description: `You've received ${AURON_PER_WALLET_CONNECT} Auron bonus and unlocked the Ark Hangar!` });
+      setTimeout(() => {
+        toast({ title: "Wallet Connected!", description: `You've received ${AURON_PER_WALLET_CONNECT} Auron bonus and unlocked the Ark Hangar!` });
+      }, 0);
       return {
         ...prev,
         isWalletConnected: true,
@@ -339,13 +361,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setPlayerProfile(prev => {
         if (!prev) return null;
 
-        let pointsToEarn = pointsPerTapValue; // This will be the base for marketplace bonuses
+        let pointsToEarn = pointsPerTapValue; 
         const isCritical = Math.random() < criticalTapChance;
         
-        let finalAmount = pointsToEarn; // Start with base tap power for this tap
+        let finalAmount = pointsToEarn; 
         let updatedActiveTapBonuses = [...(prev.activeTapBonuses || [])];
   
-        if (updatedActiveTapBonuses.length > 0) { // isTap is true
+        if (updatedActiveTapBonuses.length > 0) { 
           let totalBonusMultiplierFactor = 0; 
   
           updatedActiveTapBonuses = updatedActiveTapBonuses.map(bonus => {
@@ -353,7 +375,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             return { ...bonus, remainingTaps: bonus.remainingTaps - 1 };
           }).filter(bonus => bonus.remainingTaps > 0);
           
-          finalAmount = finalAmount * (1 + totalBonusMultiplierFactor); // Apply marketplace bonus before crit/combo
+          finalAmount = finalAmount * (1 + totalBonusMultiplierFactor); 
   
           (prev.activeTapBonuses || []).forEach(oldBonus => {
               if (!updatedActiveTapBonuses.find(b => b.id === oldBonus.id)) {
@@ -365,13 +387,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
         
         if (isCritical) {
-            finalAmount *= criticalTapMultiplier; // Apply critical multiplier
+            finalAmount *= criticalTapMultiplier; 
             setTimeout(() => {
                  toast({ title: "Critical Tap!", description: `+${Math.round(finalAmount * comboMultiplierValue)} points!`, duration: 1500 });
             },0);
         }
 
-        finalAmount *= comboMultiplierValue; // Apply combo multiplier
+        finalAmount *= comboMultiplierValue; 
         finalAmount = Math.round(finalAmount);
 
 
@@ -434,7 +456,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setPlayerProfile(prev => {
       if (!prev) return null;
       const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
-      toast({ title: "Commander Profile Updated", description: `Switched to ${newSex === 'male' ? 'Male' : 'Female'} Commander.` });
+      setTimeout(() => {
+        toast({ title: "Commander Profile Updated", description: `Switched to ${newSex === 'male' ? 'Male' : 'Female'} Commander.` });
+      }, 0);
       return {
         ...prev,
         commanderSex: newSex,
