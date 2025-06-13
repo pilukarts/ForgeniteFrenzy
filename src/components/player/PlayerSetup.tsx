@@ -28,7 +28,7 @@ const PlayerSetup: React.FC = () => {
   };
 
   const femaleCommanderImg = "https://i.imgur.com/BQHeVWp.png";
-  const maleCommanderImg = "https://i.imgur.com/zBtG9vy.png";
+  const maleCommanderImg = "https://i.imgur.com/iuRJVBZ.png"; // Updated
 
 
   return (
