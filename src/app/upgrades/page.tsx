@@ -9,25 +9,13 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChevronUp, Zap, ShieldCheck, PlusCircle } from 'lucide-react'; // Example icons
+import IntroScreen from '@/components/intro/IntroScreen';
 
 const UpgradesPage: React.FC = () => {
   const { playerProfile, upgrades, getUpgradeLevel, purchaseUpgrade, getUpgradeCost, isLoading, isInitialSetupDone, arkUpgrades, purchaseArkUpgrade, getArkUpgradeById } = useGame();
 
   if (isLoading) {
-     return (
-      <AppLayout>
-        <div className="p-4 space-y-4">
-          <Skeleton className="h-8 w-1/3 mb-4" />
-          {[1,2,3].map(i => (
-            <Card key={i}>
-              <CardHeader><Skeleton className="h-6 w-1/2" /></CardHeader>
-              <CardContent><Skeleton className="h-4 w-3/4" /></CardContent>
-              <CardFooter><Skeleton className="h-10 w-24" /></CardFooter>
-            </Card>
-          ))}
-        </div>
-      </AppLayout>
-    );
+     return <IntroScreen />;
   }
 
   if (!isInitialSetupDone) {

@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Trophy, Globe, Flag } from 'lucide-react';
+import IntroScreen from '@/components/intro/IntroScreen';
 
 const LeaderboardPage: React.FC = () => {
   const { playerProfile, isLoading, isInitialSetupDone } = useGame();
@@ -63,21 +64,7 @@ const LeaderboardPage: React.FC = () => {
   }, [playerProfile]);
 
    if (isLoading) {
-     return (
-      <AppLayout>
-        <div className="p-4 space-y-4">
-          <Skeleton className="h-8 w-1/3 mb-6" />
-          <Skeleton className="h-10 w-full mb-4" />
-          {[...Array(5)].map((_,i) => (
-            <div key={i} className="flex items-center space-x-4 p-2 border-b">
-              <Skeleton className="h-6 w-6 rounded-full" />
-              <Skeleton className="h-4 w-1/3" />
-              <Skeleton className="h-4 w-1/4 ml-auto" />
-            </div>
-          ))}
-        </div>
-      </AppLayout>
-    );
+     return <IntroScreen />;
   }
 
   if (!isInitialSetupDone) {
