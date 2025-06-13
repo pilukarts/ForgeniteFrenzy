@@ -32,9 +32,9 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
       onTouchStart={handleInteraction} // For mobile tap feel
       className={cn(
         "relative rounded-full focus:outline-none transition-transform duration-100 active:scale-95",
-        "w-52 h-52 md:w-60 md:h-60 lg:w-[272px] lg:h-[272px]", // Adjusted size, lg explicit px for image
+        "w-44 h-44 md:w-48 md:h-48 lg:w-56 lg:h-56", // Reduced size
         "border-0 shadow-none bg-transparent",
-        "animate-pulse-neon-blue flex items-center justify-center" // Added flex centering
+        "animate-pulse-neon-blue flex items-center justify-center"
       )}
       aria-label="Tap Commander"
     >
@@ -42,13 +42,13 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
         src={imageUrl}
         alt={altText}
         data-ai-hint={dataAiHint}
-        width={272} 
-        height={272} 
+        width={224} // Corresponds to the largest size (lg:w-56 which is 224px)
+        height={224} // Corresponds to the largest size (lg:h-56 which is 224px)
         className="rounded-full object-contain w-full h-full" 
         priority
       />
       {/* C.O.R.E. icon on chest - Adjusted vertical position */}
-      <Hexagon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[150%] h-10 w-10 text-bright-gold/70 opacity-80 pointer-events-none core-hexagon-glow" />
+      <Hexagon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[150%] h-8 w-8 md:h-10 md:w-10 text-bright-gold/70 opacity-80 pointer-events-none core-hexagon-glow" /> {/* Adjusted hexagon size too */}
       
       {isTapped && (
         <div className="absolute inset-0 rounded-full bg-bright-gold/30 animate-ping-once" style={{ animationDuration: '150ms' }}></div>

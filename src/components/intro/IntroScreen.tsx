@@ -16,7 +16,8 @@ const IntroScreen: React.FC = () => {
           alt="Alliance Forge: Forgeite Frenzy"
           width={1280} 
           height={720} 
-          layout="responsive"
+          className="object-contain" // Ensure image scales down if too big for container
+          layout="responsive" // Keeps aspect ratio
           priority
           data-ai-hint="game logo title"
         />
