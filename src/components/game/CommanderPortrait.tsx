@@ -32,9 +32,9 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
       onTouchStart={handleInteraction} // For mobile tap feel
       className={cn(
         "relative rounded-full focus:outline-none transition-transform duration-100 active:scale-95",
-        "w-56 h-56 md:w-64 md:h-64 lg:w-72 lg:h-72", // Responsive size
+        "w-52 h-52 md:w-60 md:h-60 lg:w-[272px] lg:h-[272px]", // Adjusted size, lg explicit px for image
         "border-0 shadow-none bg-transparent",
-        "animate-pulse-neon-blue" // Added pulsing animation
+        "animate-pulse-neon-blue flex items-center justify-center" // Added flex centering
       )}
       aria-label="Tap Commander"
     >
@@ -42,8 +42,8 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
         src={imageUrl}
         alt={altText}
         data-ai-hint={dataAiHint}
-        width={288} 
-        height={288} 
+        width={272} 
+        height={272} 
         className="rounded-full object-contain w-full h-full" 
         priority
       />
@@ -80,4 +80,3 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
 };
 
 export default CommanderPortrait;
-
