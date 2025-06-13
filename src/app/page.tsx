@@ -5,21 +5,15 @@ import AppLayout from '@/components/layout/AppLayout';
 import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { User, UserRound, CheckCircle2, ShieldEllipsis } from 'lucide-react';
+import IntroScreen from '@/components/intro/IntroScreen';
 
 export default function HomePage() {
   const { playerProfile, isLoading, isInitialSetupDone, handleTap, switchCommanderSex } = useGame();
 
   if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4">
-        <Skeleton className="h-12 w-1/2 mb-4" />
-        <Skeleton className="h-64 w-64 rounded-full mb-4" />
-        <Skeleton className="h-8 w-3/4" />
-      </div>
-    );
+    return <IntroScreen />;
   }
 
   if (!isInitialSetupDone) {
@@ -87,5 +81,3 @@ export default function HomePage() {
     </AppLayout>
   );
 }
-
-    

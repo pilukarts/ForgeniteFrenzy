@@ -10,28 +10,13 @@ import PlayerSetup from '@/components/player/PlayerSetup';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Sparkles, HelpCircle } from 'lucide-react'; // Changed default icon from Tag to HelpCircle
 import type { MarketplaceItem } from '@/lib/types';
+import IntroScreen from '@/components/intro/IntroScreen';
 
 const MarketplacePage: React.FC = () => {
   const { playerProfile, marketplaceItems, purchaseMarketplaceItem, isLoading, isInitialSetupDone } = useGame();
 
   if (isLoading) {
-    return (
-      <AppLayout>
-        <div className="p-4 space-y-4">
-          <div className="flex justify-between items-center mb-4">
-            <Skeleton className="h-8 w-1/3" />
-            <Skeleton className="h-8 w-1/4" />
-          </div>
-          {[1, 2, 3].map(i => (
-            <Card key={i}>
-              <CardHeader><Skeleton className="h-6 w-1/2" /></CardHeader>
-              <CardContent><Skeleton className="h-4 w-3/4" /></CardContent>
-              <CardFooter><Skeleton className="h-10 w-24" /></CardFooter>
-            </Card>
-          ))}
-        </div>
-      </AppLayout>
-    );
+    return <IntroScreen />;
   }
 
   if (!isInitialSetupDone) {
