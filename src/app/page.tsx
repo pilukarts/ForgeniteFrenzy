@@ -29,7 +29,7 @@ export default function HomePage() {
   }
   
   const backgroundImageStyle = {
-    backgroundImage: "url('https://placehold.co/1920x1080.png')", // Placeholder for futuristic circuit board
+    backgroundImage: "url('https://placehold.co/1920x1080.png')", // Confirmed placeholder background
   };
 
   return (
