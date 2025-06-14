@@ -43,23 +43,28 @@ export default function HomePage() {
           commanderSex={playerProfile.commanderSex} 
           onTap={handleTap} 
         />
-        <p className="mt-8 text-base font-semibold text-primary font-headline bg-background/70 p-1 rounded">
-          Tap Commander to Generate Points
-        </p>
-        <p className="text-sm text-muted-foreground bg-background/70 p-1 rounded">
-          Current Objective: {playerProfile.currentSeasonId ? playerProfile.seasonProgress[playerProfile.currentSeasonId] || 0 : 0} Points
-        </p>
+        
+        {/* Text block moved down and text made smaller */}
+        <div className="mt-12"> {/* Increased margin-top to push text block down */}
+          <p className="text-sm font-semibold text-primary font-headline bg-background/70 p-1 rounded"> {/* text-sm, was text-base */}
+            Tap Commander to Generate Points
+          </p>
+          <p className="text-xs text-muted-foreground bg-background/70 p-1 rounded mt-1"> {/* text-xs, was text-sm */}
+            Current Objective: {playerProfile.currentSeasonId ? playerProfile.seasonProgress[playerProfile.currentSeasonId] || 0 : 0} Points
+          </p>
 
-        <Button onClick={switchCommanderSex} variant="outline" className="mt-3 text-foreground hover:text-accent-foreground hover:bg-accent bg-background/70">
-          {playerProfile.commanderSex === 'male' ? (
-            <>Switch to <UserRound className="inline-block ml-1 mr-1 h-5 w-5" /> Female Commander</>
-          ) : (
-            <>Switch to <User className="inline-block ml-1 mr-1 h-5 w-5" /> Male Commander</>
-          )}
-        </Button>
+          <Button onClick={switchCommanderSex} variant="outline" className="mt-3 text-foreground hover:text-accent-foreground hover:bg-accent bg-background/70">
+            {playerProfile.commanderSex === 'male' ? (
+              <>Switch to <UserRound className="inline-block ml-1 mr-1 h-5 w-5" /> Female Commander</>
+            ) : (
+              <>Switch to <User className="inline-block ml-1 mr-1 h-5 w-5" /> Male Commander</>
+            )}
+          </Button>
+        </div>
+
 
         {playerProfile.equippedUniformPieces && playerProfile.equippedUniformPieces.length > 0 && (
-          <div className="mt-4 text-center w-full max-w-xs p-3 bg-card/80 rounded-lg shadow">
+          <div className="mt-6 text-center w-full max-w-xs p-3 bg-card/80 rounded-lg shadow">
             <h3 className="text-md font-semibold text-accent flex items-center justify-center">
               <ShieldEllipsis className="h-5 w-5 mr-2"/>
               Black Uniform Progress

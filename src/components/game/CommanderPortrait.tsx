@@ -36,12 +36,13 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
     <button 
       onClick={handleInteraction} 
       onTouchStart={(e) => {
+        // Allow tap via touch as well
         handleInteraction();
       }}
       className={cn(
         "relative focus:outline-none transition-transform duration-100",
-        "w-52 h-52 md:w-60 md:h-60 lg:w-[272px] lg:h-[272px]", 
-        "bg-transparent core-hexagon-glow", // Use core-hexagon-glow for a hexagonal pulse
+        "w-60 h-60 md:w-72 md:h-72 lg:w-80 lg:h-80", // Increased size
+        "bg-transparent core-hexagon-glow", 
         "flex items-center justify-center",
         isTapped ? 'animate-tapped-visual' : 'active:scale-95'
       )}
@@ -52,14 +53,13 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
         src={imageUrl}
         alt={altText}
         data-ai-hint={dataAiHint}
-        width={272} 
-        height={272} 
+        width={320} // Corresponds to lg:w-80
+        height={320} // Corresponds to lg:h-80
         className="object-contain w-full h-full" 
         priority
-        style={{ clipPath: hexagonClipPath }} // Clip the image itself too
+        style={{ clipPath: hexagonClipPath }} 
       />
-      {/* C.O.R.E. Icon (the small hexagon) */}
-      <Hexagon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[150%] h-6 w-6 md:h-8 md:h-8 text-bright-gold/70 opacity-80 pointer-events-none core-hexagon-glow" />
+      <Hexagon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[150%] h-8 w-8 md:h-10 md:h-10 text-bright-gold/70 opacity-80 pointer-events-none core-hexagon-glow" />
       
       <style jsx>{`
         @keyframes tapped-visual {
@@ -70,8 +70,6 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
         .animate-tapped-visual {
           animation: tapped-visual 0.2s ease-out;
         }
-        
-        /* core-hexagon-glow is defined in globals.css and should work well with filter: drop-shadow for hexagons */
       `}</style>
     </button>
   );
