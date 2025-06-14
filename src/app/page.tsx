@@ -33,12 +33,12 @@ export default function HomePage() {
     backgroundImage: "url('https://i.imgur.com/awGhtRo.png')", 
   };
 
-  const introLogoUrl = "https://i.imgur.com/qD89qQX.jpeg";
+  const introLogoUrl = "https://i.imgur.com/AwQqiyx.png"; // Updated logo URL
 
   return (
     <AppLayout>
       <div 
-        className="relative flex flex-col items-center justify-center text-center h-full pt-2 pb-16 bg-cover bg-center bg-no-repeat" // Added position: relative
+        className="relative flex flex-col items-center justify-center text-center h-full pt-2 pb-16 bg-cover bg-center bg-no-repeat"
         style={backgroundImageStyle}
         data-ai-hint="futuristic space background" 
       >
@@ -107,4 +107,3 @@ export default function HomePage() {
     </AppLayout>
   );
 }
-
