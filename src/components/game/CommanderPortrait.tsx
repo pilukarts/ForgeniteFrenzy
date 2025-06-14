@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { Hexagon } from 'lucide-react';
+// Removed Hexagon from lucide-react as we are using an inline SVG
 
 interface CommanderPortraitProps {
   commanderSex: 'male' | 'female';
@@ -27,7 +27,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
     // tapSound.play().catch(e => console.error("Error playing tap sound:", e));
     
     setIsTapped(true);
-    setTimeout(() => setIsTapped(false), 200); // Duration of the tap animation (must match CSS)
+    setTimeout(() => setIsTapped(false), 200); // Duration of the tap animation
   };
 
   const hexagonClipPath = 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)';
@@ -36,12 +36,11 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
     <button 
       onClick={handleInteraction} 
       onTouchStart={(e) => {
-        // Allow tap via touch as well
         handleInteraction();
       }}
       className={cn(
         "relative focus:outline-none transition-transform duration-100",
-        "w-60 h-60 md:w-72 md:h-72 lg:w-80 lg:h-80", // Increased size
+        "w-72 h-72 md:w-80 md:h-80 lg:w-96 lg:h-96", // Increased size
         "bg-transparent core-hexagon-glow", 
         "flex items-center justify-center",
         isTapped ? 'animate-tapped-visual' : 'active:scale-95'
@@ -53,18 +52,41 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
         src={imageUrl}
         alt={altText}
         data-ai-hint={dataAiHint}
-        width={320} // Corresponds to lg:w-80
-        height={320} // Corresponds to lg:h-80
+        width={384} // Corresponds to lg:w-96 (96*4)
+        height={384} // Corresponds to lg:h-96 (96*4)
         className="object-contain w-full h-full" 
         priority
         style={{ clipPath: hexagonClipPath }} 
       />
-      <Hexagon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[150%] h-8 w-8 md:h-10 md:h-10 text-bright-gold/70 opacity-80 pointer-events-none core-hexagon-glow" />
+      
+      {/* AF Hexagon SVG */}
+      <svg
+        viewBox="0 0 32 32"
+        xmlns="http://www.w3.org/2000/svg"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[150%] h-8 w-8 md:h-10 md:h-10 text-bright-gold/70 opacity-80 pointer-events-none core-hexagon-glow"
+      >
+        <path
+          d="M16 3 L29.856 10 L29.856 24 L16 31 L2.144 24 L2.144 10 Z"
+          fill="currentColor"
+        />
+        <text
+          x="50%"
+          y="51%" // Slight adjustment for better visual centering
+          dominantBaseline="middle"
+          textAnchor="middle"
+          fontSize="10" 
+          fontWeight="bold"
+          fill="hsl(var(--primary-foreground))" 
+          className="pointer-events-none"
+        >
+          AF
+        </text>
+      </svg>
       
       <style jsx>{`
         @keyframes tapped-visual {
           0% { transform: scale(1); }
-          50% { transform: scale(1.08); }
+          50% { transform: scale(1.08); } /* Slightly increased pop for larger size */
           100% { transform: scale(1); }
         }
         .animate-tapped-visual {
@@ -76,3 +98,4 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
 };
 
 export default CommanderPortrait;
+

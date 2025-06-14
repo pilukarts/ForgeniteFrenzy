@@ -1,7 +1,7 @@
 
 "use client";
-import React from 'react';
-import Image from 'next/image'; // Import Next Image
+import React, { useState, useEffect } from 'react'; // Added useState, useEffect
+import Image from 'next/image';
 import AppLayout from '@/components/layout/AppLayout';
 import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
@@ -9,14 +9,30 @@ import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
 import { User, UserRound, CheckCircle2, ShieldEllipsis } from 'lucide-react';
 import IntroScreen from '@/components/intro/IntroScreen';
+import PreIntroScreen from '@/components/intro/PreIntroScreen'; // New import
 
 export default function HomePage() {
   const { playerProfile, isLoading, isInitialSetupDone, handleTap, switchCommanderSex } = useGame();
+  const [preIntroDone, setPreIntroDone] = useState(false);
 
-  if (isLoading) {
+  useEffect(() => {
+    // If already setup, skip pre-intro
+    if (isInitialSetupDone) {
+      setPreIntroDone(true);
+    }
+  }, [isInitialSetupDone]);
+
+  // Step 1 of Intro: Show both commanders
+  if (!preIntroDone && !isInitialSetupDone) {
+    return <PreIntroScreen onCompletion={() => setPreIntroDone(true)} />;
+  }
+
+  // Step 2 of Intro: Show loading screen (game logo + spinner)
+  if (isLoading && !isInitialSetupDone) { // This condition ensures it shows after PreIntro for new users
     return <IntroScreen />;
   }
 
+  // Step 3 of Intro: Player character and name setup
   if (!isInitialSetupDone) {
     return <PlayerSetup />;
   }
@@ -33,7 +49,7 @@ export default function HomePage() {
     backgroundImage: "url('https://i.imgur.com/awGhtRo.png')",
   };
 
-  const introLogoUrl = "https://i.imgur.com/AwQqiyx.png"; // Updated logo URL
+  const introLogoUrl = "https://i.imgur.com/AwQqiyx.png";
 
   return (
     <AppLayout>
@@ -42,13 +58,12 @@ export default function HomePage() {
         style={backgroundImageStyle}
         data-ai-hint="futuristic space background"
       >
-        {/* Superimposed Intro Logo - New Position Top-Left */}
         <div className="absolute top-6 left-6 z-0 opacity-75">
           <Image
             src={introLogoUrl}
             alt="Alliance Forge Logo"
             width={150}
-            height={84} // Aspect ratio for 150 width from 200x112
+            height={84} 
             className="object-contain"
             data-ai-hint="game logo title"
           />
@@ -59,7 +74,7 @@ export default function HomePage() {
           onTap={handleTap}
         />
 
-        <div className="mt-12">
+        <div className="mt-12"> {/* Increased margin to push text further down */}
           <p className="text-sm font-semibold text-primary font-headline bg-background/70 p-1 rounded">
             Tap Commander to Generate Points
           </p>
@@ -107,5 +122,3 @@ export default function HomePage() {
     </AppLayout>
   );
 }
-
-    
