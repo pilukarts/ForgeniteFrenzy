@@ -26,7 +26,7 @@ const BottomNavBar: React.FC = () => {
               key={href}
               href={href}
               className={cn(
-                "flex flex-col items-center justify-center text-xs p-2 rounded-md transition-colors",
+                "flex flex-col items-center justify-center text-sm p-2 rounded-md transition-colors", // Increased text size
                 isActive ? "text-primary font-semibold" : "text-muted-foreground hover:text-foreground",
               )}
             >

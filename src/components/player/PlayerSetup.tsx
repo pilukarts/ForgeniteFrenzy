@@ -28,7 +28,7 @@ const PlayerSetup: React.FC = () => {
   };
 
   const femaleCommanderImg = "https://i.imgur.com/BQHeVWp.png";
-  const maleCommanderImg = "https://i.imgur.com/iuRJVBZ.png"; // Updated
+  const maleCommanderImg = "https://i.imgur.com/iuRJVBZ.png"; 
 
 
   return (
@@ -39,14 +39,14 @@ const PlayerSetup: React.FC = () => {
             <Image src="https://placehold.co/100x100.png?text=AF" alt="Alliance Forge Logo" width={80} height={80} className="rounded-full" data-ai-hint="logo emblem" />
           </div>
           <CardTitle className="text-center font-headline text-3xl text-primary">Mission Briefing</CardTitle>
-          <CardDescription className="text-center text-muted-foreground pt-2">
+          <CardDescription className="text-center text-muted-foreground pt-2 text-base"> {/* Increased text size */}
             Humanity's fate rests on your shoulders, Commander. The Cyber Concord approaches. We must evacuate Earth. Prepare your command profile.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-foreground/80">Enter Callsign</Label>
+              <Label htmlFor="name" className="text-foreground/80 text-base">Enter Callsign</Label> {/* Increased text size */}
               <Input 
                 id="name" 
                 value={name} 
@@ -58,7 +58,7 @@ const PlayerSetup: React.FC = () => {
             </div>
             
             <div className="space-y-2">
-              <Label className="text-foreground/80">Select Commander Portrait</Label>
+              <Label className="text-foreground/80 text-base">Select Commander Portrait</Label> {/* Increased text size */}
               <RadioGroup defaultValue="female" onValueChange={(value) => setSex(value as 'male' | 'female')} className="flex gap-4">
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="female" id="female" className="text-primary focus:ring-primary data-[state=checked]:bg-primary"/>
@@ -76,7 +76,7 @@ const PlayerSetup: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="country" className="text-foreground/80">Select Region</Label>
+              <Label htmlFor="country" className="text-foreground/80 text-base">Select Region</Label> {/* Increased text size */}
               <Select value={country} onValueChange={setCountry}>
                 <SelectTrigger id="country" className="w-full bg-input border-border focus:ring-primary">
                   <SelectValue placeholder="Select country" />
@@ -99,7 +99,7 @@ const PlayerSetup: React.FC = () => {
             </Button>
           </form>
         </CardContent>
-        <CardFooter className="text-xs text-muted-foreground text-center block">
+        <CardFooter className="text-sm text-muted-foreground text-center block"> {/* Increased text size */}
           By engaging, you accept the mission parameters. The fate of humanity is in your hands.
         </CardFooter>
       </Card>
@@ -108,5 +108,3 @@ const PlayerSetup: React.FC = () => {
 };
 
 export default PlayerSetup;
-
-    
