@@ -7,13 +7,15 @@ import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
-import { User, UserRound, CheckCircle2, ShieldEllipsis, Send } from 'lucide-react'; // Added Send icon
+import { User, UserRound, CheckCircle2, ShieldEllipsis, Send, Film, MessageSquare } from 'lucide-react'; // Added Send, Film, MessageSquare icons
 import IntroScreen from '@/components/intro/IntroScreen';
 import PreIntroScreen from '@/components/intro/PreIntroScreen'; 
+import { useToast } from "@/hooks/use-toast"; // Import useToast
 
 export default function HomePage() {
   const { playerProfile, isLoading, isInitialSetupDone, handleTap, switchCommanderSex } = useGame();
   const [preIntroDone, setPreIntroDone] = useState(false);
+  const { toast } = useToast(); // Initialize useToast
 
   useEffect(() => {
     // If already setup, skip pre-intro
@@ -60,6 +62,51 @@ export default function HomePage() {
     }
   };
 
+  const handleTikTokShare = async () => {
+    if (playerProfile) {
+      const shareText = `Check out my progress in Alliance Forge! I've reached ${playerProfile.points.toLocaleString()} points and the rank of ${playerProfile.rankTitle}! #AllianceForge #Gaming #ArkEvac #SciFiGame`;
+      try {
+        await navigator.clipboard.writeText(shareText);
+        toast({
+          title: "TikTok Message Copied!",
+          description: "Paste it into your video description. Opening TikTok...",
+        });
+      } catch (err) {
+        console.error('Failed to copy text: ', err);
+        toast({
+          title: "Error",
+          description: "Could not copy message. Please try again or copy manually.",
+          variant: "destructive",
+        });
+      }
+      window.open('https://www.tiktok.com/', '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const handleDiscordShare = async () => {
+    if (playerProfile) {
+      const gameUrl = "https://allianceforge.game"; // Placeholder
+      const shareText = `I've reached ${playerProfile.points.toLocaleString()} points in Alliance Forge and achieved the rank of ${playerProfile.rankTitle}! Join the fight for humanity's future at ${gameUrl}! #AllianceForge`;
+      try {
+        await navigator.clipboard.writeText(shareText);
+        toast({
+          title: "Discord Message Copied!",
+          description: "Paste it into your server or a friend's DM.",
+        });
+      } catch (err) {
+        console.error('Failed to copy text: ', err);
+        toast({
+          title: "Error",
+          description: "Could not copy message. Please try again or copy manually.",
+          variant: "destructive",
+        });
+      }
+      // Optional: Open a specific Discord invite link if you have one.
+      // window.open('YOUR_DISCORD_INVITE_LINK_HERE', '_blank', 'noopener,noreferrer');
+    }
+  };
+
+
   return (
     <AppLayout>
       <div
@@ -83,7 +130,7 @@ export default function HomePage() {
           onTap={handleTap}
         />
 
-        <div className="mt-12"> {/* Increased margin to push text further down */}
+        <div className="mt-12">
           <p className="text-base font-semibold text-primary font-headline bg-background/70 p-1 rounded">
             Tap Commander to Generate Points
           </p>
@@ -98,14 +145,32 @@ export default function HomePage() {
               <>Switch to <User className="inline-block ml-1 mr-1 h-5 w-5" /> Male Commander</>
             )}
           </Button>
+          
+          <div className="mt-3 flex flex-col sm:flex-row sm:justify-center sm:gap-3 items-center">
+            <Button
+              variant="default" 
+              className="w-full sm:w-auto text-base mb-2 sm:mb-0"
+              onClick={handleTelegramShare}
+            >
+              <Send className="mr-2 h-5 w-5" /> Share on Telegram
+            </Button>
 
-          <Button
-            variant="default" 
-            className="mt-3 text-base"
-            onClick={handleTelegramShare}
-          >
-            <Send className="mr-2 h-5 w-5" /> Share on Telegram
-          </Button>
+            <Button
+              variant="default"
+              className="w-full sm:w-auto text-base mb-2 sm:mb-0"
+              onClick={handleTikTokShare}
+            >
+              <Film className="mr-2 h-5 w-5" /> Share on TikTok
+            </Button>
+
+            <Button
+              variant="default"
+              className="w-full sm:w-auto text-base"
+              onClick={handleDiscordShare}
+            >
+              <MessageSquare className="mr-2 h-5 w-5" /> Share on Discord
+            </Button>
+          </div>
         </div>
 
 
@@ -139,3 +204,5 @@ export default function HomePage() {
     </AppLayout>
   );
 }
+
+    
