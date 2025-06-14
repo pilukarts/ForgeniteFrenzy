@@ -9,20 +9,20 @@ const IntroScreen: React.FC = () => {
   const loadingGifUrl = "https://i.imgur.com/whIPW0y.gif";
 
   return (
-    <div className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-background text-foreground p-4">
-      <div className="relative w-full max-w-xs md:max-w-sm mb-6 animate-fade-in-slow"> {/* Reduced max-width */}
+    <div className="fixed inset-0 z-[200] flex flex-col items-center justify-start pt-20 bg-background text-foreground p-4">
+      <div className="relative w-full max-w-xs md:max-w-sm mb-4 animate-fade-in-slow"> {/* Reduced margin-bottom */}
         <Image
           src={introImageUrl}
           alt="Alliance Forge: Forgeite Frenzy"
           width={1280} 
           height={720} 
-          className="object-contain mx-auto" // Ensure image scales and is centered
+          className="object-contain mx-auto"
           layout="responsive" 
           priority
           data-ai-hint="game logo title"
         />
       </div>
-      <div className="relative w-14 h-14 md:w-16 md:h-16 mb-4"> {/* Reduced size */}
+      <div className="relative w-14 h-14 md:w-16 md:h-16 mb-4">
         <Image
           src={loadingGifUrl}
           alt="Loading..."
@@ -31,7 +31,7 @@ const IntroScreen: React.FC = () => {
           unoptimized 
         />
       </div>
-      <p className="text-lg font-headline text-primary animate-pulse"> {/* Slightly smaller text if needed */}
+      <p className="text-lg font-headline text-primary animate-pulse">
         Initializing Systems...
       </p>
       <style jsx global>{`
