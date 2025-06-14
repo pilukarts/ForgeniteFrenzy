@@ -29,7 +29,7 @@ export default function HomePage() {
   }
   
   const backgroundImageStyle = {
-    backgroundImage: "url('https://placehold.co/1920x1080.png')", 
+    backgroundImage: "url('https://i.imgur.com/awGhtRo.png')", 
   };
 
   return (
@@ -37,13 +37,13 @@ export default function HomePage() {
       <div 
         className="flex flex-col items-center justify-center text-center h-full pt-2 pb-16 bg-cover bg-center bg-no-repeat"
         style={backgroundImageStyle}
-        data-ai-hint="abstract background space" 
+        data-ai-hint="futuristic space background" 
       >
         <CommanderPortrait 
           commanderSex={playerProfile.commanderSex} 
           onTap={handleTap} 
         />
-        <p className="mt-4 text-base font-semibold text-primary font-headline bg-background/70 p-1 rounded">
+        <p className="mt-8 text-base font-semibold text-primary font-headline bg-background/70 p-1 rounded">
           Tap Commander to Generate Points
         </p>
         <p className="text-sm text-muted-foreground bg-background/70 p-1 rounded">
