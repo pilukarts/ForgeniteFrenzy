@@ -29,7 +29,7 @@ export default function HomePage() {
   }
   
   const backgroundImageStyle = {
-    backgroundImage: "url('https://placehold.co/1920x1080.png')", // Confirmed placeholder background
+    backgroundImage: "url('https://placehold.co/1920x1080.png')", 
   };
 
   return (
@@ -37,7 +37,7 @@ export default function HomePage() {
       <div 
         className="flex flex-col items-center justify-center text-center h-full pt-4 pb-16 bg-cover bg-center bg-no-repeat"
         style={backgroundImageStyle}
-        data-ai-hint="futuristic circuit board background" 
+        data-ai-hint="navy blue purple reflections" 
       >
         <CommanderPortrait 
           commanderSex={playerProfile.commanderSex} 
