@@ -30,56 +30,48 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
     setTimeout(() => setIsTapped(false), 200); // Duration of the tap animation (must match CSS)
   };
 
+  const hexagonClipPath = 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)';
+
   return (
     <button 
       onClick={handleInteraction} 
       onTouchStart={(e) => {
-        // Prevent default to avoid potential double interaction on some mobile browsers if onClick also fires.
-        // Can also help make the interaction feel more immediate.
-        // e.preventDefault(); 
         handleInteraction();
       }}
       className={cn(
-        "relative rounded-full focus:outline-none transition-transform duration-100", // Base transition for active:scale
-        "w-44 h-44 md:w-48 md:h-48 lg:w-56 lg:h-56", 
-        "border-0 shadow-none bg-transparent",
-        "animate-pulse-neon-blue flex items-center justify-center", // Continuous ambient pulse
-        isTapped ? 'animate-tapped-visual' : 'active:scale-95' // Apply tap animation or standard active scale
+        "relative focus:outline-none transition-transform duration-100",
+        "w-52 h-52 md:w-60 md:h-60 lg:w-[272px] lg:h-[272px]", 
+        "bg-transparent core-hexagon-glow", // Use core-hexagon-glow for a hexagonal pulse
+        "flex items-center justify-center",
+        isTapped ? 'animate-tapped-visual' : 'active:scale-95'
       )}
+      style={{ clipPath: hexagonClipPath }}
       aria-label="Tap Commander"
     >
       <Image
         src={imageUrl}
         alt={altText}
         data-ai-hint={dataAiHint}
-        width={224} 
-        height={224} 
-        className="rounded-full object-contain w-full h-full" 
+        width={272} 
+        height={272} 
+        className="object-contain w-full h-full" 
         priority
+        style={{ clipPath: hexagonClipPath }} // Clip the image itself too
       />
-      <Hexagon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[150%] h-8 w-8 md:h-10 md:w-10 text-bright-gold/70 opacity-80 pointer-events-none core-hexagon-glow" />
+      {/* C.O.R.E. Icon (the small hexagon) */}
+      <Hexagon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[150%] h-6 w-6 md:h-8 md:h-8 text-bright-gold/70 opacity-80 pointer-events-none core-hexagon-glow" />
       
       <style jsx>{`
         @keyframes tapped-visual {
           0% { transform: scale(1); }
-          50% { transform: scale(1.08); } /* Pop out slightly */
+          50% { transform: scale(1.08); }
           100% { transform: scale(1); }
         }
         .animate-tapped-visual {
           animation: tapped-visual 0.2s ease-out;
         }
-
-        @keyframes core-hexagon-glow-subtle { /* For C.O.R.E. icon on chest */
-          0%, 100% {
-            filter: drop-shadow(0 0 2px hsl(var(--bright-gold)/0.5)) drop-shadow(0 0 4px hsl(var(--bright-gold)/0.3));
-          }
-          50% {
-            filter: drop-shadow(0 0 4px hsl(var(--bright-gold)/0.7)) drop-shadow(0 0 8px hsl(var(--bright-gold)/0.5));
-          }
-        }
-        .core-hexagon-glow {
-          animation: core-hexagon-glow-subtle 2s infinite ease-in-out;
-        }
+        
+        /* core-hexagon-glow is defined in globals.css and should work well with filter: drop-shadow for hexagons */
       `}</style>
     </button>
   );
