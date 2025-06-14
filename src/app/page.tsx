@@ -7,9 +7,9 @@ import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
-import { User, UserRound, CheckCircle2, ShieldEllipsis } from 'lucide-react';
+import { User, UserRound, CheckCircle2, ShieldEllipsis, Send } from 'lucide-react'; // Added Send icon
 import IntroScreen from '@/components/intro/IntroScreen';
-import PreIntroScreen from '@/components/intro/PreIntroScreen'; // New import
+import PreIntroScreen from '@/components/intro/PreIntroScreen'; 
 
 export default function HomePage() {
   const { playerProfile, isLoading, isInitialSetupDone, handleTap, switchCommanderSex } = useGame();
@@ -51,6 +51,15 @@ export default function HomePage() {
 
   const introLogoUrl = "https://i.imgur.com/AwQqiyx.png";
 
+  const handleTelegramShare = () => {
+    if (playerProfile) {
+      const gameUrl = "https://allianceforge.game"; // Placeholder URL for the game
+      const shareText = `I've reached ${playerProfile.points.toLocaleString()} points in Alliance Forge and achieved the rank of ${playerProfile.rankTitle}! Join the fight for humanity's future! #AllianceForge #ArkEvac`;
+      const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(gameUrl)}&text=${encodeURIComponent(shareText)}`;
+      window.open(telegramUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
+
   return (
     <AppLayout>
       <div
@@ -74,12 +83,12 @@ export default function HomePage() {
           onTap={handleTap}
         />
 
-        <div className="mt-8"> {/* Adjusted margin to push text further down if needed */}
-          <p className="text-lg font-semibold text-primary font-headline bg-background/70 p-1 rounded">
+        <div className="mt-12"> {/* Increased margin to push text further down */}
+          <p className="text-base font-semibold text-primary font-headline bg-background/70 p-1 rounded">
             Tap Commander to Generate Points
           </p>
-          <p className="text-base text-muted-foreground bg-background/70 p-1 rounded mt-1">
-            Current Objective: {playerProfile.currentSeasonId ? playerProfile.seasonProgress[playerProfile.currentSeasonId] || 0 : 0} Points
+          <p className="text-sm text-muted-foreground bg-background/70 p-1 rounded mt-1">
+            Current Objective: {playerProfile.currentSeasonId ? playerProfile.seasonProgress[playerProfile.currentSeasonId]?.toLocaleString() || 0 : 0} Points
           </p>
 
           <Button onClick={switchCommanderSex} variant="outline" className="mt-3 text-foreground hover:text-accent-foreground hover:bg-accent bg-background/70 text-base">
@@ -88,6 +97,14 @@ export default function HomePage() {
             ) : (
               <>Switch to <User className="inline-block ml-1 mr-1 h-5 w-5" /> Male Commander</>
             )}
+          </Button>
+
+          <Button
+            variant="default" 
+            className="mt-3 text-base"
+            onClick={handleTelegramShare}
+          >
+            <Send className="mr-2 h-5 w-5" /> Share on Telegram
           </Button>
         </div>
 
@@ -108,7 +125,7 @@ export default function HomePage() {
             </ul>
             {playerProfile.equippedUniformPieces.length < 5 && (
                  <p className="text-xs text-muted-foreground/70 mt-2">
-                    Next piece at: { (playerProfile.equippedUniformPieces.length + 1) * 2000 } taps
+                    Next piece at: { ((playerProfile.equippedUniformPieces.length + 1) * 2000).toLocaleString() } taps
                 </p>
             )}
              {playerProfile.equippedUniformPieces.length === 5 && (
