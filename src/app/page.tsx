@@ -35,7 +35,7 @@ export default function HomePage() {
   return (
     <AppLayout>
       <div 
-        className="flex flex-col items-center justify-center text-center h-full pt-4 pb-16 bg-cover bg-center bg-no-repeat"
+        className="flex flex-col items-center justify-center text-center h-full pt-2 pb-16 bg-cover bg-center bg-no-repeat"
         style={backgroundImageStyle}
         data-ai-hint="navy blue purple reflections" 
       >
@@ -43,14 +43,14 @@ export default function HomePage() {
           commanderSex={playerProfile.commanderSex} 
           onTap={handleTap} 
         />
-        <p className="mt-6 text-xl font-semibold text-primary font-headline bg-background/70 p-1 rounded">
+        <p className="mt-4 text-base font-semibold text-primary font-headline bg-background/70 p-1 rounded">
           Tap Commander to Generate Points
         </p>
-        <p className="text-base text-muted-foreground bg-background/70 p-1 rounded">
+        <p className="text-sm text-muted-foreground bg-background/70 p-1 rounded">
           Current Objective: {playerProfile.currentSeasonId ? playerProfile.seasonProgress[playerProfile.currentSeasonId] || 0 : 0} Points
         </p>
 
-        <Button onClick={switchCommanderSex} variant="outline" className="mt-4 text-foreground hover:text-accent-foreground hover:bg-accent bg-background/70">
+        <Button onClick={switchCommanderSex} variant="outline" className="mt-3 text-foreground hover:text-accent-foreground hover:bg-accent bg-background/70">
           {playerProfile.commanderSex === 'male' ? (
             <>Switch to <UserRound className="inline-block ml-1 mr-1 h-5 w-5" /> Female Commander</>
           ) : (
@@ -59,7 +59,7 @@ export default function HomePage() {
         </Button>
 
         {playerProfile.equippedUniformPieces && playerProfile.equippedUniformPieces.length > 0 && (
-          <div className="mt-6 text-center w-full max-w-xs p-3 bg-card/80 rounded-lg shadow">
+          <div className="mt-4 text-center w-full max-w-xs p-3 bg-card/80 rounded-lg shadow">
             <h3 className="text-md font-semibold text-accent flex items-center justify-center">
               <ShieldEllipsis className="h-5 w-5 mr-2"/>
               Black Uniform Progress
