@@ -24,15 +24,15 @@ const PlayerProfileHeader: React.FC<PlayerProfileHeaderProps> = ({ profile }) =>
       <div className="flex-grow min-w-0">
         <div className="flex items-center gap-2">
           <Shield className="h-5 w-5 text-bright-gold" /> {/* Rank Insignia */}
-          <p className="text-sm font-semibold text-foreground truncate" title={profile.name}>
+          <p className="text-base font-semibold text-foreground truncate" title={profile.name}>
             {profile.name}
           </p>
         </div>
-        <p className="text-xs text-primary font-medium truncate" title={`Level ${profile.level} - ${profile.rankTitle}`}>
+        <p className="text-sm text-primary font-medium truncate" title={`Level ${profile.level} - ${profile.rankTitle}`}>
           Lvl {profile.level} - {profile.rankTitle}
         </p>
         <Progress value={xpPercentage} className="h-1.5 mt-1 bg-muted" indicatorClassName="bg-primary" />
-        <p className="text-xs text-muted-foreground mt-0.5 text-right">
+        <p className="text-sm text-muted-foreground mt-0.5 text-right">
           {profile.xp} / {profile.xpToNextLevel} XP
         </p>
       </div>

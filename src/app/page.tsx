@@ -74,15 +74,15 @@ export default function HomePage() {
           onTap={handleTap}
         />
 
-        <div className="mt-12"> {/* Increased margin to push text further down */}
-          <p className="text-sm font-semibold text-primary font-headline bg-background/70 p-1 rounded">
+        <div className="mt-8"> {/* Adjusted margin to push text further down if needed */}
+          <p className="text-lg font-semibold text-primary font-headline bg-background/70 p-1 rounded">
             Tap Commander to Generate Points
           </p>
-          <p className="text-xs text-muted-foreground bg-background/70 p-1 rounded mt-1">
+          <p className="text-base text-muted-foreground bg-background/70 p-1 rounded mt-1">
             Current Objective: {playerProfile.currentSeasonId ? playerProfile.seasonProgress[playerProfile.currentSeasonId] || 0 : 0} Points
           </p>
 
-          <Button onClick={switchCommanderSex} variant="outline" className="mt-3 text-foreground hover:text-accent-foreground hover:bg-accent bg-background/70">
+          <Button onClick={switchCommanderSex} variant="outline" className="mt-3 text-foreground hover:text-accent-foreground hover:bg-accent bg-background/70 text-base">
             {playerProfile.commanderSex === 'male' ? (
               <>Switch to <UserRound className="inline-block ml-1 mr-1 h-5 w-5" /> Female Commander</>
             ) : (
