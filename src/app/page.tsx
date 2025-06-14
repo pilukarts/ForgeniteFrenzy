@@ -28,30 +28,42 @@ export default function HomePage() {
         </div>
     );
   }
-  
+
   const backgroundImageStyle = {
-    backgroundImage: "url('https://i.imgur.com/awGhtRo.png')", 
+    backgroundImage: "url('https://i.imgur.com/awGhtRo.png')",
   };
 
   const introLogoUrl = "https://i.imgur.com/AwQqiyx.png"; // Updated logo URL
 
   return (
     <AppLayout>
-      <div 
+      <div
         className="relative flex flex-col items-center justify-center text-center h-full pt-2 pb-16 bg-cover bg-center bg-no-repeat"
         style={backgroundImageStyle}
-        data-ai-hint="futuristic space background" 
+        data-ai-hint="futuristic space background"
       >
-        <CommanderPortrait 
-          commanderSex={playerProfile.commanderSex} 
-          onTap={handleTap} 
+        {/* Superimposed Intro Logo - New Position Top-Left */}
+        <div className="absolute top-6 left-6 z-0 opacity-75">
+          <Image
+            src={introLogoUrl}
+            alt="Alliance Forge Logo"
+            width={150}
+            height={84} // Aspect ratio for 150 width from 200x112
+            className="object-contain"
+            data-ai-hint="game logo title"
+          />
+        </div>
+
+        <CommanderPortrait
+          commanderSex={playerProfile.commanderSex}
+          onTap={handleTap}
         />
-        
-        <div className="mt-12"> 
-          <p className="text-sm font-semibold text-primary font-headline bg-background/70 p-1 rounded"> 
+
+        <div className="mt-12">
+          <p className="text-sm font-semibold text-primary font-headline bg-background/70 p-1 rounded">
             Tap Commander to Generate Points
           </p>
-          <p className="text-xs text-muted-foreground bg-background/70 p-1 rounded mt-1"> 
+          <p className="text-xs text-muted-foreground bg-background/70 p-1 rounded mt-1">
             Current Objective: {playerProfile.currentSeasonId ? playerProfile.seasonProgress[playerProfile.currentSeasonId] || 0 : 0} Points
           </p>
 
@@ -79,7 +91,7 @@ export default function HomePage() {
                 </li>
               ))}
             </ul>
-            {playerProfile.equippedUniformPieces.length < 5 && ( 
+            {playerProfile.equippedUniformPieces.length < 5 && (
                  <p className="text-xs text-muted-foreground/70 mt-2">
                     Next piece at: { (playerProfile.equippedUniformPieces.length + 1) * 2000 } taps
                 </p>
@@ -91,19 +103,9 @@ export default function HomePage() {
             )}
           </div>
         )}
-
-        {/* Superimposed Intro Logo */}
-        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-0 opacity-50">
-          <Image
-            src={introLogoUrl}
-            alt="Alliance Forge Logo"
-            width={200} 
-            height={112} 
-            className="object-contain"
-            data-ai-hint="game logo title"
-          />
-        </div>
       </div>
     </AppLayout>
   );
 }
+
+    
