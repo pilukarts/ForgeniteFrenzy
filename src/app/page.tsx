@@ -87,11 +87,12 @@ export default function HomePage() {
     if (playerProfile) {
       const gameUrl = "https://allianceforge.game"; // Placeholder
       const shareText = `I've reached ${playerProfile.points.toLocaleString()} points in Alliance Forge and achieved the rank of ${playerProfile.rankTitle}! Join the fight for humanity's future at ${gameUrl}! #AllianceForge`;
+      const discordInviteLink = "https://discord.gg/HYzPh32K";
       try {
         await navigator.clipboard.writeText(shareText);
         toast({
           title: "Discord Message Copied!",
-          description: "Paste it into your server or a friend's DM.",
+          description: "Paste it into your server or a friend's DM. Opening Discord invite...",
         });
       } catch (err) {
         console.error('Failed to copy text: ', err);
@@ -101,8 +102,7 @@ export default function HomePage() {
           variant: "destructive",
         });
       }
-      // Optional: Open a specific Discord invite link if you have one.
-      // window.open('YOUR_DISCORD_INVITE_LINK_HERE', '_blank', 'noopener,noreferrer');
+      window.open(discordInviteLink, '_blank', 'noopener,noreferrer');
     }
   };
 
