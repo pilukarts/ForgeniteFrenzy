@@ -40,7 +40,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
       }}
       className={cn(
         "relative focus:outline-none transition-transform duration-100",
-        "w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] md:w-[360px] md:h-[360px] lg:w-[400px] lg:h-[400px]", // Increased size
+        "w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] md:w-[380px] md:h-[380px] lg:w-[440px] lg:h-[440px]", // Increased size further
         "bg-transparent core-hexagon-glow", 
         "flex items-center justify-center",
         isTapped ? 'animate-tapped-visual' : 'active:scale-95'
@@ -52,8 +52,8 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
         src={imageUrl}
         alt={altText}
         data-ai-hint={dataAiHint}
-        width={400} 
-        height={400}
+        width={440} 
+        height={440}
         className="object-contain w-full h-full" 
         priority
         style={{ clipPath: hexagonClipPath }} 
@@ -62,7 +62,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
       <svg
         viewBox="0 0 32 32"
         xmlns="http://www.w3.org/2000/svg"
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[60%] h-10 w-10 md:h-12 md:w-12 text-bright-gold/70 opacity-80 pointer-events-none core-hexagon-glow"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[50%] h-10 w-10 md:h-12 md:w-12 text-bright-gold/70 opacity-80 pointer-events-none core-hexagon-glow"
       >
         <path
           d="M16 3 L29.856 10 L29.856 24 L16 31 L2.144 24 L2.144 10 Z"
@@ -97,4 +97,3 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
 };
 
 export default CommanderPortrait;
-
