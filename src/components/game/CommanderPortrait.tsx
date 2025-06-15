@@ -62,7 +62,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
       <svg
         viewBox="0 0 32 32"
         xmlns="http://www.w3.org/2000/svg"
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[150%] h-10 w-10 md:h-12 md:w-12 text-bright-gold/70 opacity-80 pointer-events-none core-hexagon-glow" // Slightly larger icon
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[60%] h-10 w-10 md:h-12 md:w-12 text-bright-gold/70 opacity-80 pointer-events-none core-hexagon-glow"
       >
         <path
           d="M16 3 L29.856 10 L29.856 24 L16 31 L2.144 24 L2.144 10 Z"
@@ -97,3 +97,4 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
 };
 
 export default CommanderPortrait;
+
