@@ -47,7 +47,7 @@ const PreIntroScreen: React.FC<PreIntroScreenProps> = ({ onCompletion }) => {
           <Image
             src={femaleCommanderImg}
             alt="Female Commander"
-            width={180} // Slightly smaller for better fit on mobile if side-by-side
+            width={180} 
             height={180}
             className="rounded-lg object-contain"
             data-ai-hint="female soldier portrait"
