@@ -105,3 +105,14 @@ export interface ActiveTapBonus {
   bonusMultiplier: number; // e.g., 1.25 for +25%
   originalDurationTaps: number;
 }
+
+export interface ChatMessage {
+  id: string;
+  senderId: string; // 'player' or some simulated ID
+  senderName: string;
+  senderAvatar?: string;
+  senderCommanderSex?: 'male' | 'female';
+  content: string;
+  timestamp: number;
+  isPlayer: boolean;
+}

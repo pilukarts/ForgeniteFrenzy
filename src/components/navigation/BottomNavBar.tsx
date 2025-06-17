@@ -1,7 +1,7 @@
 
 "use client";
 import Link from 'next/link';
-import { Home, ChevronsUp, Trophy, Users, ShoppingCart } from 'lucide-react';
+import { Home, ChevronsUp, Trophy, Users, ShoppingCart, MessagesSquare } from 'lucide-react'; // Added MessagesSquare
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
@@ -9,6 +9,7 @@ const navItems = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/upgrades', label: 'Upgrades', icon: ChevronsUp },
   { href: '/leaderboard', label: 'Leaders', icon: Trophy },
+  { href: '/alliance-chat', label: 'Chat', icon: MessagesSquare }, // Added Chat link
   { href: '/marketplace', label: 'Shop', icon: ShoppingCart },
   // { href: '/alliance', label: 'Alliance', icon: Users }, // Phase 2
 ];
