@@ -21,9 +21,9 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
 
   const handleInteraction = () => {
     onTap();
-    // Placeholder for tap sound effect:
-    // const tapSound = new Audio('/sounds/your-tap-sound.mp3'); // Replace with actual sound file path
-    // tapSound.play().catch(e => console.error("Error playing tap sound:", e));
+    // Play tap sound effect
+    const tapSound = new Audio('/sounds/your-tap-sound.mp3'); // REPLACE 'your-tap-sound.mp3' with your actual sound file
+    tapSound.play().catch(e => console.error("Error playing tap sound:", e));
     
     setIsTapped(true);
     setTimeout(() => setIsTapped(false), 200); // Duration of the tap animation
@@ -97,6 +97,4 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
 };
 
 export default CommanderPortrait;
-
-
     
