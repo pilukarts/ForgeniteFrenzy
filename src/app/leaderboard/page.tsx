@@ -75,39 +75,39 @@ const LeaderboardPage: React.FC = () => {
 
   const renderLeaderboardTable = (data: LeaderboardEntry[], title: string, icon: React.ReactNode) => (
     <Card className="shadow-xl bg-card text-card-foreground">
-      <CardHeader>
-        <CardTitle className="flex items-center text-2xl font-headline text-primary">
+      <CardHeader className="p-4 sm:p-6"> {/* Adjusted padding */}
+        <CardTitle className="flex items-center text-xl sm:text-2xl font-headline text-primary"> {/* Adjusted text size */}
           {icon}
           <span className="ml-2">{title}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-0 sm:p-2"> {/* Adjusted padding */}
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[50px] text-center text-muted-foreground">Rank</TableHead>
-              <TableHead className="text-muted-foreground">Commander</TableHead>
-              <TableHead className="text-right text-muted-foreground">Score</TableHead>
+              <TableHead className="w-[40px] sm:w-[50px] text-center text-muted-foreground text-xs sm:text-sm">Rank</TableHead> {/* Adjusted width and text size */}
+              <TableHead className="text-muted-foreground text-xs sm:text-sm">Commander</TableHead> {/* Adjusted text size */}
+              <TableHead className="text-right text-muted-foreground text-xs sm:text-sm">Score</TableHead> {/* Adjusted text size */}
             </TableRow>
           </TableHeader>
           <TableBody>
             {data.map((entry) => (
               <TableRow key={entry.playerId} className={entry.playerId === playerProfile.id ? 'bg-primary/10' : ''}>
-                <TableCell className="font-medium text-center text-lg">
-                  {entry.rank === 1 && <Trophy className="inline-block h-5 w-5 text-bright-gold mr-1" />}
+                <TableCell className="font-medium text-center text-sm sm:text-lg px-2 sm:px-4"> {/* Adjusted padding and text size */}
+                  {entry.rank === 1 && <Trophy className="inline-block h-4 w-4 sm:h-5 sm:w-5 text-bright-gold mr-1" />}
                   {entry.rank}
                 </TableCell>
-                <TableCell>
-                  <span className="mr-2">{entry.playerCountry}</span>
+                <TableCell className="text-xs sm:text-sm px-2 sm:px-4"> {/* Adjusted padding and text size */}
+                  <span className="mr-1 sm:mr-2">{entry.playerCountry}</span>
                   {entry.playerName}
-                  {entry.playerId === playerProfile.id && <span className="ml-2 text-xs text-primary">(You)</span>}
+                  {entry.playerId === playerProfile.id && <span className="ml-1 sm:ml-2 text-xs text-primary">(You)</span>}
                 </TableCell>
-                <TableCell className="text-right font-mono text-primary">{entry.score.toLocaleString()}</TableCell>
+                <TableCell className="text-right font-mono text-primary text-xs sm:text-sm px-2 sm:px-4">{entry.score.toLocaleString()}</TableCell> {/* Adjusted padding and text size */}
               </TableRow>
             ))}
              {data.length === 0 && (
               <TableRow>
-                <TableCell colSpan={3} className="text-center text-muted-foreground">No data available.</TableCell>
+                <TableCell colSpan={3} className="text-center text-muted-foreground py-4 sm:py-6">No data available.</TableCell>
               </TableRow>
             )}
           </TableBody>
@@ -118,15 +118,16 @@ const LeaderboardPage: React.FC = () => {
 
   return (
     <AppLayout>
-      <div className="pb-16 px-4 pt-4"> {/* Padding for bottom nav */}
-        <h1 className="text-3xl font-headline text-primary mb-6">Leaderboards</h1>
+      {/* AppLayout now handles global bottom padding */}
+      <div className="px-0 sm:px-4 pt-2 sm:pt-4"> 
+        <h1 className="text-2xl sm:text-3xl font-headline text-primary mb-4 sm:mb-6 px-2 sm:px-0">Leaderboards</h1> {/* Adjusted text size and margin */}
         <Tabs defaultValue="global" className="w-full">
-          <TabsList className="grid w-full grid-cols-1 mb-4 md:grid-cols-2 bg-background"> {/* Adjusted for single tab for now */}
-            <TabsTrigger value="global" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Global Rankings</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-1 mb-3 sm:mb-4 md:grid-cols-2 bg-background"> 
+            <TabsTrigger value="global" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-sm sm:text-base">Global Rankings</TabsTrigger> {/* Adjusted text size */}
             {/* <TabsTrigger value="country">Country Rankings</TabsTrigger> */}
           </TabsList>
           <TabsContent value="global">
-            {renderLeaderboardTable(globalLeaderboard, "Global Top Commanders", <Globe className="h-6 w-6" />)}
+            {renderLeaderboardTable(globalLeaderboard, "Global Top Commanders", <Globe className="h-5 w-5 sm:h-6 sm:w-6" />)}
           </TabsContent>
           {/* <TabsContent value="country">
             {renderLeaderboardTable(countryLeaderboard, `${playerProfile.country} Top Commanders`, <Flag className="h-6 w-6" />)}
@@ -138,3 +139,4 @@ const LeaderboardPage: React.FC = () => {
 };
 
 export default LeaderboardPage;
+

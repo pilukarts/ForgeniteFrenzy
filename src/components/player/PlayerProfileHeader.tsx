@@ -16,23 +16,23 @@ const PlayerProfileHeader: React.FC<PlayerProfileHeaderProps> = ({ profile }) =>
   const dataAiHint = profile.commanderSex === 'male' ? "diverse male" : "diverse female";
 
   return (
-    <div className="flex items-center gap-3 p-2 rounded-lg bg-card/50 shadow-sm min-w-0">
-      <Avatar className="h-10 w-10 border-2 border-primary">
+    <div className="flex items-center gap-2 sm:gap-3 p-1.5 sm:p-2 rounded-lg bg-card/50 shadow-sm min-w-0">
+      <Avatar className="h-8 w-8 sm:h-10 sm:w-10 border-2 border-primary">
         <AvatarImage src={avatarSrc} alt={profile.name} data-ai-hint={dataAiHint} />
         <AvatarFallback>{profile.name.substring(0, 1).toUpperCase()}</AvatarFallback>
       </Avatar>
       <div className="flex-grow min-w-0">
-        <div className="flex items-center gap-2">
-          <Shield className="h-5 w-5 text-bright-gold" /> {/* Rank Insignia */}
-          <p className="text-base font-semibold text-foreground truncate" title={profile.name}>
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <Shield className="h-4 w-4 sm:h-5 sm:w-5 text-bright-gold" /> {/* Rank Insignia */}
+          <p className="text-sm sm:text-base font-semibold text-foreground truncate" title={profile.name}>
             {profile.name}
           </p>
         </div>
-        <p className="text-sm text-primary font-medium truncate" title={`Level ${profile.level} - ${profile.rankTitle}`}>
+        <p className="text-xs sm:text-sm text-primary font-medium truncate" title={`Level ${profile.level} - ${profile.rankTitle}`}>
           Lvl {profile.level} - {profile.rankTitle}
         </p>
-        <Progress value={xpPercentage} className="h-1.5 mt-1 bg-muted" indicatorClassName="bg-primary" />
-        <p className="text-sm text-muted-foreground mt-0.5 text-right">
+        <Progress value={xpPercentage} className="h-1 sm:h-1.5 mt-1 bg-muted" indicatorClassName="bg-primary" />
+        <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 text-right">
           {profile.xp} / {profile.xpToNextLevel} XP
         </p>
       </div>
@@ -41,3 +41,4 @@ const PlayerProfileHeader: React.FC<PlayerProfileHeaderProps> = ({ profile }) =>
 };
 
 export default PlayerProfileHeader;
+

@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import { Toaster } from "@/components/ui/toaster"
 import { GameProvider } from '@/contexts/GameContext';
@@ -30,3 +31,4 @@ export default function RootLayout({
     </html>
   );
 }
+

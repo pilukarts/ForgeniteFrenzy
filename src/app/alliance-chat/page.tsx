@@ -89,7 +89,7 @@ const AllianceChatPage: React.FC = () => {
     return msg.senderAvatar || "https://placehold.co/40x40.png";
   }
    const getAvatarHint = (msg: ChatMessage) => {
-    if (msg.isPlayer && playerProfile) { // Added null check for playerProfile
+    if (msg.isPlayer && playerProfile) { 
         return playerProfile.commanderSex === 'male' ? "diverse male" : "diverse female";
     }
     return "avatar placeholder";
@@ -98,41 +98,42 @@ const AllianceChatPage: React.FC = () => {
 
   return (
     <AppLayout>
-      <div className="flex flex-col h-[calc(100vh-180px)] md:h-[calc(100vh-160px)] pb-16"> {/* Adjust height for header and bottom nav */}
-        <header className="p-4 border-b border-border">
-          <h1 className="text-2xl font-headline text-primary">Alliance Chat</h1>
-          <p className="text-sm text-muted-foreground">Coordinate with your fellow Commanders.</p>
+      {/* Use h-full to take available space from AppLayout's main content area */}
+      <div className="flex flex-col h-full"> 
+        <header className="p-3 sm:p-4 border-b border-border">
+          <h1 className="text-xl sm:text-2xl font-headline text-primary">Alliance Chat</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground">Coordinate with your fellow Commanders.</p>
         </header>
 
-        <ScrollArea className="flex-grow p-4" ref={scrollAreaRef}>
-          <div className="space-y-4">
+        <ScrollArea className="flex-grow p-2 sm:p-4" ref={scrollAreaRef}> {/* Reduced padding on mobile */}
+          <div className="space-y-3 sm:space-y-4"> {/* Reduced spacing on mobile */}
             {messages.map((msg) => (
               <div
                 key={msg.id}
                 className={cn(
-                  "flex items-start gap-3 max-w-[85%] sm:max-w-[75%]",
+                  "flex items-start gap-2 sm:gap-3 max-w-[90%] sm:max-w-[75%]", // Adjusted gap and max-width
                   msg.isPlayer ? "ml-auto flex-row-reverse" : "mr-auto"
                 )}
               >
-                <Avatar className="h-8 w-8 border border-primary/50">
+                <Avatar className="h-6 w-6 sm:h-8 sm:w-8 border border-primary/50"> {/* Reduced avatar size on mobile */}
                   <AvatarImage src={getAvatarSrc(msg)} alt={msg.senderName} data-ai-hint={getAvatarHint(msg)} />
                   <AvatarFallback>
-                    {msg.senderName?.substring(0, 1).toUpperCase() || <UserCircle size={16}/>}
+                    {msg.senderName?.substring(0, 1).toUpperCase() || <UserCircle size={12} sm:size={16}/>} {/* Adjusted UserCircle size */}
                   </AvatarFallback>
                 </Avatar>
                 <div
                   className={cn(
-                    "p-3 rounded-lg shadow",
+                    "p-2 sm:p-3 rounded-lg shadow", // Reduced padding on mobile
                     msg.isPlayer
                       ? "bg-primary/20 text-primary-foreground rounded-br-none"
                       : "bg-card text-card-foreground rounded-bl-none"
                   )}
                 >
-                  <p className="text-xs font-semibold mb-1">
+                  <p className="text-xs font-semibold mb-0.5 sm:mb-1"> {/* Adjusted margin */}
                     {msg.isPlayer ? "You" : msg.senderName}
                   </p>
                   <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                  <p className="text-xs text-muted-foreground mt-1.5 text-right">
+                  <p className="text-xs text-muted-foreground mt-1 sm:mt-1.5 text-right"> {/* Adjusted margin */}
                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
@@ -141,18 +142,18 @@ const AllianceChatPage: React.FC = () => {
           </div>
         </ScrollArea>
 
-        <footer className="p-4 border-t border-border mt-auto">
+        <footer className="p-2 sm:p-4 border-t border-border mt-auto"> {/* Reduced padding on mobile */}
           <form onSubmit={handleSendMessage} className="flex items-center gap-2">
             <Input
               type="text"
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder="Type your message..."
-              className="flex-grow bg-input border-border focus:ring-primary"
+              className="flex-grow bg-input border-border focus:ring-primary h-9 sm:h-10 text-sm" /* Adjusted height and text size */
               autoComplete="off"
             />
-            <Button type="submit" variant="default" size="icon" aria-label="Send Message" disabled={!newMessage.trim()}>
-              <SendHorizonal className="h-5 w-5" />
+            <Button type="submit" variant="default" size="sm" aria-label="Send Message" disabled={!newMessage.trim()}> {/* Changed to size="sm" (h-9 w-9) */}
+              <SendHorizonal className="h-4 w-4 sm:h-5 sm:w-5" /> {/* Adjusted icon size */}
             </Button>
           </form>
         </footer>
@@ -162,3 +163,4 @@ const AllianceChatPage: React.FC = () => {
 };
 
 export default AllianceChatPage;
+
