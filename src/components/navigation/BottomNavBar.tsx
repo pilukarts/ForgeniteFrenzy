@@ -1,17 +1,17 @@
 
 "use client";
 import Link from 'next/link';
-import { Home, ChevronsUp, Trophy, Users, ShoppingCart, MessagesSquare } from 'lucide-react'; // Added MessagesSquare
+import { Home, ChevronsUp, Trophy, Users, ShoppingCart, MessagesSquare, ListChecks } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/upgrades', label: 'Upgrades', icon: ChevronsUp },
+  { href: '/quests', label: 'Quests', icon: ListChecks },
   { href: '/leaderboard', label: 'Leaders', icon: Trophy },
-  { href: '/alliance-chat', label: 'Chat', icon: MessagesSquare }, // Added Chat link
+  { href: '/alliance-chat', label: 'Chat', icon: MessagesSquare },
   { href: '/marketplace', label: 'Shop', icon: ShoppingCart },
-  // { href: '/alliance', label: 'Alliance', icon: Users }, // Phase 2
 ];
 
 const BottomNavBar: React.FC = () => {
@@ -27,7 +27,7 @@ const BottomNavBar: React.FC = () => {
               key={href}
               href={href}
               className={cn(
-                "flex flex-col items-center justify-center text-sm p-2 rounded-md transition-colors", // Increased text size
+                "flex flex-col items-center justify-center text-sm p-2 rounded-md transition-colors",
                 isActive ? "text-primary font-semibold" : "text-muted-foreground hover:text-foreground",
               )}
             >

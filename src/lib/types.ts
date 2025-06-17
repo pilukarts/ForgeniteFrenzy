@@ -12,29 +12,31 @@ export interface PlayerProfile {
   xp: number;
   xpToNextLevel: number;
   rankTitle: string;
-  rankInsignia?: string; // Could be path to an SVG or a key for a component
+  rankInsignia?: string;
   currentSeasonId: string;
-  seasonProgress: { [seasonId: string]: number }; // Points accumulated for a specific season objective
-  upgrades: { [upgradeId: string]: number }; // Tracks the level of each upgrade
-  muleDrones: number; // Number of M.U.L.E. Drones
+  seasonProgress: { [seasonId: string]: number };
+  upgrades: { [upgradeId: string]: number };
+  muleDrones: number;
   coreVoiceProtocol: 'male' | 'female' | 'synthetic';
   isWalletConnected: boolean;
   arkHangarFullyUpgraded: boolean;
   lastLoginTimestamp: number | null;
   activeTapBonuses: ActiveTapBonus[];
-  totalTapsForUniform: number; // New: Tracks taps for uniform progression
-  equippedUniformPieces: string[]; // New: Lists names of equipped uniform pieces
+  totalTapsForUniform: number;
+  equippedUniformPieces: string[];
+  activeDailyQuests: DailyQuest[];
+  lastDailyQuestRefresh: number; // Timestamp of the last daily quest refresh
 }
 
 export interface Season {
   id: string;
   chapter: number;
   title: string;
-  description: string; // Narrative description
-  objectiveResourceName: string; // e.g., "Ark Construction Materials"
-  objectiveResourceIcon?: LucideIcon | string; // Lucide icon or path to custom SVG
-  coreBriefingObjective: string; // Text for C.O.R.E. AI input
-  unlocksCore: boolean; // Does completing this season unlock C.O.R.E.?
+  description: string;
+  objectiveResourceName: string;
+  objectiveResourceIcon?: LucideIcon | string;
+  coreBriefingObjective: string;
+  unlocksCore: boolean;
 }
 
 export interface Upgrade {
@@ -42,8 +44,8 @@ export interface Upgrade {
   name: string;
   description: string;
   baseCost: number;
-  costMultiplier: number; // How much cost increases per level
-  effectDescription: (level: number) => string; // Describes the effect at current level
+  costMultiplier: number;
+  effectDescription: (level: number) => string;
   maxLevel?: number;
   icon?: LucideIcon;
 }
@@ -53,15 +55,15 @@ export interface ArkUpgrade {
   name: string;
   description: string;
   cost: number;
-  visualStage: number; // To track visual evolution
+  visualStage: number;
   isPurchased: boolean;
 }
 
 export interface LeaderboardEntry {
   rank: number;
   playerId: string;
-  playerName: string;
-  playerCountry: string; // Flag or country code
+  playerName:string;
+  playerCountry: string;
   score: number;
 }
 
@@ -82,7 +84,6 @@ export const COUNTRIES = [
   { code: 'AU', name: 'Australia', flag: '🇦🇺' },
   { code: 'BR', name: 'Brazil', flag: '🇧🇷' },
   { code: 'CN', name: 'China', flag: '🇨🇳' },
-  // Add more countries as needed
 ];
 
 export interface MarketplaceItem {
@@ -92,27 +93,61 @@ export interface MarketplaceItem {
   costInAuron: number;
   bonusEffect: {
     durationTaps: number;
-    multiplier: number; // e.g., 1.25 for +25%, 2.0 for +100% (double)
+    multiplier: number;
   };
   icon?: LucideIcon;
 }
 
 export interface ActiveTapBonus {
-  id: string; // Unique ID for this instance of the bonus
-  marketItemId: string; // ID of the MarketplaceItem that granted this
+  id: string;
+  marketItemId: string;
   name: string;
   remainingTaps: number;
-  bonusMultiplier: number; // e.g., 1.25 for +25%
+  bonusMultiplier: number;
   originalDurationTaps: number;
 }
 
 export interface ChatMessage {
   id: string;
-  senderId: string; // 'player' or some simulated ID
+  senderId: string;
   senderName: string;
   senderAvatar?: string;
   senderCommanderSex?: 'male' | 'female';
   content: string;
   timestamp: number;
   isPlayer: boolean;
+}
+
+// Daily Quests System Types
+export type QuestType = 'taps' | 'points_earned' | 'login' | 'spend_auron' | 'purchase_upgrade';
+
+export interface QuestReward {
+  points?: number;
+  auron?: number;
+  // items?: string[]; // For future item rewards
+}
+
+export interface DailyQuest {
+  id: string; // Unique ID for this instance of the quest (e.g., templateId-timestamp)
+  templateId: string; // ID from the DAILY_QUESTS_POOL
+  title: string;
+  description: string;
+  type: QuestType;
+  target: number;
+  progress: number;
+  reward: QuestReward;
+  isCompleted: boolean; // Calculated: progress >= target
+  isClaimed: boolean;
+  icon?: LucideIcon; // From template
+}
+
+// This is for the pool of available quests
+export interface DailyQuestTemplate {
+  templateId: string;
+  title: string;
+  description: string;
+  type: QuestType;
+  target: number;
+  reward: QuestReward;
+  icon?: LucideIcon;
 }
