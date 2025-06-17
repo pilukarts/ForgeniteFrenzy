@@ -1,12 +1,12 @@
 
 "use client";
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect, useRef } from 'react';
 import BottomNavBar from '@/components/navigation/BottomNavBar';
 import PlayerProfileHeader from '@/components/player/PlayerProfileHeader';
 import ResourceDisplay from '@/components/game/ResourceDisplay';
 import { Button } from '@/components/ui/button';
 import { useGame } from '@/contexts/GameContext';
-import { Wallet, CreditCard, Landmark } from 'lucide-react'; // Added CreditCard and Landmark
+import { Wallet, CreditCard, Landmark } from 'lucide-react'; 
 import CoreDisplay from '@/components/core/CoreDisplay';
 
 interface AppLayoutProps {
@@ -15,9 +15,41 @@ interface AppLayoutProps {
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const { playerProfile, connectWallet } = useGame();
+  const audioRef = useRef<HTMLAudioElement>(null);
+  // --- IMPORTANTE ---
+  // Reemplaza esta URL con el ENLACE DIRECTO a tu archivo de música (ej. .mp3)
+  const musicUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"; 
+
+  useEffect(() => {
+    const audioElement = audioRef.current;
+    if (audioElement) {
+      // Intentar reproducir. Los navegadores pueden bloquear el autoplay sin interacción del usuario.
+      audioElement.play().catch(error => {
+        console.warn("La reproducción automática del audio fue prevenida por el navegador:", error);
+        // Aquí podrías, por ejemplo, mostrar un botón para que el usuario inicie la música manualmente.
+      });
+    }
+    // Silenciar la música cuando el componente se desmonte (útil para HMR en desarrollo)
+    return () => {
+        if (audioElement) {
+            audioElement.pause();
+            audioElement.currentTime = 0;
+        }
+    };
+  }, [musicUrl]); // Se vuelve a ejecutar si musicUrl cambia, aunque aquí es constante.
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
+      {/* Elemento de audio para la música de fondo */}
+      <audio 
+        ref={audioRef} 
+        src={musicUrl} 
+        loop 
+        autoPlay 
+        playsInline // Importante para la reproducción en línea en algunos navegadores móviles
+        style={{ display: 'none' }} // El control de audio no necesita ser visible
+      />
+
       <header className="sticky top-0 z-50 p-2 sm:p-3 bg-background/80 backdrop-blur-md shadow-md">
         <div className="container mx-auto flex items-center justify-between gap-2">
           {playerProfile && (
@@ -63,7 +95,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         </div>
       </header>
       
-      <main className="flex-grow container mx-auto px-2 sm:px-4 pt-2 sm:pt-4 pb-16 sm:pb-18 relative"> {/* Adjusted pb for taller bottom nav */}
+      <main className="flex-grow container mx-auto px-0 pb-[56px] sm:pb-[60px] pt-1"> {/* Adjusted padding for mobile */}
         {children}
       </main>
       
@@ -75,6 +107,3 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 };
 
 export default AppLayout;
-
-
-    
