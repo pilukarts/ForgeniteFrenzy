@@ -39,7 +39,9 @@ export default function HomePage() {
       return <IntroScreen />;
     }
     if (!playerProfile) {
-      return <IntroScreen />;
+      // This case should ideally be handled by redirecting to setup or an error page
+      // For now, showing IntroScreen or a simple message.
+      return <IntroScreen />; // Or <p>Error: Player profile not found after setup.</p>;
     }
   } else {
     // 2. Handle new users (initial setup is NOT done)
@@ -47,11 +49,13 @@ export default function HomePage() {
       return <PreIntroScreen onCompletion={() => setNewUserIntroPhase('main')} />;
     }
     if (newUserIntroPhase === 'main') {
+      // Show IntroScreen for 2.5 seconds then move to setup
       return <IntroScreenWithTransition onComplete={() => setNewUserIntroPhase('setup')} duration={2500} />; 
     }
     if (newUserIntroPhase === 'setup') {
       return <PlayerSetup />;
     }
+    // Fallback for any other unhandled new user state, though ideally all paths are covered.
     return <IntroScreen />;
   }
 
@@ -59,8 +63,8 @@ export default function HomePage() {
   const backgroundImageStyle = {
     backgroundImage: "url('https://i.imgur.com/awGhtRo.png')",
   };
-  const introLogoUrl = "https://i.imgur.com/AwQqiyx.png";
-  const gameUrl = "https://allianceforge.game"; 
+  const introLogoUrl = "https://i.imgur.com/AwQqiyx.png"; // Provided image URL
+  const gameUrl = "https://allianceforge.game"; // Replace with your actual game URL
 
   const handleTelegramShare = () => {
     if (playerProfile) {
@@ -68,7 +72,7 @@ export default function HomePage() {
       if (playerProfile.referralCode) {
         shareText += ` Use my code ${playerProfile.referralCode} at signup!`;
       }
-      if (playerProfile.referredByCode) { 
+      if (playerProfile.referredByCode) { // Added check for referredByCode
         shareText += ` I joined thanks to a friend!`;
       }
       shareText += ` Let's save humanity! ${gameUrl} #AllianceForge #Invite`;
@@ -83,7 +87,7 @@ export default function HomePage() {
       if (playerProfile.referralCode) {
         shareText += ` Join with my code: ${playerProfile.referralCode}.`;
       }
-      if (playerProfile.referredByCode) {
+      if (playerProfile.referredByCode) { // Added check for referredByCode
         shareText += ` Joined via referral!`;
       }
       shareText += ` #AllianceForge #Gaming #SciFiGame #Referral`;
@@ -101,18 +105,19 @@ export default function HomePage() {
           variant: "destructive",
         });
       }
+      // Consider not auto-opening TikTok or making it optional
       window.open('https://www.tiktok.com/', '_blank', 'noopener,noreferrer');
     }
   };
 
   const handleDiscordShare = async () => {
     if (playerProfile) {
-      const discordInviteLink = "https://discord.gg/HYzPh32K"; 
+      const discordInviteLink = "https://discord.gg/HYzPh32K"; // Replace with your actual Discord invite
       let shareText = `Commanders, assemble in Alliance Forge: ${gameUrl}. My stats: ${playerProfile.points.toLocaleString()} pts (Rank: ${playerProfile.rankTitle}).`;
       if (playerProfile.referralCode) {
         shareText += ` Use referral: ${playerProfile.referralCode} when signing up.`;
       }
-      if (playerProfile.referredByCode) {
+      if (playerProfile.referredByCode) { // Added check for referredByCode
         shareText += ` Honored to join via referral!`;
       }
       shareText += ` Our Discord: ${discordInviteLink} #AllianceForge #Invite`;
@@ -134,12 +139,14 @@ export default function HomePage() {
     }
   };
 
+  // This check is after the new user flow, so playerProfile should exist if isInitialSetupDone is true.
+  // If it's still null here for an existing user, something is wrong with context/loading.
   if (!playerProfile) return <IntroScreen/>; // Should ideally be caught by earlier checks, but as a safeguard
 
   return (
     <AppLayout>
       <div
-        className="relative flex flex-col items-center justify-center text-center h-full pt-1 sm:pt-2 bg-cover bg-center bg-no-repeat"
+        className="relative flex flex-col items-center justify-start text-center h-full pt-1 sm:pt-2 bg-cover bg-center bg-no-repeat"
         style={backgroundImageStyle}
         data-ai-hint="futuristic space background"
       >
@@ -148,8 +155,8 @@ export default function HomePage() {
             src={introLogoUrl}
             alt="Alliance Forge Logo"
             width={100} 
-            height={56}
-            className="object-contain sm:w-[150px] sm:h-[84px]"
+            height={56} // Adjust height according to aspect ratio or desired size
+            className="object-contain sm:w-[150px] sm:h-[84px]" // Responsive width
             data-ai-hint="game logo title"
           />
         </div>
@@ -179,7 +186,7 @@ export default function HomePage() {
             <Button
               variant="default" 
               size="sm"
-              className="w-full sm:w-auto text-xs sm:text-sm"
+              className="w-full sm:w-auto text-xs sm:text-sm" // Added w-full for mobile stacking, sm:w-auto for larger
               onClick={handleTelegramShare}
             >
               <Send className="mr-1 sm:mr-2 h-4 w-4" /> Share & Invite (Telegram)
@@ -188,7 +195,7 @@ export default function HomePage() {
             <Button
               variant="default"
               size="sm"
-              className="w-full sm:w-auto text-xs sm:text-sm"
+              className="w-full sm:w-auto text-xs sm:text-sm" // Added w-full for mobile stacking, sm:w-auto for larger
               onClick={handleTikTokShare}
             >
               <Film className="mr-1 sm:mr-2 h-4 w-4" /> Share & Invite (TikTok)
@@ -197,7 +204,7 @@ export default function HomePage() {
             <Button
               variant="default"
               size="sm"
-              className="w-full sm:w-auto text-xs sm:text-sm"
+              className="w-full sm:w-auto text-xs sm:text-sm" // Added w-full for mobile stacking, sm:w-auto for larger
               onClick={handleDiscordShare}
             >
               <MessageSquare className="mr-1 sm:mr-2 h-4 w-4" /> Share & Invite (Discord)
@@ -205,10 +212,11 @@ export default function HomePage() {
           </div>
         </div>
 
+        {/* Black Uniform Progress Section */}
         {playerProfile.equippedUniformPieces && playerProfile.equippedUniformPieces.length > 0 && (
           <div className="mt-4 sm:mt-6 text-center w-full max-w-[280px] sm:max-w-xs p-2 sm:p-3 bg-card/80 rounded-lg shadow">
             <h3 className="text-sm sm:text-md font-semibold text-accent flex items-center justify-center">
-              <ShieldEllipsis className="h-4 w-4 sm:h-5 sm:w-5 mr-2"/>
+              <ShieldEllipsis className="h-4 w-4 sm:h-5 sm:h-5 mr-2"/>
               Black Uniform Progress
             </h3>
             <ul className="mt-1 sm:mt-2 text-xs sm:text-sm text-muted-foreground list-none p-0 space-y-0.5 sm:space-y-1">
@@ -219,12 +227,12 @@ export default function HomePage() {
                 </li>
               ))}
             </ul>
-            {playerProfile.equippedUniformPieces.length < 5 && (
+            {playerProfile.equippedUniformPieces.length < 5 && ( // Show if not all pieces are collected
                  <p className="text-xs text-muted-foreground/70 mt-1 sm:mt-2">
                     Next piece at: { ((playerProfile.equippedUniformPieces.length + 1) * 2000).toLocaleString() } taps
                 </p>
             )}
-             {playerProfile.equippedUniformPieces.length === 5 && (
+             {playerProfile.equippedUniformPieces.length === 5 && ( // Show if all pieces are collected
                  <p className="text-xs text-green-400 font-semibold mt-1 sm:mt-2">
                     Black Uniform Complete!
                 </p>
