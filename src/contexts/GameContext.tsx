@@ -28,7 +28,7 @@ interface GameContextType {
   addPoints: (amount: number, isTap?: boolean) => void;
   isLoading: boolean;
   isInitialSetupDone: boolean;
-  completeInitialSetup: (name: string, sex: 'male' | 'female', country: string) => void;
+  completeInitialSetup: (name: string, sex: 'male' | 'female', country: string, referredByCode?: string) => void;
   coreMessages: CoreMessage[];
   addCoreMessage: (message: Omit<CoreMessage, 'timestamp'>) => void;
   isCoreUnlocked: boolean;
@@ -68,14 +68,14 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
   equippedUniformPieces: [],
   activeDailyQuests: [],
   lastDailyQuestRefresh: 0,
-  referralCode: undefined, // Initialize referralCode
+  referralCode: undefined,
+  referredByCode: undefined,
 };
 
-// Helper function to generate a simple referral code
 const generateReferralCode = (name: string): string => {
   const namePart = name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 4).toUpperCase();
   const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();
-  return `${namePart}${randomPart || 'ABCDE'}`; // Fallback for randomPart if it's too short
+  return `${namePart}${randomPart || 'ABCDE'}`; 
 };
 
 
@@ -122,10 +122,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                          now.getDate() > lastRefreshDate.getDate();
 
         if (!isNewDay && prev.activeDailyQuests && prev.activeDailyQuests.length > 0) {
-            return prev; // No need to refresh if quests exist and it's not a new day
+            return prev; 
         }
         
-        // If it's a new day or no quests, generate new ones
         const availableQuestTemplates = [...DAILY_QUESTS_POOL];
         const newQuests: DailyQuest[] = [];
         const usedTemplateIds = new Set<string>();
@@ -159,7 +158,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
         setTimeout(() => {
           toast({ title: "Daily Quests Refreshed!", description: "New challenges await you, Commander." });
-        }, 500); // Delay slightly so it doesn't overlap with other initial toasts
+        }, 500); 
         return { ...prev, activeDailyQuests: newQuests, lastDailyQuestRefresh: now.getTime() };
     });
   }, [toast]);
@@ -168,13 +167,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const savedProfile = localStorage.getItem('playerProfile');
     if (savedProfile) {
       let parsedProfile = JSON.parse(savedProfile) as PlayerProfile;
-      // Initialize new fields if they don't exist
       parsedProfile.activeTapBonuses = parsedProfile.activeTapBonuses ?? [];
       parsedProfile.totalTapsForUniform = parsedProfile.totalTapsForUniform ?? 0;
       parsedProfile.equippedUniformPieces = parsedProfile.equippedUniformPieces ?? [];
       parsedProfile.activeDailyQuests = parsedProfile.activeDailyQuests ?? [];
       parsedProfile.lastDailyQuestRefresh = parsedProfile.lastDailyQuestRefresh ?? 0;
-      parsedProfile.referralCode = parsedProfile.referralCode ?? undefined; // Handle referral code
+      parsedProfile.referralCode = parsedProfile.referralCode ?? undefined;
+      parsedProfile.referredByCode = parsedProfile.referredByCode ?? undefined; 
 
       setPlayerProfile(parsedProfile);
       setIsInitialSetupDone(true);
@@ -183,7 +182,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setIsCoreUnlocked(!!parsedProfile.upgrades['coreUnlocked'] || SEASONS_DATA.slice(0, SEASONS_DATA.indexOf(season)).some(s => s.unlocksCore));
       setCoreLastInteractionTime(parsedProfile.lastLoginTimestamp || Date.now());
     } else {
-        setIsLoading(false); // If no profile, not loading a profile
+        setIsLoading(false); 
     }
     const savedCoreMessages = localStorage.getItem('coreMessages');
     if (savedCoreMessages) {
@@ -191,18 +190,17 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, []);
 
-  // This effect should run after the profile is loaded from localStorage or newly created
   useEffect(() => {
     if (playerProfile && isInitialSetupDone) {
       refreshDailyQuestsIfNeeded();
     }
-    if (!savedProfile && !isLoading) { // If no profile was saved and we are not in initial loading anymore
-        setIsLoading(false); // Stop global loading for new users after setup screen is ready
-    } else if (savedProfile) {
-        setIsLoading(false); // Stop global loading if profile was loaded
+    const localSavedProfile = typeof window !== "undefined" ? localStorage.getItem('playerProfile') : null;
+    if (!localSavedProfile && !isLoading) { 
+        setIsLoading(false); 
+    } else if (localSavedProfile) {
+        setIsLoading(false); 
     }
-  }, [playerProfile, isInitialSetupDone, refreshDailyQuestsIfNeeded]);
-  const savedProfile = typeof window !== "undefined" ? localStorage.getItem('playerProfile') : null;
+  }, [playerProfile, isInitialSetupDone, refreshDailyQuestsIfNeeded, isLoading]);
 
 
   useEffect(() => {
@@ -219,7 +217,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem('coreMessages', JSON.stringify(coreMessages));
   }, [coreMessages]);
   
-  const completeInitialSetup = (name: string, sex: 'male' | 'female', country: string) => {
+  const completeInitialSetup = (name: string, sex: 'male' | 'female', country: string, referredByCode?: string) => {
     const now = Date.now();
     const newProfileData: PlayerProfile = {
       ...defaultPlayerProfile,
@@ -230,16 +228,20 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       currentSeasonId: SEASONS_DATA[0].id,
       rankTitle: getRankTitle(1),
       lastLoginTimestamp: now,
-      lastDailyQuestRefresh: 0, // Will be set by refreshDailyQuestsIfNeeded
-      activeDailyQuests: [], // Will be populated by refreshDailyQuestsIfNeeded
-      referralCode: generateReferralCode(name), // Generate referral code
+      lastDailyQuestRefresh: 0, 
+      activeDailyQuests: [], 
+      referralCode: generateReferralCode(name),
+      referredByCode: referredByCode?.trim() || undefined,
     };
-    setPlayerProfile(newProfileData); // Set profile first
-    setIsInitialSetupDone(true); // Then mark setup as done
+    setPlayerProfile(newProfileData); 
+    setIsInitialSetupDone(true); 
     setCurrentSeason(SEASONS_DATA[0]);
-    addCoreMessage({ type: 'briefing', content: `Welcome, Commander ${name}! Your mission begins now. Your unique referral code is ${newProfileData.referralCode}. Share it with allies!`});
+    let welcomeMessage = `Welcome, Commander ${name}! Your mission begins now. Your unique referral code is ${newProfileData.referralCode}. Share it with allies!`;
+    if (referredByCode) {
+        welcomeMessage += ` We acknowledge Commander ${referredByCode} for recruiting you.`
+    }
+    addCoreMessage({ type: 'briefing', content: welcomeMessage});
     setCoreLastInteractionTime(now);
-    // refreshDailyQuestsIfNeeded will be called by the useEffect that watches playerProfile and isInitialSetupDone
   };
   
   const addCoreMessage = useCallback((message: Omit<CoreMessage, 'timestamp'>) => {
@@ -290,7 +292,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
       updatedProfile.xp = newXp;
 
-      // Update points_earned quests
       updatedProfile = updateQuestProgress(updatedProfile, 'points_earned', finalAmount);
       
       return updatedProfile;
@@ -374,7 +375,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           upgrades: newUpgrades,
           arkHangarFullyUpgraded: allArkUpgradesPurchased,
         };
-        // Assuming Ark upgrades also count for 'purchase_upgrade' quests
         updatedProfile = updateQuestProgress(updatedProfile, 'purchase_upgrade', 1);
         return updatedProfile;
       } else {
@@ -526,7 +526,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
         updatedProfile.xp = newXp;
 
-        // Update quest progress
         updatedProfile = updateQuestProgress(updatedProfile, 'taps', 1);
         updatedProfile = updateQuestProgress(updatedProfile, 'points_earned', finalAmount);
 
@@ -581,9 +580,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   }, [toast]);
 
-  // AI Interactions
   useEffect(() => {
-    if (isInitialSetupDone && playerProfile && isCoreUnlocked && !isAICallInProgress && Date.now() - coreLastInteractionTime > 300000) { // 5 minutes
+    if (isInitialSetupDone && playerProfile && isCoreUnlocked && !isAICallInProgress && Date.now() - coreLastInteractionTime > 300000) { 
       setIsAICallInProgress(true);
       (async () => {
         try {
