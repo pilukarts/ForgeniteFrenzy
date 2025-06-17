@@ -13,7 +13,7 @@ interface PlayerProfileHeaderProps {
 const PlayerProfileHeader: React.FC<PlayerProfileHeaderProps> = ({ profile }) => {
   const xpPercentage = profile.xpToNextLevel > 0 ? (profile.xp / profile.xpToNextLevel) * 100 : 0;
   const avatarSrc = profile.commanderSex === 'male' ? "https://placehold.co/40x40.png" : "https://placehold.co/40x40.png";
-  const dataAiHint = profile.commanderSex === 'male' ? "male commander" : "female commander";
+  const dataAiHint = profile.commanderSex === 'male' ? "diverse male" : "diverse female";
 
   return (
     <div className="flex items-center gap-3 p-2 rounded-lg bg-card/50 shadow-sm min-w-0">
