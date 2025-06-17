@@ -72,7 +72,7 @@ export default function HomePage() {
       if (playerProfile.referralCode) {
         shareText += ` Use my code ${playerProfile.referralCode} at signup!`;
       }
-      if (playerProfile.referredByCode) { // Added check for referredByCode
+      if (playerProfile.referredByCode) { 
         shareText += ` I joined thanks to a friend!`;
       }
       shareText += ` Let's save humanity! ${gameUrl} #AllianceForge #Invite`;
@@ -87,7 +87,7 @@ export default function HomePage() {
       if (playerProfile.referralCode) {
         shareText += ` Join with my code: ${playerProfile.referralCode}.`;
       }
-      if (playerProfile.referredByCode) { // Added check for referredByCode
+      if (playerProfile.referredByCode) { 
         shareText += ` Joined via referral!`;
       }
       shareText += ` #AllianceForge #Gaming #SciFiGame #Referral`;
@@ -117,7 +117,7 @@ export default function HomePage() {
       if (playerProfile.referralCode) {
         shareText += ` Use referral: ${playerProfile.referralCode} when signing up.`;
       }
-      if (playerProfile.referredByCode) { // Added check for referredByCode
+      if (playerProfile.referredByCode) { 
         shareText += ` Honored to join via referral!`;
       }
       shareText += ` Our Discord: ${discordInviteLink} #AllianceForge #Invite`;
@@ -155,8 +155,8 @@ export default function HomePage() {
             src={introLogoUrl}
             alt="Alliance Forge Logo"
             width={100} 
-            height={56} // Adjust height according to aspect ratio or desired size
-            className="object-contain sm:w-[150px] sm:h-[84px]" // Responsive width
+            height={56} 
+            className="object-contain sm:w-[150px] sm:h-[84px]" 
             data-ai-hint="game logo title"
           />
         </div>
@@ -186,7 +186,7 @@ export default function HomePage() {
             <Button
               variant="default" 
               size="sm"
-              className="w-full sm:w-auto text-xs sm:text-sm" // Added w-full for mobile stacking, sm:w-auto for larger
+              className="w-full sm:w-auto text-xs sm:text-sm" 
               onClick={handleTelegramShare}
             >
               <Send className="mr-1 sm:mr-2 h-4 w-4" /> Share & Invite (Telegram)
@@ -195,7 +195,7 @@ export default function HomePage() {
             <Button
               variant="default"
               size="sm"
-              className="w-full sm:w-auto text-xs sm:text-sm" // Added w-full for mobile stacking, sm:w-auto for larger
+              className="w-full sm:w-auto text-xs sm:text-sm" 
               onClick={handleTikTokShare}
             >
               <Film className="mr-1 sm:mr-2 h-4 w-4" /> Share & Invite (TikTok)
@@ -204,7 +204,7 @@ export default function HomePage() {
             <Button
               variant="default"
               size="sm"
-              className="w-full sm:w-auto text-xs sm:text-sm" // Added w-full for mobile stacking, sm:w-auto for larger
+              className="w-full sm:w-auto text-xs sm:text-sm" 
               onClick={handleDiscordShare}
             >
               <MessageSquare className="mr-1 sm:mr-2 h-4 w-4" /> Share & Invite (Discord)
@@ -227,12 +227,12 @@ export default function HomePage() {
                 </li>
               ))}
             </ul>
-            {playerProfile.equippedUniformPieces.length < 5 && ( // Show if not all pieces are collected
+            {playerProfile.equippedUniformPieces.length < 5 && ( 
                  <p className="text-xs text-muted-foreground/70 mt-1 sm:mt-2">
                     Next piece at: { ((playerProfile.equippedUniformPieces.length + 1) * 2000).toLocaleString() } taps
                 </p>
             )}
-             {playerProfile.equippedUniformPieces.length === 5 && ( // Show if all pieces are collected
+             {playerProfile.equippedUniformPieces.length === 5 && ( 
                  <p className="text-xs text-green-400 font-semibold mt-1 sm:mt-2">
                     Black Uniform Complete!
                 </p>
@@ -243,4 +243,6 @@ export default function HomePage() {
     </AppLayout>
   );
 }
+    
+
     
