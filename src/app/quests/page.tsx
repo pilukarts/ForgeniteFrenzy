@@ -45,58 +45,61 @@ const DailyQuestsPage: React.FC = () => {
 
   return (
     <AppLayout>
-      <div className="pb-16"> {/* Padding for bottom nav */}
-        <div className="flex justify-between items-center px-4 pt-4 mb-4">
-            <h1 className="text-3xl font-headline text-primary flex items-center">
-                <ListChecks className="mr-3 h-8 w-8" />
+      {/* AppLayout handles global bottom padding */}
+      <div className=""> 
+        <div className="flex justify-between items-center px-2 sm:px-4 pt-2 sm:pt-4 mb-3 sm:mb-4"> {/* Adjusted padding and margin */}
+            <h1 className="text-2xl sm:text-3xl font-headline text-primary flex items-center"> {/* Adjusted text size */}
+                <ListChecks className="mr-2 sm:mr-3 h-6 w-6 sm:h-8 sm:w-8" /> {/* Adjusted icon size and margin */}
                 Daily Quests
             </h1>
-            <Button onClick={refreshDailyQuestsIfNeeded} variant="outline" size="sm">
-                <RefreshCw className="mr-2 h-4 w-4" /> Refresh
+            <Button onClick={refreshDailyQuestsIfNeeded} variant="outline" size="xs"> {/* Changed to size="xs" (custom or adjust if not available, use sm) */}
+                <RefreshCw className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:h-4" /> Refresh {/* Adjusted icon size and margin */}
             </Button>
         </div>
-        <p className="text-muted-foreground px-4 mb-6 text-sm">
+        <p className="text-muted-foreground px-2 sm:px-4 mb-4 sm:mb-6 text-xs sm:text-sm"> {/* Adjusted padding, margin, text size */}
             Complete these tasks daily for valuable rewards and advance your standing in the Alliance! New quests are available each day.
         </p>
         
-        <ScrollArea className="h-[calc(100vh-300px)] px-4"> {/* Adjust height as needed */}
+         {/* Adjust height: viewport height - app header - page header (title, desc, button) - bottom nav (implicitly by AppLayout padding) */}
+        <ScrollArea className="h-[calc(100vh-var(--app-header-h,60px)-var(--page-header-h,120px)-var(--bottom-nav-h,56px))] px-2 sm:px-4"> {/* Placeholder heights, adjust as needed */}
           {questsAvailable ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4"> {/* Adjusted gap */}
               {activeQuests.map(quest => {
                 const QuestIcon = quest.icon || Gift;
                 const progressPercentage = quest.target > 0 ? (quest.progress / quest.target) * 100 : 0;
                 return (
                   <Card key={quest.id} className={cn("bg-card text-card-foreground shadow-lg flex flex-col", quest.isClaimed ? "opacity-60" : "")}>
-                    <CardHeader>
-                      <div className="flex items-start gap-3">
-                        <QuestIcon className="h-8 w-8 text-primary mt-1" />
+                    <CardHeader className="p-3 sm:p-4"> {/* Adjusted padding */}
+                      <div className="flex items-start gap-2 sm:gap-3"> {/* Adjusted gap */}
+                        <QuestIcon className="h-6 w-6 sm:h-8 sm:w-8 text-primary mt-0.5 sm:mt-1" /> {/* Adjusted icon size and margin */}
                         <div>
-                          <CardTitle className="text-xl font-headline">{quest.title}</CardTitle>
-                          <CardDescription className="text-muted-foreground mt-1">{quest.description}</CardDescription>
+                          <CardTitle className="text-lg sm:text-xl font-headline">{quest.title}</CardTitle> {/* Adjusted text size */}
+                          <CardDescription className="text-xs sm:text-sm text-muted-foreground mt-0.5 sm:mt-1">{quest.description}</CardDescription> {/* Adjusted text size and margin */}
                         </div>
                       </div>
                     </CardHeader>
-                    <CardContent className="flex-grow space-y-2">
-                      <div className="flex justify-between items-center text-sm text-muted-foreground mb-1">
+                    <CardContent className="flex-grow space-y-1.5 sm:space-y-2 p-3 sm:p-4 pt-0"> {/* Adjusted padding and spacing */}
+                      <div className="flex justify-between items-center text-xs sm:text-sm text-muted-foreground mb-1"> {/* Adjusted text size */}
                         <span>Progress:</span>
                         <span>{quest.progress.toLocaleString()} / {quest.target.toLocaleString()}</span>
                       </div>
-                      <Progress value={progressPercentage} className="h-3" indicatorClassName={quest.isCompleted ? "bg-green-500" : "bg-primary"} />
-                       <p className="text-sm text-primary flex items-center mt-3">
-                        <Sparkles className="h-4 w-4 mr-1.5 text-bright-gold" />
+                      <Progress value={progressPercentage} className="h-2 sm:h-3" indicatorClassName={quest.isCompleted ? "bg-green-500" : "bg-primary"} /> {/* Adjusted height */}
+                       <p className="text-xs sm:text-sm text-primary flex items-center mt-2 sm:mt-3"> {/* Adjusted text size and margin */}
+                        <Sparkles className="h-3 w-3 sm:h-4 sm:h-4 mr-1 sm:mr-1.5 text-bright-gold" />
                         Reward: {getRewardString(quest)}
                       </p>
                     </CardContent>
-                    <CardFooter>
+                    <CardFooter className="p-3 sm:p-4 pt-0"> {/* Adjusted padding */}
                       <Button 
                         onClick={() => claimQuestReward(quest.id)} 
                         disabled={!quest.isCompleted || quest.isClaimed}
-                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-sm sm:text-base py-2" /* Adjusted text size and padding */
+                        size="default" /* Or sm for h-9 */
                       >
                         {quest.isClaimed ? (
-                            <> <CheckCircle2 className="mr-2 h-5 w-5" /> Claimed </>
+                            <> <CheckCircle2 className="mr-1 sm:mr-2 h-4 w-4 sm:h-5 sm:w-5" /> Claimed </>
                         ) : quest.isCompleted ? (
-                            <> <Gift className="mr-2 h-5 w-5" /> Claim Reward </>
+                            <> <Gift className="mr-1 sm:mr-2 h-4 w-4 sm:h-5 sm:w-5" /> Claim Reward </>
                         ) : (
                             'In Progress'
                         )}
@@ -107,21 +110,36 @@ const DailyQuestsPage: React.FC = () => {
               })}
             </div>
           ) : (
-            <Card className="bg-card text-card-foreground shadow-lg p-6 text-center">
-                <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <CardTitle className="text-xl font-headline mb-2">No Active Quests</CardTitle>
-                <CardDescription className="text-muted-foreground">
+            <Card className="bg-card text-card-foreground shadow-lg p-4 sm:p-6 text-center"> {/* Adjusted padding */}
+                <AlertCircle className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mx-auto mb-3 sm:mb-4" /> {/* Adjusted icon size and margin */}
+                <CardTitle className="text-lg sm:text-xl font-headline mb-1 sm:mb-2">No Active Quests</CardTitle> {/* Adjusted text size and margin */}
+                <CardDescription className="text-xs sm:text-sm text-muted-foreground"> {/* Adjusted text size */}
                     Check back later or try refreshing for new daily assignments, Commander.
                 </CardDescription>
-                 <Button onClick={refreshDailyQuestsIfNeeded} variant="default" className="mt-4">
-                    <RefreshCw className="mr-2 h-4 w-4" /> Check for New Quests
+                 <Button onClick={refreshDailyQuestsIfNeeded} variant="default" className="mt-3 sm:mt-4 text-sm sm:text-base" size="sm"> {/* Adjusted margin, text size, button size */}
+                    <RefreshCw className="mr-1 sm:mr-2 h-4 w-4" /> Check for New Quests
                 </Button>
             </Card>
           )}
         </ScrollArea>
+         {/* CSS variables for dynamic height calculation (optional, can be refined) */}
+        <style jsx>{`
+          :root {
+            --app-header-h: 60px; 
+            --page-header-h: 120px; /* Approx height of title, desc, refresh button area */
+            --bottom-nav-h: 56px;
+          }
+          @media (min-width: 640px) { /* sm breakpoint */
+            :root {
+              --app-header-h: 68px;
+              --page-header-h: 130px;
+            }
+          }
+        `}</style>
       </div>
     </AppLayout>
   );
 };
 
 export default DailyQuestsPage;
+
