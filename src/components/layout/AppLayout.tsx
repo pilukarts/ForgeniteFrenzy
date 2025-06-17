@@ -63,7 +63,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         </div>
       </header>
       
-      <main className="flex-grow container mx-auto px-2 sm:px-4 pt-2 sm:pt-4 pb-18 relative">
+      <main className="flex-grow container mx-auto px-2 sm:px-4 pt-2 sm:pt-4 pb-16 sm:pb-18 relative"> {/* Adjusted pb for taller bottom nav */}
         {children}
       </main>
       
@@ -75,3 +75,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 };
 
 export default AppLayout;
+
+
+    

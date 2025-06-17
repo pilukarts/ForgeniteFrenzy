@@ -98,3 +98,5 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
 
 export default CommanderPortrait;
 
+
+    
