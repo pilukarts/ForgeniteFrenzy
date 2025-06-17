@@ -89,8 +89,8 @@ const AllianceChatPage: React.FC = () => {
     return msg.senderAvatar || "https://placehold.co/40x40.png";
   }
    const getAvatarHint = (msg: ChatMessage) => {
-    if (msg.isPlayer) {
-        return playerProfile.commanderSex === 'male' ? "male commander" : "female commander";
+    if (msg.isPlayer && playerProfile) { // Added null check for playerProfile
+        return playerProfile.commanderSex === 'male' ? "diverse male" : "diverse female";
     }
     return "avatar placeholder";
   }
