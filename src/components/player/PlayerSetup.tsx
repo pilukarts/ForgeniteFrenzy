@@ -17,13 +17,14 @@ const PlayerSetup: React.FC = () => {
   const [name, setName] = useState('');
   const [sex, setSex] = useState<'male' | 'female'>('female');
   const [country, setCountry] = useState(COUNTRIES[0].code);
+  const [referredBy, setReferredBy] = useState('');
 
   const isFormValid = name.trim() !== '';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isFormValid && country) {
-      completeInitialSetup(name.trim(), sex, country);
+      completeInitialSetup(name.trim(), sex, country, referredBy.trim());
     }
   };
 
@@ -39,14 +40,14 @@ const PlayerSetup: React.FC = () => {
             <Image src="https://placehold.co/100x100.png?text=AF" alt="Alliance Forge Logo" width={80} height={80} className="rounded-full" data-ai-hint="logo emblem" />
           </div>
           <CardTitle className="text-center font-headline text-3xl text-primary">Mission Briefing</CardTitle>
-          <CardDescription className="text-center text-muted-foreground pt-2 text-base"> {/* Increased text size */}
+          <CardDescription className="text-center text-muted-foreground pt-2 text-base">
             Humanity's fate rests on your shoulders, Commander. The Cyber Concord approaches. We must evacuate Earth. Prepare your command profile.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-foreground/80 text-base">Enter Callsign</Label> {/* Increased text size */}
+              <Label htmlFor="name" className="text-foreground/80 text-base">Enter Callsign</Label>
               <Input 
                 id="name" 
                 value={name} 
@@ -58,7 +59,7 @@ const PlayerSetup: React.FC = () => {
             </div>
             
             <div className="space-y-2">
-              <Label className="text-foreground/80 text-base">Select Commander Portrait</Label> {/* Increased text size */}
+              <Label className="text-foreground/80 text-base">Select Commander Portrait</Label>
               <RadioGroup defaultValue="female" onValueChange={(value) => setSex(value as 'male' | 'female')} className="flex gap-4">
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="female" id="female" className="text-primary focus:ring-primary data-[state=checked]:bg-primary"/>
@@ -76,7 +77,7 @@ const PlayerSetup: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="country" className="text-foreground/80 text-base">Select Region</Label> {/* Increased text size */}
+              <Label htmlFor="country" className="text-foreground/80 text-base">Select Region</Label>
               <Select value={country} onValueChange={setCountry}>
                 <SelectTrigger id="country" className="w-full bg-input border-border focus:ring-primary">
                   <SelectValue placeholder="Select country" />
@@ -90,6 +91,18 @@ const PlayerSetup: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="referredBy" className="text-foreground/80 text-base">Referral Code (Optional)</Label>
+              <Input 
+                id="referredBy" 
+                value={referredBy} 
+                onChange={(e) => setReferredBy(e.target.value)} 
+                placeholder="Enter referral code" 
+                className="bg-input border-border focus:ring-primary"
+              />
+            </div>
+
             <Button 
               type="submit" 
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 text-lg"
@@ -99,7 +112,7 @@ const PlayerSetup: React.FC = () => {
             </Button>
           </form>
         </CardContent>
-        <CardFooter className="text-sm text-muted-foreground text-center block"> {/* Increased text size */}
+        <CardFooter className="text-sm text-muted-foreground text-center block">
           By engaging, you accept the mission parameters. The fate of humanity is in your hands.
         </CardFooter>
       </Card>

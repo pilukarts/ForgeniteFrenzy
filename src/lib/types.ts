@@ -26,7 +26,8 @@ export interface PlayerProfile {
   equippedUniformPieces: string[];
   activeDailyQuests: DailyQuest[];
   lastDailyQuestRefresh: number; // Timestamp of the last daily quest refresh
-  referralCode?: string; // Added for referral system
+  referralCode?: string;
+  referredByCode?: string; // Stores the code of the player who referred this user
 }
 
 export interface Season {

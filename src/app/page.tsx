@@ -36,58 +36,42 @@ export default function HomePage() {
   // 1. Handle existing users (initial setup is done)
   if (isInitialSetupDone) {
     if (isLoading) {
-      // Existing user, but their data is still loading
       return <IntroScreen />;
     }
     if (!playerProfile) {
-      // Existing user, data loaded, but no profile (error or unexpected state)
-      // This could also be a brief moment after PlayerSetup completes before playerProfile re-renders.
-      // Showing IntroScreen as a fallback is reasonable.
       return <IntroScreen />;
-      // A more specific error might be:
-      // return (
-      //   <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
-      //     Error: Player profile not available after setup. Please reload.
-      //   </div>
-      // );
     }
-    // Existing user, data loaded, profile available: render the main game content (defined below)
   } else {
     // 2. Handle new users (initial setup is NOT done)
     if (newUserIntroPhase === 'pre') {
       return <PreIntroScreen onCompletion={() => setNewUserIntroPhase('main')} />;
     }
     if (newUserIntroPhase === 'main') {
-      return <IntroScreenWithTransition onComplete={() => setNewUserIntroPhase('setup')} duration={2500} />; // Show IntroScreen for 2.5 seconds
+      return <IntroScreenWithTransition onComplete={() => setNewUserIntroPhase('setup')} duration={2500} />; 
     }
     if (newUserIntroPhase === 'setup') {
-      // PlayerSetup will call completeInitialSetup from GameContext,
-      // which sets isInitialSetupDone=true. This will exit the new user flow on the next render.
       return <PlayerSetup />;
     }
-    // Fallback for new user flow if phase is unexpected (should not happen)
     return <IntroScreen />;
   }
 
-  // --- Main Game Content Rendering ---
-  // This part is reached if isInitialSetupDone is true, isLoading is false, and playerProfile is available.
 
   const backgroundImageStyle = {
     backgroundImage: "url('https://i.imgur.com/awGhtRo.png')",
   };
   const introLogoUrl = "https://i.imgur.com/AwQqiyx.png";
-  const gameUrl = "https://allianceforge.game"; // Used by share handlers
+  const gameUrl = "https://allianceforge.game"; 
 
   const handleTelegramShare = () => {
     if (playerProfile) {
-      let shareText = `Join me in Alliance Forge! I've reached ${playerProfile.points.toLocaleString()} points and the rank of ${playerProfile.rankTitle}.`;
+      let shareText = `Join me in Alliance Forge! Score: ${playerProfile.points.toLocaleString()}, Rank: ${playerProfile.rankTitle}.`;
       if (playerProfile.referralCode) {
-        shareText += ` Use my referral code: ${playerProfile.referralCode} when you sign up!`;
+        shareText += ` Use my code ${playerProfile.referralCode} at signup!`;
       }
-      if (playerProfile.referredByCode) { // If they were referred
+      if (playerProfile.referredByCode) { 
         shareText += ` I joined thanks to a friend!`;
       }
-      shareText += ` Let's save humanity! ${gameUrl} #AllianceForge #ArkEvac #Invite`;
+      shareText += ` Let's save humanity! ${gameUrl} #AllianceForge #Invite`;
       const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(gameUrl)}&text=${encodeURIComponent(shareText)}`;
       window.open(telegramUrl, '_blank', 'noopener,noreferrer');
     }
@@ -95,14 +79,14 @@ export default function HomePage() {
 
   const handleTikTokShare = async () => {
     if (playerProfile) {
-      let shareText = `Come play Alliance Forge with me! My score: ${playerProfile.points.toLocaleString()}, Rank: ${playerProfile.rankTitle}.`;
+      let shareText = `Alliance Forge is epic! My score: ${playerProfile.points.toLocaleString()}, Rank: ${playerProfile.rankTitle}.`;
       if (playerProfile.referralCode) {
-        shareText += ` My referral: ${playerProfile.referralCode}.`;
+        shareText += ` Join with my code: ${playerProfile.referralCode}.`;
       }
       if (playerProfile.referredByCode) {
         shareText += ` Joined via referral!`;
       }
-      shareText += ` #AllianceForge #Gaming #SciFiGame #Referral #Invite`;
+      shareText += ` #AllianceForge #Gaming #SciFiGame #Referral`;
       try {
         await navigator.clipboard.writeText(shareText + ` Game: ${gameUrl}`);
         toast({
@@ -123,13 +107,13 @@ export default function HomePage() {
 
   const handleDiscordShare = async () => {
     if (playerProfile) {
-      const discordInviteLink = "https://discord.gg/HYzPh32K"; // Example Discord server
-      let shareText = `Calling all Commanders! Join Alliance Forge: ${gameUrl}. I'm at ${playerProfile.points.toLocaleString()} points (Rank: ${playerProfile.rankTitle}).`;
+      const discordInviteLink = "https://discord.gg/HYzPh32K"; 
+      let shareText = `Commanders, assemble in Alliance Forge: ${gameUrl}. My stats: ${playerProfile.points.toLocaleString()} pts (Rank: ${playerProfile.rankTitle}).`;
       if (playerProfile.referralCode) {
-        shareText += ` Use my referral code: ${playerProfile.referralCode}.`;
+        shareText += ` Use referral: ${playerProfile.referralCode} when signing up.`;
       }
       if (playerProfile.referredByCode) {
-        shareText += ` Honored to join the ranks via referral!`;
+        shareText += ` Honored to join via referral!`;
       }
       shareText += ` Our Discord: ${discordInviteLink} #AllianceForge #Invite`;
       try {
@@ -149,6 +133,8 @@ export default function HomePage() {
       window.open(discordInviteLink, '_blank', 'noopener,noreferrer');
     }
   };
+
+  if (!playerProfile) return <IntroScreen/>; // Should ideally be caught by earlier checks, but as a safeguard
 
   return (
     <AppLayout>
@@ -228,7 +214,7 @@ export default function HomePage() {
             <ul className="mt-1 sm:mt-2 text-xs sm:text-sm text-muted-foreground list-none p-0 space-y-0.5 sm:space-y-1">
               {playerProfile.equippedUniformPieces.map(piece => (
                 <li key={piece} className="flex items-center justify-center">
-                  <CheckCircle2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 text-green-400 flex-shrink-0" />
+                  <CheckCircle2 className="h-3 w-3 sm:h-4 sm:h-4 mr-1 sm:mr-2 text-green-400 flex-shrink-0" />
                   <span>{piece}</span>
                 </li>
               ))}
