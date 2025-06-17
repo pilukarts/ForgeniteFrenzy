@@ -68,7 +68,16 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
   equippedUniformPieces: [],
   activeDailyQuests: [],
   lastDailyQuestRefresh: 0,
+  referralCode: undefined, // Initialize referralCode
 };
+
+// Helper function to generate a simple referral code
+const generateReferralCode = (name: string): string => {
+  const namePart = name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 4).toUpperCase();
+  const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();
+  return `${namePart}${randomPart || 'ABCDE'}`; // Fallback for randomPart if it's too short
+};
+
 
 export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(null);
@@ -165,6 +174,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       parsedProfile.equippedUniformPieces = parsedProfile.equippedUniformPieces ?? [];
       parsedProfile.activeDailyQuests = parsedProfile.activeDailyQuests ?? [];
       parsedProfile.lastDailyQuestRefresh = parsedProfile.lastDailyQuestRefresh ?? 0;
+      parsedProfile.referralCode = parsedProfile.referralCode ?? undefined; // Handle referral code
 
       setPlayerProfile(parsedProfile);
       setIsInitialSetupDone(true);
@@ -222,11 +232,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       lastLoginTimestamp: now,
       lastDailyQuestRefresh: 0, // Will be set by refreshDailyQuestsIfNeeded
       activeDailyQuests: [], // Will be populated by refreshDailyQuestsIfNeeded
+      referralCode: generateReferralCode(name), // Generate referral code
     };
     setPlayerProfile(newProfileData); // Set profile first
     setIsInitialSetupDone(true); // Then mark setup as done
     setCurrentSeason(SEASONS_DATA[0]);
-    addCoreMessage({ type: 'briefing', content: `Welcome, Commander ${name}! Your mission begins now.`});
+    addCoreMessage({ type: 'briefing', content: `Welcome, Commander ${name}! Your mission begins now. Your unique referral code is ${newProfileData.referralCode}. Share it with allies!`});
     setCoreLastInteractionTime(now);
     // refreshDailyQuestsIfNeeded will be called by the useEffect that watches playerProfile and isInitialSetupDone
   };
