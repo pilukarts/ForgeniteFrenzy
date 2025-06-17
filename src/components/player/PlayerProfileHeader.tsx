@@ -4,7 +4,7 @@ import React from 'react';
 import type { PlayerProfile } from '@/lib/types';
 import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Shield } from 'lucide-react'; // Example rank insignia
+import { Shield, UserCircle } from 'lucide-react'; // Example rank insignia, Added UserCircle
 
 interface PlayerProfileHeaderProps {
   profile: PlayerProfile;
@@ -19,7 +19,9 @@ const PlayerProfileHeader: React.FC<PlayerProfileHeaderProps> = ({ profile }) =>
     <div className="flex items-center gap-2 sm:gap-3 p-1.5 sm:p-2 rounded-lg bg-card/50 shadow-sm min-w-0">
       <Avatar className="h-8 w-8 sm:h-10 sm:w-10 border-2 border-primary">
         <AvatarImage src={avatarSrc} alt={profile.name} data-ai-hint={dataAiHint} />
-        <AvatarFallback>{profile.name.substring(0, 1).toUpperCase()}</AvatarFallback>
+        <AvatarFallback>
+          {profile.name ? profile.name.substring(0, 1).toUpperCase() : <UserCircle className="h-5 w-5" />}
+        </AvatarFallback>
       </Avatar>
       <div className="flex-grow min-w-0">
         <div className="flex items-center gap-1.5 sm:gap-2">
@@ -41,4 +43,3 @@ const PlayerProfileHeader: React.FC<PlayerProfileHeaderProps> = ({ profile }) =>
 };
 
 export default PlayerProfileHeader;
-
