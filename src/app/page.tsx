@@ -52,11 +52,15 @@ export default function HomePage() {
   };
 
   const introLogoUrl = "https://i.imgur.com/AwQqiyx.png";
+  const gameUrl = "https://allianceforge.game"; // Placeholder URL for the game
 
   const handleTelegramShare = () => {
     if (playerProfile) {
-      const gameUrl = "https://allianceforge.game"; // Placeholder URL for the game
-      const shareText = `I've reached ${playerProfile.points.toLocaleString()} points in Alliance Forge and achieved the rank of ${playerProfile.rankTitle}! Join the fight for humanity's future! #AllianceForge #ArkEvac`;
+      let shareText = `Join me in Alliance Forge! I've reached ${playerProfile.points.toLocaleString()} points and the rank of ${playerProfile.rankTitle}.`;
+      if (playerProfile.referralCode) {
+        shareText += ` Use my referral code: ${playerProfile.referralCode} when you sign up!`;
+      }
+      shareText += ` Let's save humanity! ${gameUrl} #AllianceForge #ArkEvac #Invite`;
       const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(gameUrl)}&text=${encodeURIComponent(shareText)}`;
       window.open(telegramUrl, '_blank', 'noopener,noreferrer');
     }
@@ -64,9 +68,13 @@ export default function HomePage() {
 
   const handleTikTokShare = async () => {
     if (playerProfile) {
-      const shareText = `Check out my progress in Alliance Forge! I've reached ${playerProfile.points.toLocaleString()} points and the rank of ${playerProfile.rankTitle}! #AllianceForge #Gaming #ArkEvac #SciFiGame`;
+      let shareText = `Come play Alliance Forge with me! My score: ${playerProfile.points.toLocaleString()}, Rank: ${playerProfile.rankTitle}.`;
+      if (playerProfile.referralCode) {
+        shareText += ` My referral: ${playerProfile.referralCode}.`;
+      }
+      shareText += ` #AllianceForge #Gaming #SciFiGame #Referral #Invite`;
       try {
-        await navigator.clipboard.writeText(shareText);
+        await navigator.clipboard.writeText(shareText + ` Game: ${gameUrl}`);
         toast({
           title: "TikTok Message Copied!",
           description: "Paste it into your video description. Opening TikTok...",
@@ -85,9 +93,12 @@ export default function HomePage() {
 
   const handleDiscordShare = async () => {
     if (playerProfile) {
-      const gameUrl = "https://allianceforge.game"; // Placeholder
-      const shareText = `I've reached ${playerProfile.points.toLocaleString()} points in Alliance Forge and achieved the rank of ${playerProfile.rankTitle}! Join the fight for humanity's future at ${gameUrl}! #AllianceForge`;
-      const discordInviteLink = "https://discord.gg/HYzPh32K";
+      const discordInviteLink = "https://discord.gg/HYzPh32K"; // Example Discord server
+      let shareText = `Calling all Commanders! Join Alliance Forge: ${gameUrl}. I'm at ${playerProfile.points.toLocaleString()} points (Rank: ${playerProfile.rankTitle}).`;
+      if (playerProfile.referralCode) {
+        shareText += ` Use my referral code: ${playerProfile.referralCode}.`;
+      }
+      shareText += ` Our Discord: ${discordInviteLink} #AllianceForge #Invite`;
       try {
         await navigator.clipboard.writeText(shareText);
         toast({
@@ -152,7 +163,7 @@ export default function HomePage() {
               className="w-full sm:w-auto text-base mb-2 sm:mb-0"
               onClick={handleTelegramShare}
             >
-              <Send className="mr-2 h-5 w-5" /> Share on Telegram
+              <Send className="mr-2 h-5 w-5" /> Share & Invite (Telegram)
             </Button>
 
             <Button
@@ -160,7 +171,7 @@ export default function HomePage() {
               className="w-full sm:w-auto text-base mb-2 sm:mb-0"
               onClick={handleTikTokShare}
             >
-              <Film className="mr-2 h-5 w-5" /> Share on TikTok
+              <Film className="mr-2 h-5 w-5" /> Share & Invite (TikTok)
             </Button>
 
             <Button
@@ -168,7 +179,7 @@ export default function HomePage() {
               className="w-full sm:w-auto text-base"
               onClick={handleDiscordShare}
             >
-              <MessageSquare className="mr-2 h-5 w-5" /> Share on Discord
+              <MessageSquare className="mr-2 h-5 w-5" /> Share & Invite (Discord)
             </Button>
           </div>
         </div>
