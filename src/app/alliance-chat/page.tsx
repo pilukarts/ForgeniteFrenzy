@@ -118,7 +118,7 @@ const AllianceChatPage: React.FC = () => {
                 <Avatar className="h-6 w-6 sm:h-8 sm:w-8 border border-primary/50"> {/* Reduced avatar size on mobile */}
                   <AvatarImage src={getAvatarSrc(msg)} alt={msg.senderName} data-ai-hint={getAvatarHint(msg)} />
                   <AvatarFallback>
-                    {msg.senderName?.substring(0, 1).toUpperCase() || <UserCircle size={12} sm:size={16}/>} {/* Adjusted UserCircle size */}
+                    {msg.senderName ? msg.senderName.substring(0, 1).toUpperCase() : <UserCircle className="h-4 w-4 sm:h-5 sm:w-5"/>}
                   </AvatarFallback>
                 </Avatar>
                 <div
@@ -163,4 +163,3 @@ const AllianceChatPage: React.FC = () => {
 };
 
 export default AllianceChatPage;
-
