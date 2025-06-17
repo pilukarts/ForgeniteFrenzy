@@ -3,15 +3,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
 import { useGame } from '@/contexts/GameContext';
-import type { ChatMessage }_from_ '@/lib/types';
-import { Input }_from_ '@/components/ui/input';
-import { Button }_from_ '@/components/ui/button';
-import { ScrollArea }_from_ '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback, AvatarImage }_from_ '@/components/ui/avatar';
-import { SendHorizonal, UserCircle }_from_ 'lucide-react';
+import type { ChatMessage } from '@/lib/types';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { SendHorizonal, UserCircle } from 'lucide-react';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import IntroScreen from '@/components/intro/IntroScreen';
-import { cn }_from_ '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 const AllianceChatPage: React.FC = () => {
   const { playerProfile, isLoading, isInitialSetupDone } = useGame();
