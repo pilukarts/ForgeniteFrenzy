@@ -1,6 +1,6 @@
 
-import type { Season, Upgrade, ArkUpgrade, MarketplaceItem } from './types';
-import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign } from 'lucide-react';
+import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate } from './types';
+import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle } from 'lucide-react';
 
 export const SEASONS_DATA: Season[] = [
   {
@@ -69,7 +69,7 @@ export const SEASONS_DATA: Season[] = [
     title: 'The Plutonium Crisis',
     description: "Gather Plutonium, the rare resource for Legendary and Core units.",
     objectiveResourceName: 'Plutonium',
-    objectiveResourceIcon: HelpCircle, // Placeholder, replace with a better icon
+    objectiveResourceIcon: HelpCircle, 
     coreBriefingObjective: "secure Plutonium, vital for advanced military units",
     unlocksCore: false,
   },
@@ -93,7 +93,7 @@ export const UPGRADES_DATA: Upgrade[] = [
     baseCost: 10,
     costMultiplier: 1.5,
     effectDescription: (level) => `+${level} Points per tap.`,
-    icon: HelpCircle, // Placeholder
+    icon: Zap, 
   },
   {
     id: 'critChance',
@@ -102,7 +102,7 @@ export const UPGRADES_DATA: Upgrade[] = [
     baseCost: 50,
     costMultiplier: 2,
     effectDescription: (level) => `+${level * 0.5}% Critical Tap Chance.`,
-    icon: HelpCircle, // Placeholder
+    icon: Target,
   },
   {
     id: 'critMultiplier',
@@ -111,7 +111,7 @@ export const UPGRADES_DATA: Upgrade[] = [
     baseCost: 100,
     costMultiplier: 2.5,
     effectDescription: (level) => `+${level * 10}% Critical Tap Bonus.`,
-    icon: HelpCircle, // Placeholder
+    icon: TrendingUp,
   },
   {
     id: 'comboBonus',
@@ -120,7 +120,7 @@ export const UPGRADES_DATA: Upgrade[] = [
     baseCost: 75,
     costMultiplier: 1.8,
     effectDescription: (level) => `+${level * 2}% Combo Multiplier.`,
-    icon: HelpCircle, // Placeholder
+    icon: ArrowUpCircle,
   },
 ];
 
@@ -129,7 +129,6 @@ export const ARK_UPGRADES_DATA: ArkUpgrade[] = [
   { id: 'hullPlating1', name: 'Basic Hull Plating', description: 'Reinforce the Ark structure.', cost: 1000, visualStage: 1, isPurchased: false },
   { id: 'engineModules1', name: 'Auxiliary Engines', description: 'Install initial engine modules.', cost: 2500, visualStage: 2, isPurchased: false },
   { id: 'cargoBays1', name: 'Expandable Cargo Bays', description: 'Increase resource storage capacity.', cost: 5000, visualStage: 3, isPurchased: false },
-  // Add more Ark upgrades, leading to the "Founder's Ark"
 ];
 
 export const INITIAL_XP_TO_NEXT_LEVEL = 100;
@@ -146,7 +145,6 @@ export const RANK_TITLES: { [level: number]: string } = {
   40: 'Fleet Commander',
   50: 'High Commander',
   60: 'Vanguard Commander',
-  // ... and so on
 };
 
 export function getRankTitle(level: number): string {
@@ -163,7 +161,7 @@ export function getRankTitle(level: number): string {
 
 export const POINTS_PER_TAP = 1;
 export const AURON_PER_WALLET_CONNECT = 100;
-export const MULE_DRONE_BASE_RATE = 1; // Points per minute per drone
+export const MULE_DRONE_BASE_RATE = 1;
 
 export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
   {
@@ -173,7 +171,7 @@ export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
     costInAuron: 25,
     bonusEffect: {
       durationTaps: 20,
-      multiplier: 1.10, // +10%
+      multiplier: 1.10,
     },
     icon: Zap,
   },
@@ -184,7 +182,7 @@ export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
     costInAuron: 50,
     bonusEffect: {
       durationTaps: 30,
-      multiplier: 1.15, // +15%
+      multiplier: 1.15,
     },
     icon: Package,
   },
@@ -223,3 +221,12 @@ export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
   },
 ];
 
+export const DAILY_QUESTS_POOL: DailyQuestTemplate[] = [
+  { templateId: 'dq001', title: 'Tap Enthusiast', description: 'Tap the commander 100 times.', type: 'taps', target: 100, reward: { points: 1000 }, icon: Target },
+  { templateId: 'dq002', title: 'Point Collector', description: 'Earn 2,500 points.', type: 'points_earned', target: 2500, reward: { points: 1500, auron: 10 }, icon: TrendingUp },
+  { templateId: 'dq003', title: 'Daily Check-in', description: 'Log in to the game today.', type: 'login', target: 1, reward: { auron: 20 }, icon: LogIn },
+  { templateId: 'dq004', title: 'Auron Spender', description: 'Spend 50 Auron in the marketplace.', type: 'spend_auron', target: 50, reward: { points: 5000 }, icon: ShoppingBag },
+  { templateId: 'dq005', title: 'Upgrade Initiative', description: 'Purchase any upgrade.', type: 'purchase_upgrade', target: 1, reward: { points: 2000, auron: 5 }, icon: ArrowUpCircle },
+  { templateId: 'dq006', title: 'Power Tapper', description: 'Tap the commander 250 times.', type: 'taps', target: 250, reward: { points: 2500, auron: 5 }, icon: Target },
+  { templateId: 'dq007', title: 'Resource Hoarder', description: 'Earn 5,000 points.', type: 'points_earned', target: 5000, reward: { points: 3000, auron: 15 }, icon: TrendingUp },
+];
