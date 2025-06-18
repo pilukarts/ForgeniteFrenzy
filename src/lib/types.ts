@@ -28,12 +28,17 @@ export interface PlayerProfile {
   lastDailyQuestRefresh: number; // Timestamp of the last daily quest refresh
   referralCode?: string;
   referredByCode?: string; // Stores the code of the player who referred this user
+
+  // Tap Limit System
+  currentTaps: number;
+  maxTaps: number;
+  tapsAvailableAt: number; // Timestamp when taps will be refilled
 }
 
 export interface Season {
   id: string;
   chapter: number;
-  title: string;
+  title:string;
   description: string;
   objectiveResourceName: string;
   objectiveResourceIcon?: LucideIcon | string;

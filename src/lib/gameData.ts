@@ -122,6 +122,16 @@ export const UPGRADES_DATA: Upgrade[] = [
     effectDescription: (level) => `+${level * 2}% Combo Multiplier.`,
     icon: ArrowUpCircle,
   },
+  // Example of a new upgrade for the tap limit system:
+  // {
+  //   id: 'maxTapsUpgrade',
+  //   name: 'Expanded Energy Cells',
+  //   description: 'Increases your maximum number of available taps.',
+  //   baseCost: 200,
+  //   costMultiplier: 2.0,
+  //   effectDescription: (level) => `+${level * 10} Max Taps.`,
+  //   icon: BatteryCharging, // You'd need to import BatteryCharging from lucide-react
+  // },
 ];
 
 
@@ -162,6 +172,12 @@ export function getRankTitle(level: number): string {
 export const POINTS_PER_TAP = 1;
 export const AURON_PER_WALLET_CONNECT = 100;
 export const MULE_DRONE_BASE_RATE = 1;
+
+// Tap Limit System Constants
+export const INITIAL_MAX_TAPS = 100;
+export const TAP_REGEN_COOLDOWN_MINUTES = 30;
+export const AURON_COST_FOR_TAP_REFILL = 50;
+
 
 export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
   {

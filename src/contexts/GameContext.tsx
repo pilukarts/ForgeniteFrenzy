@@ -2,7 +2,7 @@
 "use client";
 
 import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType } from '@/lib/types';
-import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE } from '@/lib/gameData';
+import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL } from '@/lib/gameData';
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getCoreBriefing } from '@/ai/flows/core-briefings';
@@ -12,6 +12,7 @@ import { getCoreProgressUpdate } from '@/ai/flows/core-progress-updates';
 const TAPS_PER_UNIFORM_PIECE = 2000;
 const UNIFORM_PIECES_ORDER = ["Tactical Gloves", "Combat Boots", "Utility Belt", "Chest Rig", "Stealth Helmet"];
 const NUMBER_OF_DAILY_QUESTS = 3;
+const TAP_REGEN_COOLDOWN_MILLISECONDS = TAP_REGEN_COOLDOWN_MINUTES * 60 * 1000;
 
 interface GameContextType {
   playerProfile: PlayerProfile | null;
@@ -45,6 +46,7 @@ interface GameContextType {
   switchCommanderSex: () => void;
   claimQuestReward: (questId: string) => void;
   refreshDailyQuestsIfNeeded: () => void;
+  refillTaps: () => void; // For purchasing tap refills
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -70,6 +72,9 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
   lastDailyQuestRefresh: 0,
   referralCode: undefined,
   referredByCode: undefined,
+  currentTaps: INITIAL_MAX_TAPS,
+  maxTaps: INITIAL_MAX_TAPS,
+  tapsAvailableAt: Date.now(), // Start with full taps, available immediately
 };
 
 const generateReferralCode = (name: string): string => {
@@ -167,6 +172,11 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const savedProfile = localStorage.getItem('playerProfile');
     if (savedProfile) {
       let parsedProfile = JSON.parse(savedProfile) as PlayerProfile;
+      // Initialize tap limit fields for older profiles
+      parsedProfile.maxTaps = parsedProfile.maxTaps ?? INITIAL_MAX_TAPS;
+      parsedProfile.currentTaps = parsedProfile.currentTaps ?? parsedProfile.maxTaps;
+      parsedProfile.tapsAvailableAt = parsedProfile.tapsAvailableAt ?? Date.now();
+
       parsedProfile.activeTapBonuses = parsedProfile.activeTapBonuses ?? [];
       parsedProfile.totalTapsForUniform = parsedProfile.totalTapsForUniform ?? 0;
       parsedProfile.equippedUniformPieces = parsedProfile.equippedUniformPieces ?? [];
@@ -232,6 +242,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       activeDailyQuests: [], 
       referralCode: generateReferralCode(name),
       referredByCode: referredByCode?.trim() || undefined,
+      // Tap limit system init
+      maxTaps: INITIAL_MAX_TAPS,
+      currentTaps: INITIAL_MAX_TAPS,
+      tapsAvailableAt: now,
     };
     setPlayerProfile(newProfileData); 
     setIsInitialSetupDone(true); 
@@ -459,6 +473,32 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (!prev) return null;
 
         let updatedProfile = {...prev};
+        const now = Date.now();
+
+        // Check for tap regeneration
+        if (updatedProfile.currentTaps === 0 && now >= updatedProfile.tapsAvailableAt) {
+            updatedProfile.currentTaps = updatedProfile.maxTaps;
+            updatedProfile.tapsAvailableAt = now; // Reset, available now
+             setTimeout(() => {
+                toast({ title: "Taps Recharged!", description: "Your tap energy has been fully restored." });
+            }, 0);
+        }
+        
+        if (updatedProfile.currentTaps <= 0) {
+            const timeLeft = Math.ceil((updatedProfile.tapsAvailableAt - now) / 1000);
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            setTimeout(() => {
+                toast({ title: "Out of Taps!", description: `Wait ${minutes}m ${seconds}s or refill.`, variant: "destructive" });
+            }, 0);
+            return updatedProfile; // No tap action performed
+        }
+
+        updatedProfile.currentTaps--;
+        if (updatedProfile.currentTaps === 0) {
+            updatedProfile.tapsAvailableAt = now + TAP_REGEN_COOLDOWN_MILLISECONDS;
+        }
+        
         let pointsToEarn = pointsPerTapValue; 
         const isCritical = Math.random() < criticalTapChance;
         
@@ -580,6 +620,31 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   }, [toast]);
 
+  const refillTaps = useCallback(() => {
+    setPlayerProfile(prev => {
+        if (!prev) return null;
+        if (prev.auron < AURON_COST_FOR_TAP_REFILL) {
+            setTimeout(() => {
+                toast({ title: "Insufficient Auron", description: `You need ${AURON_COST_FOR_TAP_REFILL} Auron to refill taps.`, variant: "destructive" });
+            }, 0);
+            return prev;
+        }
+        setTimeout(() => {
+            toast({ title: "Taps Refilled!", description: `Your tap energy has been restored for ${AURON_COST_FOR_TAP_REFILL} Auron.` });
+        }, 0);
+        
+        let updatedProfile = {
+            ...prev,
+            auron: prev.auron - AURON_COST_FOR_TAP_REFILL,
+            currentTaps: prev.maxTaps,
+            tapsAvailableAt: Date.now(), // Reset, available now
+        };
+        updatedProfile = updateQuestProgress(updatedProfile, 'spend_auron', AURON_COST_FOR_TAP_REFILL);
+        return updatedProfile;
+    });
+  }, [toast, updateQuestProgress]);
+
+
   useEffect(() => {
     if (isInitialSetupDone && playerProfile && isCoreUnlocked && !isAICallInProgress && Date.now() - coreLastInteractionTime > 300000) { 
       setIsAICallInProgress(true);
@@ -674,6 +739,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         switchCommanderSex,
         claimQuestReward,
         refreshDailyQuestsIfNeeded,
+        refillTaps,
     }}>
       {children}
     </GameContext.Provider>
