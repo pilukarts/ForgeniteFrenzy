@@ -7,10 +7,11 @@ import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
-import { User, UserRound, CheckCircle2, ShieldEllipsis, Send, Film, MessageSquare } from 'lucide-react';
+import { User, UserRound, CheckCircle2, ShieldEllipsis, Send, Film, MessageSquare, Zap, AlertTriangle } from 'lucide-react';
 import IntroScreen from '@/components/intro/IntroScreen';
 import PreIntroScreen from '@/components/intro/PreIntroScreen';
 import { useToast } from "@/hooks/use-toast";
+import { AURON_COST_FOR_TAP_REFILL, TAP_REGEN_COOLDOWN_MINUTES } from '@/lib/gameData';
 
 type NewUserIntroPhase = 'pre' | 'main' | 'setup';
 
@@ -24,47 +25,68 @@ const IntroScreenWithTransition: React.FC<{ onComplete: () => void; duration: nu
   return <IntroScreen />;
 };
 
+const formatTimeLeft = (milliseconds: number): string => {
+  if (milliseconds <= 0) return "00:00";
+  const totalSeconds = Math.floor(milliseconds / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+};
+
+
 export default function HomePage() {
-  const { playerProfile, isLoading, isInitialSetupDone, handleTap, switchCommanderSex } = useGame();
+  const { playerProfile, isLoading, isInitialSetupDone, handleTap, switchCommanderSex, refillTaps } = useGame();
   const { toast } = useToast();
-
-  // State for new user intro flow
   const [newUserIntroPhase, setNewUserIntroPhase] = useState<NewUserIntroPhase>('pre');
+  const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number>(0);
 
-  // --- Conditional Rendering Logic ---
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+    if (playerProfile && playerProfile.currentTaps <= 0 && playerProfile.tapsAvailableAt > Date.now()) {
+      const updateTimer = () => {
+        const remaining = playerProfile.tapsAvailableAt - Date.now();
+        setTimeLeftForTapRegen(remaining > 0 ? remaining : 0);
+        if (remaining <= 0) {
+          // Optionally auto-refresh profile or notify user taps are ready
+           if(playerProfile.currentTaps <=0) { // Check again, as handleTap might refill it
+             toast({title: "Taps Recharged!", description: "Your tap energy is ready."});
+           }
+        }
+      };
+      updateTimer(); // Initial call
+      intervalId = setInterval(updateTimer, 1000);
+    } else if (playerProfile && playerProfile.currentTaps > 0) {
+      setTimeLeftForTapRegen(0); // Reset if taps are available
+    }
+    return () => clearInterval(intervalId);
+  }, [playerProfile, toast]);
 
-  // 1. Handle existing users (initial setup is done)
+
   if (isInitialSetupDone) {
     if (isLoading) {
       return <IntroScreen />;
     }
     if (!playerProfile) {
-      // This case should ideally be handled by redirecting to setup or an error page
-      // For now, showing IntroScreen or a simple message.
-      return <IntroScreen />; // Or <p>Error: Player profile not found after setup.</p>;
+      return <IntroScreen />; 
     }
   } else {
-    // 2. Handle new users (initial setup is NOT done)
     if (newUserIntroPhase === 'pre') {
       return <PreIntroScreen onCompletion={() => setNewUserIntroPhase('main')} />;
     }
     if (newUserIntroPhase === 'main') {
-      // Show IntroScreen for 2.5 seconds then move to setup
       return <IntroScreenWithTransition onComplete={() => setNewUserIntroPhase('setup')} duration={2500} />; 
     }
     if (newUserIntroPhase === 'setup') {
       return <PlayerSetup />;
     }
-    // Fallback for any other unhandled new user state, though ideally all paths are covered.
     return <IntroScreen />;
   }
-
 
   const backgroundImageStyle = {
     backgroundImage: "url('https://i.imgur.com/awGhtRo.png')",
   };
-  const introLogoUrl = "https://i.imgur.com/AwQqiyx.png"; // Provided image URL
-  const gameUrl = "https://allianceforge.game"; // Replace with your actual game URL
+  const introLogoUrl = "https://i.imgur.com/AwQqiyx.png"; 
+  const gameUrl = "https://allianceforge.game"; 
 
   const handleTelegramShare = () => {
     if (playerProfile) {
@@ -105,14 +127,13 @@ export default function HomePage() {
           variant: "destructive",
         });
       }
-      // Consider not auto-opening TikTok or making it optional
       window.open('https://www.tiktok.com/', '_blank', 'noopener,noreferrer');
     }
   };
 
   const handleDiscordShare = async () => {
     if (playerProfile) {
-      const discordInviteLink = "https://discord.gg/HYzPh32K"; // Replace with your actual Discord invite
+      const discordInviteLink = "https://discord.gg/HYzPh32K"; 
       let shareText = `Commanders, assemble in Alliance Forge: ${gameUrl}. My stats: ${playerProfile.points.toLocaleString()} pts (Rank: ${playerProfile.rankTitle}).`;
       if (playerProfile.referralCode) {
         shareText += ` Use referral: ${playerProfile.referralCode} when signing up.`;
@@ -139,9 +160,9 @@ export default function HomePage() {
     }
   };
 
-  // This check is after the new user flow, so playerProfile should exist if isInitialSetupDone is true.
-  // If it's still null here for an existing user, something is wrong with context/loading.
-  if (!playerProfile) return <IntroScreen/>; // Should ideally be caught by earlier checks, but as a safeguard
+  if (!playerProfile) return <IntroScreen/>; 
+
+  const isOutOfTaps = playerProfile.currentTaps <= 0 && timeLeftForTapRegen > 0;
 
   return (
     <AppLayout>
@@ -166,7 +187,36 @@ export default function HomePage() {
           onTap={handleTap}
         />
 
-        <div className="mt-8 sm:mt-12">
+        <div className="mt-4 sm:mt-6 w-full max-w-xs sm:max-w-sm md:max-w-md">
+           <div className="bg-background/70 p-2 rounded-lg mb-2">
+            <p className="text-lg sm:text-xl font-semibold text-primary font-headline">
+              Taps: {playerProfile.currentTaps} / {playerProfile.maxTaps}
+            </p>
+            {isOutOfTaps && (
+              <p className="text-xs sm:text-sm text-orange-400 animate-pulse">
+                Recarga en: {formatTimeLeft(timeLeftForTapRegen)}
+              </p>
+            )}
+          </div>
+
+          {isOutOfTaps && (
+            <Button 
+              onClick={refillTaps} 
+              variant="destructive" 
+              className="w-full mb-2 bg-accent hover:bg-accent/90 text-accent-foreground"
+              disabled={playerProfile.auron < AURON_COST_FOR_TAP_REFILL}
+            >
+              <Zap className="mr-2 h-4 w-4" /> Rellenar Taps ({AURON_COST_FOR_TAP_REFILL} Auron)
+            </Button>
+          )}
+           {playerProfile.auron < AURON_COST_FOR_TAP_REFILL && isOutOfTaps && (
+            <p className="text-xs text-red-400 mb-2 flex items-center justify-center">
+                <AlertTriangle className="h-3 w-3 mr-1"/>
+                Auron insuficiente para rellenar.
+            </p>
+           )}
+
+
           <p className="text-sm sm:text-base font-semibold text-primary font-headline bg-background/70 p-1 rounded">
             Tap Commander to Generate Points
           </p>
@@ -212,7 +262,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Black Uniform Progress Section */}
         {playerProfile.equippedUniformPieces && playerProfile.equippedUniformPieces.length > 0 && (
           <div className="mt-4 sm:mt-6 text-center w-full max-w-[280px] sm:max-w-xs p-2 sm:p-3 bg-card/80 rounded-lg shadow">
             <h3 className="text-sm sm:text-md font-semibold text-accent flex items-center justify-center">
@@ -243,8 +292,3 @@ export default function HomePage() {
     </AppLayout>
   );
 }
-    
-
-    
-
-    
