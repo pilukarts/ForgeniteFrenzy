@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -53,6 +54,10 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+
+    /* Dynamic Tier Colors - default to Silver */
+    --dynamic-commander-glow: 210 15% 75%; 
+    --dynamic-core-color: 210 15% 75%;
   }
 
   .dark {
@@ -92,6 +97,10 @@
     --sidebar-accent-foreground: 220 100% 10%; /* Very Dark Blue/Black */
     --sidebar-border: 220 20% 22%; /* Darker sidebar border */
     --sidebar-ring: 45 100% 50%; /* Gold */
+
+    /* Dynamic Tier Colors - default to Silver for dark theme as well */
+    --dynamic-commander-glow: 210 15% 75%; 
+    --dynamic-core-color: 210 15% 75%;
   }
 }
 
@@ -119,27 +128,32 @@
   }
 }
 
-/* Pulsing animation for Commander Portrait */
-@keyframes pulse-neon-gold { /* Renamed to reflect gold */
+/* Pulsing animation for Commander Portrait - uses dynamic color */
+@keyframes pulse-neon-dynamic {
   0%, 100% {
-    box-shadow: 0 0 5px hsla(var(--primary) / 0.7), 0 0 10px hsla(var(--primary) / 0.5), 0 0 15px hsla(var(--primary) / 0.3);
+    box-shadow: 0 0 5px hsla(var(--dynamic-commander-glow) / 0.7), 0 0 10px hsla(var(--dynamic-commander-glow) / 0.5), 0 0 15px hsla(var(--dynamic-commander-glow) / 0.3);
   }
   50% {
-    box-shadow: 0 0 10px hsla(var(--primary) / 0.9), 0 0 20px hsla(var(--primary) / 0.7), 0 0 30px hsla(var(--primary) / 0.5);
+    box-shadow: 0 0 10px hsla(var(--dynamic-commander-glow) / 0.9), 0 0 20px hsla(var(--dynamic-commander-glow) / 0.7), 0 0 30px hsla(var(--dynamic-commander-glow) / 0.5);
   }
 }
 
-.animate-pulse-neon-blue { /* Consider renaming class if primary is now gold */
-  animation: pulse-neon-gold 1.5s infinite ease-in-out;
+/* This class was --pulse-neon-blue, now uses the dynamic commander glow color directly from the animation if applied.
+   The core-hexagon-glow animation now uses --dynamic-commander-glow, so this specific class might be redundant if core-hexagon-glow is used instead for the commander.
+   Let's keep it for now and ensure CommanderPortrait uses core-hexagon-glow.
+*/
+.animate-pulse-neon-dynamic {
+  animation: pulse-neon-dynamic 1.5s infinite ease-in-out;
 }
 
-/* C.O.R.E. hexagon glow - uses bright-gold which is now unified gold */
+
+/* C.O.R.E. hexagon glow - uses dynamic color --dynamic-commander-glow for consistency with commander portrait */
 @keyframes core-glow {
   0%, 100% {
-    filter: drop-shadow(0 0 3px hsl(var(--bright-gold)/0.7)) drop-shadow(0 0 6px hsl(var(--bright-gold)/0.5));
+    filter: drop-shadow(0 0 3px hsl(var(--dynamic-commander-glow)/0.7)) drop-shadow(0 0 6px hsl(var(--dynamic-commander-glow)/0.5));
   }
   50% {
-    filter: drop-shadow(0 0 6px hsl(var(--bright-gold)/0.9)) drop-shadow(0 0 12px hsl(var(--bright-gold)/0.7));
+    filter: drop-shadow(0 0 6px hsl(var(--dynamic-commander-glow)/0.9)) drop-shadow(0 0 12px hsl(var(--dynamic-commander-glow)/0.7));
   }
 }
 

@@ -33,6 +33,9 @@ export interface PlayerProfile {
   currentTaps: number;
   maxTaps: number;
   tapsAvailableAt: number; // Timestamp when taps will be refilled
+
+  // Visual Tier Color
+  currentTierColor: string; // Stores HSL string like "210 15% 75%"
 }
 
 export interface Season {

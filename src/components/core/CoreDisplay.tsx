@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Hexagon, MessageSquare, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { CoreMessage } from '@/lib/types';
+import type { CoreMessage, PlayerProfile } from '@/lib/types'; // Import PlayerProfile
 
 const CoreDisplay: React.FC = () => {
   const { playerProfile, coreMessages, addCoreMessage, isCoreUnlocked } = useGame();
@@ -16,8 +16,6 @@ const CoreDisplay: React.FC = () => {
 
   useEffect(() => {
     if (coreMessages.length > 0 && !isOpen) {
-      // Check if the latest message is newer than the last time it was opened (pseudo logic)
-      // For simplicity, any new message while closed makes it unread
       setHasUnread(true);
     }
   }, [coreMessages, isOpen]);
@@ -29,13 +27,13 @@ const CoreDisplay: React.FC = () => {
   }, [coreMessages, isOpen]);
 
   if (!isCoreUnlocked || !playerProfile) {
-    return null; // C.O.R.E. is not yet unlocked or player not loaded
+    return null; 
   }
 
   const toggleCore = () => {
     setIsOpen(!isOpen);
     if (!isOpen) {
-      setHasUnread(false); // Mark as read when opening
+      setHasUnread(false); 
     }
   };
   
@@ -48,6 +46,12 @@ const CoreDisplay: React.FC = () => {
     }
   }
 
+  const currentTierColor = playerProfile.currentTierColor || '210 15% 75%'; // Default to Silver HSL
+  const dynamicCoreStyle = {
+    '--dynamic-commander-glow': currentTierColor, // For the glow animation on button
+    '--dynamic-core-color': currentTierColor     // For direct color styling
+  } as React.CSSProperties;
+
   return (
     <>
       {/* C.O.R.E. floating button/icon */}
@@ -55,13 +59,16 @@ const CoreDisplay: React.FC = () => {
         variant="ghost"
         size="icon"
         onClick={toggleCore}
+        style={dynamicCoreStyle} // Apply dynamic HSL for glow and direct color var
         className={cn(
-          "fixed bottom-20 right-4 z-[60] h-14 w-14 rounded-full bg-background/70 backdrop-blur-sm shadow-xl border-2 border-bright-gold core-hexagon-glow hover:bg-background",
-          isOpen && "opacity-0 pointer-events-none" // Hide when panel is open
+          "fixed bottom-20 right-4 z-[60] h-14 w-14 rounded-full bg-background/70 backdrop-blur-sm shadow-xl core-hexagon-glow", // Apply glow animation
+          "border-2 border-[hsl(var(--dynamic-core-color))]", // Dynamic border color
+          "hover:bg-background",
+          isOpen && "opacity-0 pointer-events-none" 
         )}
         aria-label="Toggle C.O.R.E. Interface"
       >
-        <Hexagon className="h-8 w-8 text-bright-gold fill-bright-gold/20" />
+        <Hexagon className={cn("h-8 w-8 text-[hsl(var(--dynamic-core-color))] fill-[hsla(var(--dynamic-core-color)/0.2)]")} /> {/* Dynamic icon colors */}
         {hasUnread && !isOpen && (
           <span className="absolute top-0 right-0 block h-3 w-3 rounded-full bg-accent ring-2 ring-background" />
         )}
@@ -69,16 +76,18 @@ const CoreDisplay: React.FC = () => {
 
       {/* C.O.R.E. Panel */}
       <div
+        style={{ '--dynamic-core-color': currentTierColor } as React.CSSProperties} // Set var for children elements to use for direct coloring
         className={cn(
           "fixed inset-x-0 bottom-0 z-[70] h-[60vh] transform transition-transform duration-300 ease-in-out md:inset-x-auto md:right-4 md:bottom-4 md:h-[70vh] md:w-[380px] md:rounded-lg",
-          "bg-background/80 backdrop-blur-md border-t-2 md:border-2 border-bright-gold shadow-2xl flex flex-col",
+          "bg-background/80 backdrop-blur-md md:border-2 shadow-2xl flex flex-col",
+          "border-t-2 border-[hsl(var(--dynamic-core-color))] md:border-[hsl(var(--dynamic-core-color))]", // Dynamic border for panel
           isOpen ? "translate-y-0" : "translate-y-full md:translate-y-[calc(100%_+_1rem)]"
         )}
       >
-        <div className="flex items-center justify-between p-3 border-b border-bright-gold/30">
+        <div className={cn("flex items-center justify-between p-3 border-b border-[hsla(var(--dynamic-core-color)/0.3)]")}> {/* Dynamic inner border */}
           <div className="flex items-center gap-2">
-            <Hexagon className="h-7 w-7 text-bright-gold" />
-            <h3 className="font-headline text-xl text-bright-gold">C.O.R.E.</h3>
+            <Hexagon className={cn("h-7 w-7 text-[hsl(var(--dynamic-core-color))]")} /> {/* Dynamic icon color */}
+            <h3 className={cn("font-headline text-xl text-[hsl(var(--dynamic-core-color))]")}>C.O.R.E.</h3> {/* Dynamic text color */}
           </div>
           <Button variant="ghost" size="icon" onClick={toggleCore} className="text-muted-foreground hover:text-foreground">
             <X className="h-5 w-5" />
@@ -106,10 +115,6 @@ const CoreDisplay: React.FC = () => {
             </div>
           )}
         </ScrollArea>
-        {/* Input area for future interaction if needed */}
-        {/* <div className="p-3 border-t border-bright-gold/30">
-          <Input placeholder="Query C.O.R.E..." className="bg-input border-border focus:ring-bright-gold" />
-        </div> */}
       </div>
     </>
   );
