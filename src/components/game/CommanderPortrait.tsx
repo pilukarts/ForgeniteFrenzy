@@ -3,15 +3,21 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { useGame } from '@/contexts/GameContext'; // Import useGame
 
 interface CommanderPortraitProps {
-  commanderSex: 'male' | 'female';
+  commanderSex: 'male' | 'female'; // This will be taken from playerProfile
   onTap: () => void;
 }
 
-const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onTap }) => {
+const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
+  const { playerProfile } = useGame(); // Get playerProfile from context
   const [isTapped, setIsTapped] = useState(false);
   
+  // Determine commander sex and tier color from playerProfile
+  const commanderSex = playerProfile?.commanderSex || 'female'; // Default if profile not loaded
+  const currentTierColor = playerProfile?.currentTierColor || '210 15% 75%'; // Default to Silver HSL
+
   const maleImageUrl = "https://i.imgur.com/iuRJVBZ.png"; 
   const femaleImageUrl = "https://i.imgur.com/BQHeVWp.png";
   
@@ -35,17 +41,19 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
     <button 
       onClick={handleInteraction} 
       onTouchStart={(e) => {
-        // e.preventDefault(); // Prevent default touch behavior like scrolling or double-tap zoom if needed
         handleInteraction();
       }}
       className={cn(
         "relative focus:outline-none transition-transform duration-100",
         "w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[440px] lg:h-[440px]", // Consistent large size
-        "bg-transparent core-hexagon-glow", 
+        "bg-transparent core-hexagon-glow", // Apply the glow animation class
         "flex items-center justify-center",
         isTapped ? 'animate-tapped-visual' : 'active:scale-95'
       )}
-      style={{ clipPath: hexagonClipPath }}
+      style={{ 
+        clipPath: hexagonClipPath,
+        '--dynamic-commander-glow': currentTierColor 
+      } as React.CSSProperties}
       aria-label="Tap Commander"
     >
       <Image
@@ -62,11 +70,14 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
       <svg
         viewBox="0 0 32 32"
         xmlns="http://www.w3.org/2000/svg"
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[200%] h-10 w-10 md:h-12 md:w-12 text-bright-gold/70 opacity-80 pointer-events-none core-hexagon-glow"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[200%] h-10 w-10 md:h-12 md:w-12 opacity-80 pointer-events-none core-hexagon-glow"
+        style={{ '--dynamic-commander-glow': currentTierColor } as React.CSSProperties} // Apply glow to SVG too
+        // For SVG, text color used for fill
+        fill="hsl(var(--dynamic-commander-glow))"
       >
         <path
           d="M16 3 L29.856 10 L29.856 24 L16 31 L2.144 24 L2.144 10 Z"
-          fill="currentColor"
+          // fill will be inherited from svg element style or explicit fill here
         />
         <text
           x="50%"
@@ -75,6 +86,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ commanderSex, onT
           textAnchor="middle"
           fontSize="10" 
           fontWeight="bold"
+          // Use a contrasting color for text on dynamic backgrounds or primary-foreground
           fill="hsl(var(--primary-foreground))" 
           className="pointer-events-none"
         >

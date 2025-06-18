@@ -2,7 +2,7 @@
 "use client";
 
 import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType } from '@/lib/types';
-import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL } from '@/lib/gameData';
+import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR } from '@/lib/gameData';
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getCoreBriefing } from '@/ai/flows/core-briefings';
@@ -75,6 +75,7 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
   currentTaps: INITIAL_MAX_TAPS,
   maxTaps: INITIAL_MAX_TAPS,
   tapsAvailableAt: Date.now(), // Start with full taps, available immediately
+  currentTierColor: INITIAL_TIER_COLOR,
 };
 
 const generateReferralCode = (name: string): string => {
@@ -184,6 +185,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       parsedProfile.lastDailyQuestRefresh = parsedProfile.lastDailyQuestRefresh ?? 0;
       parsedProfile.referralCode = parsedProfile.referralCode ?? undefined;
       parsedProfile.referredByCode = parsedProfile.referredByCode ?? undefined; 
+      parsedProfile.currentTierColor = parsedProfile.currentTierColor ?? getTierColorByLevel(parsedProfile.level);
+
 
       setPlayerProfile(parsedProfile);
       setIsInitialSetupDone(true);
@@ -246,6 +249,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       maxTaps: INITIAL_MAX_TAPS,
       currentTaps: INITIAL_MAX_TAPS,
       tapsAvailableAt: now,
+      currentTierColor: getTierColorByLevel(1), // Set initial tier color
     };
     setPlayerProfile(newProfileData); 
     setIsInitialSetupDone(true); 
@@ -294,9 +298,11 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       updatedProfile.seasonProgress[currentSeason.id] = (updatedProfile.seasonProgress[currentSeason.id] || 0) + finalAmount;
       
       let newXp = updatedProfile.xp + finalAmount;
+      let levelChanged = false;
       while (newXp >= updatedProfile.xpToNextLevel) {
         newXp -= updatedProfile.xpToNextLevel;
         updatedProfile.level++;
+        levelChanged = true;
         updatedProfile.xpToNextLevel = Math.floor(updatedProfile.xpToNextLevel * XP_LEVEL_MULTIPLIER);
         updatedProfile.rankTitle = getRankTitle(updatedProfile.level);
         const levelUpMessage = `Congratulations Commander, you've reached Level ${updatedProfile.level} - ${updatedProfile.rankTitle}!`;
@@ -305,6 +311,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }, 0);
       }
       updatedProfile.xp = newXp;
+      if (levelChanged) {
+        updatedProfile.currentTierColor = getTierColorByLevel(updatedProfile.level);
+      }
+
 
       updatedProfile = updateQuestProgress(updatedProfile, 'points_earned', finalAmount);
       
@@ -554,9 +564,11 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         updatedProfile.seasonProgress[currentSeason.id] = (updatedProfile.seasonProgress[currentSeason.id] || 0) + finalAmount;
         
         let newXp = updatedProfile.xp + finalAmount; 
+        let levelChanged = false;
         while (newXp >= updatedProfile.xpToNextLevel) {
           newXp -= updatedProfile.xpToNextLevel;
           updatedProfile.level++;
+          levelChanged = true;
           updatedProfile.xpToNextLevel = Math.floor(updatedProfile.xpToNextLevel * XP_LEVEL_MULTIPLIER);
           updatedProfile.rankTitle = getRankTitle(updatedProfile.level);
           const levelUpMessage = `Congratulations Commander, you've reached Level ${updatedProfile.level} - ${updatedProfile.rankTitle}!`;
@@ -565,6 +577,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           }, 0);
         }
         updatedProfile.xp = newXp;
+        if (levelChanged) {
+          updatedProfile.currentTierColor = getTierColorByLevel(updatedProfile.level);
+        }
 
         updatedProfile = updateQuestProgress(updatedProfile, 'taps', 1);
         updatedProfile = updateQuestProgress(updatedProfile, 'points_earned', finalAmount);
@@ -685,7 +700,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                  }
             }
           }
-          setPlayerProfile(p => p ? {...p, lastLoginTimestamp: Date.now()} : null);
+          setPlayerProfile(p => p ? {...p, lastLoginTimestamp: Date.now(), currentTierColor: getTierColorByLevel(p.level) } : null);
         } catch (error: any) {
           console.error("C.O.R.E. API Error:", error);
           let errorMessage = "C.O.R.E. systems experiencing interference. Stand by, Commander.";

@@ -178,6 +178,28 @@ export const INITIAL_MAX_TAPS = 100;
 export const TAP_REGEN_COOLDOWN_MINUTES = 30;
 export const AURON_COST_FOR_TAP_REFILL = 50;
 
+// Visual Tier Colors (HSL string values)
+const TIER_COLORS_HSL = {
+  SILVER: '210 15% 75%',
+  CYAN: '180 100% 50%',
+  GREEN_LIGHT: '120 100% 70%',
+  PURPLE: '270 70% 60%',
+  CORAL: '16 80% 65%',     // Matches --foreground HSL
+  FIERY_RED: '0 100% 50%',
+  GOLD: '45 100% 50%'       // Matches --primary / --bright-gold HSL
+};
+
+export function getTierColorByLevel(level: number): string {
+  if (level < 200) return TIER_COLORS_HSL.SILVER;
+  if (level < 400) return TIER_COLORS_HSL.CYAN;
+  if (level < 600) return TIER_COLORS_HSL.GREEN_LIGHT;
+  if (level < 800) return TIER_COLORS_HSL.PURPLE;
+  if (level < 1000) return TIER_COLORS_HSL.CORAL;
+  if (level < 2000) return TIER_COLORS_HSL.FIERY_RED;
+  return TIER_COLORS_HSL.GOLD;
+}
+export const INITIAL_TIER_COLOR = getTierColorByLevel(1);
+
 
 export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
   {
@@ -246,3 +268,4 @@ export const DAILY_QUESTS_POOL: DailyQuestTemplate[] = [
   { templateId: 'dq006', title: 'Power Tapper', description: 'Tap the commander 250 times.', type: 'taps', target: 250, reward: { points: 2500, auron: 5 }, icon: Target },
   { templateId: 'dq007', title: 'Resource Hoarder', description: 'Earn 5,000 points.', type: 'points_earned', target: 5000, reward: { points: 3000, auron: 15 }, icon: TrendingUp },
 ];
+
