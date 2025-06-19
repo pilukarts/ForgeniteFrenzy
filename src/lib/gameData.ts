@@ -164,7 +164,7 @@ export const AURON_PER_WALLET_CONNECT = 100;
 export const MULE_DRONE_BASE_RATE = 1;
 
 export const INITIAL_MAX_TAPS = 100;
-export const TAP_REGEN_COOLDOWN_MINUTES = 4; 
+export const TAP_REGEN_COOLDOWN_MINUTES = 4;
 export const AURON_COST_FOR_TAP_REFILL = 50;
 
 const TIER_COLORS_HSL = {
@@ -195,8 +195,8 @@ export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
     description: 'Aumenta ligeramente el poder de tus taps por un corto tiempo.',
     costInAuron: 25,
     bonusEffect: {
-      durationTaps: 20,
-      multiplier: 1.10,
+      durationTaps: 20, // Number of taps the boost lasts
+      multiplier: 1.10, // 10% increase
     },
     icon: Zap,
   },
@@ -207,7 +207,7 @@ export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
     costInAuron: 50,
     bonusEffect: {
       durationTaps: 30,
-      multiplier: 1.15,
+      multiplier: 1.15, // 15% increase
     },
     icon: Package,
   },
@@ -218,7 +218,7 @@ export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
     costInAuron: 100,
     bonusEffect: {
       durationTaps: 50,
-      multiplier: 1.25,
+      multiplier: 1.25, // 25% increase
     },
     icon: CircleDollarSign,
   },
@@ -229,7 +229,7 @@ export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
     costInAuron: 300,
     bonusEffect: {
       durationTaps: 100,
-      multiplier: 1.5,
+      multiplier: 1.5, // 50% increase
     },
     icon: Coins,
   },
@@ -240,7 +240,7 @@ export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
     costInAuron: 750,
     bonusEffect: {
       durationTaps: 150,
-      multiplier: 2.0,
+      multiplier: 2.0, // 100% increase (double)
     },
     icon: Container,
   },
@@ -250,7 +250,7 @@ export const DAILY_QUESTS_POOL: DailyQuestTemplate[] = [
   { templateId: 'dq001', title: 'Tap Enthusiast', description: 'Tap the commander 100 times.', type: 'taps', target: 100, reward: { points: 1000 }, icon: Target },
   { templateId: 'dq002', title: 'Point Collector', description: 'Earn 2,500 points.', type: 'points_earned', target: 2500, reward: { points: 1500, auron: 10 }, icon: TrendingUp },
   { templateId: 'dq003', title: 'Daily Check-in', description: 'Log in to the game today.', type: 'login', target: 1, reward: { auron: 20 }, icon: LogIn },
-  { templateId: 'dq004', title: 'Auron Spender', description: 'Spend 50 Auron in the marketplace.', type: 'spend_auron', target: 50, reward: { points: 5000 }, icon: ShoppingBag },
+  { templateId: 'dq004', title: 'Auron Spender', description: 'Spend 50 Auron in the marketplace or for refills.', type: 'spend_auron', target: 50, reward: { points: 5000 }, icon: ShoppingBag },
   { templateId: 'dq005', title: 'Upgrade Initiative', description: 'Purchase any upgrade.', type: 'purchase_upgrade', target: 1, reward: { points: 2000, auron: 5 }, icon: ArrowUpCircle },
   { templateId: 'dq006', title: 'Power Tapper', description: 'Tap the commander 250 times.', type: 'taps', target: 250, reward: { points: 2500, auron: 5 }, icon: Target },
   { templateId: 'dq007', title: 'Resource Hoarder', description: 'Earn 5,000 points.', type: 'points_earned', target: 5000, reward: { points: 3000, auron: 15 }, icon: TrendingUp },
@@ -262,7 +262,7 @@ export const LEAGUE_TIERS: LeagueTier[] = [
   { name: 'Silver', minPoints: 50000, icon: ShieldCheck, colorClass: 'text-gray-400' },
   { name: 'Gold', minPoints: 250000, icon: Award, colorClass: 'text-yellow-400' },
   { name: 'Platinum', minPoints: 1000000, icon: Gem, colorClass: 'text-cyan-400' },
-  { name: 'Diamond', minPoints: 5000000, icon: Sparkles, colorClass: 'text-blue-300' }, 
+  { name: 'Diamond', minPoints: 5000000, icon: Sparkles, colorClass: 'text-blue-300' },
   { name: 'Master', minPoints: 10000000, icon: Star, colorClass: 'text-purple-400' },
   { name: 'Grandmaster', minPoints: 25000000, icon: Crown, colorClass: 'text-red-400' },
 ];
@@ -285,6 +285,5 @@ export function getLeagueIconAndColor(leagueName: LeagueName): { Icon: LucideIco
     if (leagueData) {
         return { Icon: leagueData.icon, colorClass: leagueData.colorClass };
     }
-    return { Icon: Shield, colorClass: 'text-yellow-600' }; 
+    return { Icon: Shield, colorClass: 'text-yellow-600' }; // Default to Bronze
 }
-

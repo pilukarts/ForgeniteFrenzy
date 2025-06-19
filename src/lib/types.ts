@@ -115,12 +115,12 @@ export interface MarketplaceItem {
 }
 
 export interface ActiveTapBonus {
-  id: string;
-  marketItemId: string;
-  name: string;
+  id: string; // Unique ID for this active bonus instance
+  marketItemId: string; // ID of the MarketplaceItem this bonus came from
+  name: string; // Name of the bonus (from MarketplaceItem)
   remainingTaps: number;
   bonusMultiplier: number;
-  originalDurationTaps: number;
+  originalDurationTaps: number; // To display progress like X/Y taps
 }
 
 export interface ChatMessage {
@@ -175,4 +175,3 @@ export interface LeagueTier {
     icon: LucideIcon;
     colorClass: string; // Tailwind color class for the icon/text
 }
-

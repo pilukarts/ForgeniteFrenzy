@@ -26,7 +26,7 @@ interface GameContextType {
   arkUpgrades: ArkUpgrade[];
   purchaseArkUpgrade: (upgradeId: string) => void;
   getArkUpgradeById: (upgradeId: string) => ArkUpgrade | undefined;
-  addPoints: (amount: number, isTap?: boolean) => void;
+  addPoints: (amount: number, isFromTap?: boolean) => void;
   isLoading: boolean;
   isInitialSetupDone: boolean;
   completeInitialSetup: (name: string, sex: 'male' | 'female', country: string, referredByCode?: string) => void;
@@ -46,7 +46,7 @@ interface GameContextType {
   switchCommanderSex: () => void;
   claimQuestReward: (questId: string) => void;
   refreshDailyQuestsIfNeeded: () => void;
-  refillTaps: () => void; 
+  refillTaps: () => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -82,7 +82,7 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
 const generateReferralCode = (name: string): string => {
   const namePart = name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 4).toUpperCase();
   const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();
-  return `${namePart}${randomPart || 'ABCDE'}`; 
+  return `${namePart}${randomPart || 'ABCDE'}`;
 };
 
 
@@ -117,7 +117,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
     return { ...profile, activeDailyQuests: updatedQuests };
   }, [toast]);
-  
+
   const refreshDailyQuestsIfNeeded = useCallback(() => {
     setPlayerProfile(prev => {
         if (!prev) return null;
@@ -129,9 +129,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                          now.getDate() > lastRefreshDate.getDate();
 
         if (!isNewDay && prev.activeDailyQuests && prev.activeDailyQuests.length > 0) {
-            return prev; 
+            return prev;
         }
-        
+
         const availableQuestTemplates = [...DAILY_QUESTS_POOL];
         const newQuests: DailyQuest[] = [];
         const usedTemplateIds = new Set<string>();
@@ -165,7 +165,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
         setTimeout(() => {
           toast({ title: "Daily Quests Refreshed!", description: "New challenges await you, Commander." });
-        }, 500); 
+        }, 500);
         return { ...prev, activeDailyQuests: newQuests, lastDailyQuestRefresh: now.getTime() };
     });
   }, [toast]);
@@ -183,9 +183,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       parsedProfile.activeDailyQuests = parsedProfile.activeDailyQuests ?? [];
       parsedProfile.lastDailyQuestRefresh = parsedProfile.lastDailyQuestRefresh ?? 0;
       parsedProfile.referralCode = parsedProfile.referralCode ?? undefined;
-      parsedProfile.referredByCode = parsedProfile.referredByCode ?? undefined; 
+      parsedProfile.referredByCode = parsedProfile.referredByCode ?? undefined;
       parsedProfile.currentTierColor = parsedProfile.currentTierColor ?? getTierColorByLevel(parsedProfile.level);
-      parsedProfile.league = parsedProfile.league ?? getLeagueByPoints(parsedProfile.points); 
+      parsedProfile.league = parsedProfile.league ?? getLeagueByPoints(parsedProfile.points);
 
 
       setPlayerProfile(parsedProfile);
@@ -195,7 +195,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setIsCoreUnlocked(!!parsedProfile.upgrades['coreUnlocked'] || SEASONS_DATA.slice(0, SEASONS_DATA.indexOf(season)).some(s => s.unlocksCore));
       setCoreLastInteractionTime(parsedProfile.lastLoginTimestamp || Date.now());
     } else {
-        setIsLoading(false); 
+        setIsLoading(false);
     }
     const savedCoreMessages = localStorage.getItem('coreMessages');
     if (savedCoreMessages) {
@@ -208,10 +208,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       refreshDailyQuestsIfNeeded();
     }
     const localSavedProfile = typeof window !== "undefined" ? localStorage.getItem('playerProfile') : null;
-    if (!localSavedProfile && !isLoading) { 
-        setIsLoading(false); 
+    if (!localSavedProfile && !isLoading) {
+        setIsLoading(false);
     } else if (localSavedProfile) {
-        setIsLoading(false); 
+        setIsLoading(false);
     }
   }, [playerProfile, isInitialSetupDone, refreshDailyQuestsIfNeeded, isLoading]);
 
@@ -229,7 +229,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     localStorage.setItem('coreMessages', JSON.stringify(coreMessages));
   }, [coreMessages]);
-  
+
   const completeInitialSetup = (name: string, sex: 'male' | 'female', country: string, referredByCode?: string) => {
     const now = Date.now();
     const newProfileData: PlayerProfile = {
@@ -241,18 +241,19 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       currentSeasonId: SEASONS_DATA[0].id,
       rankTitle: getRankTitle(1),
       lastLoginTimestamp: now,
-      lastDailyQuestRefresh: 0, 
-      activeDailyQuests: [], 
+      lastDailyQuestRefresh: 0,
+      activeDailyQuests: [],
       referralCode: generateReferralCode(name),
       referredByCode: referredByCode?.trim() || undefined,
       maxTaps: INITIAL_MAX_TAPS,
       currentTaps: INITIAL_MAX_TAPS,
       tapsAvailableAt: now,
       currentTierColor: getTierColorByLevel(1),
-      league: DEFAULT_LEAGUE, 
+      league: DEFAULT_LEAGUE,
+      activeTapBonuses: [], // Ensure this is initialized for new profiles
     };
-    setPlayerProfile(newProfileData); 
-    setIsInitialSetupDone(true); 
+    setPlayerProfile(newProfileData);
+    setIsInitialSetupDone(true);
     setCurrentSeason(SEASONS_DATA[0]);
     let welcomeMessage = `Welcome, Commander ${name}! Your mission begins now. Your unique referral code is ${newProfileData.referralCode}. Share it with allies!`;
     if (referredByCode) {
@@ -261,42 +262,44 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     addCoreMessage({ type: 'briefing', content: welcomeMessage});
     setCoreLastInteractionTime(now);
   };
-  
+
   const addCoreMessage = useCallback((message: Omit<CoreMessage, 'timestamp'>) => {
     setCoreMessages(prev => [{ ...message, timestamp: Date.now() }, ...prev.slice(0, 19)]);
   }, []);
 
-  const addPoints = useCallback((amount: number, isTap: boolean = false) => {
+  const addPoints = useCallback((amount: number, isFromTap: boolean = false) => {
     setPlayerProfile(prev => {
       if (!prev) return null;
 
       let finalAmount = amount;
       let updatedProfile = { ...prev };
 
-      if (isTap && updatedProfile.activeTapBonuses.length > 0) {
-        let totalBonusMultiplierFactor = 0;
+      if (isFromTap && updatedProfile.activeTapBonuses && updatedProfile.activeTapBonuses.length > 0) {
+        let totalBonusMultiplierFactor = 0; // This is the sum of (multiplier - 1)
         let stillActiveBonuses = updatedProfile.activeTapBonuses.map(bonus => {
           totalBonusMultiplierFactor += (bonus.bonusMultiplier - 1);
           return { ...bonus, remainingTaps: bonus.remainingTaps - 1 };
         }).filter(bonus => bonus.remainingTaps > 0);
-        
+
+        // Apply the sum of all bonus multipliers
         finalAmount = amount * (1 + totalBonusMultiplierFactor);
 
+        // Check for expired bonuses to notify
         updatedProfile.activeTapBonuses.forEach(oldBonus => {
             if (!stillActiveBonuses.find(b => b.id === oldBonus.id)) {
-                setTimeout(() => {
+                setTimeout(() => { // Use timeout to ensure toast appears after other updates
                     toast({ title: "Bonus Expired", description: `${oldBonus.name} has worn off.` });
                 }, 0);
             }
         });
         updatedProfile.activeTapBonuses = stillActiveBonuses;
       }
-      
+
       finalAmount = Math.round(finalAmount);
 
       updatedProfile.points += finalAmount;
       updatedProfile.seasonProgress[currentSeason.id] = (updatedProfile.seasonProgress[currentSeason.id] || 0) + finalAmount;
-      
+
       let newXp = updatedProfile.xp + finalAmount;
       let levelChanged = false;
       while (newXp >= updatedProfile.xpToNextLevel) {
@@ -322,14 +325,15 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         updatedProfile.league = newLeague;
         setTimeout(() => {
             toast({ title: "League Promotion!", description: `You've reached ${newLeague} league!` });
-        }, 100); 
+        }, 100);
       }
 
       updatedProfile = updateQuestProgress(updatedProfile, 'points_earned', finalAmount);
-      
+
       return updatedProfile;
     });
   }, [currentSeason, toast, updateQuestProgress]);
+
 
   const getUpgradeLevel = useCallback((upgradeId: string) => {
     return playerProfile?.upgrades[upgradeId] || 0;
@@ -350,7 +354,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       if (prev.points >= cost) {
         const currentLevel = prev.upgrades[upgradeId] || 0;
-        
+
         if (upgradeInfo?.maxLevel && currentLevel >= upgradeInfo.maxLevel) {
           setTimeout(() => {
             toast({ title: "Max Level Reached", description: `${upgradeInfo.name} is already at its maximum level.`, variant: "default" });
@@ -360,7 +364,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setTimeout(() => {
           toast({ title: "Upgrade Purchased!", description: `Successfully upgraded ${upgradeInfo?.name}.` });
         }, 0);
-        
+
         let updatedProfile = {
           ...prev,
           points: prev.points - cost,
@@ -389,7 +393,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setPlayerProfile(prev => {
       if (!prev) return null;
       const arkUpgrade = ARK_UPGRADES_DATA.find(u => u.id === upgradeId);
-      if (!arkUpgrade || prev.upgrades[upgradeId]) { 
+      if (!arkUpgrade || prev.upgrades[upgradeId]) {
         setTimeout(() => {
           toast({ title: "Upgrade Invalid", description: "This Ark upgrade is already purchased or does not exist.", variant: "default" });
         }, 0);
@@ -399,9 +403,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setTimeout(() => {
           toast({ title: "Ark Upgrade Complete!", description: `${arkUpgrade.name} installed on your StarForge Ark.` });
         }, 0);
-        const newUpgrades = { ...prev.upgrades, [upgradeId]: 1 }; 
+        const newUpgrades = { ...prev.upgrades, [upgradeId]: 1 };
         const allArkUpgradesPurchased = ARK_UPGRADES_DATA.every(u => newUpgrades[u.id]);
-        
+
         let updatedProfile = {
           ...prev,
           points: prev.points - arkUpgrade.cost,
@@ -438,14 +442,14 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
 
       const newBonus: ActiveTapBonus = {
-        id: crypto.randomUUID(),
+        id: crypto.randomUUID(), // Unique ID for this specific instance of the bonus
         marketItemId: item.id,
         name: item.name,
         remainingTaps: item.bonusEffect.durationTaps,
         bonusMultiplier: item.bonusEffect.multiplier,
         originalDurationTaps: item.bonusEffect.durationTaps,
       };
-      
+
       setTimeout(() => {
         toast({ title: "Purchase Successful!", description: `${item.name} activated.` });
       }, 0);
@@ -479,29 +483,31 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const pointsPerTapValue = baseTapPower + tapPowerUpgradeLevel;
 
   const critChanceUpgradeLevel = getUpgradeLevel('critChance');
-  const criticalTapChance = critChanceUpgradeLevel * 0.005; 
+  const criticalTapChance = critChanceUpgradeLevel * 0.005;
 
   const critMultiplierUpgradeLevel = getUpgradeLevel('critMultiplier');
-  const criticalTapMultiplier = 1 + (critMultiplierUpgradeLevel * 0.1); 
+  const criticalTapMultiplier = 1 + (critMultiplierUpgradeLevel * 0.1);
 
   const comboBonusUpgradeLevel = getUpgradeLevel('comboBonus');
   const comboMultiplierValue = 1 + (comboBonusUpgradeLevel * 0.02) + (comboCount * 0.01);
 
   const handleTap = useCallback(() => {
+    let profileBeforeTap: PlayerProfile | null = null;
     setPlayerProfile(prev => {
         if (!prev) return null;
+        profileBeforeTap = { ...prev }; // Capture state before modification
 
         let updatedProfile = {...prev};
         const now = Date.now();
 
         if (updatedProfile.currentTaps === 0 && now >= updatedProfile.tapsAvailableAt) {
             updatedProfile.currentTaps = updatedProfile.maxTaps;
-            updatedProfile.tapsAvailableAt = now; 
+            updatedProfile.tapsAvailableAt = now;
              setTimeout(() => {
                 toast({ title: "Taps Recharged!", description: "Your tap energy has been fully restored." });
             }, 0);
         }
-        
+
         if (updatedProfile.currentTaps <= 0) {
             const timeLeft = Math.ceil((updatedProfile.tapsAvailableAt - now) / 1000);
             const minutes = Math.floor(timeLeft / 60);
@@ -509,49 +515,29 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             setTimeout(() => {
                 toast({ title: "Out of Taps!", description: `Wait ${minutes}m ${seconds}s or refill.`, variant: "destructive" });
             }, 0);
-            return updatedProfile; 
+            return updatedProfile;
         }
 
         updatedProfile.currentTaps--;
         if (updatedProfile.currentTaps === 0) {
             updatedProfile.tapsAvailableAt = now + TAP_REGEN_COOLDOWN_MILLISECONDS;
         }
-        
-        let pointsToEarn = pointsPerTapValue; 
+
+        let basePointsForTap = pointsPerTapValue;
         const isCritical = Math.random() < criticalTapChance;
-        
-        let finalAmount = pointsToEarn; 
-        let currentActiveTapBonuses = [...(updatedProfile.activeTapBonuses || [])];
-  
-        if (currentActiveTapBonuses.length > 0) { 
-          let totalBonusMultiplierFactor = 0; 
-  
-          currentActiveTapBonuses = currentActiveTapBonuses.map(bonus => {
-            totalBonusMultiplierFactor += (bonus.bonusMultiplier - 1);
-            return { ...bonus, remainingTaps: bonus.remainingTaps - 1 };
-          }).filter(bonus => bonus.remainingTaps > 0);
-          
-          finalAmount = finalAmount * (1 + totalBonusMultiplierFactor); 
-  
-          (updatedProfile.activeTapBonuses || []).forEach(oldBonus => {
-              if (!currentActiveTapBonuses.find(b => b.id === oldBonus.id)) {
-                  setTimeout(() => {
-                      toast({ title: "Bonus Expired", description: `${oldBonus.name} has worn off.` });
-                  }, 0);
-              }
-          });
-          updatedProfile.activeTapBonuses = currentActiveTapBonuses;
-        }
-        
+
         if (isCritical) {
-            finalAmount *= criticalTapMultiplier; 
+            basePointsForTap *= criticalTapMultiplier;
             setTimeout(() => {
-                 toast({ title: "Critical Tap!", description: `+${Math.round(finalAmount * comboMultiplierValue)} points!`, duration: 1500 });
+                 toast({ title: "Critical Tap!", description: `Base power amplified!`, duration: 1500 });
             },0);
         }
 
-        finalAmount *= comboMultiplierValue; 
-        finalAmount = Math.round(finalAmount);
+        basePointsForTap *= comboMultiplierValue;
+        basePointsForTap = Math.round(basePointsForTap);
+
+        addPoints(basePointsForTap, true); // Pass true for isFromTap
+
 
         updatedProfile.totalTapsForUniform = (updatedProfile.totalTapsForUniform || 0) + 1;
         let newEquippedUniformPieces = [...(updatedProfile.equippedUniformPieces || [])];
@@ -567,47 +553,21 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             }, 0);
         }
         updatedProfile.equippedUniformPieces = newEquippedUniformPieces;
-        
-        updatedProfile.points += finalAmount;
-        updatedProfile.seasonProgress[currentSeason.id] = (updatedProfile.seasonProgress[currentSeason.id] || 0) + finalAmount;
-        
-        let newXp = updatedProfile.xp + finalAmount; 
-        let levelChanged = false;
-        while (newXp >= updatedProfile.xpToNextLevel) {
-          newXp -= updatedProfile.xpToNextLevel;
-          updatedProfile.level++;
-          levelChanged = true;
-          updatedProfile.xpToNextLevel = Math.floor(updatedProfile.xpToNextLevel * XP_LEVEL_MULTIPLIER);
-          updatedProfile.rankTitle = getRankTitle(updatedProfile.level);
-          const levelUpMessage = `Congratulations Commander, you've reached Level ${updatedProfile.level} - ${updatedProfile.rankTitle}!`;
-          setTimeout(() => {
-              toast({ title: "Rank Up!", description: levelUpMessage });
-          }, 0);
-        }
-        updatedProfile.xp = newXp;
-        if (levelChanged) {
-          updatedProfile.currentTierColor = getTierColorByLevel(updatedProfile.level);
-        }
-        
-        const previousLeague = updatedProfile.league;
-        const newLeague = getLeagueByPoints(updatedProfile.points);
-        if (newLeague !== previousLeague) {
-          updatedProfile.league = newLeague;
-          setTimeout(() => {
-              toast({ title: "League Promotion!", description: `You've reached ${newLeague} league!` });
-          }, 100);
-        }
-
         updatedProfile = updateQuestProgress(updatedProfile, 'taps', 1);
-        updatedProfile = updateQuestProgress(updatedProfile, 'points_earned', finalAmount);
+        // `addPoints` will handle 'points_earned' quest progress
 
+        // Return the profile state after tap decrement and uniform logic, but before addPoints fully resolves
+        // This is tricky because addPoints is async due to setPlayerProfile.
+        // The quest progress for 'taps' should be based on the tap action itself.
+        // We rely on addPoints to eventually update the profile with new points and associated progressions.
         return updatedProfile;
     });
 
     setComboCount(prevCount => prevCount + 1);
-    setTimeout(() => setComboCount(0), 3000); 
+    setTimeout(() => setComboCount(0), 3000);
 
-  }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, toast, addCoreMessage, currentSeason.id, updateQuestProgress]);
+  }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, toast, addCoreMessage, updateQuestProgress, addPoints ]);
+
 
   const switchCommanderSex = useCallback(() => {
     setPlayerProfile(prev => {
@@ -635,7 +595,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         let updatedProfile = { ...prev };
         if (quest.reward.points) {
             updatedProfile.points += quest.reward.points;
-            // Check for league promotion after claiming points
             const previousLeague = updatedProfile.league;
             const newLeague = getLeagueByPoints(updatedProfile.points);
             if (newLeague !== previousLeague) {
@@ -652,11 +611,11 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const updatedQuests = [...updatedProfile.activeDailyQuests];
         updatedQuests[questIndex] = { ...quest, isClaimed: true };
         updatedProfile.activeDailyQuests = updatedQuests;
-        
+
         setTimeout(() => {
             toast({ title: "Quest Reward Claimed!", description: `You received rewards for: ${quest.title}` });
         }, 0);
-        
+
         return updatedProfile;
     });
   }, [toast]);
@@ -673,12 +632,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setTimeout(() => {
             toast({ title: "Taps Refilled!", description: `Your tap energy has been restored for ${AURON_COST_FOR_TAP_REFILL} Auron.` });
         }, 0);
-        
+
         let updatedProfile = {
             ...prev,
             auron: prev.auron - AURON_COST_FOR_TAP_REFILL,
             currentTaps: prev.maxTaps,
-            tapsAvailableAt: Date.now(), 
+            tapsAvailableAt: Date.now(),
         };
         updatedProfile = updateQuestProgress(updatedProfile, 'spend_auron', AURON_COST_FOR_TAP_REFILL);
         return updatedProfile;
@@ -687,7 +646,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 
   useEffect(() => {
-    if (isInitialSetupDone && playerProfile && isCoreUnlocked && !isAICallInProgress && Date.now() - coreLastInteractionTime > 300000) { 
+    if (isInitialSetupDone && playerProfile && isCoreUnlocked && !isAICallInProgress && Date.now() - coreLastInteractionTime > 300000) {
       setIsAICallInProgress(true);
       (async () => {
         try {
@@ -706,22 +665,22 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           };
           const progressUpdate = await getCoreProgressUpdate(progressUpdateInput);
           addCoreMessage({ type: 'advice', content: progressUpdate.advice });
-          if (progressUpdate.loreSnippet) { 
+          if (progressUpdate.loreSnippet) {
             addCoreMessage({ type: 'lore_snippet', content: progressUpdate.loreSnippet });
           }
-          
+
           if(playerProfile.lastLoginTimestamp) {
             const timeAwayMinutes = Math.floor((Date.now() - playerProfile.lastLoginTimestamp) / 60000);
-            if (timeAwayMinutes > 5) { 
+            if (timeAwayMinutes > 5) {
                 const resourcesGained = playerProfile.muleDrones * MULE_DRONE_BASE_RATE * timeAwayMinutes;
-                if (resourcesGained > 0) addPoints(resourcesGained);
-                
+                if (resourcesGained > 0) addPoints(resourcesGained); // isFromTap is false here
+
                 const loreSnippetInput = {
                     timeAway: timeAwayMinutes,
                     resourcesGained,
                 };
                 const loreSnippet = await getCoreLoreSnippet(loreSnippetInput);
-                 if (loreSnippet.snippet) { 
+                 if (loreSnippet.snippet) {
                     addCoreMessage({ type: 'lore_snippet', content: loreSnippet.snippet });
                  }
             }
@@ -739,7 +698,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           }
           addCoreMessage({ type: 'system_alert', content: errorMessage });
         } finally {
-            setCoreLastInteractionTime(Date.now()); 
+            setCoreLastInteractionTime(Date.now());
             setIsAICallInProgress(false);
         }
       })();
@@ -749,21 +708,21 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 
   return (
-    <GameContext.Provider value={{ 
-        playerProfile, 
-        setPlayerProfile, 
-        currentSeason, 
+    <GameContext.Provider value={{
+        playerProfile,
+        setPlayerProfile,
+        currentSeason,
         seasons: SEASONS_DATA,
-        getUpgradeLevel, 
-        purchaseUpgrade, 
+        getUpgradeLevel,
+        purchaseUpgrade,
         getUpgradeCost,
         upgrades: UPGRADES_DATA,
         arkUpgrades: ARK_UPGRADES_DATA,
         purchaseArkUpgrade,
         getArkUpgradeById,
-        addPoints, 
-        isLoading, 
-        isInitialSetupDone, 
+        addPoints,
+        isLoading,
+        isInitialSetupDone,
         completeInitialSetup,
         coreMessages,
         addCoreMessage,
@@ -795,4 +754,3 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
-
