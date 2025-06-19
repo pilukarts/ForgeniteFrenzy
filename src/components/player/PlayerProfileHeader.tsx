@@ -4,7 +4,7 @@ import React from 'react';
 import type { PlayerProfile } from '@/lib/types';
 import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Shield, UserCircle, ShieldCheck, Award, Gem, Star, Crown, Sparkles } from 'lucide-react'; 
+import { Shield, UserCircle, ShieldCheck, Award, Gem, Star, Crown, Sparkles, LucideIcon } from 'lucide-react'; 
 import { getLeagueIconAndColor } from '@/lib/gameData';
 import { cn } from '@/lib/utils';
 
@@ -51,3 +51,4 @@ const PlayerProfileHeader: React.FC<PlayerProfileHeaderProps> = ({ profile }) =>
 };
 
 export default PlayerProfileHeader;
+

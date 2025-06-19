@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Trophy, Globe, Flag, Shield, ShieldCheck, Award, Gem, Star, Crown, Sparkles } from 'lucide-react';
+import { Trophy, Globe, Flag, Shield, ShieldCheck, Award, Gem, Star, Crown, Sparkles, LucideIcon } from 'lucide-react';
 import IntroScreen from '@/components/intro/IntroScreen';
 import { getLeagueByPoints, getLeagueIconAndColor } from '@/lib/gameData';
 import { cn } from '@/lib/utils';
@@ -141,3 +141,4 @@ const LeaderboardPage: React.FC = () => {
 };
 
 export default LeaderboardPage;
+

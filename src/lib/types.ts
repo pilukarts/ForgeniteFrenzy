@@ -175,3 +175,4 @@ export interface LeagueTier {
     icon: LucideIcon;
     colorClass: string; // Tailwind color class for the icon/text
 }
+

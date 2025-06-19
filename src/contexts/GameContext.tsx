@@ -185,7 +185,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       parsedProfile.referralCode = parsedProfile.referralCode ?? undefined;
       parsedProfile.referredByCode = parsedProfile.referredByCode ?? undefined; 
       parsedProfile.currentTierColor = parsedProfile.currentTierColor ?? getTierColorByLevel(parsedProfile.level);
-      parsedProfile.league = parsedProfile.league ?? getLeagueByPoints(parsedProfile.points); // Initialize league
+      parsedProfile.league = parsedProfile.league ?? getLeagueByPoints(parsedProfile.points); 
 
 
       setPlayerProfile(parsedProfile);
@@ -249,7 +249,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       currentTaps: INITIAL_MAX_TAPS,
       tapsAvailableAt: now,
       currentTierColor: getTierColorByLevel(1),
-      league: DEFAULT_LEAGUE, // Set initial league
+      league: DEFAULT_LEAGUE, 
     };
     setPlayerProfile(newProfileData); 
     setIsInitialSetupDone(true); 
@@ -322,7 +322,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         updatedProfile.league = newLeague;
         setTimeout(() => {
             toast({ title: "League Promotion!", description: `You've reached ${newLeague} league!` });
-        }, 100); // Slight delay to not overlap with rank up toast
+        }, 100); 
       }
 
       updatedProfile = updateQuestProgress(updatedProfile, 'points_earned', finalAmount);
@@ -635,6 +635,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         let updatedProfile = { ...prev };
         if (quest.reward.points) {
             updatedProfile.points += quest.reward.points;
+            // Check for league promotion after claiming points
             const previousLeague = updatedProfile.league;
             const newLeague = getLeagueByPoints(updatedProfile.points);
             if (newLeague !== previousLeague) {
@@ -794,3 +795,4 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
+

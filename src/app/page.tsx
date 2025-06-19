@@ -7,7 +7,7 @@ import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
-import { User, UserRound, CheckCircle2, ShieldEllipsis, Send, Film, MessageSquare, Zap, AlertTriangle } from 'lucide-react';
+import { User, UserRound, CheckCircle2, ShieldEllipsis, Send, Film, MessageSquare, Zap, AlertTriangle, LucideIcon } from 'lucide-react';
 import IntroScreen from '@/components/intro/IntroScreen';
 import PreIntroScreen from '@/components/intro/PreIntroScreen';
 import { useToast } from "@/hooks/use-toast";
@@ -300,3 +300,4 @@ export default function HomePage() {
     </AppLayout>
   );
 }
+
