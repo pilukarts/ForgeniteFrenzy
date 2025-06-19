@@ -1,8 +1,8 @@
 
 "use client";
 
-import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType } from '@/lib/types';
-import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR } from '@/lib/gameData';
+import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName } from '@/lib/types';
+import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints } from '@/lib/gameData';
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getCoreBriefing } from '@/ai/flows/core-briefings';
@@ -46,7 +46,7 @@ interface GameContextType {
   switchCommanderSex: () => void;
   claimQuestReward: (questId: string) => void;
   refreshDailyQuestsIfNeeded: () => void;
-  refillTaps: () => void; // For purchasing tap refills
+  refillTaps: () => void; 
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -74,8 +74,9 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
   referredByCode: undefined,
   currentTaps: INITIAL_MAX_TAPS,
   maxTaps: INITIAL_MAX_TAPS,
-  tapsAvailableAt: Date.now(), // Start with full taps, available immediately
+  tapsAvailableAt: Date.now(),
   currentTierColor: INITIAL_TIER_COLOR,
+  league: DEFAULT_LEAGUE,
 };
 
 const generateReferralCode = (name: string): string => {
@@ -173,11 +174,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const savedProfile = localStorage.getItem('playerProfile');
     if (savedProfile) {
       let parsedProfile = JSON.parse(savedProfile) as PlayerProfile;
-      // Initialize tap limit fields for older profiles
       parsedProfile.maxTaps = parsedProfile.maxTaps ?? INITIAL_MAX_TAPS;
       parsedProfile.currentTaps = parsedProfile.currentTaps ?? parsedProfile.maxTaps;
       parsedProfile.tapsAvailableAt = parsedProfile.tapsAvailableAt ?? Date.now();
-
       parsedProfile.activeTapBonuses = parsedProfile.activeTapBonuses ?? [];
       parsedProfile.totalTapsForUniform = parsedProfile.totalTapsForUniform ?? 0;
       parsedProfile.equippedUniformPieces = parsedProfile.equippedUniformPieces ?? [];
@@ -186,6 +185,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       parsedProfile.referralCode = parsedProfile.referralCode ?? undefined;
       parsedProfile.referredByCode = parsedProfile.referredByCode ?? undefined; 
       parsedProfile.currentTierColor = parsedProfile.currentTierColor ?? getTierColorByLevel(parsedProfile.level);
+      parsedProfile.league = parsedProfile.league ?? getLeagueByPoints(parsedProfile.points); // Initialize league
 
 
       setPlayerProfile(parsedProfile);
@@ -245,11 +245,11 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       activeDailyQuests: [], 
       referralCode: generateReferralCode(name),
       referredByCode: referredByCode?.trim() || undefined,
-      // Tap limit system init
       maxTaps: INITIAL_MAX_TAPS,
       currentTaps: INITIAL_MAX_TAPS,
       tapsAvailableAt: now,
-      currentTierColor: getTierColorByLevel(1), // Set initial tier color
+      currentTierColor: getTierColorByLevel(1),
+      league: DEFAULT_LEAGUE, // Set initial league
     };
     setPlayerProfile(newProfileData); 
     setIsInitialSetupDone(true); 
@@ -315,6 +315,15 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         updatedProfile.currentTierColor = getTierColorByLevel(updatedProfile.level);
       }
 
+      // Update League Status
+      const previousLeague = updatedProfile.league;
+      const newLeague = getLeagueByPoints(updatedProfile.points);
+      if (newLeague !== previousLeague) {
+        updatedProfile.league = newLeague;
+        setTimeout(() => {
+            toast({ title: "League Promotion!", description: `You've reached ${newLeague} league!` });
+        }, 100); // Slight delay to not overlap with rank up toast
+      }
 
       updatedProfile = updateQuestProgress(updatedProfile, 'points_earned', finalAmount);
       
@@ -485,10 +494,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         let updatedProfile = {...prev};
         const now = Date.now();
 
-        // Check for tap regeneration
         if (updatedProfile.currentTaps === 0 && now >= updatedProfile.tapsAvailableAt) {
             updatedProfile.currentTaps = updatedProfile.maxTaps;
-            updatedProfile.tapsAvailableAt = now; // Reset, available now
+            updatedProfile.tapsAvailableAt = now; 
              setTimeout(() => {
                 toast({ title: "Taps Recharged!", description: "Your tap energy has been fully restored." });
             }, 0);
@@ -501,7 +509,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             setTimeout(() => {
                 toast({ title: "Out of Taps!", description: `Wait ${minutes}m ${seconds}s or refill.`, variant: "destructive" });
             }, 0);
-            return updatedProfile; // No tap action performed
+            return updatedProfile; 
         }
 
         updatedProfile.currentTaps--;
@@ -580,6 +588,15 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (levelChanged) {
           updatedProfile.currentTierColor = getTierColorByLevel(updatedProfile.level);
         }
+        
+        const previousLeague = updatedProfile.league;
+        const newLeague = getLeagueByPoints(updatedProfile.points);
+        if (newLeague !== previousLeague) {
+          updatedProfile.league = newLeague;
+          setTimeout(() => {
+              toast({ title: "League Promotion!", description: `You've reached ${newLeague} league!` });
+          }, 100);
+        }
 
         updatedProfile = updateQuestProgress(updatedProfile, 'taps', 1);
         updatedProfile = updateQuestProgress(updatedProfile, 'points_earned', finalAmount);
@@ -618,6 +635,14 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         let updatedProfile = { ...prev };
         if (quest.reward.points) {
             updatedProfile.points += quest.reward.points;
+            const previousLeague = updatedProfile.league;
+            const newLeague = getLeagueByPoints(updatedProfile.points);
+            if (newLeague !== previousLeague) {
+              updatedProfile.league = newLeague;
+              setTimeout(() => {
+                  toast({ title: "League Promotion!", description: `You've reached ${newLeague} league!` });
+              }, 100);
+            }
         }
         if (quest.reward.auron) {
             updatedProfile.auron += quest.reward.auron;
@@ -652,7 +677,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             ...prev,
             auron: prev.auron - AURON_COST_FOR_TAP_REFILL,
             currentTaps: prev.maxTaps,
-            tapsAvailableAt: Date.now(), // Reset, available now
+            tapsAvailableAt: Date.now(), 
         };
         updatedProfile = updateQuestProgress(updatedProfile, 'spend_auron', AURON_COST_FOR_TAP_REFILL);
         return updatedProfile;
@@ -667,7 +692,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         try {
           const briefingInput = {
             season: currentSeason.title,
-            playerProgress: `Level ${playerProfile.level}, Objective Progress: ${playerProfile.seasonProgress[currentSeason.id] || 0}`,
+            playerProgress: `Level ${playerProfile.level}, League: ${playerProfile.league}, Objective Progress: ${playerProfile.seasonProgress[currentSeason.id] || 0}`,
           };
           const briefing = await getCoreBriefing(briefingInput);
           addCoreMessage({ type: 'briefing', content: briefing.briefing });
@@ -700,7 +725,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                  }
             }
           }
-          setPlayerProfile(p => p ? {...p, lastLoginTimestamp: Date.now(), currentTierColor: getTierColorByLevel(p.level) } : null);
+          setPlayerProfile(p => p ? {...p, lastLoginTimestamp: Date.now(), currentTierColor: getTierColorByLevel(p.level), league: getLeagueByPoints(p.points) } : null);
         } catch (error: any) {
           console.error("C.O.R.E. API Error:", error);
           let errorMessage = "C.O.R.E. systems experiencing interference. Stand by, Commander.";
@@ -718,7 +743,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
       })();
     }
-  }, [isInitialSetupDone, playerProfile, currentSeason, isCoreUnlocked, coreLastInteractionTime, addCoreMessage, getUpgradeCost, addPoints, isAICallInProgress]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isInitialSetupDone, playerProfile, currentSeason.id, isCoreUnlocked, coreLastInteractionTime, addCoreMessage, getUpgradeCost, addPoints, isAICallInProgress]);
 
 
   return (
