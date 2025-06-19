@@ -180,7 +180,19 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       parsedProfile.activeTapBonuses = parsedProfile.activeTapBonuses ?? [];
       parsedProfile.totalTapsForUniform = parsedProfile.totalTapsForUniform ?? 0;
       parsedProfile.equippedUniformPieces = parsedProfile.equippedUniformPieces ?? [];
+      
       parsedProfile.activeDailyQuests = parsedProfile.activeDailyQuests ?? [];
+      // Re-hydrate quest icons as they are not stored properly in JSON
+      if (parsedProfile.activeDailyQuests) {
+        parsedProfile.activeDailyQuests = parsedProfile.activeDailyQuests.map(q => {
+          const template = DAILY_QUESTS_POOL.find(t => t.templateId === q.templateId);
+          return {
+            ...q,
+            icon: template ? template.icon : undefined, // Assign function component
+          };
+        });
+      }
+      
       parsedProfile.lastDailyQuestRefresh = parsedProfile.lastDailyQuestRefresh ?? 0;
       parsedProfile.referralCode = parsedProfile.referralCode ?? undefined;
       parsedProfile.referredByCode = parsedProfile.referredByCode ?? undefined;
@@ -250,7 +262,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       tapsAvailableAt: now,
       currentTierColor: getTierColorByLevel(1),
       league: DEFAULT_LEAGUE,
-      activeTapBonuses: [], // Ensure this is initialized for new profiles
+      activeTapBonuses: [], 
     };
     setPlayerProfile(newProfileData);
     setIsInitialSetupDone(true);
@@ -275,19 +287,19 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       let updatedProfile = { ...prev };
 
       if (isFromTap && updatedProfile.activeTapBonuses && updatedProfile.activeTapBonuses.length > 0) {
-        let totalBonusMultiplierFactor = 0; // This is the sum of (multiplier - 1)
+        let totalBonusMultiplierFactor = 0; 
         let stillActiveBonuses = updatedProfile.activeTapBonuses.map(bonus => {
           totalBonusMultiplierFactor += (bonus.bonusMultiplier - 1);
           return { ...bonus, remainingTaps: bonus.remainingTaps - 1 };
         }).filter(bonus => bonus.remainingTaps > 0);
 
-        // Apply the sum of all bonus multipliers
+        
         finalAmount = amount * (1 + totalBonusMultiplierFactor);
 
-        // Check for expired bonuses to notify
+        
         updatedProfile.activeTapBonuses.forEach(oldBonus => {
             if (!stillActiveBonuses.find(b => b.id === oldBonus.id)) {
-                setTimeout(() => { // Use timeout to ensure toast appears after other updates
+                setTimeout(() => { 
                     toast({ title: "Bonus Expired", description: `${oldBonus.name} has worn off.` });
                 }, 0);
             }
@@ -318,7 +330,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         updatedProfile.currentTierColor = getTierColorByLevel(updatedProfile.level);
       }
 
-      // Update League Status
+      
       const previousLeague = updatedProfile.league;
       const newLeague = getLeagueByPoints(updatedProfile.points);
       if (newLeague !== previousLeague) {
@@ -442,7 +454,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
 
       const newBonus: ActiveTapBonus = {
-        id: crypto.randomUUID(), // Unique ID for this specific instance of the bonus
+        id: crypto.randomUUID(), 
         marketItemId: item.id,
         name: item.name,
         remainingTaps: item.bonusEffect.durationTaps,
@@ -495,7 +507,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     let profileBeforeTap: PlayerProfile | null = null;
     setPlayerProfile(prev => {
         if (!prev) return null;
-        profileBeforeTap = { ...prev }; // Capture state before modification
+        profileBeforeTap = { ...prev }; 
 
         let updatedProfile = {...prev};
         const now = Date.now();
@@ -536,7 +548,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         basePointsForTap *= comboMultiplierValue;
         basePointsForTap = Math.round(basePointsForTap);
 
-        addPoints(basePointsForTap, true); // Pass true for isFromTap
+        addPoints(basePointsForTap, true); 
 
 
         updatedProfile.totalTapsForUniform = (updatedProfile.totalTapsForUniform || 0) + 1;
@@ -554,12 +566,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
         updatedProfile.equippedUniformPieces = newEquippedUniformPieces;
         updatedProfile = updateQuestProgress(updatedProfile, 'taps', 1);
-        // `addPoints` will handle 'points_earned' quest progress
-
-        // Return the profile state after tap decrement and uniform logic, but before addPoints fully resolves
-        // This is tricky because addPoints is async due to setPlayerProfile.
-        // The quest progress for 'taps' should be based on the tap action itself.
-        // We rely on addPoints to eventually update the profile with new points and associated progressions.
+        
         return updatedProfile;
     });
 
@@ -673,7 +680,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             const timeAwayMinutes = Math.floor((Date.now() - playerProfile.lastLoginTimestamp) / 60000);
             if (timeAwayMinutes > 5) {
                 const resourcesGained = playerProfile.muleDrones * MULE_DRONE_BASE_RATE * timeAwayMinutes;
-                if (resourcesGained > 0) addPoints(resourcesGained); // isFromTap is false here
+                if (resourcesGained > 0) addPoints(resourcesGained); 
 
                 const loreSnippetInput = {
                     timeAway: timeAwayMinutes,
@@ -754,3 +761,6 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
+
+
+    
