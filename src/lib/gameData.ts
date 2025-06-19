@@ -69,7 +69,7 @@ export const SEASONS_DATA: Season[] = [
     title: 'The Plutonium Crisis',
     description: "Gather Plutonium, the rare resource for Legendary and Core units.",
     objectiveResourceName: 'Plutonium',
-    objectiveResourceIcon: HelpCircle, 
+    objectiveResourceIcon: HelpCircle,
     coreBriefingObjective: "secure Plutonium, vital for advanced military units",
     unlocksCore: false,
   },
@@ -93,7 +93,7 @@ export const UPGRADES_DATA: Upgrade[] = [
     baseCost: 10,
     costMultiplier: 1.5,
     effectDescription: (level) => `+${level} Points per tap.`,
-    icon: Zap, 
+    icon: Zap,
   },
   {
     id: 'critChance',
@@ -175,7 +175,7 @@ export const MULE_DRONE_BASE_RATE = 1;
 
 // Tap Limit System Constants
 export const INITIAL_MAX_TAPS = 100;
-export const TAP_REGEN_COOLDOWN_MINUTES = 30;
+export const TAP_REGEN_COOLDOWN_MINUTES = 4; // Changed from 30 to 4
 export const AURON_COST_FOR_TAP_REFILL = 50;
 
 // Visual Tier Colors (HSL string values)
