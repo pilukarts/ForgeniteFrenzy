@@ -11,11 +11,11 @@ import { User, UserRound, CheckCircle2, ShieldEllipsis, Send, Film, MessageSquar
 import IntroScreen from '@/components/intro/IntroScreen';
 import PreIntroScreen from '@/components/intro/PreIntroScreen';
 import { useToast } from "@/hooks/use-toast";
-import { AURON_COST_FOR_TAP_REFILL, TAP_REGEN_COOLDOWN_MINUTES } from '@/lib/gameData';
+import { AURON_COST_FOR_TAP_REFILL, TAP_REGEN_COOLDOWN_MINUTES, getLeagueIconAndColor } from '@/lib/gameData';
+import { cn } from '@/lib/utils';
 
 type NewUserIntroPhase = 'pre' | 'main' | 'setup';
 
-// Helper component for IntroScreen with timed transition
 const IntroScreenWithTransition: React.FC<{ onComplete: () => void; duration: number }> = ({ onComplete, duration }) => {
   useEffect(() => {
     const timer = setTimeout(onComplete, duration);
@@ -47,16 +47,15 @@ export default function HomePage() {
         const remaining = playerProfile.tapsAvailableAt - Date.now();
         setTimeLeftForTapRegen(remaining > 0 ? remaining : 0);
         if (remaining <= 0) {
-          // Optionally auto-refresh profile or notify user taps are ready
-           if(playerProfile.currentTaps <=0) { // Check again, as handleTap might refill it
+           if(playerProfile.currentTaps <=0) { 
              toast({title: "Taps Recharged!", description: "Your tap energy is ready."});
            }
         }
       };
-      updateTimer(); // Initial call
+      updateTimer(); 
       intervalId = setInterval(updateTimer, 1000);
     } else if (playerProfile && playerProfile.currentTaps > 0) {
-      setTimeLeftForTapRegen(0); // Reset if taps are available
+      setTimeLeftForTapRegen(0); 
     }
     return () => clearInterval(intervalId);
   }, [playerProfile, toast]);
@@ -90,7 +89,7 @@ export default function HomePage() {
 
   const handleTelegramShare = () => {
     if (playerProfile) {
-      let shareText = `Join me in Alliance Forge! Score: ${playerProfile.points.toLocaleString()}, Rank: ${playerProfile.rankTitle}.`;
+      let shareText = `Join me in Alliance Forge! Score: ${playerProfile.points.toLocaleString()}, Rank: ${playerProfile.rankTitle}, League: ${playerProfile.league}.`;
       if (playerProfile.referralCode) {
         shareText += ` Use my code ${playerProfile.referralCode} at signup!`;
       }
@@ -105,7 +104,7 @@ export default function HomePage() {
 
   const handleTikTokShare = async () => {
     if (playerProfile) {
-      let shareText = `Alliance Forge is epic! My score: ${playerProfile.points.toLocaleString()}, Rank: ${playerProfile.rankTitle}.`;
+      let shareText = `Alliance Forge is epic! My score: ${playerProfile.points.toLocaleString()}, Rank: ${playerProfile.rankTitle}, League: ${playerProfile.league}.`;
       if (playerProfile.referralCode) {
         shareText += ` Join with my code: ${playerProfile.referralCode}.`;
       }
@@ -134,7 +133,7 @@ export default function HomePage() {
   const handleDiscordShare = async () => {
     if (playerProfile) {
       const discordInviteLink = "https://discord.gg/HYzPh32K"; 
-      let shareText = `Commanders, assemble in Alliance Forge: ${gameUrl}. My stats: ${playerProfile.points.toLocaleString()} pts (Rank: ${playerProfile.rankTitle}).`;
+      let shareText = `Commanders, assemble in Alliance Forge: ${gameUrl}. My stats: ${playerProfile.points.toLocaleString()} pts (Rank: ${playerProfile.rankTitle}, League: ${playerProfile.league}).`;
       if (playerProfile.referralCode) {
         shareText += ` Use referral: ${playerProfile.referralCode} when signing up.`;
       }
@@ -163,6 +162,8 @@ export default function HomePage() {
   if (!playerProfile) return <IntroScreen/>; 
 
   const isOutOfTaps = playerProfile.currentTaps <= 0 && timeLeftForTapRegen > 0;
+  const { Icon: LeagueIcon, colorClass: leagueColorClass } = getLeagueIconAndColor(playerProfile.league);
+
 
   return (
     <AppLayout>
@@ -223,6 +224,13 @@ export default function HomePage() {
           <p className="text-xs sm:text-sm text-muted-foreground bg-background/70 p-1 rounded mt-1">
             Current Objective: {playerProfile.currentSeasonId ? playerProfile.seasonProgress[playerProfile.currentSeasonId]?.toLocaleString() || 0 : 0} Points
           </p>
+          <div className={cn("flex items-center justify-center gap-1 bg-background/70 p-1 rounded mt-1")}>
+            <LeagueIcon className={cn("h-3.5 w-3.5", leagueColorClass)} />
+            <p className={cn("text-xs sm:text-sm font-medium", leagueColorClass)}>
+                Current League: {playerProfile.league}
+            </p>
+          </div>
+
 
           <Button onClick={switchCommanderSex} variant="outline" size="sm" className="mt-2 sm:mt-3 text-foreground hover:text-accent-foreground hover:bg-accent bg-background/70 text-sm sm:text-base">
             {playerProfile.commanderSex === 'male' ? (

@@ -1,6 +1,6 @@
 
-import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate } from './types';
-import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle } from 'lucide-react';
+import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate, LeagueName, LeagueTier } from './types';
+import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle, Shield, ShieldCheck, Award, Star, Crown } from 'lucide-react';
 
 export const SEASONS_DATA: Season[] = [
   {
@@ -122,16 +122,6 @@ export const UPGRADES_DATA: Upgrade[] = [
     effectDescription: (level) => `+${level * 2}% Combo Multiplier.`,
     icon: ArrowUpCircle,
   },
-  // Example of a new upgrade for the tap limit system:
-  // {
-  //   id: 'maxTapsUpgrade',
-  //   name: 'Expanded Energy Cells',
-  //   description: 'Increases your maximum number of available taps.',
-  //   baseCost: 200,
-  //   costMultiplier: 2.0,
-  //   effectDescription: (level) => `+${level * 10} Max Taps.`,
-  //   icon: BatteryCharging, // You'd need to import BatteryCharging from lucide-react
-  // },
 ];
 
 
@@ -173,20 +163,18 @@ export const POINTS_PER_TAP = 1;
 export const AURON_PER_WALLET_CONNECT = 100;
 export const MULE_DRONE_BASE_RATE = 1;
 
-// Tap Limit System Constants
 export const INITIAL_MAX_TAPS = 100;
-export const TAP_REGEN_COOLDOWN_MINUTES = 4; // Changed from 30 to 4
+export const TAP_REGEN_COOLDOWN_MINUTES = 4; 
 export const AURON_COST_FOR_TAP_REFILL = 50;
 
-// Visual Tier Colors (HSL string values)
 const TIER_COLORS_HSL = {
   SILVER: '210 15% 75%',
   CYAN: '180 100% 50%',
   GREEN_LIGHT: '120 100% 70%',
   PURPLE: '270 70% 60%',
-  CORAL: '16 80% 65%',     // Matches --foreground HSL
+  CORAL: '16 80% 65%',
   FIERY_RED: '0 100% 50%',
-  GOLD: '45 100% 50%'       // Matches --primary / --bright-gold HSL
+  GOLD: '45 100% 50%'
 };
 
 export function getTierColorByLevel(level: number): string {
@@ -199,7 +187,6 @@ export function getTierColorByLevel(level: number): string {
   return TIER_COLORS_HSL.GOLD;
 }
 export const INITIAL_TIER_COLOR = getTierColorByLevel(1);
-
 
 export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
   {
@@ -269,3 +256,36 @@ export const DAILY_QUESTS_POOL: DailyQuestTemplate[] = [
   { templateId: 'dq007', title: 'Resource Hoarder', description: 'Earn 5,000 points.', type: 'points_earned', target: 5000, reward: { points: 3000, auron: 15 }, icon: TrendingUp },
 ];
 
+// League System Data
+export const LEAGUE_TIERS: LeagueTier[] = [
+  { name: 'Bronze', minPoints: 0, icon: Shield, colorClass: 'text-yellow-600' },
+  { name: 'Silver', minPoints: 50000, icon: ShieldCheck, colorClass: 'text-gray-400' },
+  { name: 'Gold', minPoints: 250000, icon: Award, colorClass: 'text-yellow-400' },
+  { name: 'Platinum', minPoints: 1000000, icon: Gem, colorClass: 'text-cyan-400' },
+  { name: 'Diamond', minPoints: 5000000, icon: Sparkles, colorClass: 'text-blue-300' }, // Using Sparkles for Diamond
+  { name: 'Master', minPoints: 10000000, icon: Star, colorClass: 'text-purple-400' },
+  { name: 'Grandmaster', minPoints: 25000000, icon: Crown, colorClass: 'text-red-400' },
+];
+
+export const DEFAULT_LEAGUE: LeagueName = 'Bronze';
+
+export function getLeagueByPoints(points: number): LeagueName {
+  let currentLeague: LeagueName = DEFAULT_LEAGUE;
+  // Iterate backwards to find the highest applicable league
+  for (let i = LEAGUE_TIERS.length - 1; i >= 0; i--) {
+    if (points >= LEAGUE_TIERS[i].minPoints) {
+      currentLeague = LEAGUE_TIERS[i].name;
+      break;
+    }
+  }
+  return currentLeague;
+}
+
+export function getLeagueIconAndColor(leagueName: LeagueName): { Icon: LucideIcon; colorClass: string } {
+    const leagueData = LEAGUE_TIERS.find(tier => tier.name === leagueName);
+    if (leagueData) {
+        return { Icon: leagueData.icon, colorClass: leagueData.colorClass };
+    }
+    // Default if not found (shouldn't happen if leagueName is valid)
+    return { Icon: Shield, colorClass: 'text-yellow-600' }; 
+}

@@ -1,6 +1,8 @@
 
 import type { LucideIcon } from 'lucide-react';
 
+export type LeagueName = 'Bronze' | 'Silver' | 'Gold' | 'Platinum' | 'Diamond' | 'Master' | 'Grandmaster';
+
 export interface PlayerProfile {
   id: string;
   name: string;
@@ -36,6 +38,9 @@ export interface PlayerProfile {
 
   // Visual Tier Color
   currentTierColor: string; // Stores HSL string like "210 15% 75%"
+
+  // League System
+  league: LeagueName;
 }
 
 export interface Season {
@@ -75,6 +80,7 @@ export interface LeaderboardEntry {
   playerName:string;
   playerCountry: string;
   score: number;
+  playerLeague: LeagueName; // Added for league display
 }
 
 export interface CoreMessage {
@@ -160,4 +166,12 @@ export interface DailyQuestTemplate {
   target: number;
   reward: QuestReward;
   icon?: LucideIcon;
+}
+
+// League System
+export interface LeagueTier {
+    name: LeagueName;
+    minPoints: number;
+    icon: LucideIcon;
+    colorClass: string; // Tailwind color class for the icon/text
 }
