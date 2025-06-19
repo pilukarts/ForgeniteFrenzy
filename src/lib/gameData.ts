@@ -1,6 +1,6 @@
 
 import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate, LeagueName, LeagueTier } from './types';
-import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle, Shield, ShieldCheck, Award, Star, Crown } from 'lucide-react';
+import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle, Shield, ShieldCheck, Award, Star, Crown, LucideIcon } from 'lucide-react';
 
 export const SEASONS_DATA: Season[] = [
   {
@@ -262,7 +262,7 @@ export const LEAGUE_TIERS: LeagueTier[] = [
   { name: 'Silver', minPoints: 50000, icon: ShieldCheck, colorClass: 'text-gray-400' },
   { name: 'Gold', minPoints: 250000, icon: Award, colorClass: 'text-yellow-400' },
   { name: 'Platinum', minPoints: 1000000, icon: Gem, colorClass: 'text-cyan-400' },
-  { name: 'Diamond', minPoints: 5000000, icon: Sparkles, colorClass: 'text-blue-300' }, // Using Sparkles for Diamond
+  { name: 'Diamond', minPoints: 5000000, icon: Sparkles, colorClass: 'text-blue-300' }, 
   { name: 'Master', minPoints: 10000000, icon: Star, colorClass: 'text-purple-400' },
   { name: 'Grandmaster', minPoints: 25000000, icon: Crown, colorClass: 'text-red-400' },
 ];
@@ -271,7 +271,6 @@ export const DEFAULT_LEAGUE: LeagueName = 'Bronze';
 
 export function getLeagueByPoints(points: number): LeagueName {
   let currentLeague: LeagueName = DEFAULT_LEAGUE;
-  // Iterate backwards to find the highest applicable league
   for (let i = LEAGUE_TIERS.length - 1; i >= 0; i--) {
     if (points >= LEAGUE_TIERS[i].minPoints) {
       currentLeague = LEAGUE_TIERS[i].name;
@@ -286,6 +285,6 @@ export function getLeagueIconAndColor(leagueName: LeagueName): { Icon: LucideIco
     if (leagueData) {
         return { Icon: leagueData.icon, colorClass: leagueData.colorClass };
     }
-    // Default if not found (shouldn't happen if leagueName is valid)
     return { Icon: Shield, colorClass: 'text-yellow-600' }; 
 }
+
