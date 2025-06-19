@@ -12,6 +12,7 @@ const navItems = [
   { href: '/leaderboard', label: 'Leaders', icon: Trophy },
   { href: '/alliance-chat', label: 'Chat', icon: MessagesSquare },
   { href: '/marketplace', label: 'Shop', icon: ShoppingCart },
+  { href: '/community', label: 'Community', icon: Users },
   { href: '/support', label: 'Support', icon: LifeBuoy },
   { href: '/legal/transparency-statement', label: 'Legal', icon: ShieldQuestion },
 ];
