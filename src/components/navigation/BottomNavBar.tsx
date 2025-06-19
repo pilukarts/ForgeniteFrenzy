@@ -1,7 +1,7 @@
 
 "use client";
 import Link from 'next/link';
-import { Home, ChevronsUp, Trophy, Users, ShoppingCart, MessagesSquare, ListChecks } from 'lucide-react';
+import { Home, ChevronsUp, Trophy, Users, ShoppingCart, MessagesSquare, ListChecks, ShieldQuestion } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
@@ -12,6 +12,7 @@ const navItems = [
   { href: '/leaderboard', label: 'Leaders', icon: Trophy },
   { href: '/alliance-chat', label: 'Chat', icon: MessagesSquare },
   { href: '/marketplace', label: 'Shop', icon: ShoppingCart },
+  { href: '/legal/transparency-statement', label: 'Legal', icon: ShieldQuestion }, // Added temporary link
 ];
 
 const BottomNavBar: React.FC = () => {
@@ -42,4 +43,4 @@ const BottomNavBar: React.FC = () => {
 };
 
 export default BottomNavBar;
-
+    
