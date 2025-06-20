@@ -144,17 +144,17 @@ export default function HomePage() {
             {/* Social Links Section */}
             <div className="grid grid-cols-3 gap-2 pt-1">
                <Button asChild variant="outline" size="sm" className="bg-background/70">
-                 <Link href="#" target="_blank">
+                 <Link href="https://example.com/invite" target="_blank" rel="noopener noreferrer">
                   <Share2 className="mr-1 h-3 w-3"/> Invite
                  </Link>
                </Button>
                <Button asChild variant="outline" size="sm" className="bg-background/70">
-                 <Link href="#" target="_blank">
+                 <Link href="https://t.me/allianceforge" target="_blank" rel="noopener noreferrer">
                   <Send className="mr-1 h-3 w-3"/> Telegram
                  </Link>
                </Button>
                <Button asChild variant="outline" size="sm" className="bg-background/70">
-                 <Link href="#" target="_blank">
+                 <Link href="https://tiktok.com/@allianceforge" target="_blank" rel="noopener noreferrer">
                   <Music className="mr-1 h-3 w-3"/> TikTok
                  </Link>
                </Button>
