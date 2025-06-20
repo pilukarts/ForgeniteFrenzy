@@ -7,11 +7,12 @@ import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
-import { User, UserRound, Zap, AlertTriangle, Trophy, Shirt, Ship } from 'lucide-react';
+import { User, UserRound, Zap, AlertTriangle, Trophy, Shirt, Ship, Share2, Send, Music } from 'lucide-react';
 import IntroScreen from '@/components/intro/IntroScreen';
 import PreIntroScreen from '@/components/intro/PreIntroScreen';
 import { useToast } from "@/hooks/use-toast";
 import { AURON_COST_FOR_TAP_REFILL, TAP_REGEN_COOLDOWN_MINUTES } from '@/lib/gameData';
+import Link from 'next/link';
 
 type NewUserIntroPhase = 'pre' | 'main' | 'setup';
 
@@ -138,6 +139,27 @@ export default function HomePage() {
               </div>
             </div>
 
+            <div className="border-t border-border/50 my-2"></div>
+            
+            {/* Social Links Section */}
+            <div className="grid grid-cols-3 gap-2 pt-1">
+               <Button asChild variant="outline" size="sm" className="bg-background/70">
+                 <Link href="#" target="_blank">
+                  <Share2 className="mr-1 h-3 w-3"/> Invite
+                 </Link>
+               </Button>
+               <Button asChild variant="outline" size="sm" className="bg-background/70">
+                 <Link href="#" target="_blank">
+                  <Send className="mr-1 h-3 w-3"/> Telegram
+                 </Link>
+               </Button>
+               <Button asChild variant="outline" size="sm" className="bg-background/70">
+                 <Link href="#" target="_blank">
+                  <Music className="mr-1 h-3 w-3"/> TikTok
+                 </Link>
+               </Button>
+            </div>
+
           </div>
 
           {isOutOfTaps && (
@@ -170,4 +192,3 @@ export default function HomePage() {
     </AppLayout>
   );
 }
-
