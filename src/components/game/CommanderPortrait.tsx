@@ -6,7 +6,6 @@ import { cn } from '@/lib/utils';
 import { useGame } from '@/contexts/GameContext'; // Import useGame
 
 interface CommanderPortraitProps {
-  commanderSex: 'male' | 'female'; // This will be taken from playerProfile
   onTap: () => void;
 }
 
@@ -66,33 +65,6 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
         priority
         style={{ clipPath: hexagonClipPath }} 
       />
-      
-      <svg
-        viewBox="0 0 32 32"
-        xmlns="http://www.w3.org/2000/svg"
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[200%] h-10 w-10 md:h-12 md:w-12 opacity-80 pointer-events-none core-hexagon-glow"
-        style={{ '--dynamic-commander-glow': currentTierColor } as React.CSSProperties} // Apply glow to SVG too
-        // For SVG, text color used for fill
-        fill="hsl(var(--dynamic-commander-glow))"
-      >
-        <path
-          d="M16 3 L29.856 10 L29.856 24 L16 31 L2.144 24 L2.144 10 Z"
-          // fill will be inherited from svg element style or explicit fill here
-        />
-        <text
-          x="50%"
-          y="51%" 
-          dominantBaseline="middle"
-          textAnchor="middle"
-          fontSize="10" 
-          fontWeight="bold"
-          // Use a contrasting color for text on dynamic backgrounds or primary-foreground
-          fill="hsl(var(--primary-foreground))" 
-          className="pointer-events-none"
-        >
-          AF
-        </text>
-      </svg>
       
       <style jsx>{`
         @keyframes tapped-visual {
