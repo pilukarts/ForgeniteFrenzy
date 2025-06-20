@@ -7,7 +7,7 @@ import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
-import { User, UserRound, Zap, AlertTriangle } from 'lucide-react';
+import { User, UserRound, Zap, AlertTriangle, Trophy, Shirt, Ship } from 'lucide-react';
 import IntroScreen from '@/components/intro/IntroScreen';
 import PreIntroScreen from '@/components/intro/PreIntroScreen';
 import { useToast } from "@/hooks/use-toast";
@@ -34,7 +34,7 @@ const formatTimeLeft = (milliseconds: number): string => {
 
 
 export default function HomePage() {
-  const { playerProfile, isLoading, isInitialSetupDone, handleTap, switchCommanderSex, refillTaps } = useGame();
+  const { playerProfile, isLoading, isInitialSetupDone, handleTap, switchCommanderSex, refillTaps, currentSeason } = useGame();
   const { toast } = useToast();
   const [newUserIntroPhase, setNewUserIntroPhase] = useState<NewUserIntroPhase>('pre');
   const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number>(0);
@@ -100,15 +100,44 @@ export default function HomePage() {
         />
 
         <div className="mt-4 sm:mt-6 w-full max-w-xs sm:max-w-sm md:max-w-md space-y-2">
-           <div className="bg-background/70 p-2 rounded-lg">
-            <p className="text-xl sm:text-2xl font-semibold text-primary font-headline">
-              Taps: {playerProfile.currentTaps} / {playerProfile.maxTaps}
-            </p>
-            {isOutOfTaps && (
-              <p className="text-sm sm:text-base text-orange-400 animate-pulse">
-                Recarga en: {formatTimeLeft(timeLeftForTapRegen)}
+           <div className="bg-background/70 p-2 sm:p-3 rounded-lg space-y-2">
+            <div>
+              <p className="text-xl sm:text-2xl font-semibold text-primary font-headline">
+                Taps: {playerProfile.currentTaps} / {playerProfile.maxTaps}
               </p>
-            )}
+              {isOutOfTaps && (
+                <p className="text-sm sm:text-base text-orange-400 animate-pulse">
+                  Regeneration in: {formatTimeLeft(timeLeftForTapRegen)}
+                </p>
+              )}
+            </div>
+
+            <div className="border-t border-border/50 my-2"></div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 text-xs text-left">
+              <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
+                <Ship className="h-4 w-4 text-primary shrink-0" />
+                <div>
+                  <p className="font-bold text-muted-foreground">{currentSeason.objectiveResourceName}</p>
+                  <p className="text-foreground font-mono">{(playerProfile.seasonProgress[currentSeason.id] || 0).toLocaleString()}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
+                <Trophy className="h-4 w-4 text-primary shrink-0" />
+                <div>
+                  <p className="font-bold text-muted-foreground">League</p>
+                  <p className="text-foreground font-mono">{playerProfile.league}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
+                <Shirt className="h-4 w-4 text-primary shrink-0" />
+                <div>
+                  <p className="font-bold text-muted-foreground">Uniform</p>
+                  <p className="text-foreground font-mono">{playerProfile.equippedUniformPieces.length} / 5</p>
+                </div>
+              </div>
+            </div>
+
           </div>
 
           {isOutOfTaps && (
@@ -118,13 +147,13 @@ export default function HomePage() {
               className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
               disabled={playerProfile.auron < AURON_COST_FOR_TAP_REFILL}
             >
-              <Zap className="mr-2 h-4 w-4" /> Rellenar Taps ({AURON_COST_FOR_TAP_REFILL} Auron)
+              <Zap className="mr-2 h-4 w-4" /> Refill Taps ({AURON_COST_FOR_TAP_REFILL} Auron)
             </Button>
           )}
            {playerProfile.auron < AURON_COST_FOR_TAP_REFILL && isOutOfTaps && (
             <p className="text-xs text-red-400 flex items-center justify-center">
                 <AlertTriangle className="h-3 w-3 mr-1"/>
-                Auron insuficiente para rellenar.
+                Insufficient Auron to refill.
             </p>
            )}
 
@@ -141,3 +170,4 @@ export default function HomePage() {
     </AppLayout>
   );
 }
+
