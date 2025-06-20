@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { useGame } from '@/contexts/GameContext'; // Import useGame
+import { Hexagon } from 'lucide-react';
 
 interface CommanderPortraitProps {
   onTap: () => void;
@@ -26,8 +27,8 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
 
   const handleInteraction = () => {
     onTap();
-    // Play tap sound effect
-    const tapSound = new Audio('/sounds/your-tap-sound.mp3'); // REPLACE 'your-tap-sound.mp3' with your actual sound file
+    // Play tap sound effect - placeholder sound
+    const tapSound = new Audio('/sounds/your-tap-sound.mp3'); 
     tapSound.play().catch(e => console.error("Error playing tap sound:", e));
     
     setIsTapped(true);
@@ -40,6 +41,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
     <button 
       onClick={handleInteraction} 
       onTouchStart={(e) => {
+        e.preventDefault();
         handleInteraction();
       }}
       className={cn(
@@ -65,6 +67,16 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
         priority
         style={{ clipPath: hexagonClipPath }} 
       />
+
+      {/* Restored AF Logo Overlay */}
+      <div className="absolute bottom-5 right-5 sm:bottom-6 sm:right-6 flex items-center justify-center pointer-events-none">
+        <div className="relative w-12 h-12 sm:w-14 sm:h-14 group">
+            <Hexagon className="absolute inset-0 w-full h-full text-primary/70 fill-background/30 backdrop-blur-sm" />
+            <span className="absolute inset-0 flex items-center justify-center font-headline text-lg sm:text-xl text-primary font-bold">
+                AF
+            </span>
+        </div>
+      </div>
       
       <style jsx>{`
         @keyframes tapped-visual {
