@@ -184,6 +184,29 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const savedProfile = localStorage.getItem('playerProfile');
     if (savedProfile) {
       let parsedProfile = JSON.parse(savedProfile) as PlayerProfile;
+
+      // Initialize new fields for backward compatibility
+      parsedProfile.lastLoginTimestamp = parsedProfile.lastLoginTimestamp ?? Date.now();
+      parsedProfile.muleDrones = parsedProfile.upgrades['muleDrone'] || 0; // Sync muleDrones with upgrade level
+
+      // Calculate offline earnings
+      const now = Date.now();
+      const timeAwayInMinutes = Math.floor((now - parsedProfile.lastLoginTimestamp) / 60000);
+      if (timeAwayInMinutes > 1 && parsedProfile.muleDrones > 0) {
+        const pointsGained = Math.floor(parsedProfile.muleDrones * MULE_DRONE_BASE_RATE * timeAwayInMinutes);
+        if (pointsGained > 0) {
+          parsedProfile.points += pointsGained;
+          setTimeout(() => {
+            toast({
+              title: 'Welcome Back, Commander!',
+              description: `Your M.U.L.E. Drones generated ${pointsGained.toLocaleString()} points while you were away.`,
+            });
+          }, 1000);
+        }
+      }
+      parsedProfile.lastLoginTimestamp = now; // Update timestamp for the current session
+
+      // Standard initializations
       parsedProfile.maxTaps = parsedProfile.maxTaps ?? INITIAL_MAX_TAPS;
       parsedProfile.currentTaps = parsedProfile.currentTaps ?? parsedProfile.maxTaps;
       parsedProfile.tapsAvailableAt = parsedProfile.tapsAvailableAt ?? Date.now();
@@ -414,6 +437,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             [upgradeId]: (prev.upgrades[upgradeId] || 0) + 1,
           }
         };
+
+        // If it's a M.U.L.E. drone, also update the separate counter
+        if (upgradeId === 'muleDrone') {
+          updatedProfile.muleDrones = (updatedProfile.upgrades[upgradeId] || 0);
+        }
+
         updatedProfile = updateQuestProgress(updatedProfile, 'purchase_upgrade', 1);
         return updatedProfile;
 
