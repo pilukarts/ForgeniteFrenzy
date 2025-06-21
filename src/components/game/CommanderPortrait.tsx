@@ -68,6 +68,14 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
         style={{ clipPath: hexagonClipPath }} 
       />
 
+       {/* Visual Core on Chest */}
+      <div 
+        className="absolute w-10 h-10 sm:w-12 sm:h-12 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/3 pointer-events-none"
+        style={{ '--dynamic-commander-glow': currentTierColor } as React.CSSProperties}
+      >
+        <Hexagon className="w-full h-full text-[hsl(var(--dynamic-commander-glow))] fill-[hsla(var(--dynamic-commander-glow)/0.15)] animate-pulse-neon-dynamic" />
+      </div>
+
       {/* Restored AF Logo Overlay */}
       <div className="absolute bottom-5 right-5 sm:bottom-6 sm:right-6 flex items-center justify-center pointer-events-none">
         <div className="relative w-12 h-12 sm:w-14 sm:h-14 group">

@@ -1,6 +1,6 @@
 
-import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate, LeagueName, LeagueTier } from './types';
-import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle, Shield, ShieldCheck, Award, Star, Crown, LucideIcon } from 'lucide-react';
+import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate, LeagueName, LeagueTier, BattlePass } from './types';
+import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle, Shield, ShieldCheck, Award, Star, Crown, LucideIcon, Swords, Shirt } from 'lucide-react';
 
 export const SEASONS_DATA: Season[] = [
   {
@@ -287,3 +287,23 @@ export function getLeagueIconAndColor(leagueName: LeagueName): { Icon: LucideIco
     }
     return { Icon: Shield, colorClass: 'text-yellow-600' }; // Default to Bronze
 }
+
+// BATTLE PASS
+export const BATTLE_PASS_XP_PER_LEVEL = 10000; // 10k points for a level
+
+export const BATTLE_PASS_DATA: BattlePass = {
+  seasonId: 'chapter1', // This should be dynamic in a real app
+  premiumCostInAuron: 500,
+  levels: [
+    { level: 1, freeReward: { type: 'points', amount: 500, icon: Coins }, premiumReward: { type: 'auron', amount: 50, icon: Sparkles } },
+    { level: 2, freeReward: null, premiumReward: { type: 'uniform_piece', name: 'Premium Gloves', icon: Shirt } },
+    { level: 3, freeReward: { type: 'points', amount: 1000, icon: Coins }, premiumReward: { type: 'points', amount: 5000, icon: Coins } },
+    { level: 4, freeReward: null, premiumReward: { type: 'auron', amount: 100, icon: Sparkles } },
+    { level: 5, freeReward: { type: 'auron', amount: 25, icon: Sparkles }, premiumReward: { type: 'title', name: 'Seasoned', icon: Crown } },
+    { level: 6, freeReward: { type: 'points', amount: 2500, icon: Coins }, premiumReward: { type: 'points', amount: 10000, icon: Coins } },
+    { level: 7, freeReward: null, premiumReward: { type: 'uniform_piece', name: 'Premium Boots', icon: Shirt } },
+    { level: 8, freeReward: { type: 'points', amount: 5000, icon: Coins }, premiumReward: { type: 'auron', amount: 150, icon: Sparkles } },
+    { level: 9, freeReward: null, premiumReward: { type: 'points', amount: 20000, icon: Coins } },
+    { level: 10, freeReward: { type: 'auron', amount: 50, icon: Sparkles }, premiumReward: { type: 'title', name: 'Vanguard', icon: Swords } },
+  ],
+};
