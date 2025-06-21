@@ -1,7 +1,7 @@
 
 "use client";
 import Link from 'next/link';
-import { Home, ChevronsUp, Trophy, Users, ShoppingCart, MessagesSquare, ListChecks, ShieldQuestion, LifeBuoy, Swords } from 'lucide-react';
+import { Home, ChevronsUp, Trophy, Users, ShoppingCart, MessagesSquare, ListChecks, ShieldQuestion, LifeBuoy, Swords, Map } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
@@ -10,6 +10,7 @@ const navItems = [
   { href: '/upgrades', label: 'Upgrades', icon: ChevronsUp },
   { href: '/quests', label: 'Quests', icon: ListChecks },
   { href: '/battle-pass', label: 'Pass', icon: Swords },
+  { href: '/level-map', label: 'Map', icon: Map },
   { href: '/leaderboard', label: 'Leaders', icon: Trophy },
   { href: '/alliance-chat', label: 'Chat', icon: MessagesSquare },
   { href: '/marketplace', label: 'Shop', icon: ShoppingCart },
