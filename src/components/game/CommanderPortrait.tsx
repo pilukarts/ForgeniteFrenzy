@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -72,7 +73,10 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
         className="absolute top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
         style={{ '--dynamic-commander-glow': currentTierColor } as React.CSSProperties}
       >
-        <div className="relative w-10 h-10 sm:w-12 sm:h-12 group animate-pulse-neon-dynamic">
+        <div 
+          className="relative w-10 h-10 sm:w-12 sm:h-12 group animate-pulse-neon-dynamic"
+          style={{ clipPath: hexagonClipPath }}
+        >
             <Hexagon className="absolute inset-0 w-full h-full text-[hsl(var(--dynamic-commander-glow))] fill-[hsla(var(--dynamic-commander-glow)/0.2)]" />
             <span className="absolute inset-0 flex items-center justify-center font-headline text-sm sm:text-base text-[hsl(var(--dynamic-commander-glow))] font-bold">
                 AF
