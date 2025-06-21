@@ -69,7 +69,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
 
        {/* Visual Core with AF on Chest */}
       <div 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/3 pointer-events-none"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-2/3 pointer-events-none"
         style={{ '--dynamic-commander-glow': currentTierColor } as React.CSSProperties}
       >
         <div className="relative w-10 h-10 sm:w-12 sm:h-12 group animate-pulse-neon-dynamic">
