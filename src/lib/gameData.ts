@@ -85,6 +85,8 @@ export const SEASONS_DATA: Season[] = [
   },
 ];
 
+export const MULE_DRONE_BASE_RATE = 1; // Points per minute
+
 export const UPGRADES_DATA: Upgrade[] = [
   {
     id: 'tapPower',
@@ -121,6 +123,15 @@ export const UPGRADES_DATA: Upgrade[] = [
     costMultiplier: 1.8,
     effectDescription: (level) => `+${level * 2}% Combo Multiplier.`,
     icon: ArrowUpCircle,
+  },
+  {
+    id: 'muleDrone',
+    name: 'Construct M.U.L.E. Drone',
+    description: 'Build a Mobile Utility & Logistics Entity to passively generate points while you are offline.',
+    baseCost: 5000,
+    costMultiplier: 1.8,
+    effectDescription: (level) => `You have ${level} drones, generating ${level * MULE_DRONE_BASE_RATE * 60} points per hour.`,
+    icon: Container,
   },
 ];
 
@@ -161,7 +172,6 @@ export function getRankTitle(level: number): string {
 
 export const POINTS_PER_TAP = 1;
 export const AURON_PER_WALLET_CONNECT = 100;
-export const MULE_DRONE_BASE_RATE = 1;
 
 export const INITIAL_MAX_TAPS = 100;
 export const TAP_REGEN_COOLDOWN_MINUTES = 4;
