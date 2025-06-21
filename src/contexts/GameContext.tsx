@@ -1,8 +1,8 @@
 
 "use client";
 
-import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName } from '@/lib/types';
-import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints } from '@/lib/gameData';
+import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType } from '@/lib/types';
+import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL } from '@/lib/gameData';
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getCoreBriefing } from '@/ai/flows/core-briefings';
@@ -47,6 +47,10 @@ interface GameContextType {
   claimQuestReward: (questId: string) => void;
   refreshDailyQuestsIfNeeded: () => void;
   refillTaps: () => void;
+  // Battle Pass
+  battlePassData: BattlePass;
+  purchasePremiumPass: () => void;
+  claimBattlePassReward: (level: number, track: 'free' | 'premium') => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -77,6 +81,12 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
   tapsAvailableAt: Date.now(),
   currentTierColor: INITIAL_TIER_COLOR,
   league: DEFAULT_LEAGUE,
+  // Battle Pass
+  battlePassLevel: 1,
+  battlePassXp: 0,
+  xpToNextBattlePassLevel: BATTLE_PASS_XP_PER_LEVEL,
+  hasPremiumPass: false,
+  claimedBattlePassRewards: {},
 };
 
 const generateReferralCode = (name: string): string => {
@@ -182,14 +192,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       parsedProfile.equippedUniformPieces = parsedProfile.equippedUniformPieces ?? [];
       
       parsedProfile.activeDailyQuests = parsedProfile.activeDailyQuests ?? [];
-      // Re-hydrate quest icons as they are not stored properly in JSON
       if (parsedProfile.activeDailyQuests) {
         parsedProfile.activeDailyQuests = parsedProfile.activeDailyQuests.map(q => {
           const template = DAILY_QUESTS_POOL.find(t => t.templateId === q.templateId);
-          return {
-            ...q,
-            icon: template ? template.icon : undefined, // Assign function component
-          };
+          return { ...q, icon: template ? template.icon : undefined };
         });
       }
       
@@ -198,6 +204,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       parsedProfile.referredByCode = parsedProfile.referredByCode ?? undefined;
       parsedProfile.currentTierColor = parsedProfile.currentTierColor ?? getTierColorByLevel(parsedProfile.level);
       parsedProfile.league = parsedProfile.league ?? getLeagueByPoints(parsedProfile.points);
+      
+      // Battle Pass initialization
+      parsedProfile.battlePassLevel = parsedProfile.battlePassLevel ?? 1;
+      parsedProfile.battlePassXp = parsedProfile.battlePassXp ?? 0;
+      parsedProfile.xpToNextBattlePassLevel = parsedProfile.xpToNextBattlePassLevel ?? BATTLE_PASS_XP_PER_LEVEL;
+      parsedProfile.hasPremiumPass = parsedProfile.hasPremiumPass ?? false;
+      parsedProfile.claimedBattlePassRewards = parsedProfile.claimedBattlePassRewards ?? {};
 
 
       setPlayerProfile(parsedProfile);
@@ -262,7 +275,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       tapsAvailableAt: now,
       currentTierColor: getTierColorByLevel(1),
       league: DEFAULT_LEAGUE,
-      activeTapBonuses: [], 
+      activeTapBonuses: [],
+      // Battle Pass
+      battlePassLevel: 1,
+      battlePassXp: 0,
+      xpToNextBattlePassLevel: BATTLE_PASS_XP_PER_LEVEL,
+      hasPremiumPass: false,
+      claimedBattlePassRewards: {},
     };
     setPlayerProfile(newProfileData);
     setIsInitialSetupDone(true);
@@ -329,7 +348,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (levelChanged) {
         updatedProfile.currentTierColor = getTierColorByLevel(updatedProfile.level);
       }
-
       
       const previousLeague = updatedProfile.league;
       const newLeague = getLeagueByPoints(updatedProfile.points);
@@ -341,6 +359,17 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
 
       updatedProfile = updateQuestProgress(updatedProfile, 'points_earned', finalAmount);
+
+      // Battle Pass XP Gain
+      let newBattlePassXp = updatedProfile.battlePassXp + finalAmount; // 1 point = 1 BP XP for simplicity
+      while(newBattlePassXp >= updatedProfile.xpToNextBattlePassLevel) {
+        newBattlePassXp -= updatedProfile.xpToNextBattlePassLevel;
+        updatedProfile.battlePassLevel++;
+        setTimeout(() => {
+          toast({ title: "Battle Pass Level Up!", description: `You've reached Level ${updatedProfile.battlePassLevel} in the Battle Pass!` });
+        }, 500);
+      }
+      updatedProfile.battlePassXp = newBattlePassXp;
 
       return updatedProfile;
     });
@@ -713,6 +742,86 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isInitialSetupDone, playerProfile, currentSeason.id, isCoreUnlocked, coreLastInteractionTime, addCoreMessage, getUpgradeCost, addPoints, isAICallInProgress]);
 
+  const purchasePremiumPass = useCallback(() => {
+    setPlayerProfile(prev => {
+      if (!prev) return null;
+      if (prev.hasPremiumPass) {
+        toast({ title: 'Already Unlocked', description: 'You already have the Premium Battle Pass.' });
+        return prev;
+      }
+      if (prev.auron < BATTLE_PASS_DATA.premiumCostInAuron) {
+        toast({ title: 'Insufficient Auron', description: `You need ${BATTLE_PASS_DATA.premiumCostInAuron} Auron to unlock the premium pass.`, variant: 'destructive' });
+        return prev;
+      }
+      toast({ title: 'Premium Pass Unlocked!', description: 'You now have access to premium rewards.' });
+      return {
+        ...prev,
+        auron: prev.auron - BATTLE_PASS_DATA.premiumCostInAuron,
+        hasPremiumPass: true,
+      };
+    });
+  }, [toast]);
+
+  const claimBattlePassReward = useCallback((level: number, track: 'free' | 'premium') => {
+    setPlayerProfile(prev => {
+      if (!prev) return null;
+      
+      const rewardLevel = BATTLE_PASS_DATA.levels.find(l => l.level === level);
+      if (!rewardLevel) return prev;
+
+      const reward = track === 'free' ? rewardLevel.freeReward : rewardLevel.premiumReward;
+      if (!reward) return prev;
+
+      // Check if reward is already claimed
+      if (prev.claimedBattlePassRewards[level]?.includes(track)) {
+        toast({ title: 'Reward Already Claimed', variant: 'default' });
+        return prev;
+      }
+
+      // Check if player has reached the level
+      if (prev.battlePassLevel < level) {
+         toast({ title: 'Level Not Reached', description: `You must reach level ${level} to claim this reward.`, variant: 'destructive' });
+        return prev;
+      }
+      
+      // Check for premium pass if claiming premium reward
+      if (track === 'premium' && !prev.hasPremiumPass) {
+        toast({ title: 'Premium Pass Required', description: 'Unlock the premium pass to claim this reward.', variant: 'destructive' });
+        return prev;
+      }
+
+      let updatedProfile = { ...prev };
+
+      // Apply reward
+      switch (reward.type) {
+        case 'points':
+          updatedProfile.points += reward.amount || 0;
+          break;
+        case 'auron':
+          updatedProfile.auron += reward.amount || 0;
+          break;
+        case 'uniform_piece':
+           if (reward.name && !updatedProfile.equippedUniformPieces.includes(reward.name)) {
+             updatedProfile.equippedUniformPieces.push(reward.name);
+           }
+          break;
+        case 'title':
+          updatedProfile.rankTitle = reward.name || updatedProfile.rankTitle;
+          break;
+      }
+
+      // Mark as claimed
+      const claimedForLevel = updatedProfile.claimedBattlePassRewards[level] || [];
+      updatedProfile.claimedBattlePassRewards = {
+        ...updatedProfile.claimedBattlePassRewards,
+        [level]: [...claimedForLevel, track],
+      };
+      
+      toast({ title: 'Reward Claimed!', description: `You have received: ${reward.amount || ''} ${reward.name || reward.type}` });
+
+      return updatedProfile;
+    });
+  }, [toast]);
 
   return (
     <GameContext.Provider value={{
@@ -748,6 +857,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         claimQuestReward,
         refreshDailyQuestsIfNeeded,
         refillTaps,
+        battlePassData: BATTLE_PASS_DATA,
+        purchasePremiumPass,
+        claimBattlePassReward,
     }}>
       {children}
     </GameContext.Provider>
@@ -761,6 +873,3 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
-
-
-    

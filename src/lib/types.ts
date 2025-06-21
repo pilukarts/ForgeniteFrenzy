@@ -3,6 +3,28 @@ import type { LucideIcon } from 'lucide-react';
 
 export type LeagueName = 'Bronze' | 'Silver' | 'Gold' | 'Platinum' | 'Diamond' | 'Master' | 'Grandmaster';
 
+// Battle Pass Types
+export type RewardType = 'points' | 'auron' | 'uniform_piece' | 'title';
+
+export interface BattlePassReward {
+  type: RewardType;
+  amount?: number; // for points and auron
+  name?: string; // for uniform_piece and title
+  icon: LucideIcon;
+}
+
+export interface BattlePassLevel {
+  level: number;
+  freeReward: BattlePassReward | null;
+  premiumReward: BattlePassReward | null;
+}
+
+export interface BattlePass {
+  seasonId: string;
+  premiumCostInAuron: number;
+  levels: BattlePassLevel[];
+}
+
 export interface PlayerProfile {
   id: string;
   name: string;
@@ -41,6 +63,13 @@ export interface PlayerProfile {
 
   // League System
   league: LeagueName;
+
+  // Battle Pass fields
+  battlePassLevel: number;
+  battlePassXp: number;
+  xpToNextBattlePassLevel: number;
+  hasPremiumPass: boolean;
+  claimedBattlePassRewards: { [level: number]: ('free' | 'premium')[] };
 }
 
 export interface Season {
@@ -405,4 +434,3 @@ export interface LeagueTier {
     icon: LucideIcon;
     colorClass: string; // Tailwind color class for the icon/text
 }
-
