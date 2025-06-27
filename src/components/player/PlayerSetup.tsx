@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState } from 'react';
 import { useGame } from '@/contexts/GameContext';
@@ -36,12 +35,9 @@ const PlayerSetup: React.FC = () => {
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4">
       <Card className="w-full max-w-md bg-card text-card-foreground shadow-2xl">
         <CardHeader>
-          <div className="flex justify-center mb-4">
-            <Image src="https://placehold.co/100x100.png?text=AF" alt="Alliance Forge Logo" width={80} height={80} className="rounded-full" data-ai-hint="logo emblem" />
-          </div>
-          <CardTitle className="text-center font-headline text-3xl text-primary">Mission Briefing</CardTitle>
-          <CardDescription className="text-center text-muted-foreground pt-2 text-base">
-            Humanity's fate rests on your shoulders, Commander. The Cyber Concord approaches. We must evacuate Earth. Prepare your command profile.
+          <CardTitle className="text-center font-headline text-3xl text-primary">Command Profile</CardTitle>
+          <CardDescription className="text-center text-muted-foreground">
+            Finalize your details to begin the mission.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -113,7 +109,7 @@ const PlayerSetup: React.FC = () => {
           </form>
         </CardContent>
         <CardFooter className="text-sm text-muted-foreground text-center block">
-          By engaging, you accept the mission parameters. The fate of humanity is in your hands.
+          The fate of humanity is in your hands.
         </CardFooter>
       </Card>
     </div>
