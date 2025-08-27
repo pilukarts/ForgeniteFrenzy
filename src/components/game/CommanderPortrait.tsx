@@ -63,7 +63,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
         data-ai-hint={dataAiHint}
         width={440} 
         height={440}
-        className="object-cover w-full h-full"
+        className="object-contain w-full h-full"
         priority
         style={{ clipPath: hexagonClipPath }} 
       />
