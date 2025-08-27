@@ -175,6 +175,15 @@ export default function HomePage() {
                     <p className="text-sm text-foreground font-mono">{(playerProfile.seasonProgress[currentSeason.id] || 0).toLocaleString()}</p>
                   </div>
                 </div>
+            </motion.div>
+            
+            {/* Center Area -- Uniform and Switch */}
+            <motion.div 
+               initial={{ y: 100, opacity: 0 }}
+               animate={{ y: 0, opacity: 1 }}
+               transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
+              className="flex flex-col gap-2 w-1/3 max-w-[120px] pointer-events-auto text-left"
+            >
                  {/* Uniform Stat Box */}
                 <div className="flex items-center gap-2 p-2 rounded-md bg-background/70 border border-input">
                   <Shirt className="h-5 w-5 text-primary shrink-0" />
@@ -183,10 +192,11 @@ export default function HomePage() {
                     <p className="text-sm text-foreground font-mono">{playerProfile.equippedUniformPieces.length} / 5</p>
                   </div>
                 </div>
+                 <Button onClick={switchCommanderSex} variant="secondary" size="sm" className="bg-background/70 justify-start">
+                    <Users className="mr-2 h-4 w-4" />
+                    Switch
+                </Button>
             </motion.div>
-            
-            {/* Center Area -- Now Empty */}
-            <div className="w-1/3 max-w-[120px]"></div>
 
 
             {/* Right Side */}
@@ -215,10 +225,6 @@ export default function HomePage() {
                     <p className="text-sm text-foreground font-mono">{playerProfile.league}</p>
                   </div>
                 </div>
-                 <Button onClick={switchCommanderSex} variant="secondary" size="sm" className="bg-background/70 justify-start">
-                    <Users className="mr-2 h-4 w-4" />
-                    Switch
-                </Button>
             </motion.div>
         </div>
       </div>
@@ -284,7 +290,3 @@ export default function HomePage() {
     </AppLayout>
   );
 }
-
-
-
-
