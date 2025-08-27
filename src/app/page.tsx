@@ -84,6 +84,7 @@ export default function HomePage() {
 
   const backgroundImageStyle = {
     backgroundImage: "url('https://i.imgur.com/awGhtRo.png')",
+    backgroundColor: '#000000',
   };
  
   if (!playerProfile) return <IntroScreen/>; 
@@ -93,7 +94,7 @@ export default function HomePage() {
   return (
     <AppLayout>
       <div
-        className="relative flex flex-col items-center justify-start text-center h-full pt-4 sm:pt-8 bg-cover bg-center bg-no-repeat"
+        className="relative flex flex-col items-center justify-start text-center h-full pt-4 sm:pt-8 bg-contain bg-center bg-no-repeat"
         style={backgroundImageStyle}
         data-ai-hint="futuristic space background"
       >
