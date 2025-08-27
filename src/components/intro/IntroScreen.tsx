@@ -5,7 +5,7 @@ import Image from 'next/image';
 import React from 'react';
 
 const IntroScreen: React.FC = () => {
-  const introImageUrl = "https://i.imgur.com/v8jx8k9.png"; 
+  const introImageUrl = "https://i.imgur.com/h8XfylD.png"; 
   const loadingGifUrl = "https://i.imgur.com/whIPW0y.gif";
 
   return (
