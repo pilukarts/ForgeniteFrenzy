@@ -40,8 +40,7 @@ export default function HomePage() {
   const { toast } = useToast();
   const [newUserIntroPhase, setNewUserIntroPhase] = useState<NewUserIntroPhase>('pre');
   const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number>(0);
-  const cockpitImageUrl = "https://i.imgur.com/r5orLzB.png";
-
+  
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
     if (playerProfile && playerProfile.currentTaps <= 0 && playerProfile.tapsAvailableAt > Date.now()) {
@@ -100,11 +99,6 @@ export default function HomePage() {
 
         <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
 
-        <div
-          className="absolute inset-0 bg-contain bg-no-repeat bg-center pointer-events-none"
-          style={{ backgroundImage: `url('${cockpitImageUrl}')` }}
-          data-ai-hint="spaceship cockpit frame"
-        />
         
         <div className="relative z-10 w-full flex flex-col items-center justify-start flex-grow p-2">
             
