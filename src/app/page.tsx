@@ -149,7 +149,7 @@ export default function HomePage() {
         </div>
 
         {/* Action Buttons and Stats on the Sides */}
-        <div className="absolute bottom-4 left-0 right-0 w-full flex justify-between items-end px-2 sm:px-4 z-10 pointer-events-none">
+        <div className="absolute bottom-2 left-0 right-0 w-full flex justify-between items-end px-2 sm:px-4 z-10 pointer-events-none">
             {/* Left Side */}
             <motion.div 
               initial={{ x: -100, opacity: 0 }}
@@ -290,5 +290,6 @@ export default function HomePage() {
     </AppLayout>
   );
 }
+
 
 
