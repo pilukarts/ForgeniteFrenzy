@@ -105,14 +105,16 @@ export default function HomePage() {
             style={{ backgroundImage: `url('${cockpitImageUrl}')` }}
             data-ai-hint="spaceship cockpit frame"
         />
-
+        
         <div className="relative z-10 w-full flex flex-col items-center justify-end flex-grow pb-4 px-2">
-          
-          <CommanderPortrait onTap={handleTap} />
-
-          {/* Centered Stats Box */}
-          <div className="w-full max-w-xs space-y-2 mt-[-20px] bg-background/70 p-2 sm:p-3 rounded-lg z-20">
-            <div>
+            
+            {/* Taps Display (animated from top) */}
+            <motion.div
+              initial={{ y: -100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
+              className="mb-2"
+            >
               <p className="text-xl sm:text-2xl font-semibold text-primary font-headline">
                 Taps: {playerProfile.currentTaps} / {playerProfile.maxTaps}
               </p>
@@ -121,35 +123,49 @@ export default function HomePage() {
                   Regeneration in: {formatTimeLeft(timeLeftForTapRegen)}
                 </p>
               )}
-            </div>
-            <div className="border-t border-border/50 my-2"></div>
-            <div className="grid grid-cols-3 gap-1 text-xs text-left">
-              <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
-                <Ship className="h-4 w-4 text-primary shrink-0" />
-                <div>
-                  <p className="font-bold text-muted-foreground">{currentSeason.objectiveResourceName}</p>
-                  <p className="text-foreground font-mono">{(playerProfile.seasonProgress[currentSeason.id] || 0).toLocaleString()}</p>
+            </motion.div>
+
+            <CommanderPortrait onTap={handleTap} />
+
+            {/* Stats Box (animated from bottom) */}
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.6, type: 'spring', stiffness: 50 }}
+              className="w-full max-w-xs mt-2 bg-background/70 p-2 sm:p-3 rounded-lg z-20"
+            >
+              <div className="grid grid-cols-3 gap-1 text-xs text-left">
+                <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
+                  <Ship className="h-4 w-4 text-primary shrink-0" />
+                  <div>
+                    <p className="font-bold text-muted-foreground">{currentSeason.objectiveResourceName}</p>
+                    <p className="text-foreground font-mono">{(playerProfile.seasonProgress[currentSeason.id] || 0).toLocaleString()}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
+                  <Trophy className="h-4 w-4 text-primary shrink-0" />
+                  <div>
+                    <p className="font-bold text-muted-foreground">League</p>
+                    <p className="text-foreground font-mono">{playerProfile.league}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
+                  <Shirt className="h-4 w-4 text-primary shrink-0" />
+                  <div>
+                    <p className="font-bold text-muted-foreground">Uniform</p>
+                    <p className="text-foreground font-mono">{playerProfile.equippedUniformPieces.length} / 5</p>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
-                <Trophy className="h-4 w-4 text-primary shrink-0" />
-                <div>
-                  <p className="font-bold text-muted-foreground">League</p>
-                  <p className="text-foreground font-mono">{playerProfile.league}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
-                <Shirt className="h-4 w-4 text-primary shrink-0" />
-                <div>
-                  <p className="font-bold text-muted-foreground">Uniform</p>
-                  <p className="text-foreground font-mono">{playerProfile.equippedUniformPieces.length} / 5</p>
-                </div>
-              </div>
-            </div>
-          </div>
+            </motion.div>
           
-          {isOutOfTaps && (
-              <div className="w-full max-w-xs bg-destructive/20 border border-destructive/50 text-destructive-foreground p-2 sm:p-3 rounded-lg shadow-lg space-y-2 text-center mt-2 z-20">
+            {isOutOfTaps && (
+              <motion.div
+                initial={{ y: 50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.7 }}
+                className="w-full max-w-xs bg-destructive/20 border border-destructive/50 text-destructive-foreground p-2 sm:p-3 rounded-lg shadow-lg space-y-2 text-center mt-2 z-20"
+              >
                   <div className="flex items-center justify-center gap-2">
                     <AlertTriangle className="h-5 w-5 animate-pulse" />
                     <p className="font-bold text-base sm:text-lg">Tap Energy Depleted!</p>
@@ -159,7 +175,7 @@ export default function HomePage() {
                   <Zap className="mr-1 h-3 w-3"/>
                   Refill Taps ({AURON_COST_FOR_TAP_REFILL} Auron)
                 </Button>
-              </div>
+              </motion.div>
             )}
         </div>
 
@@ -271,3 +287,4 @@ export default function HomePage() {
     </AppLayout>
   );
 }
+
