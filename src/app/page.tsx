@@ -78,10 +78,11 @@ export default function HomePage() {
     }
     return <IntroScreen />;
   }
-
+  
   const cockpitImageUrl = "https://i.imgur.com/awGhtRo.png";
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
- 
+  const circuitPlatformUrl = "https://i.imgur.com/qD89qQX.jpeg"; // Assuming this is the circuit image
+
   if (!playerProfile) return <IntroScreen/>; 
 
   const isOutOfTaps = playerProfile.currentTaps <= 0 && timeLeftForTapRegen > 0;
@@ -89,15 +90,15 @@ export default function HomePage() {
   return (
     <AppLayout>
       <div
-        className="relative flex flex-col items-center justify-start text-center h-full pt-8 sm:pt-12 overflow-hidden"
+        className="relative flex flex-col items-center justify-end text-center h-full overflow-hidden"
         data-ai-hint="futuristic space background"
       >
         {/* Layer 1: Animated Space Background */}
         <div 
-            className="absolute inset-0 bg-black bg-no-repeat animate-pan-background"
+            className="absolute inset-0 bg-black bg-cover bg-no-repeat animate-pan-background"
             style={{
                 backgroundImage: `url('${spaceImageUrl}')`,
-                backgroundSize: '150%', // Zoom in to allow for panning
+                backgroundPosition: 'center center',
             }}
         />
 
@@ -108,22 +109,24 @@ export default function HomePage() {
             <div className="shooting-star"></div>
         </div>
         
-        {/* Layer 2: Cockpit Overlay */}
+        {/* Layer 2: Circuit Platform with Gradient */}
         <div 
-            className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
+            className="absolute bottom-0 left-0 right-0 h-2/3 bg-contain bg-bottom bg-no-repeat pointer-events-none"
             style={{
-                backgroundImage: `url('${cockpitImageUrl}')`,
+                backgroundImage: `url('${circuitPlatformUrl}'), linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 70%)`,
+                backgroundBlendMode: 'lighten', // or 'screen' for a different effect
+                WebkitMaskImage: 'linear-gradient(to top, black 50%, transparent 100%)',
+                maskImage: 'linear-gradient(to top, black 50%, transparent 100%)',
             }}
         />
 
-
         {/* Layer 3: Game Content (z-index will put this on top) */}
-        <div className="relative z-10">
+        <div className="relative z-10 w-full flex flex-col items-center justify-end pb-4">
           <CommanderPortrait
             onTap={handleTap}
           />
 
-          <div className="mt-4 sm:mt-6 w-full max-w-xs sm:max-w-sm md:max-w-md space-y-2">
+          <div className="mt-2 w-full max-w-xs sm:max-w-sm md:max-w-md space-y-2">
             <div className="bg-background/70 p-2 sm:p-3 rounded-lg space-y-2">
               <div>
                 <p className="text-xl sm:text-2xl font-semibold text-primary font-headline">
@@ -183,7 +186,7 @@ export default function HomePage() {
                  </Button>
                  <Button asChild variant="outline" size="sm" className="bg-background/70">
                    <Link href="https://discord.gg/yourinvite" target="_blank" rel="noopener noreferrer">
-                     <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mr-1 h-3 w-3 fill-current"><title>Discord</title><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4464.8245-.6667 1.284-.0001.0001-3.9102-1.5162-3.9102-1.5162l-.0448-.0204-3.9102 1.5162c-.2203-.4595-.4557-.9087-.6667-1.284a.0741.0741 0 00-.0785-.0371 19.7913 19.7913 0 00-4.8851 1.5152.069.069 0 00-.0321.0234C.5434 9.0458-.319 13.5799.0992 18.0578a.08.08 0 00.0414.0582c1.837.7749 3.6521 1.1648 5.4468 1.1648a12.6022 12.6022 0 002.3787-.2214.0741.0741 0 00.0623-.0562 12.2227 12.2227 0 00.435-2.2204.0741.0741 0 00-.0449-.0832c-.933-.424-1.782-1.026-2.52-1.844a.0741.0741 0 01.0181-.11.6318.6318 0 01.0362-.0277 10.8718 10.8718 0 012.9817-1.1075.0741.0741 0 01.084.0258c.4618.633 1.053 1.254 1.725 1.799a.0741.0741 0 00.084.0258 10.8718 10.8718 0 012.9817 1.1075.6318.6318 0 01.0362.0277.0741.0741 0 01.0181.11c-.738.818-1.587 1.42-2.52 1.844a.0741.0741 0 00-.0449.0832 12.2227 12.2227 0 00.435 2.2204.0741.0741 0 00.0623.0562 12.6022 12.6022 0 002.3787.2214c1.7947 0 3.6098-.3899 5.4468-1.1648a.08.08 0 00.0414-.0582c.4182-4.4779-.4436-8.9912-2.6146-13.6646a.069.069 0 00-.0321-.0234zM8.02 15.3312c-.9416 0-1.705-.802-1.705-1.791s.7634-1.791 1.705-1.791c.9416 0 1.705.802 1.705 1.791s-.7634 1.791-1.705 1.791zm7.9748 0c-.9416 0-1.705-.802-1.705-1.791s.7634-1.791 1.705-1.791c.9416 0 1.705.802 1.705 1.791s-.7634 1.791-1.705 1.791z"/></svg>
+                     <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mr-1 h-3 w-3 fill-current"><title>Discord</title><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4464.8245-.6667 1.284-.0001.0001-3.9102-1.5162-3.9102-1.5162l-.0448-.0204-3.9102 1.5162c-.2203-.4595-.4557-.9087-.6667-1.284a.0741.0741 0 00-.0785-.0371 19.7913 19.7913 0 00-4.8851 1.5152.069.069 0 00-.0321.0234C.5434 9.0458-.319 13.5799.0992 18.0578a.08.08 0 00.0414.0582c1.837.7749 3.6521 1.1648 5.4468 1.1648a12.6022 12.6022 0 002.3787-.2214.0741.0741 0 00.0623-.0562 12.2227 12.2227 0 00.435-2.2204.0741.0741 0 00-.0449-.0832c-.933-.424-1.782-1.026-2.52-1.844a.0741.0741 0 01.0181-.11.6318.6318 0 01.0362-.0277 10.8718 10.8718 0 012.9817-1.1075.0741.0741 0 01.084.0258c.4618.633 1.053 1.254 1.725 1.799a.0741.0741 0 00.084.0258 10.8718 10.8718 0 012.9817 1.1075.6318.6318 0 01.0362.0277.0741.0741 0 01.0181.11c-.738.818-1.587 1.42-2.52 1.844a.0741.0741 0 00-.0449.0832 12.2227 12.2227 0 00.435 2.2204.0741.0741 0 00.0623.0562 12.6022 12.6022 0 002.3787.2214c1.7947 0 3.6098-.3899 5.4468-1.1648a.08.08 0 00.0414-.0582c.4182-4.4779-.4436-8.9912-2.6146-13.6646a.069.069 0 00-.0321-.0234zM8.02 15.3312c-.9416 0-1.705-.802-1.705-1.791s.7634-1.791 1.705-1.791c.9416 0 1.705.802 1.705 1.791s-.7634 1.791-1.705 1.791zm7.9748 0c-.9416 0-1.705-.802-1.705-1.791s.7634-1.791 1.705-1.791c.9416 0 1.705.802 1.705 1.791s-.7634 1.791-1.705 1.791z" /></svg>
                      Discord
                    </Link>
                  </Button>
