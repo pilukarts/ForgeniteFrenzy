@@ -10,7 +10,6 @@ import IntroScreen from '@/components/intro/IntroScreen';
 const LevelMapPage: React.FC = () => {
     const { isLoading, isInitialSetupDone } = useGame();
     const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
-    const cockpitImageUrl = "https://i.imgur.com/awGhtRo.png";
 
     if (isLoading) {
         return <IntroScreen />;
@@ -29,23 +28,14 @@ const LevelMapPage: React.FC = () => {
             style={{ backgroundImage: `url('${spaceImageUrl}')` }}
         />
 
-        {/* Shooting Stars Container (behind cockpit) */}
+        {/* Shooting Stars Container */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
         </div>
         
-        {/* Layer 2: Cockpit Frame */}
-        <div
-          className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-          style={{ backgroundImage: `url('${cockpitImageUrl}')` }}
-        />
-        
-        {/* Layer 3: Floor Gradient */}
-        <div className="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-t from-background to-transparent pointer-events-none" />
-
-        {/* Layer 4: Game Content (z-index will put this on top) */}
+        {/* Layer 2: Game Content (z-index will put this on top) */}
         <div className="flex-grow overflow-hidden relative z-10">
             <LevelMap />
         </div>
@@ -68,7 +58,7 @@ const LevelMapPage: React.FC = () => {
             height: 3px;
             background: #fff;
             border-radius: 50%;
-            box-shadow: 0 0 0 4px rgba(255,255,255,0.1), 0 0 0 8px rgba(255,2_55,255,0.1), 0 0 20px rgba(255,255,255,1);
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.1), 0 0 0 8px rgba(255,255,255,0.1), 0 0 20px rgba(255,255,255,1);
             animation: animate-star 3s linear infinite;
         }
         .shooting-star::before {

@@ -81,7 +81,6 @@ export default function HomePage() {
   }
   
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
-  const cockpitImageUrl = "https://i.imgur.com/awGhtRo.png";
 
   if (!playerProfile) return <IntroScreen/>; 
 
@@ -99,23 +98,14 @@ export default function HomePage() {
             style={{ backgroundImage: `url('${spaceImageUrl}')` }}
         />
 
-        {/* Shooting Stars Container (behind cockpit) */}
+        {/* Shooting Stars Container */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
         </div>
 
-        {/* Layer 2: Cockpit Frame */}
-        <div
-          className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-          style={{ backgroundImage: `url('${cockpitImageUrl}')` }}
-        />
-        
-        {/* Layer 3: Floor Gradient */}
-        <div className="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-t from-background to-transparent pointer-events-none" />
-
-        {/* Layer 4: Game Content */}
+        {/* Layer 2: Game Content */}
         <div className="relative z-10 w-full flex flex-col items-center justify-end flex-grow pb-4">
           <CommanderPortrait
             onTap={handleTap}
