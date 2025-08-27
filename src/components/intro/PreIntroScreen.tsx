@@ -21,9 +21,6 @@ const PreIntroScreen: React.FC<PreIntroScreenProps> = ({ onCompletion }) => {
     >
         <Card className="w-full max-w-md bg-card text-card-foreground shadow-2xl animate-fade-in-slow">
           <CardHeader>
-            <div className="flex justify-center mb-4">
-              <Image src="https://i.imgur.com/v8jx8k9.png" alt="Alliance Forge Logo" width={80} height={80} className="rounded-full" data-ai-hint="game logo title" />
-            </div>
             <CardTitle className="text-center font-headline text-3xl text-primary">Mission Briefing</CardTitle>
             <CardDescription className="text-center text-muted-foreground pt-2 text-base">
               Humanity's fate rests on your shoulders, Commander. The Cyber Concord approaches. We must evacuate Earth. Prepare your command profile.
