@@ -39,6 +39,7 @@ export default function HomePage() {
   const { toast } = useToast();
   const [newUserIntroPhase, setNewUserIntroPhase] = useState<NewUserIntroPhase>('pre');
   const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number>(0);
+  const audioRef = React.useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
@@ -270,3 +271,4 @@ export default function HomePage() {
     
 
     
+
