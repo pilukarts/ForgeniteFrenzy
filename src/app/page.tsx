@@ -7,7 +7,7 @@ import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
-import { User, UserRound, Zap, AlertTriangle, Trophy, Shirt, Ship, Share2, Send, Music } from 'lucide-react';
+import { User, UserRound, Zap, AlertTriangle, Trophy, Shirt, Ship, Share2, Send, Music, Users } from 'lucide-react';
 import IntroScreen from '@/components/intro/IntroScreen';
 import PreIntroScreen from '@/components/intro/PreIntroScreen';
 import { useToast } from "@/hooks/use-toast";
@@ -167,6 +167,12 @@ export default function HomePage() {
                  </Link>
                </Button>
             </div>
+
+            <Button onClick={switchCommanderSex} variant="secondary" size="sm" className="mt-2 w-full bg-background/70">
+              <Users className="mr-1 h-3 w-3" />
+              Cambiar Comandante
+            </Button>
+
            </div>
 
            {isOutOfTaps && (
