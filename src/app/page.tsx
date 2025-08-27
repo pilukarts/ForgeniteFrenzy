@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AURON_COST_FOR_TAP_REFILL, TAP_REGEN_COOLDOWN_MINUTES } from '@/lib/gameData';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 type NewUserIntroPhase = 'pre' | 'main' | 'setup';
 
@@ -39,7 +40,6 @@ export default function HomePage() {
   const { toast } = useToast();
   const [newUserIntroPhase, setNewUserIntroPhase] = useState<NewUserIntroPhase>('pre');
   const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number>(0);
-  const audioRef = React.useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
@@ -92,106 +92,64 @@ export default function HomePage() {
       <div
         className="relative flex flex-col items-center justify-between text-center h-full overflow-hidden"
       >
-        {/* Layer 1: Animated Space Background - Managed by AppLayout now */}
-
-        {/* Shooting Stars Container */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
         </div>
 
-        {/* Layer 2: Cockpit Floor */}
         <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
 
-        {/* Layer 3: Cockpit Frame */}
         <div 
             className="absolute inset-0 bg-contain bg-no-repeat bg-center pointer-events-none"
             style={{ backgroundImage: `url('${cockpitImageUrl}')` }}
             data-ai-hint="spaceship cockpit frame"
         />
 
-        {/* Layer 4: Game Content */}
         <div className="relative z-10 w-full flex flex-col items-center justify-end flex-grow pb-4 px-2">
-          <CommanderPortrait
-            onTap={handleTap}
-          />
+          
+          <CommanderPortrait onTap={handleTap} />
 
-          <div className="w-full max-w-sm space-y-2 mt-[-20px]">
-            <div className="bg-background/70 p-2 sm:p-3 rounded-lg space-y-2">
-              <div>
-                <p className="text-xl sm:text-2xl font-semibold text-primary font-headline">
-                  Taps: {playerProfile.currentTaps} / {playerProfile.maxTaps}
+          {/* Centered Stats Box */}
+          <div className="w-full max-w-xs space-y-2 mt-[-20px] bg-background/70 p-2 sm:p-3 rounded-lg z-20">
+            <div>
+              <p className="text-xl sm:text-2xl font-semibold text-primary font-headline">
+                Taps: {playerProfile.currentTaps} / {playerProfile.maxTaps}
+              </p>
+              {isOutOfTaps && (
+                <p className="text-sm sm:text-base text-orange-400 animate-pulse">
+                  Regeneration in: {formatTimeLeft(timeLeftForTapRegen)}
                 </p>
-                {isOutOfTaps && (
-                  <p className="text-sm sm:text-base text-orange-400 animate-pulse">
-                    Regeneration in: {formatTimeLeft(timeLeftForTapRegen)}
-                  </p>
-                )}
-              </div>
-
-              <div className="border-t border-border/50 my-2"></div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 text-xs text-left">
-                <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
-                  <Ship className="h-4 w-4 text-primary shrink-0" />
-                  <div>
-                    <p className="font-bold text-muted-foreground">{currentSeason.objectiveResourceName}</p>
-                    <p className="text-foreground font-mono">{(playerProfile.seasonProgress[currentSeason.id] || 0).toLocaleString()}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
-                  <Trophy className="h-4 w-4 text-primary shrink-0" />
-                  <div>
-                    <p className="font-bold text-muted-foreground">League</p>
-                    <p className="text-foreground font-mono">{playerProfile.league}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
-                  <Shirt className="h-4 w-4 text-primary shrink-0" />
-                  <div>
-                    <p className="font-bold text-muted-foreground">Uniform</p>
-                    <p className="text-foreground font-mono">{playerProfile.equippedUniformPieces.length} / 5</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-t border-border/50 my-2"></div>
-              
-              {/* Social Links Section */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
-                 <Button asChild variant="outline" size="sm" className="bg-background/70">
-                   <Link href="https://example.com/invite" target="_blank" rel="noopener noreferrer">
-                    <Share2 className="mr-1 h-3 w-3"/> Invite
-                   </Link>
-                 </Button>
-                 <Button asChild variant="outline" size="sm" className="bg-background/70">
-                   <Link href="https://t.me/allianceforge" target="_blank" rel="noopener noreferrer">
-                    <Send className="mr-1 h-3 w-3"/> Telegram
-                   </Link>
-                 </Button>
-                 <Button asChild variant="outline" size="sm" className="bg-background/70">
-                   <Link href="https://tiktok.com/@allianceforge" target="_blank" rel="noopener noreferrer">
-                    <Music className="mr-1 h-3 w-3"/> TikTok
-                   </Link>
-                 </Button>
-                 <Button asChild variant="outline" size="sm" className="bg-background/70">
-                   <Link href="https://discord.gg/yourinvite" target="_blank" rel="noopener noreferrer">
-                     <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mr-1 h-3 w-3 fill-current"><title>Discord</title><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4464.8245-.6667 1.284-.0001.0001-3.9102-1.5162-3.9102-1.5162l-.0448-.0204-3.9102 1.5162c-.2203-.4595-.4557-.9087-.6667-1.284a.0741.0741 0 00-.0785-.0371 19.7913 19.7913 0 00-4.8851 1.5152.069.069 0 00-.0321.0234C.5434 9.0458-.319 13.5799.0992 18.0578a.08.08 0 00.0414.0582c1.837.7749 3.6521 1.1648 5.4468 1.1648a12.6022 12.6022 0 002.3787-.2214.0741.0741 0 00.0623-.0562 12.2227 12.2227 0 00.435-2.2204.0741.0741 0 00-.0449-.0832c-.933-.424-1.782-1.026-2.52-1.844a.0741.0741 0 01.0181-.11.6318.6318 0 01.0362-.0277 10.8718 10.8718 0 012.9817-1.1075.0741.0741 0 01.084.0258c.4618.633 1.053 1.254 1.725 1.799a.0741.0741 0 00.084.0258 10.8718 10.8718 0 012.9817 1.1075.6318.6318 0 01.0362.0277.0741.0741 0 01.0181.11c-.738.818-1.587 1.42-2.52 1.844a.0741.0741 0 00-.0449.0832 12.2227 12.2227 0 00.435 2.2204.0741.0741 0 00.0623.0562 12.6022 12.6022 0 002.3787.2214c1.7947 0 3.6098-.3899 5.4468-1.1648a.08.08 0 00.0414-.0582c.4182-4.4779-.4436-8.9912-2.6146-13.6646a.069.069 0 00-.0321-.0234zM8.02 15.3312c-.9416 0-1.705-.802-1.705-1.791s.7634-1.791 1.705-1.791c.9416 0 1.705.802 1.705 1.791s-.7634 1.791-1.705 1.791zm7.9748 0c-.9416 0-1.705-.802-1.705-1.791s.7634-1.791 1.705-1.791c.9416 0 1.705.802 1.705 1.791s-.7634 1.791-1.705 1.791z" /></svg>
-                     Discord
-                   </Link>
-                 </Button>
-              </div>
-
-              <Button onClick={switchCommanderSex} variant="secondary" size="sm" className="mt-2 w-full bg-background/70">
-                <Users className="mr-1 h-3 w-3" />
-                Cambiar Comandante
-              </Button>
-
+              )}
             </div>
-
-            {isOutOfTaps && (
-              <div className="w-full bg-destructive/20 border border-destructive/50 text-destructive-foreground p-2 sm:p-3 rounded-lg shadow-lg space-y-2 text-center">
+            <div className="border-t border-border/50 my-2"></div>
+            <div className="grid grid-cols-3 gap-1 text-xs text-left">
+              <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
+                <Ship className="h-4 w-4 text-primary shrink-0" />
+                <div>
+                  <p className="font-bold text-muted-foreground">{currentSeason.objectiveResourceName}</p>
+                  <p className="text-foreground font-mono">{(playerProfile.seasonProgress[currentSeason.id] || 0).toLocaleString()}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
+                <Trophy className="h-4 w-4 text-primary shrink-0" />
+                <div>
+                  <p className="font-bold text-muted-foreground">League</p>
+                  <p className="text-foreground font-mono">{playerProfile.league}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
+                <Shirt className="h-4 w-4 text-primary shrink-0" />
+                <div>
+                  <p className="font-bold text-muted-foreground">Uniform</p>
+                  <p className="text-foreground font-mono">{playerProfile.equippedUniformPieces.length} / 5</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {isOutOfTaps && (
+              <div className="w-full max-w-xs bg-destructive/20 border border-destructive/50 text-destructive-foreground p-2 sm:p-3 rounded-lg shadow-lg space-y-2 text-center mt-2 z-20">
                   <div className="flex items-center justify-center gap-2">
                     <AlertTriangle className="h-5 w-5 animate-pulse" />
                     <p className="font-bold text-base sm:text-lg">Tap Energy Depleted!</p>
@@ -203,7 +161,52 @@ export default function HomePage() {
                 </Button>
               </div>
             )}
-          </div>
+        </div>
+
+        {/* Action Buttons on the Sides */}
+        <div className="absolute bottom-4 left-0 right-0 w-full flex justify-between items-end px-2 sm:px-4 z-10 pointer-events-none">
+            {/* Left Side Buttons */}
+            <motion.div 
+              initial={{ x: -100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
+              className="flex flex-col gap-2 w-1/3 max-w-[120px] pointer-events-auto"
+            >
+               <Button asChild variant="outline" size="sm" className="bg-background/70">
+                 <Link href="https://example.com/invite" target="_blank" rel="noopener noreferrer">
+                  <Share2 className="mr-1 h-3 w-3"/> Invite
+                 </Link>
+               </Button>
+               <Button asChild variant="outline" size="sm" className="bg-background/70">
+                 <Link href="https://t.me/allianceforge" target="_blank" rel="noopener noreferrer">
+                  <Send className="mr-1 h-3 w-3"/> Telegram
+                 </Link>
+               </Button>
+               <Button onClick={switchCommanderSex} variant="secondary" size="sm" className="bg-background/70">
+                <Users className="mr-1 h-3 w-3" />
+                Switch
+              </Button>
+            </motion.div>
+
+            {/* Right Side Buttons */}
+            <motion.div 
+               initial={{ x: 100, opacity: 0 }}
+               animate={{ x: 0, opacity: 1 }}
+               transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
+              className="flex flex-col gap-2 w-1/3 max-w-[120px] pointer-events-auto"
+            >
+               <Button asChild variant="outline" size="sm" className="bg-background/70">
+                 <Link href="https://tiktok.com/@allianceforge" target="_blank" rel="noopener noreferrer">
+                  <Music className="mr-1 h-3 w-3"/> TikTok
+                 </Link>
+               </Button>
+               <Button asChild variant="outline" size="sm" className="bg-background/70">
+                 <Link href="https://discord.gg/yourinvite" target="_blank" rel="noopener noreferrer">
+                   <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mr-1 h-3 w-3 fill-current"><title>Discord</title><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4464.8245-.6667 1.284-.0001.0001-3.9102-1.5162-3.9102-1.5162l-.0448-.0204-3.9102 1.5162c-.2203-.4595-.4557-.9087-.6667-1.284a.0741.0741 0 00-.0785-.0371 19.7913 19.7913 0 00-4.8851 1.5152.069.069 0 00-.0321.0234C.5434 9.0458-.319 13.5799.0992 18.0578a.08.08 0 00.0414.0582c1.837.7749 3.6521 1.1648 5.4468 1.1648a12.6022 12.6022 0 002.3787-.2214.0741.0741 0 00.0623-.0562 12.2227 12.2227 0 00.435-2.2204.0741.0741 0 00-.0449-.0832c-.933-.424-1.782-1.026-2.52-1.844a.0741.0741 0 01.0181-.11.6318.6318 0 01.0362-.0277 10.8718 10.8718 0 012.9817-1.1075.0741.0741 0 01.084.0258c.4618.633 1.053 1.254 1.725 1.799a.0741.0741 0 00.084.0258 10.8718 10.8718 0 012.9817 1.1075.6318.6318 0 01.0362.0277.0741.0741 0 01.0181.11c-.738.818-1.587 1.42-2.52 1.844a.0741.0741 0 00-.0449.0832 12.2227 12.2227 0 00.435 2.2204.0741.0741 0 00.0623.0562 12.6022 12.6022 0 002.3787.2214c1.7947 0 3.6098-.3899 5.4468-1.1648a.08.08 0 00.0414-.0582c.4182-4.4779-.4436-8.9912-2.6146-13.6646a.069.069 0 00-.0321-.0234zM8.02 15.3312c-.9416 0-1.705-.802-1.705-1.791s.7634-1.791 1.705-1.791c.9416 0 1.705.802 1.705 1.791s-.7634 1.791-1.705 1.791zm7.9748 0c-.9416 0-1.705-.802-1.705-1.791s.7634-1.791 1.705-1.791c.9416 0 1.705.802 1.705 1.791s-.7634 1.791-1.705 1.791z" /></svg>
+                   Discord
+                 </Link>
+               </Button>
+            </motion.div>
         </div>
       </div>
        <style jsx>{`
@@ -250,6 +253,7 @@ export default function HomePage() {
             animation-duration: 6s;
         }
 
+
         @keyframes animate-star {
             0% {
                 transform: rotate(315deg) translateX(0);
@@ -267,8 +271,3 @@ export default function HomePage() {
     </AppLayout>
   );
 }
-    
-    
-
-    
-
