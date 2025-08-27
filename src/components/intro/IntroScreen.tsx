@@ -5,12 +5,12 @@ import Image from 'next/image';
 import React from 'react';
 
 const IntroScreen: React.FC = () => {
-  const introImageUrl = "https://i.imgur.com/foWm9FG.jpeg"; 
+  const introImageUrl = "https://i.imgur.com/v8jx8k9.png"; 
   const loadingGifUrl = "https://i.imgur.com/whIPW0y.gif";
 
   return (
     <div className="fixed inset-0 z-[200] flex flex-col items-center justify-start pt-20 bg-background text-foreground p-4">
-      <div className="relative w-full max-w-xs md:max-w-sm mb-4 animate-fade-in-slow"> {/* Reduced margin-bottom */}
+      <div className="relative w-full max-w-xs md:max-w-sm mb-4 animate-fade-in-slow">
         <Image
           src={introImageUrl}
           alt="Alliance Forge: Forgeite Frenzy"
