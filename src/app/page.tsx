@@ -81,7 +81,6 @@ export default function HomePage() {
     return <IntroScreen />;
   }
   
-  const cockpitImageUrl = "https://i.imgur.com/r5orLzB.png";
 
   if (!playerProfile) return <IntroScreen/>; 
 
@@ -99,12 +98,6 @@ export default function HomePage() {
         </div>
 
         <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
-
-        <div 
-            className="absolute inset-0 bg-contain bg-no-repeat bg-center pointer-events-none"
-            style={{ backgroundImage: `url('${cockpitImageUrl}')` }}
-            data-ai-hint="spaceship cockpit frame"
-        />
         
         <div className="relative z-10 w-full flex flex-col items-center justify-start flex-grow p-2">
             
