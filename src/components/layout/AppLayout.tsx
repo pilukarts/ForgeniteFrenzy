@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { useGame } from '@/contexts/GameContext';
 import { Wallet, CreditCard, Landmark } from 'lucide-react'; 
 import CoreDisplay from '@/components/core/CoreDisplay';
+import { cn } from '@/lib/utils';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -15,64 +16,75 @@ interface AppLayoutProps {
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const { playerProfile, connectWallet } = useGame();
-  // --- Music related code removed ---
+  const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground">
-      {/* --- Audio element removed --- */}
-
-      <header className="sticky top-0 z-50 p-2 sm:p-3 bg-background/80 backdrop-blur-md shadow-md">
-        <div className="container mx-auto flex items-center justify-between gap-2">
-          {playerProfile && (
-            <>
-              <PlayerProfileHeader profile={playerProfile} />
-              <div className="flex items-start gap-2"> {/* Changed to items-start for alignment */}
-                <ResourceDisplay 
-                  seasonResourceName={playerProfile ? playerProfile.seasonProgress[playerProfile.currentSeasonId]?.toString() ?? '0' : '0'} 
-                  auronCount={playerProfile?.auron ?? 0} 
-                />
-                {!playerProfile.isWalletConnected && (
-                  <div className="flex flex-col items-start gap-1 ml-2 pl-2 border-l border-border">
-                    <p className="text-xs text-muted-foreground mb-0.5 font-semibold">Get Auron:</p>
-                    <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 whitespace-nowrap text-xs sm:text-sm px-2 h-7 w-full justify-start"
-                        onClick={connectWallet}
-                      >
-                      <Wallet className="mr-1.5 h-3.5 w-3.5 text-bright-gold" /> Connect Wallet
-                    </Button>
-                    <Button 
-                        variant="outline" 
-                        size="sm" 
-                        disabled 
-                        className="whitespace-nowrap text-xs sm:text-sm px-2 h-7 w-full justify-start text-muted-foreground/70"
-                      >
-                      <CreditCard className="mr-1.5 h-3.5 w-3.5" /> Visa/Mastercard
-                    </Button>
-                    <Button 
-                        variant="outline" 
-                        size="sm" 
-                        disabled 
-                        className="whitespace-nowrap text-xs sm:text-sm px-2 h-7 w-full justify-start text-muted-foreground/70"
-                      >
-                      <Landmark className="mr-1.5 h-3.5 w-3.5" /> Bank Transfer
-                    </Button>
+    <div 
+      className="flex flex-col min-h-screen bg-background text-foreground items-center justify-center p-0 sm:p-4"
+      // This style sets up the global animated background
+      style={{
+        backgroundImage: `url('${spaceImageUrl}')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        animation: 'pan-background-global 90s linear infinite',
+      }}
+    >
+       {/* The main container for the game interface */}
+      <div className="relative flex flex-col w-full h-full max-w-md bg-background shadow-2xl overflow-hidden sm:rounded-2xl border border-border/20">
+        <div className="flex flex-col min-h-screen">
+          <header className="sticky top-0 z-50 p-2 bg-background/80 backdrop-blur-md shadow-sm border-b border-border/50">
+            <div className="flex items-center justify-between gap-2">
+              {playerProfile && (
+                <>
+                  <PlayerProfileHeader profile={playerProfile} />
+                  <div className="flex items-start gap-1"> {/* Reduced gap */}
+                    <ResourceDisplay 
+                      seasonResourceName={playerProfile ? playerProfile.seasonProgress[playerProfile.currentSeasonId]?.toString() ?? '0' : '0'} 
+                      auronCount={playerProfile?.auron ?? 0} 
+                    />
+                    {!playerProfile.isWalletConnected && (
+                      <div className="flex flex-col items-start gap-1 ml-1 pl-1 border-l border-border">
+                        <p className="text-[10px] text-muted-foreground mb-0.5 font-semibold hidden sm:block">Get Auron:</p>
+                        <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 whitespace-nowrap text-[11px] px-1.5 h-6 w-full justify-start"
+                            onClick={connectWallet}
+                          >
+                          <Wallet className="mr-1 h-3 w-3 text-bright-gold" /> Connect Wallet
+                        </Button>
+                        <Button 
+                            variant="outline" 
+                            size="sm" 
+                            disabled 
+                            className="whitespace-nowrap text-[11px] px-1.5 h-6 w-full justify-start text-muted-foreground/70"
+                          >
+                          <CreditCard className="mr-1 h-3 w-3" /> Visa/MC
+                        </Button>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            </>
-          )}
+                </>
+              )}
+            </div>
+          </header>
+          
+          <main className="flex-grow overflow-y-auto pb-[56px] sm:pb-[60px]">
+            {children}
+          </main>
+          
+          {playerProfile && <CoreDisplay />}
+          
+          <BottomNavBar />
         </div>
-      </header>
-      
-      <main className="flex-grow container mx-auto px-0 pb-[56px] sm:pb-[60px] pt-1"> {/* Adjusted padding for mobile */}
-        {children}
-      </main>
-      
-      {playerProfile && <CoreDisplay />}
-      
-      <BottomNavBar />
+      </div>
+      <style jsx global>{`
+        @keyframes pan-background-global {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 10% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+      `}</style>
     </div>
   );
 };

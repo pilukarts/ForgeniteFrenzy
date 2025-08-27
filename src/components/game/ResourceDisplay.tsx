@@ -15,19 +15,19 @@ const ResourceDisplay: React.FC<ResourceDisplayProps> = ({ seasonResourceName, a
 
   return (
     <div className="flex flex-col items-end gap-1 text-right">
-      <div className="flex items-center gap-2 p-1.5 px-2.5 rounded-md bg-primary/10 border border-primary/30">
-        <IconComponent className="h-5 w-5 text-primary" />
-        <span className="text-sm font-semibold text-primary">
+      <div className="flex items-center gap-1.5 p-1 px-2 rounded-md bg-primary/10 border border-primary/30">
+        <IconComponent className="h-4 w-4 text-primary" />
+        <span className="text-xs font-semibold text-primary">
           {seasonResourceName}
         </span>
-        <span className="text-xs text-primary/80 hidden sm:inline">({currentSeason.objectiveResourceName})</span>
+        <span className="text-[10px] text-primary/80 hidden sm:inline">({currentSeason.objectiveResourceName})</span>
       </div>
-      <div className="flex items-center gap-2 p-1.5 px-2.5 rounded-md bg-bright-gold/10 border border-bright-gold/30">
-        <Sparkles className="h-5 w-5 text-bright-gold" />
-        <span className="text-sm font-semibold text-bright-gold">
+      <div className="flex items-center gap-1.5 p-1 px-2 rounded-md bg-bright-gold/10 border border-bright-gold/30">
+        <Sparkles className="h-4 w-4 text-bright-gold" />
+        <span className="text-xs font-semibold text-bright-gold">
           {auronCount}
         </span>
-         <span className="text-xs text-bright-gold/80 hidden sm:inline">Auron</span>
+         <span className="text-[10px] text-bright-gold/80 hidden sm:inline">Auron</span>
       </div>
     </div>
   );

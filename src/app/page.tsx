@@ -80,7 +80,6 @@ export default function HomePage() {
     return <IntroScreen />;
   }
   
-  const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   const cockpitImageUrl = "https://i.imgur.com/r5orLzB.png";
 
   if (!playerProfile) return <IntroScreen/>; 
@@ -92,12 +91,7 @@ export default function HomePage() {
       <div
         className="relative flex flex-col items-center justify-between text-center h-full overflow-hidden"
       >
-        {/* Layer 1: Animated Space Background */}
-        <div 
-            className="absolute inset-0 bg-black bg-cover bg-center animate-pan-background"
-            style={{ backgroundImage: `url('${spaceImageUrl}')` }}
-            data-ai-hint="futuristic space background"
-        />
+        {/* Layer 1: Animated Space Background - Managed by AppLayout now */}
 
         {/* Shooting Stars Container */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -117,12 +111,12 @@ export default function HomePage() {
         />
 
         {/* Layer 4: Game Content */}
-        <div className="relative z-10 w-full flex flex-col items-center justify-end flex-grow pb-4">
+        <div className="relative z-10 w-full flex flex-col items-center justify-end flex-grow pb-4 px-2">
           <CommanderPortrait
             onTap={handleTap}
           />
 
-          <div className="w-full max-w-xs sm:max-w-sm md:max-w-md space-y-2 mt-[-20px]">
+          <div className="w-full max-w-sm space-y-2 mt-[-20px]">
             <div className="bg-background/70 p-2 sm:p-3 rounded-lg space-y-2">
               <div>
                 <p className="text-xl sm:text-2xl font-semibold text-primary font-headline">
@@ -212,15 +206,6 @@ export default function HomePage() {
         </div>
       </div>
        <style jsx>{`
-        @keyframes pan-background {
-            0% { transform: scale(1.1) translateX(0%); }
-            50% { transform: scale(1.1) translateX(5%); }
-            100% { transform: scale(1.1) translateX(0%); }
-        }
-        .animate-pan-background {
-            animation: pan-background 90s linear infinite;
-        }
-
         .shooting-star {
             position: absolute;
             top: 50%;
