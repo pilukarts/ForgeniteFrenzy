@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -26,9 +27,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
 
   const handleInteraction = () => {
     onTap();
-    // Play tap sound effect - placeholder sound
-    const tapSound = new Audio('/sounds/your-tap-sound.mp3'); 
-    tapSound.play().catch(e => console.error("Error playing tap sound:", e));
+    // Play tap sound effect - placeholder sound removed to fix 404 errors
     
     setIsTapped(true);
     setTimeout(() => setIsTapped(false), 200); // Duration of the tap animation
