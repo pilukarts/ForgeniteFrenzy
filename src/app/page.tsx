@@ -33,7 +33,6 @@ const formatTimeLeft = (milliseconds: number): string => {
   return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 };
 
-
 export default function HomePage() {
   const { playerProfile, isLoading, isInitialSetupDone, handleTap, switchCommanderSex, refillTaps, currentSeason } = useGame();
   const { toast } = useToast();
@@ -60,7 +59,6 @@ export default function HomePage() {
     return () => clearInterval(intervalId);
   }, [playerProfile, toast]);
 
-
   if (isInitialSetupDone) {
     if (isLoading) {
       return <IntroScreen />;
@@ -81,10 +79,8 @@ export default function HomePage() {
     return <IntroScreen />;
   }
 
-  const backgroundImageStyle = {
-    backgroundImage: "url('https://i.imgur.com/awGhtRo.png')",
-    backgroundColor: '#000000',
-  };
+  const cockpitImageUrl = "https://i.imgur.com/awGhtRo.png";
+  const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
  
   if (!playerProfile) return <IntroScreen/>; 
 
@@ -93,106 +89,199 @@ export default function HomePage() {
   return (
     <AppLayout>
       <div
-        className="relative flex flex-col items-center justify-start text-center h-full pt-4 sm:pt-8 bg-cover bg-center bg-no-repeat"
-        style={backgroundImageStyle}
+        className="relative flex flex-col items-center justify-start text-center h-full pt-4 sm:pt-8 overflow-hidden"
         data-ai-hint="futuristic space background"
       >
-        <CommanderPortrait
-          onTap={handleTap}
+        {/* Layer 1: Animated Space Background */}
+        <div 
+            className="absolute inset-0 bg-black bg-no-repeat animate-pan-background"
+            style={{
+                backgroundImage: `url('${spaceImageUrl}')`,
+                backgroundSize: '150%', // Zoom in to allow for panning
+            }}
         />
 
-        <div className="mt-4 sm:mt-6 w-full max-w-xs sm:max-w-sm md:max-w-md space-y-2">
-           <div className="bg-background/70 p-2 sm:p-3 rounded-lg space-y-2">
-            <div>
-              <p className="text-xl sm:text-2xl font-semibold text-primary font-headline">
-                Taps: {playerProfile.currentTaps} / {playerProfile.maxTaps}
-              </p>
-              {isOutOfTaps && (
-                <p className="text-sm sm:text-base text-orange-400 animate-pulse">
-                  Regeneration in: {formatTimeLeft(timeLeftForTapRegen)}
+        {/* Shooting Stars Container */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="shooting-star"></div>
+            <div className="shooting-star"></div>
+            <div className="shooting-star"></div>
+        </div>
+        
+        {/* Layer 2: Cockpit Overlay */}
+        <div 
+            className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
+            style={{
+                backgroundImage: `url('${cockpitImageUrl}')`,
+            }}
+        />
+
+
+        {/* Layer 3: Game Content (z-index will put this on top) */}
+        <div className="relative z-10">
+          <CommanderPortrait
+            onTap={handleTap}
+          />
+
+          <div className="mt-4 sm:mt-6 w-full max-w-xs sm:max-w-sm md:max-w-md space-y-2">
+            <div className="bg-background/70 p-2 sm:p-3 rounded-lg space-y-2">
+              <div>
+                <p className="text-xl sm:text-2xl font-semibold text-primary font-headline">
+                  Taps: {playerProfile.currentTaps} / {playerProfile.maxTaps}
                 </p>
-              )}
-            </div>
+                {isOutOfTaps && (
+                  <p className="text-sm sm:text-base text-orange-400 animate-pulse">
+                    Regeneration in: {formatTimeLeft(timeLeftForTapRegen)}
+                  </p>
+                )}
+              </div>
 
-            <div className="border-t border-border/50 my-2"></div>
+              <div className="border-t border-border/50 my-2"></div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 text-xs text-left">
-              <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
-                <Ship className="h-4 w-4 text-primary shrink-0" />
-                <div>
-                  <p className="font-bold text-muted-foreground">{currentSeason.objectiveResourceName}</p>
-                  <p className="text-foreground font-mono">{(playerProfile.seasonProgress[currentSeason.id] || 0).toLocaleString()}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 text-xs text-left">
+                <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
+                  <Ship className="h-4 w-4 text-primary shrink-0" />
+                  <div>
+                    <p className="font-bold text-muted-foreground">{currentSeason.objectiveResourceName}</p>
+                    <p className="text-foreground font-mono">{(playerProfile.seasonProgress[currentSeason.id] || 0).toLocaleString()}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
+                  <Trophy className="h-4 w-4 text-primary shrink-0" />
+                  <div>
+                    <p className="font-bold text-muted-foreground">League</p>
+                    <p className="text-foreground font-mono">{playerProfile.league}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
+                  <Shirt className="h-4 w-4 text-primary shrink-0" />
+                  <div>
+                    <p className="font-bold text-muted-foreground">Uniform</p>
+                    <p className="text-foreground font-mono">{playerProfile.equippedUniformPieces.length} / 5</p>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
-                <Trophy className="h-4 w-4 text-primary shrink-0" />
-                <div>
-                  <p className="font-bold text-muted-foreground">League</p>
-                  <p className="text-foreground font-mono">{playerProfile.league}</p>
-                </div>
+
+              <div className="border-t border-border/50 my-2"></div>
+              
+              {/* Social Links Section */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+                 <Button asChild variant="outline" size="sm" className="bg-background/70">
+                   <Link href="https://example.com/invite" target="_blank" rel="noopener noreferrer">
+                    <Share2 className="mr-1 h-3 w-3"/> Invite
+                   </Link>
+                 </Button>
+                 <Button asChild variant="outline" size="sm" className="bg-background/70">
+                   <Link href="https://t.me/allianceforge" target="_blank" rel="noopener noreferrer">
+                    <Send className="mr-1 h-3 w-3"/> Telegram
+                   </Link>
+                 </Button>
+                 <Button asChild variant="outline" size="sm" className="bg-background/70">
+                   <Link href="https://tiktok.com/@allianceforge" target="_blank" rel="noopener noreferrer">
+                    <Music className="mr-1 h-3 w-3"/> TikTok
+                   </Link>
+                 </Button>
+                 <Button asChild variant="outline" size="sm" className="bg-background/70">
+                   <Link href="https://discord.gg/yourinvite" target="_blank" rel="noopener noreferrer">
+                     <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mr-1 h-3 w-3 fill-current"><title>Discord</title><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4464.8245-.6667 1.284-.0001.0001-3.9102-1.5162-3.9102-1.5162l-.0448-.0204-3.9102 1.5162c-.2203-.4595-.4557-.9087-.6667-1.284a.0741.0741 0 00-.0785-.0371 19.7913 19.7913 0 00-4.8851 1.5152.069.069 0 00-.0321.0234C.5434 9.0458-.319 13.5799.0992 18.0578a.08.08 0 00.0414.0582c1.837.7749 3.6521 1.1648 5.4468 1.1648a12.6022 12.6022 0 002.3787-.2214.0741.0741 0 00.0623-.0562 12.2227 12.2227 0 00.435-2.2204.0741.0741 0 00-.0449-.0832c-.933-.424-1.782-1.026-2.52-1.844a.0741.0741 0 01.0181-.11.6318.6318 0 01.0362-.0277 10.8718 10.8718 0 012.9817-1.1075.0741.0741 0 01.084.0258c.4618.633 1.053 1.254 1.725 1.799a.0741.0741 0 00.084.0258 10.8718 10.8718 0 012.9817 1.1075.6318.6318 0 01.0362.0277.0741.0741 0 01.0181.11c-.738.818-1.587 1.42-2.52 1.844a.0741.0741 0 00-.0449.0832 12.2227 12.2227 0 00.435 2.2204.0741.0741 0 00.0623.0562 12.6022 12.6022 0 002.3787.2214c1.7947 0 3.6098-.3899 5.4468-1.1648a.08.08 0 00.0414-.0582c.4182-4.4779-.4436-8.9912-2.6146-13.6646a.069.069 0 00-.0321-.0234zM8.02 15.3312c-.9416 0-1.705-.802-1.705-1.791s.7634-1.791 1.705-1.791c.9416 0 1.705.802 1.705 1.791s-.7634 1.791-1.705 1.791zm7.9748 0c-.9416 0-1.705-.802-1.705-1.791s.7634-1.791 1.705-1.791c.9416 0 1.705.802 1.705 1.791s-.7634 1.791-1.705 1.791z"/></svg>
+                     Discord
+                   </Link>
+                 </Button>
               </div>
-              <div className="flex items-center gap-1.5 p-1 rounded bg-black/20">
-                <Shirt className="h-4 w-4 text-primary shrink-0" />
-                <div>
-                  <p className="font-bold text-muted-foreground">Uniform</p>
-                  <p className="text-foreground font-mono">{playerProfile.equippedUniformPieces.length} / 5</p>
-                </div>
-              </div>
+
+              <Button onClick={switchCommanderSex} variant="secondary" size="sm" className="mt-2 w-full bg-background/70">
+                <Users className="mr-1 h-3 w-3" />
+                Cambiar Comandante
+              </Button>
+
             </div>
 
-            <div className="border-t border-border/50 my-2"></div>
-            
-            {/* Social Links Section */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
-               <Button asChild variant="outline" size="sm" className="bg-background/70">
-                 <Link href="https://example.com/invite" target="_blank" rel="noopener noreferrer">
-                  <Share2 className="mr-1 h-3 w-3"/> Invite
-                 </Link>
-               </Button>
-               <Button asChild variant="outline" size="sm" className="bg-background/70">
-                 <Link href="https://t.me/allianceforge" target="_blank" rel="noopener noreferrer">
-                  <Send className="mr-1 h-3 w-3"/> Telegram
-                 </Link>
-               </Button>
-               <Button asChild variant="outline" size="sm" className="bg-background/70">
-                 <Link href="https://tiktok.com/@allianceforge" target="_blank" rel="noopener noreferrer">
-                  <Music className="mr-1 h-3 w-3"/> TikTok
-                 </Link>
-               </Button>
-               <Button asChild variant="outline" size="sm" className="bg-background/70">
-                 <Link href="https://discord.gg/yourinvite" target="_blank" rel="noopener noreferrer">
-                   <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mr-1 h-3 w-3 fill-current"><title>Discord</title><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4464.8245-.6667 1.284-.0001.0001-3.9102-1.5162-3.9102-1.5162l-.0448-.0204-3.9102 1.5162c-.2203-.4595-.4557-.9087-.6667-1.284a.0741.0741 0 00-.0785-.0371 19.7913 19.7913 0 00-4.8851 1.5152.069.069 0 00-.0321.0234C.5434 9.0458-.319 13.5799.0992 18.0578a.08.08 0 00.0414.0582c1.837.7749 3.6521 1.1648 5.4468 1.1648a12.6022 12.6022 0 002.3787-.2214.0741.0741 0 00.0623-.0562 12.2227 12.2227 0 00.435-2.2204.0741.0741 0 00-.0449-.0832c-.933-.424-1.782-1.026-2.52-1.844a.0741.0741 0 01.0181-.11.6318.6318 0 01.0362-.0277 10.8718 10.8718 0 012.9817-1.1075.0741.0741 0 01.084.0258c.4618.633 1.053 1.254 1.725 1.799a.0741.0741 0 00.084.0258 10.8718 10.8718 0 012.9817 1.1075.6318.6318 0 01.0362.0277.0741.0741 0 01.0181.11c-.738.818-1.587 1.42-2.52 1.844a.0741.0741 0 00-.0449.0832 12.2227 12.2227 0 00.435 2.2204.0741.0741 0 00.0623.0562 12.6022 12.6022 0 002.3787.2214c1.7947 0 3.6098-.3899 5.4468-1.1648a.08.08 0 00.0414-.0582c.4182-4.4779-.4436-8.9912-2.6146-13.6646a.069.069 0 00-.0321-.0234zM8.02 15.3312c-.9416 0-1.705-.802-1.705-1.791s.7634-1.791 1.705-1.791c.9416 0 1.705.802 1.705 1.791s-.7634 1.791-1.705 1.791zm7.9748 0c-.9416 0-1.705-.802-1.705-1.791s.7634-1.791 1.705-1.791c.9416 0 1.705.802 1.705 1.791s-.7634 1.791-1.705 1.791z"></path></svg>
-                   Discord
-                 </Link>
-               </Button>
-            </div>
-
-            <Button onClick={switchCommanderSex} variant="secondary" size="sm" className="mt-2 w-full bg-background/70">
-              <Users className="mr-1 h-3 w-3" />
-              Cambiar Comandante
-            </Button>
-
-           </div>
-
-           {isOutOfTaps && (
-             <div className="w-full bg-destructive/20 border border-destructive/50 text-destructive-foreground p-2 sm:p-3 rounded-lg shadow-lg space-y-2 text-center">
-                <div className="flex items-center justify-center gap-2">
-                   <AlertTriangle className="h-5 w-5 animate-pulse" />
-                   <p className="font-bold text-base sm:text-lg">Tap Energy Depleted!</p>
-                </div>
-               <p className="text-xs sm:text-sm">Wait for regeneration or refill your taps with Auron to continue your progress.</p>
-               <Button onClick={refillTaps} variant="destructive" size="sm" disabled={playerProfile.auron < AURON_COST_FOR_TAP_REFILL}>
-                 <Zap className="mr-1 h-3 w-3"/>
-                 Refill Taps ({AURON_COST_FOR_TAP_REFILL} Auron)
-               </Button>
-             </div>
-           )}
-
+            {isOutOfTaps && (
+              <div className="w-full bg-destructive/20 border border-destructive/50 text-destructive-foreground p-2 sm:p-3 rounded-lg shadow-lg space-y-2 text-center">
+                  <div className="flex items-center justify-center gap-2">
+                    <AlertTriangle className="h-5 w-5 animate-pulse" />
+                    <p className="font-bold text-base sm:text-lg">Tap Energy Depleted!</p>
+                  </div>
+                <p className="text-xs sm:text-sm">Wait for regeneration or refill your taps with Auron to continue your progress.</p>
+                <Button onClick={refillTaps} variant="destructive" size="sm" disabled={playerProfile.auron < AURON_COST_FOR_TAP_REFILL}>
+                  <Zap className="mr-1 h-3 w-3"/>
+                  Refill Taps ({AURON_COST_FOR_TAP_REFILL} Auron)
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
+       <style jsx>{`
+        @keyframes pan-background {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animate-pan-background {
+            animation: pan-background 90s linear infinite;
+        }
+
+        .shooting-star {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.1), 0 0 0 8px rgba(255,255,255,0.1), 0 0 20px rgba(255,255,255,1);
+            animation: animate-star 3s linear infinite;
+        }
+        .shooting-star::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 300px;
+            height: 1px;
+            background: linear-gradient(90deg, #fff, transparent);
+        }
+        
+        .shooting-star:nth-child(1) {
+            top: 0;
+            right: 0;
+            left: initial;
+            animation-delay: 0s;
+            animation-duration: 5s;
+        }
+        .shooting-star:nth-child(2) {
+            top: 0;
+            right: 800px;
+            left: initial;
+            animation-delay: 1.4s;
+            animation-duration: 4s;
+        }
+        .shooting-star:nth-child(3) {
+            top: 80px;
+            right: 0;
+            left: initial;
+            animation-delay: 2.8s;
+            animation-duration: 6s;
+        }
+
+
+        @keyframes animate-star {
+            0% {
+                transform: rotate(315deg) translateX(0);
+                opacity: 1;
+            }
+            70% {
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(315deg) translateX(-1000px);
+                opacity: 0;
+            }
+        }
+      `}</style>
     </AppLayout>
   );
 }
     
-
     
