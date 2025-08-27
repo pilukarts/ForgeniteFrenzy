@@ -27,8 +27,6 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
 
   const handleInteraction = () => {
     onTap();
-    // Play tap sound effect - placeholder sound removed to fix 404 errors
-    
     setIsTapped(true);
     setTimeout(() => setIsTapped(false), 200); // Duration of the tap animation
   };
@@ -91,4 +89,6 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
 };
 
 export default CommanderPortrait;
+    
+
     

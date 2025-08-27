@@ -10,6 +10,7 @@ import IntroScreen from '@/components/intro/IntroScreen';
 const LevelMapPage: React.FC = () => {
     const { isLoading, isInitialSetupDone } = useGame();
     const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
+    const cockpitImageUrl = "https://i.imgur.com/r5orLzB.png";
 
     if (isLoading) {
         return <IntroScreen />;
@@ -26,6 +27,7 @@ const LevelMapPage: React.FC = () => {
         <div 
             className="absolute inset-0 bg-black bg-cover bg-center animate-pan-background"
             style={{ backgroundImage: `url('${spaceImageUrl}')` }}
+            data-ai-hint="futuristic space background"
         />
 
         {/* Shooting Stars Container */}
@@ -34,8 +36,18 @@ const LevelMapPage: React.FC = () => {
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
         </div>
+
+        {/* Layer 2: Cockpit Floor */}
+        <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
+
+        {/* Layer 3: Cockpit Frame */}
+        <div 
+            className="absolute inset-0 bg-contain bg-no-repeat bg-center pointer-events-none"
+            style={{ backgroundImage: `url('${cockpitImageUrl}')` }}
+            data-ai-hint="spaceship cockpit frame"
+        />
         
-        {/* Layer 2: Game Content (z-index will put this on top) */}
+        {/* Layer 4: Game Content (z-index will put this on top) */}
         <div className="flex-grow overflow-hidden relative z-10">
             <LevelMap />
         </div>
@@ -113,3 +125,5 @@ const LevelMapPage: React.FC = () => {
 };
 
 export default LevelMapPage;
+
+    
