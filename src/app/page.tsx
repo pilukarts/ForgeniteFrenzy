@@ -90,7 +90,7 @@ export default function HomePage() {
   return (
     <AppLayout>
       <div
-        className="relative flex flex-col items-center justify-between text-center h-full overflow-hidden"
+        className="relative flex flex-col items-center justify-start text-center h-full overflow-hidden"
       >
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="shooting-star"></div>
@@ -106,14 +106,14 @@ export default function HomePage() {
             data-ai-hint="spaceship cockpit frame"
         />
         
-        <div className="relative z-10 w-full flex flex-col items-center justify-end flex-grow pb-4 px-2">
+        <div className="relative z-10 w-full flex flex-col items-center justify-start flex-grow p-2">
             
             {/* Taps Display (animated from top) */}
             <motion.div
               initial={{ y: -100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-              className="mb-2"
+              className="my-2"
             >
               <p className="text-xl sm:text-2xl font-semibold text-primary font-headline">
                 Taps: {playerProfile.currentTaps} / {playerProfile.maxTaps}
@@ -149,7 +149,7 @@ export default function HomePage() {
         </div>
 
         {/* Action Buttons and Stats on the Sides */}
-        <div className="absolute bottom-2 left-0 right-0 w-full flex justify-between items-end px-2 sm:px-4 z-10 pointer-events-none">
+        <div className="relative bottom-0 left-0 right-0 w-full flex justify-between items-end px-2 sm:px-4 z-10 pointer-events-none mt-auto pb-2">
             {/* Left Side */}
             <motion.div 
               initial={{ x: -100, opacity: 0 }}
@@ -167,7 +167,24 @@ export default function HomePage() {
                   <Send className="mr-2 h-4 w-4"/> Telegram
                  </Link>
                </Button>
-               {/* Materials Stat Box */}
+               {/* Uniform Stat Box */}
+               <div className="flex items-center gap-2 p-2 rounded-md bg-background/70 border border-input">
+                  <Shirt className="h-5 w-5 text-primary shrink-0" />
+                  <div>
+                    <p className="text-xs font-bold text-muted-foreground">Uniform</p>
+                    <p className="text-sm text-foreground font-mono">{playerProfile.equippedUniformPieces.length} / 5</p>
+                  </div>
+                </div>
+            </motion.div>
+            
+            {/* Center Area -- Stats */}
+             <motion.div 
+               initial={{ y: 100, opacity: 0 }}
+               animate={{ y: 0, opacity: 1 }}
+               transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
+              className="flex flex-col gap-2 w-1/3 max-w-[120px] pointer-events-auto text-left"
+            >
+                {/* Materials Stat Box */}
                <div className="flex items-center gap-2 p-2 rounded-md bg-background/70 border border-input">
                   <Ship className="h-5 w-5 text-primary shrink-0" />
                   <div>
@@ -175,27 +192,14 @@ export default function HomePage() {
                     <p className="text-sm text-foreground font-mono">{(playerProfile.seasonProgress[currentSeason.id] || 0).toLocaleString()}</p>
                   </div>
                 </div>
-            </motion.div>
-            
-            {/* Center Area -- Uniform and Switch */}
-            <motion.div 
-               initial={{ y: 100, opacity: 0 }}
-               animate={{ y: 0, opacity: 1 }}
-               transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-              className="flex flex-col gap-2 w-1/3 max-w-[120px] pointer-events-auto text-left"
-            >
-                 {/* Uniform Stat Box */}
-                <div className="flex items-center gap-2 p-2 rounded-md bg-background/70 border border-input">
-                  <Shirt className="h-5 w-5 text-primary shrink-0" />
+               {/* League Stat Box */}
+               <div className="flex items-center gap-2 p-2 rounded-md bg-background/70 border border-input">
+                  <Trophy className="h-5 w-5 text-primary shrink-0" />
                   <div>
-                    <p className="text-xs font-bold text-muted-foreground">Uniform</p>
-                    <p className="text-sm text-foreground font-mono">{playerProfile.equippedUniformPieces.length} / 5</p>
+                    <p className="text-xs font-bold text-muted-foreground">League</p>
+                    <p className="text-sm text-foreground font-mono">{playerProfile.league}</p>
                   </div>
                 </div>
-                 <Button onClick={switchCommanderSex} variant="secondary" size="sm" className="bg-background/70 justify-start">
-                    <Users className="mr-2 h-4 w-4" />
-                    Switch
-                </Button>
             </motion.div>
 
 
@@ -217,14 +221,10 @@ export default function HomePage() {
                    Discord
                  </Link>
                </Button>
-               {/* League Stat Box */}
-               <div className="flex items-center gap-2 p-2 rounded-md bg-background/70 border border-input">
-                  <Trophy className="h-5 w-5 text-primary shrink-0" />
-                  <div>
-                    <p className="text-xs font-bold text-muted-foreground">League</p>
-                    <p className="text-sm text-foreground font-mono">{playerProfile.league}</p>
-                  </div>
-                </div>
+               <Button onClick={switchCommanderSex} variant="secondary" size="sm" className="bg-background/70 justify-start">
+                    <Users className="mr-2 h-4 w-4" />
+                    Switch
+                </Button>
             </motion.div>
         </div>
       </div>
