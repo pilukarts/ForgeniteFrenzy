@@ -13,6 +13,7 @@ import PreIntroScreen from '@/components/intro/PreIntroScreen';
 import { useToast } from "@/hooks/use-toast";
 import { AURON_COST_FOR_TAP_REFILL, TAP_REGEN_COOLDOWN_MINUTES } from '@/lib/gameData';
 import Link from 'next/link';
+import { DiscordLogoIcon } from '@radix-ui/react-icons';
 
 type NewUserIntroPhase = 'pre' | 'main' | 'setup';
 
@@ -186,5 +187,6 @@ export default function HomePage() {
     </AppLayout>
   );
 }
+    
 
     
