@@ -165,36 +165,26 @@ export default function HomePage() {
                  </Link>
                </Button>
             </div>
+           </div>
 
-          </div>
-
-          {isOutOfTaps && (
-            <Button 
-              onClick={refillTaps} 
-              variant="destructive" 
-              className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
-              disabled={playerProfile.auron < AURON_COST_FOR_TAP_REFILL}
-            >
-              <Zap className="mr-2 h-4 w-4" /> Refill Taps ({AURON_COST_FOR_TAP_REFILL} Auron)
-            </Button>
-          )}
-           {playerProfile.auron < AURON_COST_FOR_TAP_REFILL && isOutOfTaps && (
-            <p className="text-xs text-red-400 flex items-center justify-center">
-                <AlertTriangle className="h-3 w-3 mr-1"/>
-                Insufficient Auron to refill.
-            </p>
+           {isOutOfTaps && (
+             <div className="w-full bg-destructive/20 border border-destructive/50 text-destructive-foreground p-2 sm:p-3 rounded-lg shadow-lg space-y-2 text-center">
+                <div className="flex items-center justify-center gap-2">
+                   <AlertTriangle className="h-5 w-5 animate-pulse" />
+                   <p className="font-bold text-base sm:text-lg">Tap Energy Depleted!</p>
+                </div>
+               <p className="text-xs sm:text-sm">Wait for regeneration or refill your taps with Auron to continue your progress.</p>
+               <Button onClick={refillTaps} variant="destructive" size="sm" disabled={playerProfile.auron < AURON_COST_FOR_TAP_REFILL}>
+                 <Zap className="mr-1 h-3 w-3"/>
+                 Refill Taps ({AURON_COST_FOR_TAP_REFILL} Auron)
+               </Button>
+             </div>
            )}
-
-          <Button onClick={switchCommanderSex} variant="outline" size="sm" className="text-foreground hover:text-accent-foreground hover:bg-accent bg-background/70 text-sm sm:text-base">
-            {playerProfile.commanderSex === 'male' ? (
-              <>Switch to <UserRound className="inline-block ml-1 mr-1 h-4 w-4 sm:h-5 sm:w-5" /> Female</>
-            ) : (
-              <>Switch to <User className="inline-block ml-1 mr-1 h-4 w-4 sm:h-5 sm:w-5" /> Male</>
-            )}
-          </Button>
 
         </div>
       </div>
     </AppLayout>
   );
 }
+
+    
