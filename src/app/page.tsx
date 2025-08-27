@@ -89,7 +89,7 @@ export default function HomePage() {
   return (
     <AppLayout>
       <div
-        className="relative flex flex-col items-center justify-start text-center h-full pt-4 sm:pt-8 overflow-hidden"
+        className="relative flex flex-col items-center justify-start text-center h-full pt-8 sm:pt-12 overflow-hidden"
         data-ai-hint="futuristic space background"
       >
         {/* Layer 1: Animated Space Background */}
