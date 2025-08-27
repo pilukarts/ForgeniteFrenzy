@@ -7,7 +7,7 @@ import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
-import { User, UserRound, Zap, AlertTriangle, Trophy, Shirt, Ship, Share2, Send, Music, Users } from 'lucide-react';
+import { User, UserRound, Zap, AlertTriangle, Trophy, Shirt, Ship, Share2, Send, Users } from 'lucide-react';
 import IntroScreen from '@/components/intro/IntroScreen';
 import PreIntroScreen from '@/components/intro/PreIntroScreen';
 import { useToast } from "@/hooks/use-toast";
@@ -82,6 +82,7 @@ export default function HomePage() {
   }
   
   const cockpitImageUrl = "https://i.imgur.com/r5orLzB.png";
+  const logoWatermarkUrl = "https://i.imgur.com/h8XfylD.png";
 
   if (!playerProfile) return <IntroScreen/>; 
 
@@ -104,6 +105,13 @@ export default function HomePage() {
             className="absolute inset-0 bg-contain bg-no-repeat bg-center pointer-events-none"
             style={{ backgroundImage: `url('${cockpitImageUrl}')` }}
             data-ai-hint="spaceship cockpit frame"
+        />
+
+        {/* Logo Watermark Behind Commander */}
+        <div
+          className="absolute inset-0 bg-contain bg-no-repeat bg-center pointer-events-none opacity-10 blur-sm transform scale-[0.6]"
+          style={{ backgroundImage: `url('${logoWatermarkUrl}')` }}
+          data-ai-hint="game logo title background"
         />
         
         <div className="relative z-10 w-full flex flex-col items-center justify-start flex-grow p-2">
@@ -167,7 +175,7 @@ export default function HomePage() {
                   <Send className="mr-2 h-4 w-4"/> Telegram
                  </Link>
                </Button>
-                <Button onClick={switchCommanderSex} variant="secondary" size="sm" className="bg-background/70 justify-start">
+               <Button onClick={switchCommanderSex} variant="secondary" size="sm" className="bg-background/70 justify-start">
                     <Users className="mr-2 h-4 w-4" />
                     Switch
                 </Button>
