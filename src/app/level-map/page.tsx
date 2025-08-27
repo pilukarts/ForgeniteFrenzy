@@ -10,7 +10,7 @@ import IntroScreen from '@/components/intro/IntroScreen';
 const LevelMapPage: React.FC = () => {
     const { isLoading, isInitialSetupDone } = useGame();
     const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
-    const circuitPlatformUrl = "https://i.imgur.com/qD89qQX.jpeg";
+    const cockpitImageUrl = "https://i.imgur.com/awGhtRo.png";
 
     if (isLoading) {
         return <IntroScreen />;
@@ -25,41 +25,36 @@ const LevelMapPage: React.FC = () => {
       <div className="h-full w-full flex flex-col relative overflow-hidden">
         {/* Layer 1: Animated Space Background */}
         <div 
-            className="absolute inset-0 bg-black bg-cover bg-no-repeat animate-pan-background"
-            style={{
-                backgroundImage: `url('${spaceImageUrl}')`,
-                backgroundPosition: 'center center',
-            }}
+            className="absolute inset-0 bg-black bg-cover bg-center animate-pan-background"
+            style={{ backgroundImage: `url('${spaceImageUrl}')` }}
         />
 
-        {/* Shooting Stars Container */}
+        {/* Shooting Stars Container (behind cockpit) */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
         </div>
         
-        {/* Layer 2: Circuit Platform with Gradient */}
-         <div 
-            className="absolute bottom-0 left-0 right-0 h-1/2 bg-contain bg-bottom bg-no-repeat pointer-events-none"
-            style={{
-                backgroundImage: `url('${circuitPlatformUrl}')`,
-                backgroundBlendMode: 'lighten',
-                WebkitMaskImage: 'linear-gradient(to top, black 20%, transparent 100%)',
-                maskImage: 'linear-gradient(to top, black 20%, transparent 100%)',
-            }}
+        {/* Layer 2: Cockpit Frame */}
+        <div
+          className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
+          style={{ backgroundImage: `url('${cockpitImageUrl}')` }}
         />
+        
+        {/* Layer 3: Floor Gradient */}
+        <div className="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-t from-background to-transparent pointer-events-none" />
 
-        {/* Layer 3: Game Content (z-index will put this on top) */}
+        {/* Layer 4: Game Content (z-index will put this on top) */}
         <div className="flex-grow overflow-hidden relative z-10">
             <LevelMap />
         </div>
       </div>
        <style jsx>{`
         @keyframes pan-background {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% { transform: scale(1.1) translateX(0%); }
+            50% { transform: scale(1.1) translateX(5%); }
+            100% { transform: scale(1.1) translateX(0%); }
         }
         .animate-pan-background {
             animation: pan-background 90s linear infinite;
@@ -69,11 +64,11 @@ const LevelMapPage: React.FC = () => {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 4px;
-            height: 4px;
+            width: 3px;
+            height: 3px;
             background: #fff;
             border-radius: 50%;
-            box-shadow: 0 0 0 4px rgba(255,255,255,0.1), 0 0 0 8px rgba(255,255,255,0.1), 0 0 20px rgba(255,255,255,1);
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.1), 0 0 0 8px rgba(255,2_55,255,0.1), 0 0 20px rgba(255,255,255,1);
             animation: animate-star 3s linear infinite;
         }
         .shooting-star::before {
@@ -94,11 +89,11 @@ const LevelMapPage: React.FC = () => {
             animation-duration: 5s;
         }
         .shooting-star:nth-child(2) {
-            top: 0;
-            right: 800px;
+            top: 10%;
+            right: 400px;
             left: initial;
             animation-delay: 1.4s;
-            animation-duration: 4s;
+            animation-duration: 4.5s;
         }
         .shooting-star:nth-child(3) {
             top: 80px;
@@ -118,7 +113,7 @@ const LevelMapPage: React.FC = () => {
                 opacity: 1;
             }
             100% {
-                transform: rotate(315deg) translateX(-1000px);
+                transform: rotate(315deg) translateX(-1500px);
                 opacity: 0;
             }
         }

@@ -13,6 +13,7 @@ import PreIntroScreen from '@/components/intro/PreIntroScreen';
 import { useToast } from "@/hooks/use-toast";
 import { AURON_COST_FOR_TAP_REFILL, TAP_REGEN_COOLDOWN_MINUTES } from '@/lib/gameData';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 type NewUserIntroPhase = 'pre' | 'main' | 'setup';
 
@@ -80,7 +81,7 @@ export default function HomePage() {
   }
   
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
-  const circuitPlatformUrl = "https://i.imgur.com/qD89qQX.jpeg"; 
+  const cockpitImageUrl = "https://i.imgur.com/awGhtRo.png";
 
   if (!playerProfile) return <IntroScreen/>; 
 
@@ -89,43 +90,38 @@ export default function HomePage() {
   return (
     <AppLayout>
       <div
-        className="relative flex flex-col items-center justify-end text-center h-full overflow-hidden"
+        className="relative flex flex-col items-center justify-between text-center h-full overflow-hidden"
         data-ai-hint="futuristic space background"
       >
         {/* Layer 1: Animated Space Background */}
         <div 
-            className="absolute inset-0 bg-black bg-cover bg-no-repeat animate-pan-background"
-            style={{
-                backgroundImage: `url('${spaceImageUrl}')`,
-                backgroundPosition: 'center center',
-            }}
+            className="absolute inset-0 bg-black bg-cover bg-center animate-pan-background"
+            style={{ backgroundImage: `url('${spaceImageUrl}')` }}
         />
 
-        {/* Shooting Stars Container */}
+        {/* Shooting Stars Container (behind cockpit) */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
         </div>
-        
-        {/* Layer 2: Circuit Platform with Gradient */}
-         <div 
-            className="absolute bottom-0 left-0 right-0 h-1/2 bg-contain bg-bottom bg-no-repeat pointer-events-none"
-            style={{
-                backgroundImage: `url('${circuitPlatformUrl}')`,
-                backgroundBlendMode: 'lighten',
-                WebkitMaskImage: 'linear-gradient(to top, black 20%, transparent 100%)',
-                maskImage: 'linear-gradient(to top, black 20%, transparent 100%)',
-            }}
-        />
 
-        {/* Layer 3: Game Content (z-index will put this on top) */}
-        <div className="relative z-10 w-full flex flex-col items-center justify-end pb-8">
+        {/* Layer 2: Cockpit Frame */}
+        <div
+          className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
+          style={{ backgroundImage: `url('${cockpitImageUrl}')` }}
+        />
+        
+        {/* Layer 3: Floor Gradient */}
+        <div className="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+
+        {/* Layer 4: Game Content */}
+        <div className="relative z-10 w-full flex flex-col items-center justify-end flex-grow pb-4">
           <CommanderPortrait
             onTap={handleTap}
           />
 
-          <div className="mt-2 w-full max-w-xs sm:max-w-sm md:max-w-md space-y-2">
+          <div className="w-full max-w-xs sm:max-w-sm md:max-w-md space-y-2 mt-[-20px]">
             <div className="bg-background/70 p-2 sm:p-3 rounded-lg space-y-2">
               <div>
                 <p className="text-xl sm:text-2xl font-semibold text-primary font-headline">
@@ -216,9 +212,9 @@ export default function HomePage() {
       </div>
        <style jsx>{`
         @keyframes pan-background {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% { transform: scale(1.1) translateX(0%); }
+            50% { transform: scale(1.1) translateX(5%); }
+            100% { transform: scale(1.1) translateX(0%); }
         }
         .animate-pan-background {
             animation: pan-background 90s linear infinite;
@@ -228,8 +224,8 @@ export default function HomePage() {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 4px;
-            height: 4px;
+            width: 3px;
+            height: 3px;
             background: #fff;
             border-radius: 50%;
             box-shadow: 0 0 0 4px rgba(255,255,255,0.1), 0 0 0 8px rgba(255,255,255,0.1), 0 0 20px rgba(255,255,255,1);
@@ -253,11 +249,11 @@ export default function HomePage() {
             animation-duration: 5s;
         }
         .shooting-star:nth-child(2) {
-            top: 0;
-            right: 800px;
+            top: 10%;
+            right: 400px;
             left: initial;
             animation-delay: 1.4s;
-            animation-duration: 4s;
+            animation-duration: 4.5s;
         }
         .shooting-star:nth-child(3) {
             top: 80px;
@@ -266,7 +262,6 @@ export default function HomePage() {
             animation-delay: 2.8s;
             animation-duration: 6s;
         }
-
 
         @keyframes animate-star {
             0% {
@@ -277,7 +272,7 @@ export default function HomePage() {
                 opacity: 1;
             }
             100% {
-                transform: rotate(315deg) translateX(-1000px);
+                transform: rotate(315deg) translateX(-1500px);
                 opacity: 0;
             }
         }

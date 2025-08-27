@@ -46,45 +46,32 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
       }}
       className={cn(
         "relative focus:outline-none transition-transform duration-100",
-        "w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[440px] lg:h-[440px]", // Consistent large size
-        "bg-transparent core-hexagon-glow", // Apply the glow animation class
+        "w-64 h-80 sm:w-72 sm:h-96", // Adjusted aspect ratio to be taller
         "flex items-center justify-center",
         isTapped ? 'animate-tapped-visual' : 'active:scale-95'
       )}
-      style={{ 
-        clipPath: hexagonClipPath,
-        '--dynamic-commander-glow': currentTierColor 
-      } as React.CSSProperties}
       aria-label="Tap Commander"
     >
-      <Image
-        src={imageUrl}
-        alt={altText}
-        data-ai-hint={dataAiHint}
-        width={440} 
-        height={440}
-        className="object-contain w-full h-full"
-        priority
-        style={{ clipPath: hexagonClipPath }} 
-      />
-
-       {/* Visual Core with AF on Chest */}
-      <div 
-        className="absolute top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-        style={{ '--dynamic-commander-glow': currentTierColor } as React.CSSProperties}
-      >
-        <div 
-          className="relative w-10 h-10 sm:w-12 sm:h-12 group animate-pulse-neon-dynamic"
-          style={{ clipPath: hexagonClipPath }}
-        >
-            <Hexagon className="absolute inset-0 w-full h-full text-[hsl(var(--dynamic-commander-glow))] fill-[hsla(var(--dynamic-commander-glow)/0.2)]" />
-            <span className="absolute inset-0 flex items-center justify-center font-headline text-sm sm:text-base text-[hsl(var(--dynamic-commander-glow))] font-bold">
-                AF
-            </span>
-        </div>
-      </div>
-      
-      <style jsx>{`
+        <div
+          className={cn(
+            "absolute inset-0 animate-pulse-neon-dynamic",
+            "bg-transparent"
+          )}
+          style={{ 
+            clipPath: hexagonClipPath,
+            '--dynamic-commander-glow': currentTierColor 
+          } as React.CSSProperties}
+        />
+        <Image
+          src={imageUrl}
+          alt={altText}
+          data-ai-hint={dataAiHint}
+          width={288} // Base size for sm:
+          height={384} // sm:h-96
+          className="object-contain w-full h-full"
+          priority
+        />
+       <style jsx>{`
         @keyframes tapped-visual {
           0% { transform: scale(1); }
           50% { transform: scale(1.05); } 
