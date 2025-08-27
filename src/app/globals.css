@@ -5,55 +5,54 @@
 
 @layer base {
   :root {
-    --background: 220 25% 20%; /* Dark Slate Blue */
-    --foreground: 16 80% 65%; /* Coral */
+    --background: 220 40% 15%; /* Deep Space Blue */
+    --foreground: 210 15% 75%; /* Light Silver/Gray */
 
-    --card: 220 15% 28%; /* Darker Slate, slightly lighter than bg */
-    --card-foreground: 16 80% 65%; /* Coral */
+    --card: 220 25% 25%; /* Darker Slate Blue */
+    --card-foreground: 210 15% 85%; /* Lighter Silver */
 
-    --popover: 220 15% 15%; /* Even Darker Slate */
-    --popover-foreground: 16 80% 65%; /* Coral */
+    --popover: 220 30% 10%; /* Very Dark Blue */
+    --popover-foreground: 210 15% 85%;
 
     --primary: 45 100% 50%; /* Gold */
-    --primary-foreground: 220 100% 10%; /* Very Dark Blue/Black for text on Gold */
+    --primary-foreground: 220 100% 10%; /* Very Dark Blue for text on Gold */
 
     --secondary: 210 15% 60%; /* Silver / Light Grayish Blue */
     --secondary-foreground: 45 100% 50%; /* Gold for text on Silver */
 
     --muted: 220 15% 30%; /* Muted Slate */
-    --muted-foreground: 210 15% 70%; /* Light Silver/Gray for muted text */
+    --muted-foreground: 210 15% 60%; /* Muted Silver/Gray for text */
 
     --accent: 45 100% 50%; /* Gold - for main accents */
-    --accent-foreground: 220 100% 10%; /* Very Dark Blue/Black for text on Gold Accent */
+    --accent-foreground: 220 100% 10%; /* Very Dark Blue for text on Gold */
 
-    --destructive: 0 84.2% 60.2%; /* Kept original red for destructive actions */
-    --destructive-foreground: 0 0% 98%; /* Kept original light text for destructive */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
 
     --border: 220 15% 35%; /* Medium Slate/Silver border */
-    --input: 220 15% 40%; /* Slightly Lighter Slate/Silver for input background */
-    --ring: 45 100% 50%; /* Gold - for focus rings */
+    --input: 220 15% 40%; /* Slightly Lighter Slate/Silver for input */
+    --ring: 45 100% 50%; /* Gold for focus rings */
     
     --radius: 0.5rem;
 
-    /* Custom colors from palette */
-    --radiant-purple: 326 58% 39%; /* Kept original - can be reviewed if not used */
+    /* Custom colors */
     --bright-gold: 45 100% 50%; /* Unified Gold color */
 
     /* Sidebar specific colors */
-    --sidebar-background: 220 25% 18%; /* Slightly darker than main bg */
-    --sidebar-foreground: 16 80% 65%; /* Coral */
-    --sidebar-primary: 45 100% 50%; /* Gold */
-    --sidebar-primary-foreground: 220 100% 10%; /* Very Dark Blue/Black */
-    --sidebar-accent: 45 100% 50%; /* Gold */
-    --sidebar-accent-foreground: 220 100% 10%; /* Very Dark Blue/Black */
-    --sidebar-border: 220 15% 30%; /* Darker slate/silver border for sidebar */
-    --sidebar-ring: 45 100% 50%; /* Gold */
+    --sidebar-background: 220 40% 12%; /* Slightly darker than main bg */
+    --sidebar-foreground: 210 15% 80%;
+    --sidebar-primary: 45 100% 50%;
+    --sidebar-primary-foreground: 220 100% 10%;
+    --sidebar-accent: 45 100% 50%;
+    --sidebar-accent-foreground: 220 100% 10%;
+    --sidebar-border: 220 15% 30%;
+    --sidebar-ring: 45 100% 50%;
 
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --chart-1: 45 100% 50%; /* Gold */
+    --chart-2: 180 100% 50%; /* Cyan */
+    --chart-3: 270 70% 60%; /* Purple */
+    --chart-4: 16 80% 65%; /* Coral */
+    --chart-5: 120 100% 70%; /* Light Green */
 
     /* Dynamic Tier Colors - default to Silver */
     --dynamic-commander-glow: 210 15% 75%; 
@@ -61,42 +60,42 @@
   }
 
   .dark {
-    --background: 220 30% 10%; /* Very Dark Blue */
-    --foreground: 16 80% 65%; /* Coral */
+    --background: 220 40% 10%; /* Even Darker Space Blue */
+    --foreground: 210 15% 80%;
 
-    --card: 220 20% 15%; /* Darker Blue/Gray card */
-    --card-foreground: 16 80% 65%; /* Coral */
+    --card: 220 25% 18%;
+    --card-foreground: 210 15% 90%;
 
-    --popover: 220 20% 8%; /* Very Dark Popover */
-    --popover-foreground: 16 80% 65%; /* Coral */
+    --popover: 220 30% 8%;
+    --popover-foreground: 210 15% 90%;
 
     --primary: 45 100% 50%; /* Gold */
-    --primary-foreground: 220 100% 10%; /* Very Dark Blue/Black */
+    --primary-foreground: 220 100% 10%;
 
-    --secondary: 210 10% 40%; /* Dark Silver/Gray */
-    --secondary-foreground: 45 100% 50%; /* Gold */
+    --secondary: 210 10% 40%;
+    --secondary-foreground: 45 100% 50%;
 
-    --muted: 220 20% 20%; /* Dark Muted Blue/Gray */
-    --muted-foreground: 210 10% 55%; /* Muted Silver/Gray text */
+    --muted: 220 20% 20%;
+    --muted-foreground: 210 10% 55%;
 
-    --accent: 45 100% 50%; /* Gold */
-    --accent-foreground: 220 100% 10%; /* Very Dark Blue/Black */
+    --accent: 45 100% 50%;
+    --accent-foreground: 220 100% 10%;
 
-    --destructive: 0 70% 50%; /* Adjusted destructive for dark theme if needed */
+    --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 95%;
 
-    --border: 220 15% 25%; /* Darker Border */
-    --input: 220 15% 30%; /* Darker Input */
-    --ring: 45 100% 50%; /* Gold */
+    --border: 220 15% 25%;
+    --input: 220 15% 30%;
+    --ring: 45 100% 50%;
 
-    --sidebar-background: 220 30% 8%; /* Even darker blue for dark sidebar */
-    --sidebar-foreground: 16 80% 65%; /* Coral */
-    --sidebar-primary: 45 100% 50%; /* Gold */
-    --sidebar-primary-foreground: 220 100% 10%; /* Very Dark Blue/Black */
-    --sidebar-accent: 45 100% 50%; /* Gold */
-    --sidebar-accent-foreground: 220 100% 10%; /* Very Dark Blue/Black */
-    --sidebar-border: 220 20% 22%; /* Darker sidebar border */
-    --sidebar-ring: 45 100% 50%; /* Gold */
+    --sidebar-background: 220 40% 8%;
+    --sidebar-foreground: 210 15% 85%;
+    --sidebar-primary: 45 100% 50%;
+    --sidebar-primary-foreground: 220 100% 10%;
+    --sidebar-accent: 45 100% 50%;
+    --sidebar-accent-foreground: 220 100% 10%;
+    --sidebar-border: 220 20% 22%;
+    --sidebar-ring: 45 100% 50%;
 
     /* Dynamic Tier Colors - default to Silver for dark theme as well */
     --dynamic-commander-glow: 210 15% 75%; 

@@ -6,7 +6,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Alliance Forge: Forgeite Frenzy',
-  description: 'Alliance Forge: Operation Exodus - Lead humanity\'s escape from Earth.',
+  description: 'Alliance Forge: Forgeite Frenzy - Lead humanity\'s escape from Earth.',
 };
 
 export default function RootLayout({
@@ -31,4 +31,3 @@ export default function RootLayout({
     </html>
   );
 }
-
