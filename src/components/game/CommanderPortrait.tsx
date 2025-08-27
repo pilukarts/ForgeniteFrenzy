@@ -38,12 +38,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
   const hexagonClipPath = 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)';
 
   return (
-    <button 
-      onClick={handleInteraction} 
-      onTouchStart={(e) => {
-        e.preventDefault();
-        handleInteraction();
-      }}
+    <div 
       className={cn(
         "relative focus:outline-none transition-transform duration-100",
         "w-64 h-80 sm:w-72 sm:h-96", // Adjusted aspect ratio to be taller
@@ -52,6 +47,15 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
       )}
       aria-label="Tap Commander"
     >
+      <button 
+        onClick={handleInteraction} 
+        onTouchStart={(e) => {
+          e.preventDefault();
+          handleInteraction();
+        }}
+        className="w-full h-full relative"
+      >
+        {/* The Aura Div */}
         <div
           className={cn(
             "absolute inset-0 animate-pulse-neon-dynamic",
@@ -62,6 +66,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
             '--dynamic-commander-glow': currentTierColor 
           } as React.CSSProperties}
         />
+        {/* The Commander Image */}
         <Image
           src={imageUrl}
           alt={altText}
@@ -71,7 +76,9 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
           className="object-contain w-full h-full"
           priority
         />
-       <style jsx>{`
+      </button>
+
+      <style jsx>{`
         @keyframes tapped-visual {
           0% { transform: scale(1); }
           50% { transform: scale(1.05); } 
@@ -81,7 +88,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
           animation: tapped-visual 0.2s ease-out;
         }
       `}</style>
-    </button>
+    </div>
   );
 };
 
