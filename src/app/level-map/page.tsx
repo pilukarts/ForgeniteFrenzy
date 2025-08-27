@@ -9,7 +9,6 @@ import IntroScreen from '@/components/intro/IntroScreen';
 
 const LevelMapPage: React.FC = () => {
     const { isLoading, isInitialSetupDone } = useGame();
-    const cockpitImageUrl = "https://i.imgur.com/awGhtRo.png";
     const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
     const circuitPlatformUrl = "https://i.imgur.com/qD89qQX.jpeg";
 
@@ -42,12 +41,12 @@ const LevelMapPage: React.FC = () => {
         
         {/* Layer 2: Circuit Platform with Gradient */}
          <div 
-            className="absolute bottom-0 left-0 right-0 h-2/3 bg-contain bg-bottom bg-no-repeat pointer-events-none"
+            className="absolute bottom-0 left-0 right-0 h-1/2 bg-contain bg-bottom bg-no-repeat pointer-events-none"
             style={{
-                backgroundImage: `url('${circuitPlatformUrl}'), linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 70%)`,
+                backgroundImage: `url('${circuitPlatformUrl}')`,
                 backgroundBlendMode: 'lighten',
-                WebkitMaskImage: 'linear-gradient(to top, black 50%, transparent 100%)',
-                maskImage: 'linear-gradient(to top, black 50%, transparent 100%)',
+                WebkitMaskImage: 'linear-gradient(to top, black 20%, transparent 100%)',
+                maskImage: 'linear-gradient(to top, black 20%, transparent 100%)',
             }}
         />
 
