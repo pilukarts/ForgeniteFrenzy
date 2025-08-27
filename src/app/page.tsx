@@ -82,7 +82,6 @@ export default function HomePage() {
   }
   
   const cockpitImageUrl = "https://i.imgur.com/r5orLzB.png";
-  const logoWatermarkUrl = "https://i.imgur.com/h8XfylD.png";
 
   if (!playerProfile) return <IntroScreen/>; 
 
@@ -105,13 +104,6 @@ export default function HomePage() {
             className="absolute inset-0 bg-contain bg-no-repeat bg-center pointer-events-none"
             style={{ backgroundImage: `url('${cockpitImageUrl}')` }}
             data-ai-hint="spaceship cockpit frame"
-        />
-
-        {/* Logo Watermark Behind Commander */}
-        <div
-          className="absolute inset-0 bg-contain bg-no-repeat bg-center pointer-events-none opacity-10 blur-sm transform scale-[0.6]"
-          style={{ backgroundImage: `url('${logoWatermarkUrl}')` }}
-          data-ai-hint="game logo title background"
         />
         
         <div className="relative z-10 w-full flex flex-col items-center justify-start flex-grow p-2">
