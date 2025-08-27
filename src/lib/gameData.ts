@@ -146,17 +146,23 @@ export const INITIAL_XP_TO_NEXT_LEVEL = 100;
 export const XP_LEVEL_MULTIPLIER = 1.5;
 
 export const RANK_TITLES: { [level: number]: string } = {
-  1: 'Recruit',
-  5: 'Cadet',
-  10: 'Officer',
-  15: 'Veteran Officer',
-  20: 'Commander',
-  25: 'Section Commander',
-  30: 'Battalion Commander',
-  40: 'Fleet Commander',
-  50: 'High Commander',
-  60: 'Vanguard Commander',
+    1: 'Recruit',
+    5: 'Cadet',
+    10: 'Officer',
+    25: 'Veteran Officer',
+    50: 'Commander',
+    75: 'Section Commander',
+    100: 'Battalion Commander',
+    150: 'Fleet Commander',
+    200: 'High Commander',
+    250: 'Vanguard Commander',
+    300: 'Elite Vanguard',
+    400: 'Forge Master',
+    500: 'Galactic Marshall',
+    750: 'Celestial Admiral',
+    1000: 'Ark Architect',
 };
+
 
 export function getRankTitle(level: number): string {
   let currentRank = 'Recruit';
@@ -178,22 +184,22 @@ export const TAP_REGEN_COOLDOWN_MINUTES = 4;
 export const AURON_COST_FOR_TAP_REFILL = 50;
 
 const TIER_COLORS_HSL = {
-  SILVER: '210 15% 75%',
-  CYAN: '180 100% 50%',
-  GREEN_LIGHT: '120 100% 70%',
-  PURPLE: '270 70% 60%',
-  CORAL: '16 80% 65%',
-  FIERY_RED: '0 100% 50%',
-  GOLD: '45 100% 50%'
+  SILVER: '210 15% 75%',      // Default
+  CYAN: '180 100% 50%',     // Level 50+
+  GREEN_LIGHT: '120 100% 70%', // Level 100+
+  PURPLE: '270 70% 60%',      // Level 200+
+  CORAL: '16 80% 65%',       // Level 300+
+  FIERY_RED: '0 100% 50%',    // Level 500+
+  GOLD: '45 100% 50%',       // Level 750+
 };
 
 export function getTierColorByLevel(level: number): string {
-  if (level < 200) return TIER_COLORS_HSL.SILVER;
-  if (level < 400) return TIER_COLORS_HSL.CYAN;
-  if (level < 600) return TIER_COLORS_HSL.GREEN_LIGHT;
-  if (level < 800) return TIER_COLORS_HSL.PURPLE;
-  if (level < 1000) return TIER_COLORS_HSL.CORAL;
-  if (level < 2000) return TIER_COLORS_HSL.FIERY_RED;
+  if (level < 50) return TIER_COLORS_HSL.SILVER;
+  if (level < 100) return TIER_COLORS_HSL.CYAN;
+  if (level < 200) return TIER_COLORS_HSL.GREEN_LIGHT;
+  if (level < 300) return TIER_COLORS_HSL.PURPLE;
+  if (level < 500) return TIER_COLORS_HSL.CORAL;
+  if (level < 750) return TIER_COLORS_HSL.FIERY_RED;
   return TIER_COLORS_HSL.GOLD;
 }
 export const INITIAL_TIER_COLOR = getTierColorByLevel(1);
