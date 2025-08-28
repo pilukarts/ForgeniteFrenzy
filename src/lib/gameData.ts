@@ -194,12 +194,12 @@ const TIER_COLORS_HSL = {
 };
 
 export function getTierColorByLevel(level: number): string {
-  // if (level < 50) return TIER_COLORS_HSL.SILVER;
-  // if (level < 100) return TIER_COLORS_HSL.CYAN;
-  // if (level < 200) return TIER_COLORS_HSL.GREEN_LIGHT;
-  // if (level < 300) return TIER_COLORS_HSL.PURPLE;
-  // if (level < 500) return TIER_COLORS_HSL.CORAL;
-  // if (level < 750) return TIER_COLORS_HSL.FIERY_RED;
+  if (level < 50) return TIER_COLORS_HSL.SILVER;
+  if (level < 100) return TIER_COLORS_HSL.CYAN;
+  if (level < 200) return TIER_COLORS_HSL.GREEN_LIGHT;
+  if (level < 300) return TIER_COLORS_HSL.PURPLE;
+  if (level < 500) return TIER_COLORS_HSL.CORAL;
+  if (level < 750) return TIER_COLORS_HSL.FIERY_RED;
   return TIER_COLORS_HSL.GOLD;
 }
 export const INITIAL_TIER_COLOR = getTierColorByLevel(1);
