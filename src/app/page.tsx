@@ -145,10 +145,6 @@ export default function HomePage() {
                     <p className="font-bold text-sm sm:text-base">Tap Energy Depleted!</p>
                   </div>
                 <p className="text-xs">Wait for regeneration or refill your taps with Auron.</p>
-                <Button onClick={refillTaps} variant="destructive" size="sm" className="h-8 text-xs" disabled={playerProfile.auron < AURON_COST_FOR_TAP_REFILL}>
-                  <Zap className="mr-1 h-3 w-3"/>
-                  Refill ({AURON_COST_FOR_TAP_REFILL} Auron)
-                </Button>
               </motion.div>
             )}
         </div>
@@ -162,6 +158,12 @@ export default function HomePage() {
               transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
               className="flex flex-col gap-2 w-1/3 max-w-[120px] pointer-events-auto text-left"
             >
+                {isOutOfTaps && (
+                   <Button onClick={refillTaps} variant="destructive" size="sm" className="justify-start" disabled={playerProfile.auron < AURON_COST_FOR_TAP_REFILL}>
+                    <Zap className="mr-2 h-4 w-4"/>
+                    Refill ({AURON_COST_FOR_TAP_REFILL})
+                  </Button>
+                )}
                <Button asChild variant="outline" size="sm" className="justify-start">
                  <Link href="https://example.com/invite" target="_blank" rel="noopener noreferrer">
                   <Share2 className="mr-2 h-4 w-4"/> Invite
