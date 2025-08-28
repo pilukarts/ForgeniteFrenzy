@@ -44,24 +44,22 @@ export default function HomePage() {
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
-    if (playerProfile && playerProfile.currentTaps <= 0 && playerProfile.tapsAvailableAt > Date.now()) {
-      const updateTimer = () => {
+    if (!playerProfile || !isInitialSetupDone) return;
+
+    const timerId = setInterval(() => {
+      if (playerProfile.currentTaps <= 0) {
         const remaining = playerProfile.tapsAvailableAt - Date.now();
-        setTimeLeftForTapRegen(remaining > 0 ? remaining : 0);
-        if (remaining <= 0) {
-           if(playerProfile.currentTaps <=0) { 
-             toast({title: "Taps Recharged!", description: "Your tap energy is ready."});
-           }
+        setTimeLeftForTapRegen(Math.max(0, remaining));
+        if (remaining <= 0 && playerProfile.currentTaps <= 0) {
+          toast({ title: "Taps Recharged!", description: "Your tap energy is ready." });
         }
-      };
-      updateTimer(); 
-      intervalId = setInterval(updateTimer, 1000);
-    } else if (playerProfile && playerProfile.currentTaps > 0) {
-      setTimeLeftForTapRegen(0); 
-    }
-    return () => clearInterval(intervalId);
-  }, [playerProfile, toast]);
+      } else {
+        setTimeLeftForTapRegen(0);
+      }
+    }, 1000);
+
+    return () => clearInterval(timerId);
+  }, [playerProfile, isInitialSetupDone, toast]);
 
   if (isInitialSetupDone) {
     if (isLoading) {
@@ -202,7 +200,12 @@ export default function HomePage() {
                 </motion.div>
 
                 {/* Right Column: Commander */}
-                <div className="flex-grow flex flex-col items-center justify-center">
+                <motion.div 
+                  initial={{ x: 100, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
+                  className="flex-grow flex flex-col items-center justify-center"
+                >
                     <CommanderPortrait onTap={handleTap} />
                     {isOutOfTaps && (
                         <motion.div
@@ -218,7 +221,7 @@ export default function HomePage() {
                             <p className="text-xs">Wait for regeneration or refill your taps with Auron.</p>
                         </motion.div>
                     )}
-                </div>
+                </motion.div>
             </div>
         </div>
 
@@ -294,3 +297,5 @@ export default function HomePage() {
     </AppLayout>
   );
 }
+
+    
