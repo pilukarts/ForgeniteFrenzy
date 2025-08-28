@@ -156,8 +156,16 @@ export default function HomePage() {
               initial={{ x: -100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-              className="flex flex-col gap-2 w-1/3 max-w-[120px] pointer-events-auto text-left"
+              className="flex flex-col gap-2 w-auto items-start pointer-events-auto text-left"
             >
+                {/* Materials Stat Box */}
+               <div className="flex items-center gap-2 p-2 rounded-md border border-input">
+                  <Ship className="h-5 w-5 text-primary shrink-0" />
+                  <div>
+                    <p className="text-xs font-bold text-muted-foreground">{currentSeason.objectiveResourceName}</p>
+                    <p className="text-sm text-foreground font-mono">{(playerProfile.seasonProgress[currentSeason.id] || 0).toLocaleString()}</p>
+                  </div>
+                </div>
                 {isOutOfTaps && (
                    <Button onClick={refillTaps} variant="destructive" size="sm" className="justify-start" disabled={playerProfile.auron < AURON_COST_FOR_TAP_REFILL}>
                     <Zap className="mr-2 h-4 w-4"/>
@@ -180,22 +188,14 @@ export default function HomePage() {
                 </Button>
             </motion.div>
             
-            {/* Center Area -- Stats */}
-             <motion.div 
-               initial={{ y: 100, opacity: 0 }}
-               animate={{ y: 0, opacity: 1 }}
+            {/* Right Side */}
+            <motion.div 
+               initial={{ x: 100, opacity: 0 }}
+               animate={{ x: 0, opacity: 1 }}
                transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-              className="flex flex-col gap-2 w-1/3 max-w-[120px] pointer-events-auto text-left"
+              className="flex flex-col gap-2 w-auto items-end pointer-events-auto text-right"
             >
-                {/* Materials Stat Box */}
-               <div className="flex items-center gap-2 p-2 rounded-md border border-input">
-                  <Ship className="h-5 w-5 text-primary shrink-0" />
-                  <div>
-                    <p className="text-xs font-bold text-muted-foreground">{currentSeason.objectiveResourceName}</p>
-                    <p className="text-sm text-foreground font-mono">{(playerProfile.seasonProgress[currentSeason.id] || 0).toLocaleString()}</p>
-                  </div>
-                </div>
-               {/* League Stat Box */}
+                {/* League Stat Box */}
                <div className="flex items-center gap-2 p-2 rounded-md border border-input">
                   <Trophy className="h-5 w-5 text-primary shrink-0" />
                   <div>
@@ -203,16 +203,6 @@ export default function HomePage() {
                     <p className="text-sm text-foreground font-mono">{playerProfile.league}</p>
                   </div>
                 </div>
-            </motion.div>
-
-
-            {/* Right Side */}
-            <motion.div 
-               initial={{ x: 100, opacity: 0 }}
-               animate={{ x: 0, opacity: 1 }}
-               transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-              className="flex flex-col gap-2 w-1/3 max-w-[120px] pointer-events-auto text-left"
-            >
                <Button asChild variant="outline" size="sm" className="justify-start">
                   <Link href="https://x.com/AllianceForgeHQ" target="_blank" rel="noopener noreferrer">
                     <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mr-2 h-3 w-3 fill-current">
@@ -311,3 +301,4 @@ export default function HomePage() {
     </AppLayout>
   );
 }
+
