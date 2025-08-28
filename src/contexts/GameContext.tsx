@@ -56,8 +56,7 @@ interface GameContextType {
   // Commander Order
   activeCommanderOrder: CommanderOrder | null;
   claimCommanderOrderReward: () => void;
-  hideCommanderOrder: () => void; // New function
-  isCommanderOrderHidden: boolean; // New state
+  hideCommanderOrder: () => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -117,8 +116,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [comboCount, setComboCount] = useState(0);
   const [isAICallInProgress, setIsAICallInProgress] = useState(false);
   const [activeCommanderOrder, setActiveCommanderOrder] = useState<CommanderOrder | null>(null);
-  const [isCommanderOrderHidden, setIsCommanderOrderHidden] = useState(false);
-
 
   const { toast } = useToast();
 
@@ -162,23 +159,28 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       };
       setPlayerProfile(prev => prev ? { ...prev, activeCommanderOrder: newOrder } : null);
       setActiveCommanderOrder(newOrder);
-      setIsCommanderOrderHidden(false); // Show the new order
       addCoreMessage({ type: 'briefing', content: `New special order received! Acquire ${newOrder.target.toLocaleString()} points.`}, true);
+    } else {
+        // Sync state if it's different
+        if (playerProfile.activeCommanderOrder !== activeCommanderOrder) {
+            setActiveCommanderOrder(playerProfile.activeCommanderOrder);
+        }
     }
-  }, [playerProfile, isInitialSetupDone, addCoreMessage]);
+  }, [playerProfile, isInitialSetupDone, addCoreMessage, activeCommanderOrder]);
   
   const claimCommanderOrderReward = useCallback(() => {
-    let order: CommanderOrder | null = null;
-    let success = false;
-  
     setPlayerProfile(prev => {
       if (!prev || !prev.activeCommanderOrder || !prev.activeCommanderOrder.isCompleted) {
         return prev;
       }
       
-      order = prev.activeCommanderOrder;
-      success = true;
+      const order = prev.activeCommanderOrder;
       
+      addCoreMessage({
+        type: 'system_alert',
+        content: `Excellent work, Commander. You've earned a reward of ${order.reward.auron} Auron.`
+      }, true);
+
       return {
         ...prev,
         auron: prev.auron + (order.reward.auron || 0),
@@ -187,18 +189,18 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         lastCommanderOrderTimestamp: Date.now(),
       };
     });
-  
-    if (success && order) {
-      addCoreMessage({
-        type: 'system_alert',
-        content: `Excellent work, Commander. You've earned a reward of ${order.reward.auron} Auron.`
-      }, true);
-      setActiveCommanderOrder(null);
-    }
   }, [addCoreMessage]);
 
   const hideCommanderOrder = useCallback(() => {
-      setIsCommanderOrderHidden(true);
+    setPlayerProfile(prev => {
+        if (!prev) return null;
+        // Sets the order to null, effectively dismissing it until the next cooldown cycle.
+        return {
+            ...prev,
+            activeCommanderOrder: null,
+            lastCommanderOrderTimestamp: Date.now(),
+        }
+    });
   }, []);
 
   const updateQuestProgress = useCallback((profile: PlayerProfile, type: QuestType, value: number): PlayerProfile => {
@@ -1062,7 +1064,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         activeCommanderOrder,
         claimCommanderOrderReward,
         hideCommanderOrder,
-        isCommanderOrderHidden,
     }}>
       {children}
     </GameContext.Provider>

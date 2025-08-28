@@ -17,10 +17,10 @@ interface AppLayoutProps {
 }
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
-  const { playerProfile, connectWallet, activeCommanderOrder, claimCommanderOrderReward, isCommanderOrderHidden, hideCommanderOrder } = useGame();
+  const { playerProfile, connectWallet, activeCommanderOrder, claimCommanderOrderReward, hideCommanderOrder } = useGame();
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   
-  const showCommanderOrder = activeCommanderOrder && !isCommanderOrderHidden;
+  const showCommanderOrder = !!activeCommanderOrder;
 
   return (
     <div 
@@ -78,7 +78,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           
           {playerProfile && <CoreDisplay />}
           
-          {showCommanderOrder && <CommanderOrder order={activeCommanderOrder} onClaim={claimCommanderOrderReward} onHide={hideCommanderOrder} />}
+          {showCommanderOrder && activeCommanderOrder && <CommanderOrder order={activeCommanderOrder} onClaim={claimCommanderOrderReward} onHide={hideCommanderOrder} />}
 
           <BottomNavBar />
         </div>
