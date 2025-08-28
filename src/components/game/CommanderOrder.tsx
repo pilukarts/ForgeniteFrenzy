@@ -50,9 +50,7 @@ const CommanderOrderBanner: React.FC<CommanderOrderProps> = ({ order, onClaim, o
     setKey(order.id);
   }, [order.id]);
 
-  const progressPercentage = timeLeft > 0 ? ((order.endTime - order.startTime - timeLeft) / (order.endTime - order.startTime)) * 100 : 100;
   const timeProgressPercentage = (timeLeft / (order.endTime - order.startTime)) * 100;
-
   const missionText = `Commander, your orders are to acquire ${order.target.toLocaleString()} points. Failure is not an option.`;
 
   return (
@@ -63,9 +61,9 @@ const CommanderOrderBanner: React.FC<CommanderOrderProps> = ({ order, onClaim, o
         animate={{ y: 0 }}
         exit={{ y: '100%' }}
         transition={{ type: 'spring', stiffness: 100, damping: 20 }}
-        className="fixed bottom-0 left-0 right-0 w-full max-w-md mx-auto z-40 p-1 sm:p-2 pointer-events-none"
+        className="fixed bottom-0 left-0 right-0 w-full z-40 p-1 sm:p-2 pointer-events-none"
       >
-        <div className="relative pt-8 pointer-events-auto">
+        <div className="relative pt-8 max-w-md mx-auto pointer-events-auto">
             {/* Commander Portrait floating above */}
             <motion.div 
                 className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-24 z-20"
@@ -123,3 +121,5 @@ const CommanderOrderBanner: React.FC<CommanderOrderProps> = ({ order, onClaim, o
 };
 
 export default CommanderOrderBanner;
+
+    
