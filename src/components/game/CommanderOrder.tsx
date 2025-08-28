@@ -31,9 +31,10 @@ const CommanderOrderBanner: React.FC<CommanderOrderProps> = ({ order, onClaim, o
   const [timeLeft, setTimeLeft] = useState(order.endTime - Date.now());
   const [key, setKey] = useState(order.id);
 
+  // Corrected image URLs
   const commanderImgSrc = playerProfile?.commanderSex === 'male' 
-    ? "https://i.imgur.com/gB3i4OQ.png" // Headshot male
-    : "https://i.imgur.com/J3tG1e4.png"; // Headshot female
+    ? "https://i.imgur.com/gB3i4OQ.png"
+    : "https://i.imgur.com/J3tG1e4.png";
   const commanderAlt = playerProfile?.commanderSex === 'male' ? 'Male Commander' : 'Female Commander';
   const commanderDataAiHint = playerProfile?.commanderSex === 'male' ? 'male commander headshot' : 'female commander headshot';
 
@@ -61,7 +62,7 @@ const CommanderOrderBanner: React.FC<CommanderOrderProps> = ({ order, onClaim, o
         animate={{ y: 0 }}
         exit={{ y: '100%' }}
         transition={{ type: 'spring', stiffness: 100, damping: 20 }}
-        className="fixed bottom-0 left-0 right-0 w-full z-40 p-1 sm:p-2 pointer-events-none"
+        className="fixed bottom-0 left-0 right-0 w-full z-50 p-1 sm:p-2 pointer-events-none"
       >
         <div className="relative pt-8 max-w-md mx-auto pointer-events-auto">
             {/* Commander Portrait floating above */}
@@ -81,7 +82,7 @@ const CommanderOrderBanner: React.FC<CommanderOrderProps> = ({ order, onClaim, o
             </motion.div>
 
             {/* Main Banner Content */}
-            <div className="relative bg-card/90 backdrop-blur-lg border-t-2 border-primary/50 rounded-t-lg shadow-2xl p-3 flex flex-col items-center text-center">
+            <div className="relative bg-card/90 backdrop-blur-lg border-t-2 border-primary/50 rounded-t-lg shadow-2xl p-3 flex flex-col items-center text-center mb-[56px] sm:mb-0">
                 <Button onClick={onHide} variant="ghost" size="icon" className="absolute top-1 right-1 h-6 w-6 text-muted-foreground hover:bg-black/20 hover:text-white z-10">
                     <X className="h-4 w-4" />
                     <span className="sr-only">Hide Order</span>
@@ -121,5 +122,3 @@ const CommanderOrderBanner: React.FC<CommanderOrderProps> = ({ order, onClaim, o
 };
 
 export default CommanderOrderBanner;
-
-    

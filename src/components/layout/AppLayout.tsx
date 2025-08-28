@@ -1,7 +1,7 @@
 
 "use client";
 import React, { ReactNode, useEffect, useRef } from 'react';
-import BottomNavBar from '@/components/navigation/BottomNavBar';
+import BottomNavBar from '../navigation/BottomNavBar';
 import PlayerProfileHeader from '@/components/player/PlayerProfileHeader';
 import ResourceDisplay from '@/components/game/ResourceDisplay';
 import { Button } from '@/components/ui/button';
