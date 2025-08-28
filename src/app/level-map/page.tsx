@@ -117,5 +117,3 @@ const LevelMapPage: React.FC = () => {
 };
 
 export default LevelMapPage;
-
-    
