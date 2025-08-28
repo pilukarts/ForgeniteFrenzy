@@ -166,7 +166,7 @@ export default function HomePage() {
                 </motion.div>
 
                 {/* Right Column: Commander and Buttons */}
-                <div className="flex-grow flex flex-col items-center justify-end mr-4 mt-4">
+                <div className="flex-grow flex flex-col items-center justify-end">
                     <CommanderPortrait onTap={handleTap} />
 
                     {isOutOfTaps && (
@@ -289,5 +289,3 @@ export default function HomePage() {
     </AppLayout>
   );
 }
-
-    

@@ -42,7 +42,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
       style={dynamicStyles}
       className={cn(
         "relative focus:outline-none transition-transform duration-100",
-        "w-64 h-80 sm:w-72 sm:h-96", // Adjusted aspect ratio to be taller
+        "w-64 h-80 sm:w-72 sm:h-96 mb-4", // Adjusted aspect ratio to be taller and ADDED MARGIN BOTTOM
         "flex items-center justify-center"
       )}
       aria-label="Tap Commander"
