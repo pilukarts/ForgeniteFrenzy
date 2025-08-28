@@ -11,13 +11,14 @@ import CoreDisplay from '@/components/core/CoreDisplay';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import CommanderOrder from '@/components/game/CommanderOrder';
+import IntroScreen from '../intro/IntroScreen';
 
 interface AppLayoutProps {
   children: ReactNode;
 }
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
-  const { playerProfile, connectWallet, activeCommanderOrder, claimCommanderOrderReward, hideCommanderOrder, currentSeason } = useGame();
+  const { playerProfile, connectWallet, activeCommanderOrder, claimCommanderOrderReward, hideCommanderOrder, currentSeason, isLoading } = useGame();
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   
   const showCommanderOrder = !!activeCommanderOrder;
@@ -75,7 +76,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           </header>
           
           <main className="flex-grow overflow-y-auto pb-[56px] sm:pb-[60px]">
-            {children}
+            {isLoading || !playerProfile ? <IntroScreen /> : children}
           </main>
           
           {playerProfile && <CoreDisplay />}

@@ -5,7 +5,7 @@ import type { PlayerProfile } from '@/lib/types';
 import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Shield, UserCircle, ShieldCheck, Award, Gem, Star, Crown, Sparkles, LucideIcon } from 'lucide-react'; 
-import { getLeagueIconAndColor } from '@/lib/gameData';
+import { getLeagueIconAndColor, DEFAULT_LEAGUE } from '@/lib/gameData';
 import { cn } from '@/lib/utils';
 
 interface PlayerProfileHeaderProps {
@@ -17,7 +17,9 @@ const PlayerProfileHeader: React.FC<PlayerProfileHeaderProps> = ({ profile }) =>
   const avatarSrc = profile.commanderSex === 'male' ? "https://i.imgur.com/gB3i4OQ.png" : "https://i.imgur.com/J3tG1e4.png";
   const dataAiHint = profile.commanderSex === 'male' ? "male commander" : "female commander";
 
-  const { Icon: LeagueIcon, colorClass: leagueColorClass } = getLeagueIconAndColor(profile.league);
+  // Defensive check to prevent server-side rendering error
+  const leagueName = profile.league || DEFAULT_LEAGUE;
+  const { Icon: LeagueIcon, colorClass: leagueColorClass } = getLeagueIconAndColor(leagueName);
 
   return (
     <div className="flex items-center gap-2 p-1 rounded-lg bg-card/50 shadow-sm min-w-0">
@@ -39,7 +41,7 @@ const PlayerProfileHeader: React.FC<PlayerProfileHeaderProps> = ({ profile }) =>
         </p>
         <div className="flex items-center gap-1 mt-0.5">
             <LeagueIcon className={cn("h-3 w-3", leagueColorClass)} />
-            <p className={cn("text-xs font-medium", leagueColorClass)}>{profile.league}</p>
+            <p className={cn("text-xs font-medium", leagueColorClass)}>{leagueName}</p>
         </div>
         <Progress value={xpPercentage} className="h-1 mt-1 bg-muted" indicatorClassName="bg-primary" />
       </div>
