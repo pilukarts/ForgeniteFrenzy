@@ -73,7 +73,8 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
         <div className={cn(
           "absolute flex items-center justify-center",
           "w-[34px] h-[38px]", // Hexagon dimensions
-          "top-[37%] left-1/2 -translate-x-1/2 -translate-y-1/2",
+          "left-1/2 -translate-x-1/2 -translate-y-1/2",
+          commanderSex === 'male' ? 'top-[36%]' : 'top-[37%]', // Conditional positioning
           "bg-[hsl(var(--dynamic-commander-glow))] text-primary-foreground", // Use dynamic color
           "font-headline font-bold text-sm tracking-wider",
            "pointer-events-none" // Make sure it doesn't interfere with taps
