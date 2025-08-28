@@ -16,7 +16,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
   
   // Determine commander sex and tier color from playerProfile
   const commanderSex = playerProfile?.commanderSex || 'female'; // Default if profile not loaded
-  const currentTierColor = playerProfile?.currentTierColor || '210 15% 75%'; // Default to Silver HSL
+  const currentTierColor = playerProfile?.currentTierColor || '45 100% 50%'; // Default to Gold HSL
 
   const maleImageUrl = "https://i.imgur.com/iuRJVBZ.png"; 
   const femaleImageUrl = "https://i.imgur.com/BQHeVWp.png";
