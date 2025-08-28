@@ -83,6 +83,22 @@ export default function HomePage() {
     return <IntroScreen />;
   }
   
+  const handleInviteClick = () => {
+    if (!playerProfile || !playerProfile.referralCode) return;
+    navigator.clipboard.writeText(playerProfile.referralCode).then(() => {
+      toast({
+        title: "Referral Code Copied!",
+        description: "Your code is ready to be shared with new recruits.",
+      });
+    }).catch(err => {
+      console.error('Failed to copy referral code: ', err);
+      toast({
+        title: "Copy Failed",
+        description: "Could not copy the code. Please try again.",
+        variant: "destructive",
+      });
+    });
+  };
 
   if (!playerProfile) return <IntroScreen/>; 
 
@@ -156,10 +172,8 @@ export default function HomePage() {
                             Refill ({AURON_COST_FOR_TAP_REFILL})
                         </Button>
                     )}
-                    <Button asChild variant="outline" size="sm" className="w-full justify-start">
-                        <Link href="https://example.com/invite" target="_blank" rel="noopener noreferrer">
-                            <Share2 className="mr-2 h-4 w-4"/> Invite
-                        </Link>
+                    <Button onClick={handleInviteClick} variant="outline" size="sm" className="w-full justify-start">
+                        <Share2 className="mr-2 h-4 w-4"/> Invite
                     </Button>
                     <Button asChild variant="outline" size="sm" className="w-full justify-start">
                         <Link href="https://t.me/allianceforge" target="_blank" rel="noopener noreferrer">
