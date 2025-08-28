@@ -33,8 +33,13 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
 
   const hexagonClipPath = 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)';
 
+  const dynamicStyles = {
+    '--dynamic-commander-glow': currentTierColor
+  } as React.CSSProperties;
+
   return (
     <div 
+      style={dynamicStyles}
       className={cn(
         "relative focus:outline-none transition-transform duration-100",
         "w-64 h-80 sm:w-72 sm:h-96", // Adjusted aspect ratio to be taller
@@ -53,14 +58,8 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
       >
         {/* The Aura Div */}
         <div
-          className={cn(
-            "absolute inset-0 animate-pulse-neon-dynamic",
-            "bg-transparent"
-          )}
-          style={{ 
-            clipPath: hexagonClipPath,
-            '--dynamic-commander-glow': currentTierColor 
-          } as React.CSSProperties}
+          className="absolute inset-0 animate-pulse-neon-dynamic bg-transparent"
+          style={{ clipPath: hexagonClipPath }}
         />
         {/* The Commander Image */}
         <Image
@@ -71,6 +70,29 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
           height={384} // sm:h-96
           className="object-contain w-full h-full"
           priority
+        />
+        
+        {/* Chest Logo */}
+        <div className={cn(
+          "absolute flex items-center justify-center",
+          "w-[34px] h-[38px]", // Hexagon dimensions
+          "top-[38%] left-1/2 -translate-x-1/2 -translate-y-1/2",
+          "bg-primary/70 text-primary-foreground",
+          "font-headline font-bold text-sm tracking-wider"
+        )}
+        style={{ clipPath: hexagonClipPath }}
+        >
+            AF
+        </div>
+
+        {/* Dynamic Belt Color */}
+        <div className={cn(
+          "absolute w-[70px] h-[12px] rounded-sm",
+          "left-1/2 -translate-x-1/2",
+          commanderSex === 'male' ? "top-[54.5%]" : "top-[52%]",
+          "bg-[hsl(var(--dynamic-commander-glow))]",
+          "shadow-[0_0_5px_hsl(var(--dynamic-commander-glow))]"
+        )}
         />
       </button>
 
