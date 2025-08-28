@@ -31,7 +31,7 @@ interface GameContextType {
   addPoints: (amount: number, isFromTap?: boolean) => void;
   isLoading: boolean;
   isInitialSetupDone: boolean;
-  completeInitialSetup: (name: string, sex: 'male' | 'female', country: string, referredByCode?: string) => void;
+  completeInitialSetup: (name: string, sex: 'male' | 'female', referredByCode?: string) => void;
   coreMessages: CoreMessage[];
   addCoreMessage: (message: Omit<CoreMessage, 'timestamp'>, isHighPriority?: boolean) => void;
   isCoreUnlocked: boolean;
@@ -61,7 +61,7 @@ interface GameContextType {
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
-const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' | 'country' | 'currentSeasonId'> = {
+const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' | 'currentSeasonId'> = {
   points: 0,
   auron: 0,
   level: 1,
@@ -394,14 +394,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem('coreMessages', JSON.stringify(coreMessages));
   }, [coreMessages]);
 
-  const completeInitialSetup = (name: string, sex: 'male' | 'female', country: string, referredByCode?: string) => {
+  const completeInitialSetup = (name: string, sex: 'male' | 'female', referredByCode?: string) => {
     const now = Date.now();
     const newProfileData: PlayerProfile = {
       ...defaultPlayerProfile,
       id: crypto.randomUUID(),
       name,
       commanderSex: sex,
-      country,
       currentSeasonId: SEASONS_DATA[0].id,
       rankTitle: getRankTitle(1),
       lastLoginTimestamp: now,

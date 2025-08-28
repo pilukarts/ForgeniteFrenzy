@@ -20,7 +20,7 @@ const LeaderboardPage: React.FC = () => {
   // const [countryLeaderboard, setCountryLeaderboard] = useState<LeaderboardEntry[]>([]); // For future use
 
   useEffect(() => {
-    const generateMockLeaderboard = (count: number, isGlobal: boolean = true): LeaderboardEntry[] => {
+    const generateMockLeaderboard = (count: number): LeaderboardEntry[] => {
       const mockData: LeaderboardEntry[] = [];
       for (let i = 1; i <= count; i++) {
         const score = Math.floor(Math.random() * 1000000) + 50000;
@@ -28,7 +28,6 @@ const LeaderboardPage: React.FC = () => {
           rank: i,
           playerId: `player_${i}`,
           playerName: `Commander ${String.fromCharCode(65 + (i % 26))}${i % 100}`,
-          playerCountry: isGlobal ? ['🇺🇸', '🇨🇦', '🇬🇧', '🇩🇪', '🇯🇵'][i % 5] : playerProfile?.country || '🇺🇳',
           score: score,
           playerLeague: getLeagueByPoints(score),
         });
@@ -41,7 +40,6 @@ const LeaderboardPage: React.FC = () => {
             rank: 0, 
             playerId: playerProfile.id,
             playerName: playerProfile.name,
-            playerCountry: playerProfile.country,
             score: playerProfile.points,
             playerLeague: playerProfile.league,
         };
@@ -101,7 +99,6 @@ const LeaderboardPage: React.FC = () => {
                         <div className="flex items-center">
                             <LeagueIcon className={cn("h-3.5 w-3.5 mr-1.5 shrink-0", leagueColorClass)} />
                             <span className={cn("font-medium mr-1.5", leagueColorClass)}>{entry.playerLeague}</span>
-                            <span className="mr-1 sm:mr-2">{entry.playerCountry}</span>
                             <span>{entry.playerName}</span>
                             {entry.playerId === playerProfile.id && <span className="ml-1 sm:ml-2 text-primary">(You)</span>}
                         </div>
@@ -141,5 +138,3 @@ const LeaderboardPage: React.FC = () => {
 };
 
 export default LeaderboardPage;
-
-    

@@ -5,8 +5,6 @@ import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { COUNTRIES } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -16,15 +14,14 @@ const PlayerSetup: React.FC = () => {
   const { completeInitialSetup } = useGame();
   const [name, setName] = useState('');
   const [sex, setSex] = useState<'male' | 'female'>('female');
-  const [country, setCountry] = useState(COUNTRIES[0].code);
   const [referredBy, setReferredBy] = useState('');
 
   const isFormValid = name.trim() !== '';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isFormValid && country) {
-      completeInitialSetup(name.trim(), sex, country, referredBy.trim());
+    if (isFormValid) {
+      completeInitialSetup(name.trim(), sex, referredBy.trim());
     }
   };
 
@@ -82,23 +79,6 @@ const PlayerSetup: React.FC = () => {
                   required 
                   className="bg-input border-border focus:ring-primary"
                 />
-              </div>
-
-              {/* Region Selection */}
-              <div className="space-y-2">
-                <Label htmlFor="country" className="text-foreground/80 text-base">Select Region</Label>
-                <Select value={country} onValueChange={setCountry}>
-                  <SelectTrigger id="country" className="w-full bg-input border-border focus:ring-primary">
-                    <SelectValue placeholder="Select country" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover border-border">
-                    {COUNTRIES.map(c => (
-                      <SelectItem key={c.code} value={c.code} className="focus:bg-primary/20">
-                        {c.flag} {c.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
               </div>
 
               {/* Referral Code */}
