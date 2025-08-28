@@ -8,86 +8,60 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
-// Layout data based on the provided "Silver Stage" image
-const stageLayout: Array<Array<{ level: number }>> = [
-  [{ level: 1 }],
-  [{ level: 4 }, { level: 5 }],
-  [{ level: 6 }, { level: 8 }, { level: 10 }],
-  [{ level: 11 }, { level: 13 }, { level: 15 }, { level: 16 }],
-  [{ level: 21 }, { level: 22 }, { level: 23 }, { level: 24 }, { level: 29 }],
-  [{ level: 31 }, { level: 37 }, { level: 38 }, { level: 39 }, { level: 40 }, { level: 42 }],
-  [{ level: 51 }, { level: 52 }, { level: 53 }, { level: 54 }, { level: 65 }, { level: 66 }, { level: 68 }],
-  [{ level: 61 }, { level: 60 }, { level: 71 }, { level: 78 }, { level: 81 }, { level: 86 }],
-  [{ level: 81 }, { level: 82 }, { level: 83 }, { level: 84 }, { level: 85 }],
-  [{ level: 91 }, { level: 92 }, { level: 93 }, { level: 98 }],
-  [{ level: 191 }, { level: 192 }, { level: 193 }],
-  [{ level: 194 }, { level: 195 }],
-  [{ level: 100 }],
-];
-
-// Constants for layout calculation
+// Constants for procedural layout
+const LEVELS_TO_GENERATE = 200; // Total levels for this "stage"
 const HEX_WIDTH = 100;
-const HEX_HEIGHT = 115; // Slightly taller for better visual separation
-const CONTAINER_PADDING_Y = 120; // More space at the top for title
+const HEX_HEIGHT = 115;
+const VERTICAL_SPACING = HEX_HEIGHT * 0.75;
+const HORIZONTAL_WAVE_AMPLITUDE = 200;
+const HORIZONTAL_WAVE_FREQUENCY = 0.05;
 
 const LevelMap: React.FC = () => {
   const { playerProfile } = useGame();
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const currentPlayerRef = useRef<HTMLDivElement>(null);
 
+  // Procedurally generate the layout for the level nodes
   const { nodes, containerWidth, containerHeight } = useMemo(() => {
-    const flatNodes: any[] = [];
-    
-    stageLayout.forEach((row, rowIndex) => {
-        const numItems = row.length;
-        const yPos = CONTAINER_PADDING_Y + rowIndex * HEX_HEIGHT * 0.75;
-        const rowStartX = -( (numItems - 1) * HEX_WIDTH ) / 2;
+    const generatedNodes = [];
+    for (let i = 1; i <= LEVELS_TO_GENERATE; i++) {
+      const y = i * VERTICAL_SPACING;
+      // Use a sine wave to create a meandering horizontal path
+      const x = Math.sin(i * HORIZONTAL_WAVE_FREQUENCY) * HORIZONTAL_WAVE_AMPLITUDE;
+      generatedNodes.push({
+        id: i,
+        level: i,
+        x,
+        y,
+      });
+    }
 
-        row.forEach((node, colIndex) => {
-            // Check for the duplicate '81' and give it a unique key
-            const isDuplicate81 = node.level === 81 && rowIndex === 8;
-            const uniqueId = isDuplicate81 ? `81-dupe` : `${node.level}`;
-            
-            flatNodes.push({
-                ...node,
-                id: uniqueId,
-                x: rowStartX + colIndex * HEX_WIDTH,
-                y: yPos,
-            });
-        });
-    });
-
-    const allX = flatNodes.map(n => n.x);
-    const allY = flatNodes.map(n => n.y);
-    const minX = Math.min(...allX);
-    const maxX = Math.max(...allX);
-    const minY = Math.min(...allY);
-    const maxY = Math.max(...allY);
-    
-    const width = maxX - minX + HEX_WIDTH * 2;
-    const height = maxY - minY + HEX_HEIGHT * 2;
+    const allX = generatedNodes.map(n => n.x);
+    const width = Math.max(...allX) - Math.min(...allX) + HEX_WIDTH * 2 + HORIZONTAL_WAVE_AMPLITUDE;
+    const height = LEVELS_TO_GENERATE * VERTICAL_SPACING + HEX_HEIGHT * 2;
 
     const xOffset = width / 2;
-    const yOffset = 0;
+    const yOffset = HEX_HEIGHT; // Padding at the top
 
-    const positionedNodes = flatNodes.map(node => ({ ...node, x: node.x + xOffset, y: node.y + yOffset }));
+    const positionedNodes = generatedNodes.map(node => ({ ...node, x: node.x + xOffset, y: height - node.y + yOffset }));
 
-    return { nodes: positionedNodes, containerWidth: width, containerHeight: height };
+    return { nodes: positionedNodes, containerWidth: width, containerHeight: height + (yOffset * 2) };
   }, []);
 
+  // Effect to scroll to the player's current level
   useEffect(() => {
     if (mapContainerRef.current && currentPlayerRef.current) {
         const container = mapContainerRef.current;
         const playerNode = currentPlayerRef.current;
         
         const containerRect = container.getBoundingClientRect();
-        const playerRect = playerNode.getBoundingClientRect();
+        const playerNodeTop = playerNode.offsetTop;
+        const playerNodeHeight = playerNode.offsetHeight;
 
-        const scrollToX = playerNode.offsetLeft + (playerRect.width / 2) - (containerRect.width / 2);
-        const scrollToY = playerNode.offsetTop + (playerRect.height / 2) - (containerRect.height / 2);
+        // Scroll to position the current level node in the vertical center of the view
+        const scrollToY = playerNodeTop + (playerNodeHeight / 2) - (containerRect.height / 2);
         
         container.scrollTo({
-            left: scrollToX,
             top: scrollToY,
             behavior: 'smooth'
         });
