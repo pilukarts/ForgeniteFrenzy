@@ -84,16 +84,6 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
         >
             AF
         </div>
-
-        {/* Dynamic Belt Color */}
-        <div className={cn(
-          "absolute w-[70px] h-[12px] rounded-sm",
-          "left-1/2 -translate-x-1/2",
-          commanderSex === 'male' ? "top-[54.5%]" : "top-[52%]",
-          "bg-[hsl(var(--dynamic-commander-glow))]",
-          "shadow-[0_0_5px_hsl(var(--dynamic-commander-glow))]"
-        )}
-        />
       </button>
 
       <style jsx>{`
