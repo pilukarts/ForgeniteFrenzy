@@ -47,11 +47,9 @@ const CoreDisplay: React.FC = () => {
   }
 
   const currentTierColor = playerProfile.currentTierColor || '210 15% 75%'; // Default to Silver HSL
-  const hexagonClipPath = 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)';
   const dynamicCoreStyle = {
     '--dynamic-commander-glow': currentTierColor, // For the glow animation on button
     '--dynamic-core-color': currentTierColor,     // For direct color styling
-    clipPath: hexagonClipPath,
   } as React.CSSProperties;
 
   return (
@@ -63,16 +61,16 @@ const CoreDisplay: React.FC = () => {
         onClick={toggleCore}
         style={dynamicCoreStyle} // Apply dynamic HSL for glow, direct color, and hexagonal shape
         className={cn(
-          "fixed bottom-20 right-4 z-[60] h-14 w-14 bg-background/70 backdrop-blur-sm core-hexagon-glow", // REMOVED rounded-full and shadow-xl
-          "border-2 border-[hsl(var(--dynamic-core-color))]", // Dynamic border color
-          "hover:bg-background",
-          isOpen && "opacity-0 pointer-events-none" 
+          "fixed bottom-20 right-4 z-[60] h-14 w-14 rounded-full bg-transparent core-hexagon-glow",
+          "flex items-center justify-center",
+          "hover:bg-background/20",
+          isOpen && "opacity-0 pointer-events-none"
         )}
         aria-label="Toggle C.O.R.E. Interface"
       >
-        <Hexagon className={cn("h-8 w-8 text-[hsl(var(--dynamic-core-color))] fill-[hsla(var(--dynamic-core-color)/0.2)]")} /> {/* Dynamic icon colors */}
+        <Hexagon className={cn("h-10 w-10 text-[hsl(var(--dynamic-core-color))] fill-[hsla(var(--dynamic-core-color)/0.2)]")} /> {/* Dynamic icon colors */}
         {hasUnread && !isOpen && (
-          <span className="absolute top-0 right-0 block h-3 w-3 rounded-full bg-accent ring-2 ring-background" style={{ clipPath: 'none' }} />
+          <span className="absolute top-0 right-0 block h-3 w-3 rounded-full bg-accent ring-2 ring-background" />
         )}
       </Button>
 
