@@ -38,9 +38,9 @@ const RewardCard: React.FC<{
     )}>
       <div>
         <Icon className="h-8 w-8 mx-auto text-primary" />
-        <p className="font-semibold text-sm mt-1">{reward.name || `${reward.amount?.toLocaleString()} ${reward.type}`}</p>
+        <p className="font-semibold text-base mt-1">{reward.name || `${reward.amount?.toLocaleString()} ${reward.type}`}</p>
       </div>
-      <Button size="sm" className="mt-2 w-full text-xs" onClick={onClaim} disabled={!canClaim}>
+      <Button size="sm" className="mt-2 w-full text-sm" onClick={onClaim} disabled={!canClaim}>
         {isClaimed ? <><Check className="mr-1 h-4 w-4"/>Claimed</> : 
          !isUnlocked ? <><Lock className="mr-1 h-4 w-4"/>Lvl {level}</> :
          track === 'premium' && !hasPremium ? <><Lock className="mr-1 h-4 w-4"/>Premium</> :
@@ -73,12 +73,12 @@ const BattlePassPage: React.FC = () => {
               <Swords className="mr-3 h-7 w-7" />
               Season Battle Pass
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-base">
               Level up by playing the game to unlock exclusive rewards on the free and premium tracks.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex justify-between items-center mb-1 text-sm">
+            <div className="flex justify-between items-center mb-1 text-base">
                 <span className="font-semibold">Level {playerProfile.battlePassLevel}</span>
                 <span className="text-muted-foreground">{playerProfile.battlePassXp.toLocaleString()} / {playerProfile.xpToNextBattlePassLevel.toLocaleString()} XP</span>
             </div>
@@ -131,3 +131,5 @@ const BattlePassPage: React.FC = () => {
 };
 
 export default BattlePassPage;
+
+    

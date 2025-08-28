@@ -50,12 +50,12 @@ const MarketplacePage: React.FC = () => {
                       <Icon className="h-8 w-8 sm:h-10 sm:w-10 text-primary mt-1 sm:mt-0" />
                       <div>
                         <CardTitle className="text-lg sm:text-xl font-headline">{item.name}</CardTitle> {/* Adjusted text size */}
-                        <CardDescription className="text-sm text-muted-foreground mt-0.5 sm:mt-1">{item.description}</CardDescription> {/* Adjusted text size and margin */}
+                        <CardDescription className="text-base text-muted-foreground mt-0.5 sm:mt-1">{item.description}</CardDescription> {/* Adjusted text size and margin */}
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent className="flex-grow p-3 sm:p-4 pt-0"> {/* Adjusted padding */}
-                    <p className="text-sm text-primary flex items-center">
+                    <p className="text-base text-primary flex items-center">
                         Effect: +{Math.round((item.bonusEffect.multiplier - 1) * 100)}% Tap Power for {item.bonusEffect.durationTaps} taps.
                     </p>
                   </CardContent>
@@ -84,7 +84,7 @@ const MarketplacePage: React.FC = () => {
                 {playerProfile.activeTapBonuses.map(bonus => (
                   <Card key={bonus.id} className="bg-card/70 p-2 sm:p-3"> {/* Adjusted padding */}
                     <p className="font-semibold text-primary text-base">{bonus.name}</p> {/* Adjusted text size */}
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-base text-muted-foreground">
                       +{ (bonus.bonusMultiplier - 1) * 100 }% tap power. {bonus.remainingTaps} / {bonus.originalDurationTaps} taps remaining.
                     </p>
                   </Card>
@@ -113,3 +113,5 @@ const MarketplacePage: React.FC = () => {
 };
 
 export default MarketplacePage;
+
+    

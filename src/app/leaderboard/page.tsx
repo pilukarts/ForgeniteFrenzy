@@ -84,8 +84,8 @@ const LeaderboardPage: React.FC = () => {
             <TableHeader>
                 <TableRow>
                 <TableHead className="w-[40px] sm:w-[50px] text-center text-muted-foreground text-sm">Rank</TableHead> 
-                <TableHead className="text-muted-foreground text-sm">Commander</TableHead> 
-                <TableHead className="text-right text-muted-foreground text-sm">Score</TableHead> 
+                <TableHead className="text-muted-foreground text-base">Commander</TableHead> 
+                <TableHead className="text-right text-muted-foreground text-base">Score</TableHead> 
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -97,7 +97,7 @@ const LeaderboardPage: React.FC = () => {
                         {entry.rank === 1 && <Trophy className="inline-block h-4 w-4 sm:h-5 sm:w-5 text-bright-gold mr-1" />}
                         {entry.rank}
                     </TableCell>
-                    <TableCell className="text-sm px-2 sm:px-4"> 
+                    <TableCell className="text-base px-2 sm:px-4"> 
                         <div className="flex items-center">
                             <LeagueIcon className={cn("h-3.5 w-3.5 mr-1.5 shrink-0", leagueColorClass)} />
                             <span className={cn("font-medium mr-1.5", leagueColorClass)}>{entry.playerLeague}</span>
@@ -106,7 +106,7 @@ const LeaderboardPage: React.FC = () => {
                             {entry.playerId === playerProfile.id && <span className="ml-1 sm:ml-2 text-primary">(You)</span>}
                         </div>
                     </TableCell>
-                    <TableCell className="text-right font-mono text-primary text-sm px-2 sm:px-4">{entry.score.toLocaleString()}</TableCell> 
+                    <TableCell className="text-right font-mono text-primary text-base px-2 sm:px-4">{entry.score.toLocaleString()}</TableCell> 
                     </TableRow>
                 );
                 })}
@@ -141,3 +141,5 @@ const LeaderboardPage: React.FC = () => {
 };
 
 export default LeaderboardPage;
+
+    

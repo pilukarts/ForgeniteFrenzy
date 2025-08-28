@@ -15,6 +15,7 @@ import { AURON_COST_FOR_TAP_REFILL, TAP_REGEN_COOLDOWN_MINUTES } from '@/lib/gam
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import CommanderOrder from '@/components/game/CommanderOrder';
 
 type NewUserIntroPhase = 'pre' | 'main' | 'setup';
 
@@ -36,7 +37,7 @@ const formatTimeLeft = (milliseconds: number): string => {
 };
 
 export default function HomePage() {
-  const { playerProfile, isLoading, isInitialSetupDone, handleTap, switchCommanderSex, refillTaps, currentSeason } = useGame();
+  const { playerProfile, isLoading, isInitialSetupDone, handleTap, switchCommanderSex, refillTaps, currentSeason, activeCommanderOrder, claimCommanderOrderReward } = useGame();
   const { toast } = useToast();
   const [newUserIntroPhase, setNewUserIntroPhase] = useState<NewUserIntroPhase>('pre');
   const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number>(0);
@@ -87,11 +88,16 @@ export default function HomePage() {
   if (!playerProfile) return <IntroScreen/>; 
 
   const isOutOfTaps = playerProfile.currentTaps <= 0 && timeLeftForTapRegen > 0;
+  
+  // Calculate paddingBottom based on whether the commander order is visible
+  const commanderOrderBannerHeight = '110px'; // Adjust this based on the actual height of your banner
+  const pagePaddingBottom = activeCommanderOrder ? commanderOrderBannerHeight : '0px';
 
   return (
     <AppLayout>
       <div
         className="relative flex flex-col items-center justify-start text-center h-full overflow-hidden"
+        style={{ paddingBottom: pagePaddingBottom, transition: 'padding-bottom 0.3s ease-in-out' }}
       >
         {/* Layer 1: Animated Space Background */}
         <div 
@@ -238,6 +244,9 @@ export default function HomePage() {
                 </div>
             </motion.div>
         </div>
+        
+        {activeCommanderOrder && <CommanderOrder order={activeCommanderOrder} onClaim={claimCommanderOrderReward} />}
+
       </div>
        <style jsx>{`
         @keyframes pan-background {
@@ -310,8 +319,5 @@ export default function HomePage() {
     </AppLayout>
   );
 }
-
-
-    
 
     

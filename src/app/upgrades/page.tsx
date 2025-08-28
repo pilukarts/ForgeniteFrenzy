@@ -53,8 +53,8 @@ const UpgradesPage: React.FC = () => {
                       </div>
                     </CardHeader>
                     <CardContent className="p-3 sm:p-4 pt-0"> {/* Adjusted padding */}
-                      <p className="text-sm">Current Level: <span className="font-semibold text-primary">{level}</span></p> {/* Adjusted text size */}
-                      <p className="text-sm">{upgrade.effectDescription(level)}</p> {/* Adjusted text size */}
+                      <p className="text-base">Current Level: <span className="font-semibold text-primary">{level}</span></p> {/* Adjusted text size */}
+                      <p className="text-base">{upgrade.effectDescription(level)}</p> {/* Adjusted text size */}
                     </CardContent>
                     <CardFooter className="p-3 sm:p-4 pt-0"> {/* Adjusted padding */}
                       <Button 
@@ -92,7 +92,7 @@ const UpgradesPage: React.FC = () => {
                         </div>
                       </CardHeader>
                       <CardContent className="p-3 sm:p-4 pt-0"> {/* Adjusted padding */}
-                        <p className="text-sm">Status: <span className={isPurchased ? "text-green-400 font-semibold" : "text-orange-400 font-semibold"}>{isPurchased ? 'Installed' : 'Pending Installation'}</span></p> {/* Adjusted text size */}
+                        <p className="text-base">Status: <span className={isPurchased ? "text-green-400 font-semibold" : "text-orange-400 font-semibold"}>{isPurchased ? 'Installed' : 'Pending Installation'}</span></p> {/* Adjusted text size */}
                       </CardContent>
                       <CardFooter className="p-3 sm:p-4 pt-0"> {/* Adjusted padding */}
                         <Button 
@@ -131,3 +131,5 @@ const UpgradesPage: React.FC = () => {
 };
 
 export default UpgradesPage;
+
+    
