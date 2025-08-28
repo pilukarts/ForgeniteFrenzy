@@ -43,8 +43,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
       className={cn(
         "relative focus:outline-none transition-transform duration-100",
         "w-64 h-80 sm:w-72 sm:h-96", // Adjusted aspect ratio to be taller
-        "flex items-center justify-center",
-        isTapped ? 'animate-tapped-visual' : 'active:scale-95'
+        "flex items-center justify-center"
       )}
       aria-label="Tap Commander"
     >
@@ -54,21 +53,19 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
           e.preventDefault();
           handleInteraction();
         }}
-        className="w-full h-full relative"
+        className="w-full h-full relative group" // Added group for potential future use
       >
-        {/* The Aura Div */}
-        <div
-          className="absolute inset-0 animate-pulse-neon-dynamic bg-transparent"
-          style={{ clipPath: hexagonClipPath }}
-        />
-        {/* The Commander Image */}
+        {/* The Commander Image with dynamic aura */}
         <Image
           src={imageUrl}
           alt={altText}
           data-ai-hint={dataAiHint}
           width={288} // Base size for sm:
           height={384} // sm:h-96
-          className="object-contain w-full h-full"
+          className={cn(
+            "object-contain w-full h-full transition-all duration-200",
+            isTapped ? "animate-tapped-aura" : "animate-pulse-neon-dynamic active:scale-95"
+          )}
           priority
         />
         
@@ -78,24 +75,14 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
           "w-[34px] h-[38px]", // Hexagon dimensions
           "top-[38%] left-1/2 -translate-x-1/2 -translate-y-1/2",
           "bg-primary/70 text-primary-foreground",
-          "font-headline font-bold text-sm tracking-wider"
+          "font-headline font-bold text-sm tracking-wider",
+           "pointer-events-none" // Make sure it doesn't interfere with taps
         )}
         style={{ clipPath: hexagonClipPath }}
         >
             AF
         </div>
       </button>
-
-      <style jsx>{`
-        @keyframes tapped-visual {
-          0% { transform: scale(1); }
-          50% { transform: scale(1.05); } 
-          100% { transform: scale(1); }
-        }
-        .animate-tapped-visual {
-          animation: tapped-visual 0.2s ease-out;
-        }
-      `}</style>
     </div>
   );
 };
