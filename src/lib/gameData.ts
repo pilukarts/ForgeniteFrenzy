@@ -184,22 +184,22 @@ export const TAP_REGEN_COOLDOWN_MINUTES = 4;
 export const AURON_COST_FOR_TAP_REFILL = 50;
 
 const TIER_COLORS_HSL = {
-  SILVER: '210 15% 75%',      // Default
-  CYAN: '180 100% 50%',     // Level 50+
-  GREEN_LIGHT: '120 100% 70%', // Level 100+
-  PURPLE: '270 70% 60%',      // Level 200+
-  CORAL: '16 80% 65%',       // Level 300+
-  FIERY_RED: '0 100% 50%',    // Level 500+
-  GOLD: '45 100% 50%',       // Level 750+
+  SILVER: '210 15% 75%',
+  CYAN: '180 100% 50%',
+  GREEN_LIGHT: '120 100% 70%',
+  PURPLE: '270 70% 60%',
+  CORAL: '16 80% 65%',
+  FIERY_RED: '0 100% 50%',
+  GOLD: '45 100% 50%',
 };
 
 export function getTierColorByLevel(level: number): string {
-  if (level < 50) return TIER_COLORS_HSL.SILVER;
-  if (level < 100) return TIER_COLORS_HSL.CYAN;
-  if (level < 200) return TIER_COLORS_HSL.GREEN_LIGHT;
-  if (level < 300) return TIER_COLORS_HSL.PURPLE;
-  if (level < 500) return TIER_COLORS_HSL.CORAL;
-  if (level < 750) return TIER_COLORS_HSL.FIERY_RED;
+  // if (level < 50) return TIER_COLORS_HSL.SILVER;
+  // if (level < 100) return TIER_COLORS_HSL.CYAN;
+  // if (level < 200) return TIER_COLORS_HSL.GREEN_LIGHT;
+  // if (level < 300) return TIER_COLORS_HSL.PURPLE;
+  // if (level < 500) return TIER_COLORS_HSL.CORAL;
+  // if (level < 750) return TIER_COLORS_HSL.FIERY_RED;
   return TIER_COLORS_HSL.GOLD;
 }
 export const INITIAL_TIER_COLOR = getTierColorByLevel(1);
