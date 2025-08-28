@@ -24,7 +24,7 @@ const SupportPage: React.FC = () => {
   }
 
   // IMPORTANTE: Reemplaza esta URL con tu enlace de donación de PayPal real.
-  const PAYPAL_DONATION_URL = 'https://www.paypal.com/donate/?hosted_button_id=YOUR_BUTTON_ID_HERE';
+  const PAYPAL_DONATION_URL = 'https://www.paypal.com/pools/c/9hOQgVZ3wv';
 
   return (
     <AppLayout>
