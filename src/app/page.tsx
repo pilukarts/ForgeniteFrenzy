@@ -42,7 +42,6 @@ export default function HomePage() {
   const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number>(0);
   
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
-  const cockpitImageUrl = "https://i.imgur.com/r5orLzB.png";
   
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
@@ -96,25 +95,20 @@ export default function HomePage() {
       >
         {/* Layer 1: Animated Space Background */}
         <div 
-            className="absolute inset-0 bg-black bg-cover bg-center animate-pan-background"
+            className="absolute inset-0 bg-black bg-cover bg-center animate-pan-background z-0"
             style={{ backgroundImage: `url('${spaceImageUrl}')` }}
             data-ai-hint="futuristic space background"
         />
 
         {/* Layer 2: Shooting Stars Container */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
         </div>
 
         {/* Layer 3: Cockpit Floor & Frame */}
-        <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
-        <div 
-            className="absolute inset-0 bg-contain bg-no-repeat bg-center pointer-events-none z-[5]"
-            style={{ backgroundImage: `url('${cockpitImageUrl}')` }}
-            data-ai-hint="spaceship cockpit frame"
-        />
+        <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none z-20" />
         
         {/* Layer 4: UI and Game Content */}
         <div className="relative z-10 w-full flex flex-col items-center justify-start flex-grow p-2">
