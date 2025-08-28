@@ -48,18 +48,18 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                         <Button 
                             variant="outline" 
                             size="sm" 
-                            className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 whitespace-nowrap text-[11px] px-1.5 h-6 w-full justify-start"
+                            className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 whitespace-nowrap text-xs px-2 h-7 w-full justify-start"
                             onClick={connectWallet}
                           >
-                          <Wallet className="mr-1 h-3 w-3 text-bright-gold" /> Connect Wallet
+                          <Wallet className="mr-1.5 h-3 w-3 text-bright-gold" /> Connect Wallet
                         </Button>
                         <Button 
                             variant="outline" 
                             size="sm" 
                             disabled 
-                            className="whitespace-nowrap text-[11px] px-1.5 h-6 w-full justify-start text-muted-foreground/70"
+                            className="whitespace-nowrap text-xs px-2 h-7 w-full justify-start text-muted-foreground/70"
                           >
-                          <CreditCard className="mr-1 h-3 w-3" /> Visa/MC
+                          <CreditCard className="mr-1.5 h-3 w-3" /> Visa/MC
                         </Button>
                       </div>
                     )}
