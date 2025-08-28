@@ -9,16 +9,21 @@ import { cn } from '@/lib/utils';
 import type { CoreMessage, PlayerProfile } from '@/lib/types'; // Import PlayerProfile
 
 const CoreDisplay: React.FC = () => {
-  const { playerProfile, coreMessages, addCoreMessage, isCoreUnlocked } = useGame();
+  const { playerProfile, coreMessages, isCoreUnlocked } = useGame();
   const [isOpen, setIsOpen] = useState(false);
   const [hasUnread, setHasUnread] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const prevCoreMessagesLength = useRef(coreMessages.length);
+
 
   useEffect(() => {
-    if (coreMessages.length > 0 && !isOpen) {
+    // Check if new messages have arrived
+    if (coreMessages.length > prevCoreMessagesLength.current && !isOpen) {
       setHasUnread(true);
     }
+    prevCoreMessagesLength.current = coreMessages.length;
   }, [coreMessages, isOpen]);
+
 
   useEffect(() => {
     if (isOpen) {
@@ -121,3 +126,5 @@ const CoreDisplay: React.FC = () => {
 };
 
 export default CoreDisplay;
+
+    
