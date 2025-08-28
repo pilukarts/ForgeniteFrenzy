@@ -9,6 +9,7 @@ import { useGame } from '@/contexts/GameContext';
 import { Wallet, CreditCard, Landmark } from 'lucide-react'; 
 import CoreDisplay from '@/components/core/CoreDisplay';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -21,7 +22,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   return (
     <div 
       className="flex flex-col min-h-screen bg-background text-foreground items-center justify-center p-0 sm:p-4"
-      // This style sets up the global animated background
       style={{
         backgroundImage: `url('${spaceImageUrl}')`,
         backgroundSize: 'cover',
@@ -29,7 +29,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         animation: 'pan-background-global 90s linear infinite',
       }}
     >
-       {/* The main container for the game interface */}
       <div className="relative flex flex-col w-full h-full max-w-md bg-background/95 shadow-2xl overflow-hidden sm:rounded-2xl border border-border/20">
         <div className="flex flex-col min-h-screen">
           <header className="sticky top-0 z-50 p-2 bg-background/80 backdrop-blur-md shadow-sm border-b border-border/50">
@@ -37,32 +36,33 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
               {playerProfile && (
                 <>
                   <PlayerProfileHeader profile={playerProfile} />
-                  <div className="flex items-start gap-1"> {/* Reduced gap */}
+                  <div className="flex items-start gap-1">
                     <ResourceDisplay 
                       seasonResourceName={playerProfile ? playerProfile.seasonProgress[playerProfile.currentSeasonId]?.toString() ?? '0' : '0'} 
                       auronCount={playerProfile?.auron ?? 0} 
                     />
-                    {!playerProfile.isWalletConnected && (
-                      <div className="flex flex-col items-start gap-1 ml-1 pl-1 border-l border-border">
+                    <div className="flex flex-col items-start gap-1 ml-1 pl-1 border-l border-border">
                         <p className="text-[10px] text-muted-foreground mb-0.5 font-semibold hidden sm:block">Get Auron:</p>
-                        <Button 
+                        {!playerProfile.isWalletConnected && (
+                           <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 whitespace-nowrap text-xs px-2 h-7 w-full justify-start"
+                              onClick={connectWallet}
+                            >
+                            <Wallet className="mr-1.5 h-3 w-3 text-bright-gold" /> Connect
+                          </Button>
+                        )}
+                        <Button asChild
                             variant="outline" 
                             size="sm" 
                             className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 whitespace-nowrap text-xs px-2 h-7 w-full justify-start"
-                            onClick={connectWallet}
                           >
-                          <Wallet className="mr-1.5 h-3 w-3 text-bright-gold" /> Connect Wallet
-                        </Button>
-                        <Button 
-                            variant="outline" 
-                            size="sm" 
-                            disabled 
-                            className="whitespace-nowrap text-xs px-2 h-7 w-full justify-start text-muted-foreground/70"
-                          >
-                          <CreditCard className="mr-1.5 h-3 w-3" /> Visa/MC
+                          <Link href="/marketplace">
+                            <CreditCard className="mr-1.5 h-3 w-3" /> Buy Auron
+                          </Link>
                         </Button>
                       </div>
-                    )}
                   </div>
                 </>
               )}
