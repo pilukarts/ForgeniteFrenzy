@@ -101,7 +101,7 @@ export default function HomePage() {
         />
 
         {/* Layer 2: Shooting Stars Container */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
@@ -111,7 +111,7 @@ export default function HomePage() {
         <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none z-20" />
         
         {/* Layer 4: UI and Game Content */}
-        <div className="relative z-10 w-full flex flex-col items-center justify-start flex-grow p-2">
+        <div className="relative z-30 w-full flex flex-col items-center justify-start flex-grow p-2">
             
             {/* Taps Display (animated from top) */}
             <motion.div
@@ -138,23 +138,23 @@ export default function HomePage() {
                 initial={{ y: 50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.7 }}
-                className="w-full max-w-xs bg-destructive/20 border border-destructive/50 text-destructive-foreground p-2 sm:p-3 rounded-lg shadow-lg space-y-2 text-center mt-2 z-20"
+                className="w-full max-w-[280px] bg-destructive/20 border border-destructive/50 text-destructive-foreground p-2 rounded-lg shadow-lg space-y-1.5 text-center mt-2 z-20"
               >
-                  <div className="flex items-center justify-center gap-2">
-                    <AlertTriangle className="h-5 w-5 animate-pulse" />
-                    <p className="font-bold text-base sm:text-lg">Tap Energy Depleted!</p>
+                  <div className="flex items-center justify-center gap-1.5">
+                    <AlertTriangle className="h-4 w-4 animate-pulse" />
+                    <p className="font-bold text-sm sm:text-base">Tap Energy Depleted!</p>
                   </div>
-                <p className="text-xs sm:text-sm">Wait for regeneration or refill your taps with Auron to continue your progress.</p>
-                <Button onClick={refillTaps} variant="destructive" size="sm" disabled={playerProfile.auron < AURON_COST_FOR_TAP_REFILL}>
+                <p className="text-xs">Wait for regeneration or refill your taps with Auron.</p>
+                <Button onClick={refillTaps} variant="destructive" size="sm" className="h-8 text-xs" disabled={playerProfile.auron < AURON_COST_FOR_TAP_REFILL}>
                   <Zap className="mr-1 h-3 w-3"/>
-                  Refill Taps ({AURON_COST_FOR_TAP_REFILL} Auron)
+                  Refill ({AURON_COST_FOR_TAP_REFILL} Auron)
                 </Button>
               </motion.div>
             )}
         </div>
 
         {/* Action Buttons and Stats on the Sides */}
-        <div className="relative bottom-0 left-0 right-0 w-full flex justify-between items-end px-2 sm:px-4 z-10 pointer-events-none mt-auto pb-2">
+        <div className="relative bottom-0 left-0 right-0 w-full flex justify-between items-end px-2 sm:px-4 z-30 pointer-events-none mt-auto pb-2">
             {/* Left Side */}
             <motion.div 
               initial={{ x: -100, opacity: 0 }}
@@ -308,3 +308,6 @@ export default function HomePage() {
     </AppLayout>
   );
 }
+
+
+    
