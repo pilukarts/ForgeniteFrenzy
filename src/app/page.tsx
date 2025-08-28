@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -127,7 +128,7 @@ export default function HomePage() {
             </motion.div>
 
             {/* Main Content Area: Two Columns */}
-            <div className="flex flex-grow w-full items-end p-2 sm:p-4">
+            <div className="flex flex-grow w-full items-center p-2 sm:p-4">
                 {/* Left Column Buttons */}
                 <motion.div 
                     initial={{ x: -100, opacity: 0 }}
@@ -140,6 +141,13 @@ export default function HomePage() {
                         <div>
                             <p className="text-xs font-bold text-muted-foreground">{currentSeason.objectiveResourceName}</p>
                             <p className="text-sm text-foreground font-mono">{(playerProfile.seasonProgress[currentSeason.id] || 0).toLocaleString()}</p>
+                        </div>
+                    </div>
+                     <div className="flex items-center gap-2 p-2 rounded-md border border-input bg-background">
+                        <Trophy className="h-5 w-5 text-primary shrink-0" />
+                        <div className="text-left">
+                            <p className="text-xs font-bold text-muted-foreground">League</p>
+                            <p className="text-sm text-foreground font-mono">{playerProfile.league}</p>
                         </div>
                     </div>
                     {isOutOfTaps && (
@@ -158,49 +166,35 @@ export default function HomePage() {
                             <Send className="mr-2 h-4 w-4"/> Telegram
                         </Link>
                     </Button>
+                     <Button asChild variant="outline" size="sm" className="w-full justify-start">
+                        <Link href="https://x.com/AllianceForgeHQ" target="_blank" rel="noopener noreferrer">
+                            <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mr-2 h-3 w-3 fill-current">
+                            <title>X</title>
+                            <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+                            </svg>
+                            X
+                        </Link>
+                    </Button>
+                     <Button asChild variant="outline" size="sm" className="w-full justify-start">
+                        <Link href="https://discord.gg/xnWDwGBC" target="_blank" rel="noopener noreferrer">
+                            <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mr-2 h-4 w-4 fill-current"><title>Discord</title><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4464.8245-.6667 1.284-.0001.0001-3.9102-1.5162-3.9102-1.5162l-.0448-.0204-3.9102 1.5162c-.2203-.4595-.4557-.9087-.6667-1.284a.0741.0741 0 00-.0785-.0371 19.7913 19.7913 0 00-4.8851 1.5152.069.069 0 00-.0321.0234C.5434 9.0458-.319 13.5799.0992 18.0578a.08.08 0 00.0414.0582c1.837.7749 3.6521 1.1648 5.4468 1.1648a12.6022 12.6022 0 002.3787-.2214.0741.0741 0 00.0623-.0562 12.2227 12.2227 0 00.435-2.2204.0741.0741 0 00-.0449-.0832c-.933-.424-1.782-1.026-2.52-1.844a.0741.0741 0 01.0181-.11.6318.6318 0 01.0362-.0277 10.8718 10.8718 0 012.9817-1.1075.0741.0741 0 01.084.0258c.4618.633 1.053 1.254 1.725 1.799a.0741.a0741 0 00.084.0258 10.8718 10.8718 0 012.9817 1.1075.6318.6318 0 01.0362.0277.0741.0741 0 01.0181.11c-.738.818-1.587 1.42-2.52 1.844a.0741.0741 0 00-.0449.0832 12.2227 12.2227 0 00.435 2.2204.0741.0741 0 00.0623.0562 12.6022 12.6022 0 002.3787.2214c1.7947 0 3.6098-.3899 5.4468-1.1648a.08.08 0 00.0414-.0582c.4182-4.4779-1.242-9.012-4.015-13.6646a.069.069 0 00-.032-.0234z"/></svg>
+                                Discord
+                        </Link>
+                    </Button>
                     <Button onClick={switchCommanderSex} variant="outline" size="sm" className="w-full justify-start">
                         <Users className="mr-2 h-4 w-4" />
                         Switch
                     </Button>
                 </motion.div>
 
-                {/* Right Column: Commander and Buttons */}
-                <div className="flex-grow flex flex-col items-center justify-end">
+                {/* Right Column: Commander */}
+                <div className="flex-grow flex flex-col items-center justify-center">
                     <CommanderPortrait onTap={handleTap} />
-                    <motion.div 
-                        initial={{ x: 100, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-                        className="flex flex-col gap-2 w-auto max-w-[120px] sm:max-w-[150px] items-end self-end mt-4 -mb-2"
-                    >
-                         <div className="flex items-center gap-2 p-2 rounded-md border border-input bg-background">
-                            <div className="text-right">
-                                <p className="text-xs font-bold text-muted-foreground">League</p>
-                                <p className="text-sm text-foreground font-mono">{playerProfile.league}</p>
-                            </div>
-                            <Trophy className="h-5 w-5 text-primary shrink-0" />
-                        </div>
-                        <Button asChild variant="outline" size="sm" className="w-full justify-start">
-                            <Link href="https://x.com/AllianceForgeHQ" target="_blank" rel="noopener noreferrer">
-                                <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mr-2 h-3 w-3 fill-current">
-                                <title>X</title>
-                                <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
-                                </svg>
-                                X
-                            </Link>
-                        </Button>
-                        <Button asChild variant="outline" size="sm" className="w-full justify-start">
-                            <Link href="https://discord.gg/xnWDwGBC" target="_blank" rel="noopener noreferrer">
-                                <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mr-2 h-4 w-4 fill-current"><title>Discord</title><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4464.8245-.6667 1.284-.0001.0001-3.9102-1.5162-3.9102-1.5162l-.0448-.0204-3.9102 1.5162c-.2203-.4595-.4557-.9087-.6667-1.284a.0741.0741 0 00-.0785-.0371 19.7913 19.7913 0 00-4.8851 1.5152.069.069 0 00-.0321.0234C.5434 9.0458-.319 13.5799.0992 18.0578a.08.08 0 00.0414.0582c1.837.7749 3.6521 1.1648 5.4468 1.1648a12.6022 12.6022 0 002.3787-.2214.0741.0741 0 00.0623-.0562 12.2227 12.2227 0 00.435-2.2204.0741.0741 0 00-.0449-.0832c-.933-.424-1.782-1.026-2.52-1.844a.0741.0741 0 01.0181-.11.6318.6318 0 01.0362-.0277 10.8718 10.8718 0 012.9817-1.1075.0741.0741 0 01.084.0258c.4618.633 1.053 1.254 1.725 1.799a.0741.a0741 0 00.084.0258 10.8718 10.8718 0 012.9817 1.1075.6318.6318 0 01.0362.0277.0741.0741 0 01.0181.11c-.738.818-1.587 1.42-2.52 1.844a.0741.0741 0 00-.0449.0832 12.2227 12.2227 0 00.435 2.2204.0741.0741 0 00.0623.0562 12.6022 12.6022 0 002.3787.2214c1.7947 0 3.6098-.3899 5.4468-1.1648a.08.08 0 00.0414-.0582c.4182-4.4779-1.242-9.012-4.015-13.6646a.069.069 0 00-.032-.0234z"/></svg>
-                                Discord
-                            </Link>
-                        </Button>
-                    </motion.div>
                     {isOutOfTaps && (
                         <motion.div
                             initial={{ y: 50, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.7 }}
+                            transition={{ delay: 0.2 }}
                             className="w-full max-w-[280px] bg-destructive/20 border border-destructive/50 text-destructive-foreground p-2 rounded-lg shadow-lg space-y-1.5 text-center mt-2 z-40"
                         >
                             <div className="flex items-center justify-center gap-1.5">
