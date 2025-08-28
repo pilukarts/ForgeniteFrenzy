@@ -48,19 +48,19 @@ const UpgradesPage: React.FC = () => {
                         <Icon className="h-6 w-6 sm:h-8 sm:w-8 text-primary mt-1 sm:mt-0" /> {/* Adjusted icon size */}
                         <div>
                           <CardTitle className="text-lg sm:text-xl font-headline">{upgrade.name}</CardTitle> {/* Adjusted text size */}
-                          <CardDescription className="text-xs sm:text-sm text-muted-foreground mt-0.5 sm:mt-1">{upgrade.description}</CardDescription> {/* Adjusted text size, margin */}
+                          <CardDescription className="text-sm text-muted-foreground mt-0.5 sm:mt-1">{upgrade.description}</CardDescription> {/* Adjusted text size, margin */}
                         </div>
                       </div>
                     </CardHeader>
                     <CardContent className="p-3 sm:p-4 pt-0"> {/* Adjusted padding */}
-                      <p className="text-xs sm:text-sm">Current Level: <span className="font-semibold text-primary">{level}</span></p> {/* Adjusted text size */}
-                      <p className="text-xs sm:text-sm">{upgrade.effectDescription(level)}</p> {/* Adjusted text size */}
+                      <p className="text-sm">Current Level: <span className="font-semibold text-primary">{level}</span></p> {/* Adjusted text size */}
+                      <p className="text-sm">{upgrade.effectDescription(level)}</p> {/* Adjusted text size */}
                     </CardContent>
                     <CardFooter className="p-3 sm:p-4 pt-0"> {/* Adjusted padding */}
                       <Button 
                         onClick={() => purchaseUpgrade(upgrade.id)} 
                         disabled={playerProfile.points < cost || (upgrade.maxLevel && level >= upgrade.maxLevel)}
-                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-sm sm:text-base py-2" /* Adjusted text size, padding */
+                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-base py-2" /* Adjusted text size, padding */
                         size="default"
                       >
                         {upgrade.maxLevel && level >= upgrade.maxLevel ? 'Max Level' : `Upgrade (${cost} Pts)`}
@@ -75,7 +75,7 @@ const UpgradesPage: React.FC = () => {
           {playerProfile.isWalletConnected && (
             <section className="mb-6 sm:mb-8"> {/* Adjusted margin */}
               <h2 className="text-xl sm:text-2xl font-headline text-accent mb-2 sm:mb-3">Ark Hangar</h2> {/* Adjusted text size, margin */}
-               <CardDescription className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3">Upgrade your StarForge Ark. Fully upgrade to earn the exclusive Founder's Ark NFT!</CardDescription> {/* Adjusted text size, margin */}
+               <CardDescription className="text-sm text-muted-foreground mb-2 sm:mb-3">Upgrade your StarForge Ark. Fully upgrade to earn the exclusive Founder's Ark NFT!</CardDescription> {/* Adjusted text size, margin */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4"> {/* Adjusted gap */}
                 {arkUpgrades.map(arkUpgrade => {
                   const isPurchased = !!playerProfile.upgrades[arkUpgrade.id];
@@ -87,18 +87,18 @@ const UpgradesPage: React.FC = () => {
                             <Icon className="h-6 w-6 sm:h-8 sm:w-8 text-primary mt-1 sm:mt-0" /> {/* Adjusted icon size */}
                             <div>
                                 <CardTitle className="text-lg sm:text-xl font-headline">{arkUpgrade.name}</CardTitle> {/* Adjusted text size */}
-                                <CardDescription className="text-xs sm:text-sm text-muted-foreground mt-0.5 sm:mt-1">{arkUpgrade.description}</CardDescription> {/* Adjusted text size, margin */}
+                                <CardDescription className="text-sm text-muted-foreground mt-0.5 sm:mt-1">{arkUpgrade.description}</CardDescription> {/* Adjusted text size, margin */}
                             </div>
                         </div>
                       </CardHeader>
                       <CardContent className="p-3 sm:p-4 pt-0"> {/* Adjusted padding */}
-                        <p className="text-xs sm:text-sm">Status: <span className={isPurchased ? "text-green-400 font-semibold" : "text-orange-400 font-semibold"}>{isPurchased ? 'Installed' : 'Pending Installation'}</span></p> {/* Adjusted text size */}
+                        <p className="text-sm">Status: <span className={isPurchased ? "text-green-400 font-semibold" : "text-orange-400 font-semibold"}>{isPurchased ? 'Installed' : 'Pending Installation'}</span></p> {/* Adjusted text size */}
                       </CardContent>
                       <CardFooter className="p-3 sm:p-4 pt-0"> {/* Adjusted padding */}
                         <Button 
                           onClick={() => purchaseArkUpgrade(arkUpgrade.id)} 
                           disabled={isPurchased || playerProfile.points < arkUpgrade.cost}
-                          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-sm sm:text-base py-2" /* Adjusted text size, padding */
+                          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-base py-2" /* Adjusted text size, padding */
                           size="default"
                         >
                           {isPurchased ? 'Installed' : `Install (${arkUpgrade.cost} Pts)`}
@@ -131,4 +131,3 @@ const UpgradesPage: React.FC = () => {
 };
 
 export default UpgradesPage;
-

@@ -33,8 +33,8 @@ const MarketplacePage: React.FC = () => {
             <h1 className="text-2xl sm:text-3xl font-headline text-primary">Item Shop</h1> {/* Adjusted text size */}
             <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-lg bg-card text-card-foreground shadow"> {/* Adjusted gap and padding */}
                 <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-bright-gold" />
-                <span className="text-base sm:text-lg font-semibold text-bright-gold">{playerProfile.auron}</span>
-                <span className="text-xs sm:text-sm text-muted-foreground">Auron</span>
+                <span className="text-lg font-semibold text-bright-gold">{playerProfile.auron}</span>
+                <span className="text-sm text-muted-foreground">Auron</span>
             </div>
         </div>
         
@@ -50,24 +50,24 @@ const MarketplacePage: React.FC = () => {
                       <Icon className="h-8 w-8 sm:h-10 sm:w-10 text-primary mt-1 sm:mt-0" />
                       <div>
                         <CardTitle className="text-lg sm:text-xl font-headline">{item.name}</CardTitle> {/* Adjusted text size */}
-                        <CardDescription className="text-xs sm:text-sm text-muted-foreground mt-0.5 sm:mt-1">{item.description}</CardDescription> {/* Adjusted text size and margin */}
+                        <CardDescription className="text-sm text-muted-foreground mt-0.5 sm:mt-1">{item.description}</CardDescription> {/* Adjusted text size and margin */}
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent className="flex-grow p-3 sm:p-4 pt-0"> {/* Adjusted padding */}
-                    <p className="text-xs sm:text-sm text-primary flex items-center">
+                    <p className="text-sm text-primary flex items-center">
                         Effect: +{Math.round((item.bonusEffect.multiplier - 1) * 100)}% Tap Power for {item.bonusEffect.durationTaps} taps.
                     </p>
                   </CardContent>
                   <CardFooter className="flex-col items-stretch space-y-1.5 sm:space-y-2 p-3 sm:p-4 pt-0"> {/* Adjusted padding and spacing */}
-                     <div className="flex items-center justify-center text-base sm:text-lg font-semibold mb-1 sm:mb-2">
+                     <div className="flex items-center justify-center text-lg font-semibold mb-1 sm:mb-2">
                         <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-bright-gold mr-1 sm:mr-1.5" />
                         <span>{item.costInAuron} Auron</span>
                     </div>
                     <Button 
                       onClick={() => purchaseMarketplaceItem(item.id)} 
                       disabled={playerProfile.auron < item.costInAuron}
-                      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-sm sm:text-base py-2 sm:py-2.5" /* Adjusted text size and padding */
+                      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-base py-2 sm:py-2.5" /* Adjusted text size and padding */
                       size="default" /* Explicitly use default which is h-10, can be sm for h-9 */
                     >
                       Purchase
@@ -83,8 +83,8 @@ const MarketplacePage: React.FC = () => {
               <div className="space-y-1.5 sm:space-y-2"> {/* Adjusted spacing */}
                 {playerProfile.activeTapBonuses.map(bonus => (
                   <Card key={bonus.id} className="bg-card/70 p-2 sm:p-3"> {/* Adjusted padding */}
-                    <p className="font-semibold text-primary text-sm sm:text-base">{bonus.name}</p> {/* Adjusted text size */}
-                    <p className="text-xs sm:text-sm text-muted-foreground">
+                    <p className="font-semibold text-primary text-base">{bonus.name}</p> {/* Adjusted text size */}
+                    <p className="text-sm text-muted-foreground">
                       +{ (bonus.bonusMultiplier - 1) * 100 }% tap power. {bonus.remainingTaps} / {bonus.originalDurationTaps} taps remaining.
                     </p>
                   </Card>

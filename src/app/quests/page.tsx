@@ -56,7 +56,7 @@ const DailyQuestsPage: React.FC = () => {
                 <RefreshCw className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:h-4" /> Refresh {/* Adjusted icon size and margin */}
             </Button>
         </div>
-        <p className="text-muted-foreground px-2 sm:px-4 mb-4 sm:mb-6 text-xs sm:text-sm"> {/* Adjusted padding, margin, text size */}
+        <p className="text-muted-foreground px-2 sm:px-4 mb-4 sm:mb-6 text-sm"> {/* Adjusted padding, margin, text size */}
             Complete these tasks daily for valuable rewards and advance your standing in the Alliance! New quests are available each day.
         </p>
         
@@ -74,17 +74,17 @@ const DailyQuestsPage: React.FC = () => {
                         <QuestIcon className="h-6 w-6 sm:h-8 sm:w-8 text-primary mt-0.5 sm:mt-1" /> {/* Adjusted icon size and margin */}
                         <div>
                           <CardTitle className="text-lg sm:text-xl font-headline">{quest.title}</CardTitle> {/* Adjusted text size */}
-                          <CardDescription className="text-xs sm:text-sm text-muted-foreground mt-0.5 sm:mt-1">{quest.description}</CardDescription> {/* Adjusted text size and margin */}
+                          <CardDescription className="text-sm text-muted-foreground mt-0.5 sm:mt-1">{quest.description}</CardDescription> {/* Adjusted text size and margin */}
                         </div>
                       </div>
                     </CardHeader>
                     <CardContent className="flex-grow space-y-1.5 sm:space-y-2 p-3 sm:p-4 pt-0"> {/* Adjusted padding and spacing */}
-                      <div className="flex justify-between items-center text-xs sm:text-sm text-muted-foreground mb-1"> {/* Adjusted text size */}
+                      <div className="flex justify-between items-center text-sm text-muted-foreground mb-1"> {/* Adjusted text size */}
                         <span>Progress:</span>
                         <span>{quest.progress.toLocaleString()} / {quest.target.toLocaleString()}</span>
                       </div>
                       <Progress value={progressPercentage} className="h-2 sm:h-3" indicatorClassName={quest.isCompleted ? "bg-green-500" : "bg-primary"} /> {/* Adjusted height */}
-                       <p className="text-xs sm:text-sm text-primary flex items-center mt-2 sm:mt-3"> {/* Adjusted text size and margin */}
+                       <p className="text-sm text-primary flex items-center mt-2 sm:mt-3"> {/* Adjusted text size and margin */}
                         <Sparkles className="h-3 w-3 sm:h-4 sm:h-4 mr-1 sm:mr-1.5 text-bright-gold" />
                         Reward: {getRewardString(quest)}
                       </p>
@@ -93,7 +93,7 @@ const DailyQuestsPage: React.FC = () => {
                       <Button 
                         onClick={() => claimQuestReward(quest.id)} 
                         disabled={!quest.isCompleted || quest.isClaimed}
-                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-sm sm:text-base py-2" /* Adjusted text size and padding */
+                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-base py-2" /* Adjusted text size and padding */
                         size="default" /* Or sm for h-9 */
                       >
                         {quest.isClaimed ? (
@@ -113,10 +113,10 @@ const DailyQuestsPage: React.FC = () => {
             <Card className="bg-card text-card-foreground shadow-lg p-4 sm:p-6 text-center"> {/* Adjusted padding */}
                 <AlertCircle className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mx-auto mb-3 sm:mb-4" /> {/* Adjusted icon size and margin */}
                 <CardTitle className="text-lg sm:text-xl font-headline mb-1 sm:mb-2">No Active Quests</CardTitle> {/* Adjusted text size and margin */}
-                <CardDescription className="text-xs sm:text-sm text-muted-foreground"> {/* Adjusted text size */}
+                <CardDescription className="text-sm text-muted-foreground"> {/* Adjusted text size */}
                     Check back later or try refreshing for new daily assignments, Commander.
                 </CardDescription>
-                 <Button onClick={refreshDailyQuestsIfNeeded} variant="default" className="mt-3 sm:mt-4 text-sm sm:text-base" size="sm"> {/* Adjusted margin, text size, button size */}
+                 <Button onClick={refreshDailyQuestsIfNeeded} variant="default" className="mt-3 sm:mt-4 text-base" size="sm"> {/* Adjusted margin, text size, button size */}
                     <RefreshCw className="mr-1 sm:mr-2 h-4 w-4" /> Check for New Quests
                 </Button>
             </Card>
@@ -142,4 +142,3 @@ const DailyQuestsPage: React.FC = () => {
 };
 
 export default DailyQuestsPage;
-

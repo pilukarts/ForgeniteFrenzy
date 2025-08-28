@@ -102,7 +102,7 @@ const AllianceChatPage: React.FC = () => {
       <div className="flex flex-col h-full"> 
         <header className="p-3 sm:p-4 border-b border-border">
           <h1 className="text-xl sm:text-2xl font-headline text-primary">Alliance Chat</h1>
-          <p className="text-xs sm:text-sm text-muted-foreground">Coordinate with your fellow Commanders.</p>
+          <p className="text-sm text-muted-foreground">Coordinate with your fellow Commanders.</p>
         </header>
 
         <ScrollArea className="flex-grow p-2 sm:p-4" ref={scrollAreaRef}> {/* Reduced padding on mobile */}
@@ -129,11 +129,11 @@ const AllianceChatPage: React.FC = () => {
                       : "bg-card text-card-foreground rounded-bl-none"
                   )}
                 >
-                  <p className="text-xs font-semibold mb-0.5 sm:mb-1"> {/* Adjusted margin */}
+                  <p className="font-semibold mb-0.5 sm:mb-1"> {/* Adjusted margin */}
                     {msg.isPlayer ? "You" : msg.senderName}
                   </p>
-                  <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                  <p className="text-xs text-muted-foreground mt-1 sm:mt-1.5 text-right"> {/* Adjusted margin */}
+                  <p className="text-base whitespace-pre-wrap">{msg.content}</p>
+                  <p className="text-sm text-muted-foreground mt-1 sm:mt-1.5 text-right"> {/* Adjusted margin */}
                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
@@ -149,7 +149,7 @@ const AllianceChatPage: React.FC = () => {
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder="Type your message..."
-              className="flex-grow bg-input border-border focus:ring-primary h-9 sm:h-10 text-sm" /* Adjusted height and text size */
+              className="flex-grow bg-input border-border focus:ring-primary h-9 sm:h-10 text-base" /* Adjusted height and text size */
               autoComplete="off"
             />
             <Button type="submit" variant="default" size="sm" aria-label="Send Message" disabled={!newMessage.trim()}> {/* Changed to size="sm" (h-9 w-9) */}
