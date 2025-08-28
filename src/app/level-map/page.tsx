@@ -30,19 +30,17 @@ const LevelMapPage: React.FC = () => {
             data-ai-hint="futuristic space background"
         />
 
-        {/* Shooting Stars Container */}
+        {/* Layer 2: Shooting Stars Container */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
         </div>
 
-        {/* Layer 2: Cockpit Floor */}
+        {/* Layer 3: Cockpit Floor & Frame */}
         <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
-
-        {/* Layer 3: Cockpit Frame */}
         <div 
-            className="absolute inset-0 bg-contain bg-no-repeat bg-center pointer-events-none"
+            className="absolute inset-0 bg-contain bg-no-repeat bg-center pointer-events-none z-[5]"
             style={{ backgroundImage: `url('${cockpitImageUrl}')` }}
             data-ai-hint="spaceship cockpit frame"
         />

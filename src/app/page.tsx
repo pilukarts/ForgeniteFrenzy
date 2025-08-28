@@ -41,6 +41,9 @@ export default function HomePage() {
   const [newUserIntroPhase, setNewUserIntroPhase] = useState<NewUserIntroPhase>('pre');
   const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number>(0);
   
+  const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
+  const cockpitImageUrl = "https://i.imgur.com/r5orLzB.png";
+  
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
     if (playerProfile && playerProfile.currentTaps <= 0 && playerProfile.tapsAvailableAt > Date.now()) {
@@ -91,15 +94,29 @@ export default function HomePage() {
       <div
         className="relative flex flex-col items-center justify-start text-center h-full overflow-hidden"
       >
+        {/* Layer 1: Animated Space Background */}
+        <div 
+            className="absolute inset-0 bg-black bg-cover bg-center animate-pan-background"
+            style={{ backgroundImage: `url('${spaceImageUrl}')` }}
+            data-ai-hint="futuristic space background"
+        />
+
+        {/* Layer 2: Shooting Stars Container */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
         </div>
 
+        {/* Layer 3: Cockpit Floor & Frame */}
         <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
-
+        <div 
+            className="absolute inset-0 bg-contain bg-no-repeat bg-center pointer-events-none z-[5]"
+            style={{ backgroundImage: `url('${cockpitImageUrl}')` }}
+            data-ai-hint="spaceship cockpit frame"
+        />
         
+        {/* Layer 4: UI and Game Content */}
         <div className="relative z-10 w-full flex flex-col items-center justify-start flex-grow p-2">
             
             {/* Taps Display (animated from top) */}
@@ -227,6 +244,15 @@ export default function HomePage() {
         </div>
       </div>
        <style jsx>{`
+        @keyframes pan-background {
+            0% { transform: scale(1.1) translateX(0%); }
+            50% { transform: scale(1.1) translateX(5%); }
+            100% { transform: scale(1.1) translateX(0%); }
+        }
+        .animate-pan-background {
+            animation: pan-background 90s linear infinite;
+        }
+
         .shooting-star {
             position: absolute;
             top: 50%;
@@ -288,5 +314,3 @@ export default function HomePage() {
     </AppLayout>
   );
 }
-
-    
