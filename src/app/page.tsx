@@ -91,7 +91,7 @@ export default function HomePage() {
   return (
     <AppLayout>
       <div
-        className="relative flex flex-col items-center justify-between text-center h-full overflow-hidden"
+        className="relative flex flex-col items-center justify-end text-center h-full overflow-hidden pb-16"
       >
         {/* Layer 1: Animated Space Background */}
         <div 
@@ -111,7 +111,7 @@ export default function HomePage() {
         <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none z-20" />
         
         {/* Layer 4: UI and Game Content */}
-        <div className="relative z-30 w-full flex flex-col items-center pt-2">
+        <div className="relative z-30 w-full flex flex-col items-center">
             
             {/* Taps Display (animated from top) */}
             <motion.div
@@ -150,7 +150,7 @@ export default function HomePage() {
         </div>
 
         {/* Action Buttons and Stats on the Sides */}
-        <div className="w-full flex justify-between items-end px-2 sm:px-4 z-30 pointer-events-none pb-2">
+        <div className="absolute bottom-0 left-0 right-0 w-full flex justify-between items-end px-2 sm:px-4 z-30 pointer-events-none pb-2">
             {/* Left Side Column */}
             <motion.div 
               initial={{ x: -100, opacity: 0 }}
@@ -214,92 +214,82 @@ export default function HomePage() {
                 </Button>
                <Button asChild variant="outline" size="sm" className="justify-start w-full">
                  <Link href="https://discord.gg/xnWDwGBC" target="_blank" rel="noopener noreferrer">
-                   <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mr-2 h-4 w-4 fill-current"><title>Discord</title><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4464.8245-.6667 1.284-.0001.0001-3.9102-1.5162-3.9102-1.5162l-.0448-.0204-3.9102 1.5162c-.2203-.4595-.4557-.9087-.6667-1.284a.0741.0741 0 00-.0785-.0371 19.7913 19.7913 0 00-4.8851 1.5152.069.069 0 00-.0321.0234C.5434 9.0458-.319 13.5799.0992 18.0578a.08.08 0 00.0414.0582c1.837.7749 3.6521 1.1648 5.4468 1.1648a12.6022 12.6022 0 002.3787-.2214.0741.0741 0 00.0623-.0562 12.2227 12.2227 0 00.435-2.2204.0741.0741 0 00-.0449-.0832c-.933-.424-1.782-1.026-2.52-1.844a.0741.0741 0 01.0181-.11.6318.6318 0 01.0362-.0277 10.8718 10.8718 0 012.9817-1.1075.0741.0741 0 01.084.0258c.4618.633 1.053 1.254 1.725 1.799a.0741.0741 0 00.084.0258 10.8718 10.8718 0 012.9817 1.1075.6318.6318 0 01.0362.0277.0741.0741 0 01.0181.11c-.738.818-1.587 1.42-2.52 1.844a.0741.0741 0 00-.0449.0832 12.2227 12.2227 0 00.435 2.2204.0741.0741 0 00.0623.0562 12.6022 12.6022 0 002.3787.2214c1.7947 0 3.6098-.3899 5.4468-1.1648a.08.08 0 00.0414-.0582c.4182-4.4779-.4436-8.9912-2.6146-13.6646a.069.069 0 00-.0321-.0234zM8.02 15.3312c-.9416 0-1.705-.802-1.705-1.791s.7634-1.791 1.705-1.791c.9416 0 1.705.802 1.705 1.791s-.7634 1.791-1.705 1.791zm7.9748 0c-.9416 0-1.705-.802-1.705-1.791s.7634-1.791 1.705-1.791c.9416 0 1.705.802 1.705 1.791s-.7634 1.791-1.705 1.791z" /></svg>
+                   <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mr-2 h-4 w-4 fill-current"><title>Discord</title><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4464.8245-.6667 1.284-.0001.0001-3.9102-1.5162-3.9102-1.5162l-.0448-.0204-3.9102 1.5162c-.2203-.4595-.4557-.9087-.6667-1.284a.0741.0741 0 00-.0785-.0371 19.7913 19.7913 0 00-4.8851 1.5152.069.069 0 00-.0321.0234C.5434 9.0458-.319 13.5799.0992 18.0578a.08.08 0 00.0414.0582c1.837.7749 3.6521 1.1648 5.4468 1.1648a12.6022 12.6022 0 002.3787-.2214.0741.0741 0 00.0623-.0562 12.2227 12.2227 0 00.435-2.2204.0741.0741 0 00-.0449-.0832c-.933-.424-1.782-1.026-2.52-1.844a.0741.0741 0 01.0181-.11.6318.6318 0 01.0362-.0277 10.8718 10.8718 0 012.9817-1.1075.0741.0741 0 01.084.0258c.4618.633 1.053 1.254 1.725 1.799a.0741.0741 0 00.084.0258 10.8718 10.8718 0 012.9817 1.1075.6318.6318 0 01.0362.0277.0741.0741 0 01.0181.11c-.738.818-1.587 1.42-2.52 1.844a.0741.0741 0 00-.0449.0832 12.2227 12.2227 0 00.435 2.2204.0741.0741 0 00.0623.0562 12.6022 12.6022 0 002.3787.2214c1.7947 0 3.6098-.3899 5.4468-1.1648a.08.08 0 00.0414-.0582c.4182-4.4779-1.242-9.012-4.015-13.6646a.069.069 0 00-.032-.0234z"/></svg>
                    Discord
                  </Link>
                </Button>
-               {/* Uniform Stat Box */}
-               <div className="flex items-center gap-2 p-2 rounded-md border border-input bg-background w-full justify-end">
-                  <div className="text-right">
-                    <p className="text-xs font-bold text-muted-foreground">Uniform</p>
-                    <p className="text-sm text-foreground font-mono">{playerProfile.equippedUniformPieces.length} / 5</p>
-                  </div>
-                  <Shirt className="h-5 w-5 text-primary shrink-0" />
-                </div>
             </motion.div>
         </div>
-        
+
+        <style jsx>{`
+            @keyframes pan-background {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 5% 50%; }
+                100% { background-position: 0% 50%; }
+            }
+            .animate-pan-background {
+                animation: pan-background 90s linear infinite;
+            }
+
+            .shooting-star {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 3px;
+                height: 3px;
+                background: #fff;
+                border-radius: 50%;
+                box-shadow: 0 0 0 4px rgba(255,255,255,0.1), 0 0 0 8px rgba(255,255,255,0.1), 0 0 20px rgba(255,255,255,1);
+                animation: animate-star 3s linear infinite;
+            }
+            .shooting-star::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 300px;
+                height: 1px;
+                background: linear-gradient(90deg, #fff, transparent);
+            }
+            
+            .shooting-star:nth-child(1) {
+                top: 0;
+                right: 0;
+                left: initial;
+                animation-delay: 0s;
+                animation-duration: 5s;
+            }
+            .shooting-star:nth-child(2) {
+                top: 10%;
+                right: 400px;
+                left: initial;
+                animation-delay: 1.4s;
+                animation-duration: 4.5s;
+            }
+            .shooting-star:nth-child(3) {
+                top: 80px;
+                right: 0;
+                left: initial;
+                animation-delay: 2.8s;
+                animation-duration: 6s;
+            }
+
+
+            @keyframes animate-star {
+                0% {
+                    transform: rotate(315deg) translateX(0);
+                    opacity: 1;
+                }
+                70% {
+                    opacity: 1;
+                }
+                100% {
+                    transform: rotate(315deg) translateX(-1500px);
+                    opacity: 0;
+                }
+            }
+        `}</style>
       </div>
-       <style jsx>{`
-        @keyframes pan-background {
-            0% { transform: scale(1.1) translateX(0%); }
-            50% { transform: scale(1.1) translateX(5%); }
-            100% { transform: scale(1.1) translateX(0%); }
-        }
-        .animate-pan-background {
-            animation: pan-background 90s linear infinite;
-        }
-
-        .shooting-star {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 3px;
-            height: 3px;
-            background: #fff;
-            border-radius: 50%;
-            box-shadow: 0 0 0 4px rgba(255,255,255,0.1), 0 0 0 8px rgba(255,255,255,0.1), 0 0 20px rgba(255,255,255,1);
-            animation: animate-star 3s linear infinite;
-        }
-        .shooting-star::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 300px;
-            height: 1px;
-            background: linear-gradient(90deg, #fff, transparent);
-        }
-        
-        .shooting-star:nth-child(1) {
-            top: 0;
-            right: 0;
-            left: initial;
-            animation-delay: 0s;
-            animation-duration: 5s;
-        }
-        .shooting-star:nth-child(2) {
-            top: 10%;
-            right: 400px;
-            left: initial;
-            animation-delay: 1.4s;
-            animation-duration: 4.5s;
-        }
-        .shooting-star:nth-child(3) {
-            top: 80px;
-            right: 0;
-            left: initial;
-            animation-delay: 2.8s;
-            animation-duration: 6s;
-        }
-
-
-        @keyframes animate-star {
-            0% {
-                transform: rotate(315deg) translateX(0);
-                opacity: 1;
-            }
-            70% {
-                opacity: 1;
-            }
-            100% {
-                transform: rotate(315deg) translateX(-1500px);
-                opacity: 0;
-            }
-        }
-      `}</style>
     </AppLayout>
   );
 }
-
-
