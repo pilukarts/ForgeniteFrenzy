@@ -43,6 +43,7 @@ export interface PlayerProfile {
   id: string;
   name: string;
   commanderSex: 'male' | 'female';
+  country: string;
   points: number;
   auron: number;
   level: number;
@@ -124,6 +125,7 @@ export interface LeaderboardEntry {
   rank: number;
   playerId: string;
   playerName:string;
+  country: string;
   score: number;
   playerLeague: LeagueName; // Added for league display
 }

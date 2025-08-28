@@ -9,19 +9,22 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '../ui/scroll-area';
+import { countries } from '@/lib/countries';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 const PlayerSetup: React.FC = () => {
   const { completeInitialSetup } = useGame();
   const [name, setName] = useState('');
   const [sex, setSex] = useState<'male' | 'female'>('female');
+  const [country, setCountry] = useState('');
   const [referredBy, setReferredBy] = useState('');
 
-  const isFormValid = name.trim() !== '';
+  const isFormValid = name.trim() !== '' && country !== '';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isFormValid) {
-      completeInitialSetup(name.trim(), sex, referredBy.trim());
+      completeInitialSetup(name.trim(), sex, country, referredBy.trim());
     }
   };
 
@@ -80,6 +83,22 @@ const PlayerSetup: React.FC = () => {
                   className="bg-input border-border focus:ring-primary"
                 />
               </div>
+
+               {/* Country Selection */}
+              <div className="space-y-2">
+                  <Label htmlFor="country" className="text-foreground/80 text-base">Select Home Nation</Label>
+                  <Select onValueChange={setCountry} value={country}>
+                      <SelectTrigger className="bg-input border-border focus:ring-primary" id="country">
+                          <SelectValue placeholder="Select your nation..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                          {countries.map(c => (
+                              <SelectItem key={c.code} value={c.code}>{c.name}</SelectItem>
+                          ))}
+                      </SelectContent>
+                  </Select>
+              </div>
+
 
               {/* Referral Code */}
               <div className="space-y-2">

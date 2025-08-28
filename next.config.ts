@@ -19,10 +19,12 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'i.imgur.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'flags.fmcdn.net',
+      }
     ],
   },
 };
 
 export default nextConfig;
-
-    

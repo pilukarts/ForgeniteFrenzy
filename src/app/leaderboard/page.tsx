@@ -13,6 +13,7 @@ import { Trophy, Globe, Flag, Shield, ShieldCheck, Award, Gem, Star, Crown, Spar
 import IntroScreen from '@/components/intro/IntroScreen';
 import { getLeagueByPoints, getLeagueIconAndColor } from '@/lib/gameData';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 const LeaderboardPage: React.FC = () => {
   const { playerProfile, isLoading, isInitialSetupDone } = useGame();
@@ -22,12 +23,14 @@ const LeaderboardPage: React.FC = () => {
   useEffect(() => {
     const generateMockLeaderboard = (count: number): LeaderboardEntry[] => {
       const mockData: LeaderboardEntry[] = [];
+      const countries = ['US', 'DE', 'GB', 'FR', 'CA', 'AU', 'JP', 'KR', 'CN', 'BR'];
       for (let i = 1; i <= count; i++) {
         const score = Math.floor(Math.random() * 1000000) + 50000;
         mockData.push({
           rank: i,
           playerId: `player_${i}`,
           playerName: `Commander ${String.fromCharCode(65 + (i % 26))}${i % 100}`,
+          country: countries[i % countries.length],
           score: score,
           playerLeague: getLeagueByPoints(score),
         });
@@ -40,6 +43,7 @@ const LeaderboardPage: React.FC = () => {
             rank: 0, 
             playerId: playerProfile.id,
             playerName: playerProfile.name,
+            country: playerProfile.country,
             score: playerProfile.points,
             playerLeague: playerProfile.league,
         };
@@ -89,6 +93,7 @@ const LeaderboardPage: React.FC = () => {
             <TableBody>
                 {data.map((entry) => {
                 const { Icon: LeagueIcon, colorClass: leagueColorClass } = getLeagueIconAndColor(entry.playerLeague);
+                const flagSrc = `https://flags.fmcdn.net/data/flags/w580/${entry.country.toLowerCase()}.png`;
                 return (
                     <TableRow key={entry.playerId} className={entry.playerId === playerProfile.id ? 'bg-primary/10' : ''}>
                     <TableCell className="font-medium text-center text-lg px-2 sm:px-4"> 
@@ -97,8 +102,8 @@ const LeaderboardPage: React.FC = () => {
                     </TableCell>
                     <TableCell className="text-base px-2 sm:px-4"> 
                         <div className="flex items-center">
+                            <Image src={flagSrc} alt={entry.country} width={20} height={15} className="mr-2 rounded-sm" data-ai-hint="country flag" />
                             <LeagueIcon className={cn("h-3.5 w-3.5 mr-1.5 shrink-0", leagueColorClass)} />
-                            <span className={cn("font-medium mr-1.5", leagueColorClass)}>{entry.playerLeague}</span>
                             <span>{entry.playerName}</span>
                             {entry.playerId === playerProfile.id && <span className="ml-1 sm:ml-2 text-primary">(You)</span>}
                         </div>
