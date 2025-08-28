@@ -36,7 +36,7 @@ const formatTimeLeft = (milliseconds: number): string => {
 };
 
 export default function HomePage() {
-  const { playerProfile, isLoading, isInitialSetupDone, handleTap, switchCommanderSex, refillTaps, currentSeason, activeCommanderOrder, claimCommanderOrderReward, isCommanderOrderHidden, hideCommanderOrder } = useGame();
+  const { playerProfile, isLoading, isInitialSetupDone, handleTap, switchCommanderSex, refillTaps, currentSeason, activeCommanderOrder, claimCommanderOrderReward, hideCommanderOrder } = useGame();
   const { toast } = useToast();
   const [newUserIntroPhase, setNewUserIntroPhase] = useState<NewUserIntroPhase>('pre');
   const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number>(0);
@@ -91,7 +91,7 @@ export default function HomePage() {
   return (
     <AppLayout>
       <div
-        className="relative flex flex-col items-center justify-start text-center h-full overflow-hidden"
+        className="relative flex flex-col items-center justify-between text-center h-full overflow-hidden"
       >
         {/* Layer 1: Animated Space Background */}
         <div 
@@ -111,7 +111,7 @@ export default function HomePage() {
         <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none z-20" />
         
         {/* Layer 4: UI and Game Content */}
-        <div className="relative z-30 w-full flex flex-col items-center justify-start flex-grow p-2">
+        <div className="relative z-30 w-full flex flex-col items-center pt-2">
             
             {/* Taps Display (animated from top) */}
             <motion.div
@@ -150,16 +150,16 @@ export default function HomePage() {
         </div>
 
         {/* Action Buttons and Stats on the Sides */}
-        <div className="absolute bottom-0 left-0 right-0 w-full flex justify-between items-end px-2 sm:px-4 z-30 pointer-events-none pb-2">
-            {/* Left Side */}
+        <div className="w-full flex justify-between items-end px-2 sm:px-4 z-30 pointer-events-none pb-2">
+            {/* Left Side Column */}
             <motion.div 
               initial={{ x: -100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-              className="flex flex-col gap-2 w-auto items-start pointer-events-auto text-left"
+              className="flex flex-col gap-2 w-auto max-w-[120px] sm:max-w-[150px] items-start pointer-events-auto text-left"
             >
                 {/* Materials Stat Box */}
-               <div className="flex items-center gap-2 p-2 rounded-md border border-input">
+               <div className="flex items-center gap-2 p-2 rounded-md border border-input bg-background w-full">
                   <Ship className="h-5 w-5 text-primary shrink-0" />
                   <div>
                     <p className="text-xs font-bold text-muted-foreground">{currentSeason.objectiveResourceName}</p>
@@ -167,43 +167,43 @@ export default function HomePage() {
                   </div>
                 </div>
                 {isOutOfTaps && (
-                   <Button onClick={refillTaps} variant="destructive" size="sm" className="justify-start" disabled={playerProfile.auron < AURON_COST_FOR_TAP_REFILL}>
+                   <Button onClick={refillTaps} variant="destructive" size="sm" className="justify-start w-full" disabled={playerProfile.auron < AURON_COST_FOR_TAP_REFILL}>
                     <Zap className="mr-2 h-4 w-4"/>
                     Refill ({AURON_COST_FOR_TAP_REFILL})
                   </Button>
                 )}
-               <Button asChild variant="outline" size="sm" className="justify-start">
+               <Button asChild variant="outline" size="sm" className="justify-start w-full">
                  <Link href="https://example.com/invite" target="_blank" rel="noopener noreferrer">
                   <Share2 className="mr-2 h-4 w-4"/> Invite
                  </Link>
                </Button>
-               <Button asChild variant="outline" size="sm" className="justify-start">
+               <Button asChild variant="outline" size="sm" className="justify-start w-full">
                  <Link href="https://t.me/allianceforge" target="_blank" rel="noopener noreferrer">
                   <Send className="mr-2 h-4 w-4"/> Telegram
                  </Link>
                </Button>
-               <Button onClick={switchCommanderSex} variant="secondary" size="sm" className="justify-start">
+               <Button onClick={switchCommanderSex} variant="outline" size="sm" className="justify-start w-full">
                     <Users className="mr-2 h-4 w-4" />
                     Switch
                 </Button>
             </motion.div>
             
-            {/* Right Side */}
+            {/* Right Side Column */}
             <motion.div 
                initial={{ x: 100, opacity: 0 }}
                animate={{ x: 0, opacity: 1 }}
                transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-              className="flex flex-col gap-2 w-auto items-end pointer-events-auto text-right"
+              className="flex flex-col gap-2 w-auto max-w-[120px] sm:max-w-[150px] items-end pointer-events-auto text-right"
             >
                 {/* League Stat Box */}
-               <div className="flex items-center gap-2 p-2 rounded-md border border-input">
-                  <Trophy className="h-5 w-5 text-primary shrink-0" />
-                  <div>
+               <div className="flex items-center gap-2 p-2 rounded-md border border-input bg-background w-full justify-end">
+                  <div className="text-right">
                     <p className="text-xs font-bold text-muted-foreground">League</p>
                     <p className="text-sm text-foreground font-mono">{playerProfile.league}</p>
                   </div>
+                  <Trophy className="h-5 w-5 text-primary shrink-0" />
                 </div>
-               <Button asChild variant="outline" size="sm" className="justify-start">
+               <Button asChild variant="outline" size="sm" className="justify-start w-full">
                   <Link href="https://x.com/AllianceForgeHQ" target="_blank" rel="noopener noreferrer">
                     <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mr-2 h-3 w-3 fill-current">
                       <title>X</title>
@@ -212,19 +212,19 @@ export default function HomePage() {
                     X
                   </Link>
                 </Button>
-               <Button asChild variant="outline" size="sm" className="justify-start">
+               <Button asChild variant="outline" size="sm" className="justify-start w-full">
                  <Link href="https://discord.gg/xnWDwGBC" target="_blank" rel="noopener noreferrer">
                    <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mr-2 h-4 w-4 fill-current"><title>Discord</title><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4464.8245-.6667 1.284-.0001.0001-3.9102-1.5162-3.9102-1.5162l-.0448-.0204-3.9102 1.5162c-.2203-.4595-.4557-.9087-.6667-1.284a.0741.0741 0 00-.0785-.0371 19.7913 19.7913 0 00-4.8851 1.5152.069.069 0 00-.0321.0234C.5434 9.0458-.319 13.5799.0992 18.0578a.08.08 0 00.0414.0582c1.837.7749 3.6521 1.1648 5.4468 1.1648a12.6022 12.6022 0 002.3787-.2214.0741.0741 0 00.0623-.0562 12.2227 12.2227 0 00.435-2.2204.0741.0741 0 00-.0449-.0832c-.933-.424-1.782-1.026-2.52-1.844a.0741.0741 0 01.0181-.11.6318.6318 0 01.0362-.0277 10.8718 10.8718 0 012.9817-1.1075.0741.0741 0 01.084.0258c.4618.633 1.053 1.254 1.725 1.799a.0741.0741 0 00.084.0258 10.8718 10.8718 0 012.9817 1.1075.6318.6318 0 01.0362.0277.0741.0741 0 01.0181.11c-.738.818-1.587 1.42-2.52 1.844a.0741.0741 0 00-.0449.0832 12.2227 12.2227 0 00.435 2.2204.0741.0741 0 00.0623.0562 12.6022 12.6022 0 002.3787.2214c1.7947 0 3.6098-.3899 5.4468-1.1648a.08.08 0 00.0414-.0582c.4182-4.4779-.4436-8.9912-2.6146-13.6646a.069.069 0 00-.0321-.0234zM8.02 15.3312c-.9416 0-1.705-.802-1.705-1.791s.7634-1.791 1.705-1.791c.9416 0 1.705.802 1.705 1.791s-.7634 1.791-1.705 1.791zm7.9748 0c-.9416 0-1.705-.802-1.705-1.791s.7634-1.791 1.705-1.791c.9416 0 1.705.802 1.705 1.791s-.7634 1.791-1.705 1.791z" /></svg>
                    Discord
                  </Link>
                </Button>
                {/* Uniform Stat Box */}
-               <div className="flex items-center gap-2 p-2 rounded-md border border-input">
-                  <Shirt className="h-5 w-5 text-primary shrink-0" />
-                  <div>
+               <div className="flex items-center gap-2 p-2 rounded-md border border-input bg-background w-full justify-end">
+                  <div className="text-right">
                     <p className="text-xs font-bold text-muted-foreground">Uniform</p>
                     <p className="text-sm text-foreground font-mono">{playerProfile.equippedUniformPieces.length} / 5</p>
                   </div>
+                  <Shirt className="h-5 w-5 text-primary shrink-0" />
                 </div>
             </motion.div>
         </div>
@@ -301,4 +301,5 @@ export default function HomePage() {
     </AppLayout>
   );
 }
+
 
