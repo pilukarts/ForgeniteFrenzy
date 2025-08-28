@@ -243,5 +243,3 @@ export interface LevelStage {
         fill: string; // HSL string for the hex fill
     }
 }
-
-    

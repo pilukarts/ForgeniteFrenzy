@@ -132,5 +132,3 @@ const PlayerSetup: React.FC = () => {
 };
 
 export default PlayerSetup;
-
-    
