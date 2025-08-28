@@ -2,6 +2,10 @@
   "name": "nextn",
   "version": "0.1.0",
   "private": true,
+  "author": "Tu Nombre",
+  "contributors": [
+    "Gemini AI"
+  ],
   "scripts": {
     "dev": "next dev --turbopack",
     "genkit:dev": "genkit start -- tsx src/ai/dev.ts",
