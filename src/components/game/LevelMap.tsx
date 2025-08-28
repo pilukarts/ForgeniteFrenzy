@@ -8,10 +8,11 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
+import { LEVEL_STAGES } from '@/lib/gameData';
 
 const LEVELS_BEFORE = 10; // How many past levels to show
 const LEVELS_AFTER = 30; // How many upcoming levels to show
-const TOTAL_LEVELS = 200; // The total number of levels in this stage
+const TOTAL_LEVELS = 1000; // The total number of levels in this stage
 
 const LevelMap: React.FC = () => {
   const { playerProfile } = useGame();
@@ -55,7 +56,10 @@ const LevelMap: React.FC = () => {
     }
   };
   
-  // Calculate the window of levels to render
+  const getStageForLevel = (level: number) => {
+    return LEVEL_STAGES.find(stage => level >= stage.startLevel && level <= stage.endLevel) || LEVEL_STAGES[0];
+  };
+
   const startLevel = Math.max(1, currentPlayerLevel - LEVELS_BEFORE);
   const endLevel = Math.min(TOTAL_LEVELS, currentPlayerLevel + LEVELS_AFTER);
   
@@ -63,25 +67,31 @@ const LevelMap: React.FC = () => {
 
   return (
     <div ref={scrollContainerRef} className="h-full w-full overflow-y-auto relative p-4">
-        {/* We add a spacer to simulate the scroll position for levels before our window */}
         <div style={{ height: `${(startLevel - 1) * 8}rem` }} />
         <div className="flex flex-col items-center gap-y-4">
-            {/* Render levels in reverse so level 1 is at the bottom */}
             {levelsToRender.slice().reverse().map((level) => {
                 const isCurrent = level === currentPlayerLevel;
                 const isCompleted = level < currentPlayerLevel;
+                const stage = getStageForLevel(level);
 
-                const sineOffset = Math.sin(level * 0.5) * 40; // Pixels of horizontal offset
+                const sineOffset = Math.sin(level * 0.5) * 40;
+
+                const stageStyles = {
+                  '--stage-color-primary': stage.colors.primary,
+                  '--stage-color-fill': stage.colors.fill,
+                } as React.CSSProperties;
+
+                const StageEndComponent = LEVEL_STAGES.find(s => s.endLevel === level);
 
                 return (
+                  <React.Fragment key={level}>
                     <motion.div
-                        key={level}
                         ref={isCurrent ? currentPlayerRef : null}
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.3, delay: (level % 10) * 0.05 }}
                         className="relative w-28 h-32 flex items-center justify-center"
-                        style={{ marginLeft: `${sineOffset}px` }}
+                        style={{ marginLeft: `${sineOffset}px`, ...stageStyles }}
                     >
                         <button 
                             onClick={() => handleHexagonClick(level, true, isCurrent, isCompleted)}
@@ -94,8 +104,8 @@ const LevelMap: React.FC = () => {
                         >
                             <Hexagon strokeWidth={1.5} className={cn(
                                 "absolute w-full h-full transition-colors duration-300",
-                                "text-primary/70 fill-primary/10",
-                                isCompleted && "fill-primary/20 text-primary"
+                                "text-[hsl(var(--stage-color-primary))] fill-[hsl(var(--stage-color-fill))]",
+                                isCompleted && "fill-[hsla(var(--stage-color-primary)/0.4)] text-[hsl(var(--stage-color-primary))] opacity-80"
                             )} />
                             <div className="relative z-10 flex flex-col items-center justify-center text-center">
                             {isCompleted ? (
@@ -127,16 +137,19 @@ const LevelMap: React.FC = () => {
                             </div>
                         </button>
                     </motion.div>
+
+                    {StageEndComponent && (
+                      <div className="text-center my-8" style={{'--stage-color-primary': StageEndComponent.colors.primary} as React.CSSProperties}>
+                        <h2 className="text-4xl sm:text-5xl font-headline tracking-widest text-[hsl(var(--stage-color-primary))]">
+                          {StageEndComponent.name}
+                        </h2>
+                        <p className="text-muted-foreground text-sm">Levels {StageEndComponent.startLevel}-{StageEndComponent.endLevel}</p>
+                      </div>
+                    )}
+                  </React.Fragment>
                 );
             })}
-             {endLevel === TOTAL_LEVELS && (
-                 <div className="text-center my-8">
-                    <h1 className="text-4xl sm:text-5xl font-headline text-primary tracking-widest">SILVER STAGE</h1>
-                    <p className="text-muted-foreground text-sm">Levels 1-200</p>
-                </div>
-             )}
         </div>
-         {/* We add a spacer to simulate the scroll position for levels after our window */}
         <div style={{ height: `${(TOTAL_LEVELS - endLevel) * 8}rem` }} />
     </div>
   );

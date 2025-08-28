@@ -1,5 +1,5 @@
 
-import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate, LeagueName, LeagueTier, BattlePass } from './types';
+import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate, LeagueName, LeagueTier, BattlePass, LevelStage } from './types';
 import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle, Shield, ShieldCheck, Award, Star, Crown, LucideIcon, Swords, Shirt } from 'lucide-react';
 
 export const SEASONS_DATA: Season[] = [
@@ -323,3 +323,13 @@ export const BATTLE_PASS_DATA: BattlePass = {
     { level: 10, freeReward: { type: 'auron', amount: 50, icon: Sparkles }, premiumReward: { type: 'title', name: 'Vanguard', icon: Swords } },
   ],
 };
+
+export const LEVEL_STAGES: LevelStage[] = [
+    { name: 'SILVER STAGE', startLevel: 1, endLevel: 49, colors: { primary: '210 15% 70%', fill: '210 25% 15%' } },
+    { name: 'CYAN SECTOR', startLevel: 50, endLevel: 99, colors: { primary: '180 100% 50%', fill: '180 25% 15%' } },
+    { name: 'JADE NEBULA', startLevel: 100, endLevel: 199, colors: { primary: '120 100% 70%', fill: '120 25% 15%' } },
+    { name: 'VIOLET ABYSS', startLevel: 200, endLevel: 299, colors: { primary: '270 70% 60%', fill: '270 25% 15%' } },
+    { name: 'CORAL EXPANSE', startLevel: 300, endLevel: 499, colors: { primary: '16 80% 65%', fill: '16 25% 15%' } },
+    { name: 'INFERNO REALM', startLevel: 500, endLevel: 749, colors: { primary: '0 100% 50%', fill: '0 25% 15%' } },
+    { name: 'AETHERIS CORE', startLevel: 750, endLevel: 1000, colors: { primary: '45 100% 50%', fill: '45 25% 15%' } },
+];

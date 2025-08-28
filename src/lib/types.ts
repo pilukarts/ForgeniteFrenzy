@@ -434,3 +434,14 @@ export interface LeagueTier {
     icon: LucideIcon;
     colorClass: string; // Tailwind color class for the icon/text
 }
+
+// Level Map Stages
+export interface LevelStage {
+    name: string;
+    startLevel: number;
+    endLevel: number;
+    colors: {
+        primary: string; // HSL string for the border/text
+        fill: string; // HSL string for the hex fill
+    }
+}
