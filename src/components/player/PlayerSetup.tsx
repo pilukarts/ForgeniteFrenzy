@@ -92,13 +92,11 @@ const PlayerSetup: React.FC = () => {
                     <SelectValue placeholder="Select country" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover border-border">
-                    <ScrollArea className="h-72">
-                      {COUNTRIES.map(c => (
-                        <SelectItem key={c.code} value={c.code} className="focus:bg-primary/20">
-                          {c.flag} {c.name}
-                        </SelectItem>
-                      ))}
-                    </ScrollArea>
+                    {COUNTRIES.map(c => (
+                      <SelectItem key={c.code} value={c.code} className="focus:bg-primary/20">
+                        {c.flag} {c.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
