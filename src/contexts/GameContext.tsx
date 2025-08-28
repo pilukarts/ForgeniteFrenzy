@@ -1,7 +1,7 @@
 
 "use client";
 
-import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType } from '@/lib/types';
+import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, CommanderOrder } from '@/lib/types';
 import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL } from '@/lib/gameData';
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
@@ -13,6 +13,8 @@ const TAPS_PER_UNIFORM_PIECE = 2000;
 const UNIFORM_PIECES_ORDER = ["Tactical Gloves", "Combat Boots", "Utility Belt", "Chest Rig", "Stealth Helmet"];
 const NUMBER_OF_DAILY_QUESTS = 3;
 const TAP_REGEN_COOLDOWN_MILLISECONDS = TAP_REGEN_COOLDOWN_MINUTES * 60 * 1000;
+const COMMANDER_ORDER_COOLDOWN_HOURS = 1;
+
 
 interface GameContextType {
   playerProfile: PlayerProfile | null;
@@ -51,6 +53,9 @@ interface GameContextType {
   battlePassData: BattlePass;
   purchasePremiumPass: () => void;
   claimBattlePassReward: (level: number, track: 'free' | 'premium') => void;
+  // Commander Order
+  activeCommanderOrder: CommanderOrder | null;
+  claimCommanderOrderReward: () => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -87,6 +92,9 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
   xpToNextBattlePassLevel: BATTLE_PASS_XP_PER_LEVEL,
   hasPremiumPass: false,
   claimedBattlePassRewards: {},
+  // Commander Order
+  activeCommanderOrder: null,
+  lastCommanderOrderTimestamp: 0,
 };
 
 const generateReferralCode = (name: string): string => {
@@ -106,8 +114,74 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [coreLastInteractionTime, setCoreLastInteractionTime] = useState<number>(0);
   const [comboCount, setComboCount] = useState(0);
   const [isAICallInProgress, setIsAICallInProgress] = useState(false);
+  const [activeCommanderOrder, setActiveCommanderOrder] = useState<CommanderOrder | null>(null);
+
 
   const { toast } = useToast();
+
+  // Handle Commander Order logic
+  useEffect(() => {
+    if (!playerProfile || !isInitialSetupDone) return;
+
+    const now = Date.now();
+    const lastOrderTimestamp = playerProfile.activeCommanderOrder?.startTime ?? playerProfile.lastCommanderOrderTimestamp;
+    const cooldown = COMMANDER_ORDER_COOLDOWN_HOURS * 60 * 60 * 1000;
+
+    // Check if current order is expired
+    if (playerProfile.activeCommanderOrder && now > playerProfile.activeCommanderOrder.endTime) {
+      setPlayerProfile(prev => {
+        if (!prev) return null;
+        toast({ title: "Order Expired", description: "Commander, you've run out of time to complete the special order.", variant: "destructive" });
+        return { ...prev, activeCommanderOrder: null, lastCommanderOrderTimestamp: now };
+      });
+      setActiveCommanderOrder(null);
+    }
+    // Check if it's time for a new order
+    else if (!playerProfile.activeCommanderOrder && now - lastOrderTimestamp > cooldown) {
+      const newOrder: CommanderOrder = {
+        id: `order-${now}`,
+        objectiveType: 'points',
+        target: 3000 * playerProfile.level, // Scale with player level
+        reward: { auron: 20 + Math.floor(playerProfile.level / 5) }, // Scale with player level
+        startTime: now,
+        endTime: now + (2 * 24 * 60 * 60 * 1000), // 2 days from now
+        progress: 0,
+        isCompleted: false,
+      };
+      setPlayerProfile(prev => prev ? { ...prev, activeCommanderOrder: newOrder } : null);
+      setActiveCommanderOrder(newOrder);
+    }
+  }, [playerProfile, isInitialSetupDone, toast]);
+  
+  const claimCommanderOrderReward = useCallback(() => {
+    let order: CommanderOrder | null = null;
+    let success = false;
+  
+    setPlayerProfile(prev => {
+      if (!prev || !prev.activeCommanderOrder || !prev.activeCommanderOrder.isCompleted) {
+        return prev;
+      }
+      
+      order = prev.activeCommanderOrder;
+      success = true;
+      
+      return {
+        ...prev,
+        auron: prev.auron + (order.reward.auron || 0),
+        points: prev.points + (order.reward.points || 0),
+        activeCommanderOrder: null,
+        lastCommanderOrderTimestamp: Date.now(),
+      };
+    });
+  
+    if (success && order) {
+      toast({
+        title: "Order Complete!",
+        description: `Excellent work, Commander. You've earned a reward of ${order.reward.auron} Auron.`
+      });
+      setActiveCommanderOrder(null);
+    }
+  }, [toast]);
 
   const updateQuestProgress = useCallback((profile: PlayerProfile, type: QuestType, value: number): PlayerProfile => {
     if (!profile.activeDailyQuests) return profile;
@@ -125,7 +199,19 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
       return quest;
     });
-    return { ...profile, activeDailyQuests: updatedQuests };
+
+    let updatedOrder = profile.activeCommanderOrder;
+    if (updatedOrder && !updatedOrder.isCompleted && type === updatedOrder.objectiveType) {
+        const newProgress = updatedOrder.progress + value;
+        const isCompleted = newProgress >= updatedOrder.target;
+        if (isCompleted) {
+            toast({ title: "Special Order Objective Met!", description: "Report back to claim your reward, Commander."});
+        }
+        updatedOrder = { ...updatedOrder, progress: newProgress, isCompleted };
+    }
+
+
+    return { ...profile, activeDailyQuests: updatedQuests, activeCommanderOrder: updatedOrder };
   }, [toast]);
 
   const refreshDailyQuestsIfNeeded = useCallback(() => {
@@ -246,6 +332,11 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       parsedProfile.xpToNextBattlePassLevel = parsedProfile.xpToNextBattlePassLevel ?? BATTLE_PASS_XP_PER_LEVEL;
       parsedProfile.hasPremiumPass = parsedProfile.hasPremiumPass ?? false;
       parsedProfile.claimedBattlePassRewards = parsedProfile.claimedBattlePassRewards ?? {};
+      
+      // Commander Order initialization
+      parsedProfile.activeCommanderOrder = parsedProfile.activeCommanderOrder ?? null;
+      parsedProfile.lastCommanderOrderTimestamp = parsedProfile.lastCommanderOrderTimestamp ?? 0;
+      setActiveCommanderOrder(parsedProfile.activeCommanderOrder);
 
 
       setPlayerProfile(parsedProfile);
@@ -317,6 +408,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       xpToNextBattlePassLevel: BATTLE_PASS_XP_PER_LEVEL,
       hasPremiumPass: false,
       claimedBattlePassRewards: {},
+      // Commander Order
+      activeCommanderOrder: null,
+      lastCommanderOrderTimestamp: 0,
     };
     setPlayerProfile(newProfileData);
     setIsInitialSetupDone(true);
@@ -334,6 +428,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const addPoints = useCallback((amount: number, isFromTap: boolean = false) => {
+    let levelUpOccurred = false;
+    
     setPlayerProfile(prev => {
       if (!prev) return null;
 
@@ -389,10 +485,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (levelChanged) {
           updatedProfile.level = newLevel;
           updatedProfile.rankTitle = newRank;
-          const levelUpMessage = `Congratulations Commander, you've reached Level ${newLevel} - ${newRank}!`;
-          setTimeout(() => {
-              toast({ title: "Rank Up!", description: levelUpMessage });
-          }, 0);
+          levelUpOccurred = true;
       }
 
       updatedProfile.xp = newXp;
@@ -429,6 +522,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       return updatedProfile;
     });
+
+    if (levelUpOccurred) {
+      toast({
+        title: "Level Up!",
+        description: "Congrats Commander! You passed to the next level!",
+      });
+    }
   }, [currentSeason, toast, updateQuestProgress]);
 
 
@@ -449,6 +549,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     
     let canAfford = false;
     let isMaxLevel = false;
+    let success = false;
 
     setPlayerProfile(prev => {
       if (!prev) return null;
@@ -461,7 +562,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (!canAfford || isMaxLevel) {
         return prev;
       }
-
+      success = true;
       let updatedProfile = {
         ...prev,
         points: prev.points - cost,
@@ -478,12 +579,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return updateQuestProgress(updatedProfile, 'purchase_upgrade', 1);
     });
 
-    if (isMaxLevel) {
+    if (success) {
+      toast({ title: "Upgrade Purchased!", description: `Successfully upgraded ${upgradeInfo.name}.` });
+    } else if (isMaxLevel) {
         toast({ title: "Max Level Reached", description: `${upgradeInfo.name} is already at its maximum level.`, variant: "default" });
-    } else if (!canAfford) {
-        toast({ title: "Insufficient Points", description: "Not enough points to purchase this upgrade.", variant: "destructive" });
     } else {
-        toast({ title: "Upgrade Purchased!", description: `Successfully upgraded ${upgradeInfo.name}.` });
+        toast({ title: "Insufficient Points", description: "Not enough points to purchase this upgrade.", variant: "destructive" });
     }
   }, [getUpgradeCost, toast, updateQuestProgress]);
 
@@ -496,25 +597,26 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (!arkUpgrade) return;
 
     let success = false;
+    let alreadyPurchased = false;
+    let insufficientPoints = false;
     
     setPlayerProfile(prev => {
         if (!prev) return null;
 
         if (prev.upgrades[upgradeId]) {
-            toast({ title: "Upgrade Invalid", description: "This Ark upgrade is already purchased or does not exist.", variant: "default" });
+            alreadyPurchased = true;
             return prev;
         }
 
         if (prev.points < arkUpgrade.cost) {
-            toast({ title: "Insufficient Points", description: "Not enough points for this Ark upgrade.", variant: "destructive" });
+            insufficientPoints = true;
             return prev;
         }
 
+        success = true;
         const newUpgrades = { ...prev.upgrades, [upgradeId]: 1 };
         const allArkUpgradesPurchased = ARK_UPGRADES_DATA.every(u => newUpgrades[u.id]);
         
-        success = true;
-
         let updatedProfile = {
             ...prev,
             points: prev.points - arkUpgrade.cost,
@@ -526,6 +628,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     if (success) {
       toast({ title: "Ark Upgrade Complete!", description: `${arkUpgrade.name} installed on your StarForge Ark.` });
+    } else if (alreadyPurchased) {
+      toast({ title: "Upgrade Invalid", description: "This Ark upgrade is already purchased or does not exist.", variant: "default" });
+    } else if (insufficientPoints) {
+      toast({ title: "Insufficient Points", description: "Not enough points for this Ark upgrade.", variant: "destructive" });
     }
   }, [toast, updateQuestProgress]);
 
@@ -537,15 +643,16 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
 
     let success = false;
+    let insufficientAuron = false;
 
     setPlayerProfile(prev => {
         if (!prev) return null;
 
         if (prev.auron < item.costInAuron) {
-            toast({ title: "Insufficient Auron", description: `You need ${item.costInAuron} Auron to purchase ${item.name}.`, variant: "destructive" });
+            insufficientAuron = true;
             return prev;
         }
-
+        success = true;
         const newBonus: ActiveTapBonus = {
             id: crypto.randomUUID(), 
             marketItemId: item.id,
@@ -554,8 +661,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             bonusMultiplier: item.bonusEffect.multiplier,
             originalDurationTaps: item.bonusEffect.durationTaps,
         };
-
-        success = true;
 
         let updatedProfile = {
             ...prev,
@@ -567,6 +672,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     if (success) {
       toast({ title: "Purchase Successful!", description: `${item.name} activated.` });
+    } else if (insufficientAuron) {
+       toast({ title: "Insufficient Auron", description: `You need ${item.costInAuron} Auron to purchase ${item.name}.`, variant: "destructive" });
     }
   }, [toast, updateQuestProgress]);
 
@@ -680,12 +787,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 
   const switchCommanderSex = useCallback(() => {
+    const currentSex = playerProfile?.commanderSex;
     setPlayerProfile(prev => {
       if (!prev) return null;
       const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
        return { ...prev, commanderSex: newSex };
     });
-    toast({ title: "Commander Profile Updated", description: `Switched to ${playerProfile?.commanderSex === 'female' ? 'Male' : 'Female'} Commander.` });
+    toast({ title: "Commander Profile Updated", description: `Switched to ${currentSex === 'female' ? 'Male' : 'Female'} Commander.` });
   }, [toast, playerProfile?.commanderSex]);
 
   const claimQuestReward = useCallback((questId: string) => {
@@ -730,9 +838,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const refillTaps = useCallback(() => {
     let success = false;
+    let insufficientAuron = false;
+
     setPlayerProfile(prev => {
         if (!prev) return null;
         if (prev.auron < AURON_COST_FOR_TAP_REFILL) {
+            insufficientAuron = true;
             return prev;
         }
         success = true;
@@ -747,7 +858,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     if (success) {
         toast({ title: "Taps Refilled!", description: `Your tap energy has been restored for ${AURON_COST_FOR_TAP_REFILL} Auron.` });
-    } else {
+    } else if (insufficientAuron) {
         toast({ title: "Insufficient Auron", description: `You need ${AURON_COST_FOR_TAP_REFILL} Auron to refill taps.`, variant: "destructive" });
     }
   }, [toast, updateQuestProgress]);
@@ -817,6 +928,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const purchasePremiumPass = useCallback(() => {
     let canAfford = false;
     let alreadyHas = false;
+
     setPlayerProfile(prev => {
         if (!prev) return null;
         if (prev.hasPremiumPass) {
@@ -902,24 +1014,15 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return updatedProfile;
     });
 
-    setTimeout(() => {
-      switch(result) {
-        case 'success':
-            toast({ title: 'Reward Claimed!', description: `You have received: ${rewardToClaim?.amount || ''} ${rewardToClaim?.name || rewardToClaim?.type}` });
-            break;
-        case 'claimed':
-            toast({ title: 'Reward Already Claimed', variant: 'default' });
-            break;
-        case 'not_reached':
-            toast({ title: 'Level Not Reached', description: `You must reach level ${level} to claim this reward.`, variant: 'destructive' });
-            break;
-        case 'premium_locked':
-            toast({ title: 'Premium Pass Required', description: 'Unlock the premium pass to claim this reward.', variant: 'destructive' });
-            break;
-        default:
-             // fail case, maybe do nothing
-      }
-    }, 0);
+    if (result === 'success' && rewardToClaim) {
+        toast({ title: 'Reward Claimed!', description: `You have received: ${rewardToClaim?.amount || ''} ${rewardToClaim?.name || rewardToClaim?.type}` });
+    } else if (result === 'claimed') {
+        toast({ title: 'Reward Already Claimed', variant: 'default' });
+    } else if (result === 'not_reached') {
+        toast({ title: 'Level Not Reached', description: `You must reach level ${level} to claim this reward.`, variant: 'destructive' });
+    } else if (result === 'premium_locked') {
+        toast({ title: 'Premium Pass Required', description: 'Unlock the premium pass to claim this reward.', variant: 'destructive' });
+    }
   }, [toast]);
 
   return (
@@ -959,6 +1062,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         battlePassData: BATTLE_PASS_DATA,
         purchasePremiumPass,
         claimBattlePassReward,
+        activeCommanderOrder,
+        claimCommanderOrderReward,
     }}>
       {children}
     </GameContext.Provider>
@@ -972,3 +1077,5 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
+
+    
