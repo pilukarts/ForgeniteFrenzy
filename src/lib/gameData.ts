@@ -156,11 +156,18 @@ export const RANK_TITLES: { [level: number]: string } = {
     150: 'Fleet Commander',
     200: 'High Commander',
     250: 'Vanguard Commander',
-    300: 'Elite Vanguard',
-    400: 'Forge Master',
-    500: 'Galactic Marshall',
-    750: 'Celestial Admiral',
-    1000: 'Ark Architect',
+    300: 'Forge Master',
+    400: 'Galactic Marshall',
+    500: 'Celestial Admiral',
+    750: 'Ark Architect',
+    1000: 'Starforger',
+    1500: 'Void Walker',
+    2000: 'Nebula Captain',
+    3000: 'Cosmic Sentinel',
+    4000: 'Galactic Protector',
+    5000: 'Alliance High Guard',
+    7500: 'Supreme Commander',
+    10000: 'Living Legend',
 };
 
 
@@ -331,5 +338,9 @@ export const LEVEL_STAGES: LevelStage[] = [
     { name: 'VIOLET ABYSS', startLevel: 200, endLevel: 299, colors: { primary: '270 70% 60%', fill: '270 25% 15%' } },
     { name: 'CORAL EXPANSE', startLevel: 300, endLevel: 499, colors: { primary: '16 80% 65%', fill: '16 25% 15%' } },
     { name: 'INFERNO REALM', startLevel: 500, endLevel: 749, colors: { primary: '0 100% 50%', fill: '0 25% 15%' } },
-    { name: 'AETHERIS CORE', startLevel: 750, endLevel: 1000, colors: { primary: '45 100% 50%', fill: '45 25% 15%' } },
+    { name: 'AETHERIS CORE', startLevel: 750, endLevel: 999, colors: { primary: '45 100% 50%', fill: '45 25% 15%' } },
+    { name: 'VOID OF STARS', startLevel: 1000, endLevel: 1999, colors: { primary: '240 50% 70%', fill: '240 25% 15%' } }, // Indigo
+    { name: 'EMERALD CHASM', startLevel: 2000, endLevel: 3999, colors: { primary: '145 70% 50%', fill: '145 25% 15%' } }, // Sea Green
+    { name: 'RUBY VEIL', startLevel: 4000, endLevel: 6999, colors: { primary: '350 80% 60%', fill: '350 25% 15%' } }, // Crimson Red
+    { name: 'CELESTIAL FORGE', startLevel: 7000, endLevel: 10000, colors: { primary: '0 0% 100%', fill: '0 0% 20%' } }, // White/Light Gray
 ];
