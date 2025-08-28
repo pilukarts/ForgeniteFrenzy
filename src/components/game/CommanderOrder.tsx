@@ -8,12 +8,13 @@ import type { CommanderOrder } from '@/lib/types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Award, Timer } from 'lucide-react';
+import { Award, Timer, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface CommanderOrderProps {
   order: CommanderOrder;
   onClaim: () => void;
+  onHide: () => void;
 }
 
 const formatTime = (ms: number) => {
@@ -25,7 +26,7 @@ const formatTime = (ms: number) => {
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 };
 
-const CommanderOrderBanner: React.FC<CommanderOrderProps> = ({ order, onClaim }) => {
+const CommanderOrderBanner: React.FC<CommanderOrderProps> = ({ order, onClaim, onHide }) => {
   const { playerProfile } = useGame();
   const [timeLeft, setTimeLeft] = useState(order.endTime - Date.now());
   const [key, setKey] = useState(order.id);
@@ -64,6 +65,11 @@ const CommanderOrderBanner: React.FC<CommanderOrderProps> = ({ order, onClaim })
         className="fixed bottom-0 left-0 right-0 w-full max-w-md mx-auto z-40 p-1 sm:p-2 pointer-events-none"
       >
         <div className="relative bg-card/80 backdrop-blur-lg border-t-2 border-primary/50 rounded-t-lg shadow-2xl p-2 flex items-center gap-2 pointer-events-auto">
+           <Button onClick={onHide} variant="ghost" size="icon" className="absolute top-1 right-1 h-6 w-6 text-muted-foreground hover:bg-black/20 hover:text-white z-10">
+              <X className="h-4 w-4" />
+              <span className="sr-only">Hide Order</span>
+           </Button>
+
           {/* Commander Portrait */}
           <div className="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 relative">
             <Image
@@ -97,7 +103,7 @@ const CommanderOrderBanner: React.FC<CommanderOrderProps> = ({ order, onClaim })
                 initial={{ scale: 0.5, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.5, type: 'spring' }}
-                className="absolute top-2 right-2"
+                className="ml-2" // Margin to separate from text content
               >
                 <Button onClick={onClaim} size="sm" className="bg-green-600 hover:bg-green-500 text-white shadow-lg">
                   <Award className="mr-1 h-4 w-4" /> Claim

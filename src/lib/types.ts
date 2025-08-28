@@ -25,6 +25,20 @@ export interface BattlePass {
   levels: BattlePassLevel[];
 }
 
+export interface CommanderOrder {
+    id: string;
+    objectiveType: 'points' | 'taps'; // Example objective types
+    target: number;
+    reward: {
+        points?: number;
+        auron?: number;
+    };
+    startTime: number;
+    endTime: number;
+    progress: number;
+    isCompleted: boolean;
+}
+
 export interface PlayerProfile {
   id: string;
   name: string;
@@ -70,6 +84,10 @@ export interface PlayerProfile {
   xpToNextBattlePassLevel: number;
   hasPremiumPass: boolean;
   claimedBattlePassRewards: { [level: number]: ('free' | 'premium')[] };
+  
+  // Commander Order
+  activeCommanderOrder: CommanderOrder | null;
+  lastCommanderOrderTimestamp: number;
 }
 
 export interface Season {

@@ -56,6 +56,8 @@ interface GameContextType {
   // Commander Order
   activeCommanderOrder: CommanderOrder | null;
   claimCommanderOrderReward: () => void;
+  hideCommanderOrder: () => void; // New function
+  isCommanderOrderHidden: boolean; // New state
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -115,6 +117,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [comboCount, setComboCount] = useState(0);
   const [isAICallInProgress, setIsAICallInProgress] = useState(false);
   const [activeCommanderOrder, setActiveCommanderOrder] = useState<CommanderOrder | null>(null);
+  const [isCommanderOrderHidden, setIsCommanderOrderHidden] = useState(false);
 
 
   const { toast } = useToast();
@@ -138,9 +141,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     // Check if current order is expired
     if (playerProfile.activeCommanderOrder && now > playerProfile.activeCommanderOrder.endTime) {
+      addCoreMessage({ type: 'system_alert', content: "Commander, you've run out of time to complete the special order." }, true);
       setPlayerProfile(prev => {
         if (!prev) return null;
-        addCoreMessage({ type: 'system_alert', content: "Commander, you've run out of time to complete the special order." }, true);
         return { ...prev, activeCommanderOrder: null, lastCommanderOrderTimestamp: now };
       });
       setActiveCommanderOrder(null);
@@ -159,6 +162,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       };
       setPlayerProfile(prev => prev ? { ...prev, activeCommanderOrder: newOrder } : null);
       setActiveCommanderOrder(newOrder);
+      setIsCommanderOrderHidden(false); // Show the new order
       addCoreMessage({ type: 'briefing', content: `New special order received! Acquire ${newOrder.target.toLocaleString()} points.`}, true);
     }
   }, [playerProfile, isInitialSetupDone, addCoreMessage]);
@@ -192,6 +196,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setActiveCommanderOrder(null);
     }
   }, [addCoreMessage]);
+
+  const hideCommanderOrder = useCallback(() => {
+      setIsCommanderOrderHidden(true);
+  }, []);
 
   const updateQuestProgress = useCallback((profile: PlayerProfile, type: QuestType, value: number): PlayerProfile => {
     if (!profile.activeDailyQuests) return profile;
@@ -429,7 +437,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const addPoints = useCallback((amount: number, isFromTap: boolean = false) => {
     let levelUpOccurred = false;
     let newLevel = 0;
-    let newRank = '';
     
     setPlayerProfile(prev => {
       if (!prev) return null;
@@ -471,22 +478,19 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       let newXp = updatedProfile.xp + finalAmount;
       let levelChanged = false;
       let tempLevel = updatedProfile.level;
-      let tempRank = updatedProfile.rankTitle;
 
       while (newXp >= updatedProfile.xpToNextLevel) {
         newXp -= updatedProfile.xpToNextLevel;
         tempLevel++;
         levelChanged = true;
         updatedProfile.xpToNextLevel = Math.floor(updatedProfile.xpToNextLevel * XP_LEVEL_MULTIPLIER);
-        tempRank = getRankTitle(tempLevel);
+        updatedProfile.rankTitle = getRankTitle(tempLevel);
       }
       
       if (levelChanged) {
           updatedProfile.level = tempLevel;
-          updatedProfile.rankTitle = tempRank;
           levelUpOccurred = true;
           newLevel = tempLevel;
-          newRank = tempRank;
       }
 
       updatedProfile.xp = newXp;
@@ -523,12 +527,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
 
     if (levelUpOccurred) {
-      addCoreMessage({
-        type: 'system_alert',
-        content: `Congrats Commander! You passed to level ${newLevel}. New Rank: ${newRank}.`,
-      }, true);
+        toast({
+            title: 'Level Up!',
+            description: `Congrats Commander! You passed to level ${newLevel}.`,
+        });
     }
-  }, [currentSeason, addCoreMessage, updateQuestProgress]);
+  }, [currentSeason, addCoreMessage, updateQuestProgress, toast]);
 
 
   const getUpgradeLevel = useCallback((upgradeId: string) => {
@@ -1057,6 +1061,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         claimBattlePassReward,
         activeCommanderOrder,
         claimCommanderOrderReward,
+        hideCommanderOrder,
+        isCommanderOrderHidden,
     }}>
       {children}
     </GameContext.Provider>
@@ -1070,7 +1076,3 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
-
-    
-
-    
