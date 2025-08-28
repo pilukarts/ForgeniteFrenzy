@@ -1,7 +1,6 @@
-
 "use client";
 import Link from 'next/link';
-import { Home, ChevronsUp, Trophy, Users, ShoppingCart, MessagesSquare, ListChecks, ShieldQuestion, LifeBuoy, Swords, Map } from 'lucide-react';
+import { Home, ChevronsUp, Trophy, Users, ShoppingCart, MessagesSquare, ListChecks, ShieldQuestion, LifeBuoy, Swords, Map, Gamepad2 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
@@ -14,6 +13,7 @@ const navItems = [
   { href: '/leaderboard', label: 'Leaders', icon: Trophy },
   { href: '/alliance-chat', label: 'Chat', icon: MessagesSquare },
   { href: '/marketplace', label: 'Shop', icon: ShoppingCart },
+  { href: '/minigame', label: 'Arcade', icon: Gamepad2 },
   { href: '/community', label: 'Community', icon: Users },
   { href: '/support', label: 'Support', icon: LifeBuoy },
   { href: '/legal/transparency-statement', label: 'Legal', icon: ShieldQuestion },
