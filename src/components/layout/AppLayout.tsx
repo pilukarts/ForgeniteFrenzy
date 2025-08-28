@@ -30,7 +30,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       }}
     >
        {/* The main container for the game interface */}
-      <div className="relative flex flex-col w-full h-full max-w-md bg-background/80 shadow-2xl overflow-hidden sm:rounded-2xl border border-border/20">
+      <div className="relative flex flex-col w-full h-full max-w-md bg-background/95 shadow-2xl overflow-hidden sm:rounded-2xl border border-border/20">
         <div className="flex flex-col min-h-screen">
           <header className="sticky top-0 z-50 p-2 bg-background/80 backdrop-blur-md shadow-sm border-b border-border/50">
             <div className="flex items-center justify-between gap-2">
