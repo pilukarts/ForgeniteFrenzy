@@ -7,13 +7,12 @@ import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
-import { User, UserRound, Zap, AlertTriangle, Trophy, Shirt, Ship, Share2, Send, Users } from 'lucide-react';
+import { Zap, AlertTriangle, Trophy, Ship, Share2, Send, Users } from 'lucide-react';
 import IntroScreen from '@/components/intro/IntroScreen';
 import PreIntroScreen from '@/components/intro/PreIntroScreen';
 import { useToast } from "@/hooks/use-toast";
-import { AURON_COST_FOR_TAP_REFILL, TAP_REGEN_COOLDOWN_MINUTES } from '@/lib/gameData';
+import { AURON_COST_FOR_TAP_REFILL } from '@/lib/gameData';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
 type NewUserIntroPhase = 'pre' | 'main' | 'setup';
@@ -36,7 +35,7 @@ const formatTimeLeft = (milliseconds: number): string => {
 };
 
 export default function HomePage() {
-  const { playerProfile, isLoading, isInitialSetupDone, handleTap, switchCommanderSex, refillTaps, currentSeason, activeCommanderOrder, claimCommanderOrderReward, hideCommanderOrder } = useGame();
+  const { playerProfile, isLoading, isInitialSetupDone, handleTap, switchCommanderSex, refillTaps, currentSeason } = useGame();
   const { toast } = useToast();
   const [newUserIntroPhase, setNewUserIntroPhase] = useState<NewUserIntroPhase>('pre');
   const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number>(0);
@@ -50,8 +49,8 @@ export default function HomePage() {
       if (playerProfile.currentTaps <= 0) {
         const remaining = playerProfile.tapsAvailableAt - Date.now();
         setTimeLeftForTapRegen(Math.max(0, remaining));
-        if (remaining <= 0 && playerProfile.currentTaps <= 0) {
-          toast({ title: "Taps Recharged!", description: "Your tap energy is ready." });
+        if (remaining <= 0) {
+           // The tap refill logic is handled in the GameContext now
         }
       } else {
         setTimeLeftForTapRegen(0);
@@ -59,16 +58,14 @@ export default function HomePage() {
     }, 1000);
 
     return () => clearInterval(timerId);
-  }, [playerProfile, isInitialSetupDone, toast]);
+  }, [playerProfile, isInitialSetupDone]);
 
-  if (isInitialSetupDone) {
-    if (isLoading) {
-      return <IntroScreen />;
-    }
-    if (!playerProfile) {
-      return <IntroScreen />; 
-    }
-  } else {
+  // --- Render logic based on setup/loading state ---
+  if (isLoading) {
+    return <IntroScreen />;
+  }
+  
+  if (!isInitialSetupDone) {
     if (newUserIntroPhase === 'pre') {
       return <PreIntroScreen onCompletion={() => setNewUserIntroPhase('main')} />;
     }
@@ -78,11 +75,18 @@ export default function HomePage() {
     if (newUserIntroPhase === 'setup') {
       return <PlayerSetup />;
     }
+    // Fallback loading screen
     return <IntroScreen />;
+  }
+
+  // From here, we know the player setup is done and profile should exist
+  if (!playerProfile) {
+    // This case should ideally not be hit if logic is correct, but it's a safe fallback.
+    return <IntroScreen />; 
   }
   
   const handleInviteClick = () => {
-    if (!playerProfile || !playerProfile.referralCode) return;
+    if (!playerProfile.referralCode) return;
     navigator.clipboard.writeText(playerProfile.referralCode).then(() => {
       toast({
         title: "Referral Code Copied!",
@@ -98,33 +102,26 @@ export default function HomePage() {
     });
   };
 
-  if (!playerProfile) return <IntroScreen/>; 
-
   const isOutOfTaps = playerProfile.currentTaps <= 0 && timeLeftForTapRegen > 0;
   
   return (
     <AppLayout>
       <div className="relative flex flex-col h-full overflow-hidden">
-        {/* Layer 1: Animated Space Background */}
+        {/* Background Layers */}
         <div 
             className="absolute inset-0 bg-black bg-cover bg-center animate-pan-background z-0"
             style={{ backgroundImage: `url('${spaceImageUrl}')` }}
             data-ai-hint="futuristic space background"
         />
-
-        {/* Layer 2: Shooting Stars Container */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
         </div>
-
-        {/* Layer 3: Cockpit Floor & Frame */}
         <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none z-20" />
         
-        {/* Layer 4: UI and Game Content */}
+        {/* UI and Game Content */}
         <div className="relative z-30 w-full flex flex-col flex-grow">
-            {/* Top Bar for Taps */}
             <motion.div
               initial={{ y: -100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -141,7 +138,6 @@ export default function HomePage() {
               )}
             </motion.div>
 
-            {/* Main Content Area: Two Columns */}
             <div className="flex flex-grow w-full items-center p-2 sm:p-4">
                 {/* Left Column Buttons */}
                 <motion.div 
@@ -297,5 +293,3 @@ export default function HomePage() {
     </AppLayout>
   );
 }
-
-    
