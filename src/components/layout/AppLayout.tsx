@@ -17,10 +17,12 @@ interface AppLayoutProps {
 }
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
-  const { playerProfile, connectWallet, activeCommanderOrder, claimCommanderOrderReward, hideCommanderOrder } = useGame();
+  const { playerProfile, connectWallet, activeCommanderOrder, claimCommanderOrderReward, hideCommanderOrder, currentSeason } = useGame();
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   
   const showCommanderOrder = !!activeCommanderOrder;
+
+  const seasonProgress = playerProfile?.seasonProgress?.[currentSeason.id] ?? 0;
 
   return (
     <div 
@@ -41,8 +43,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                   <PlayerProfileHeader profile={playerProfile} />
                   <div className="flex items-start gap-1">
                     <ResourceDisplay 
-                      seasonResourceName={playerProfile ? playerProfile.seasonProgress[playerProfile.currentSeasonId]?.toString() ?? '0' : '0'} 
-                      auronCount={playerProfile?.auron ?? 0} 
+                      seasonResourceAmount={seasonProgress}
+                      auronCount={playerProfile.auron ?? 0} 
                     />
                     <div className="flex flex-col items-start gap-1 ml-1 pl-1 border-l border-border">
                         <p className="text-[10px] text-muted-foreground mb-0.5 font-semibold hidden sm:block">Get Auron:</p>
@@ -95,5 +97,3 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 };
 
 export default AppLayout;
-
-    
