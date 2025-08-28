@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -168,22 +167,6 @@ export default function HomePage() {
                 {/* Right Column: Commander and Buttons */}
                 <div className="flex-grow flex flex-col items-center justify-end">
                     <CommanderPortrait onTap={handleTap} />
-
-                    {isOutOfTaps && (
-                        <motion.div
-                            initial={{ y: 50, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.7 }}
-                            className="w-full max-w-[280px] bg-destructive/20 border border-destructive/50 text-destructive-foreground p-2 rounded-lg shadow-lg space-y-1.5 text-center mt-2 z-40"
-                        >
-                            <div className="flex items-center justify-center gap-1.5">
-                                <AlertTriangle className="h-4 w-4 animate-pulse" />
-                                <p className="font-bold text-sm sm:text-base">Tap Energy Depleted!</p>
-                            </div>
-                            <p className="text-xs">Wait for regeneration or refill your taps with Auron.</p>
-                        </motion.div>
-                    )}
-
                     <motion.div 
                         initial={{ x: 100, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
@@ -213,6 +196,20 @@ export default function HomePage() {
                             </Link>
                         </Button>
                     </motion.div>
+                    {isOutOfTaps && (
+                        <motion.div
+                            initial={{ y: 50, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ delay: 0.7 }}
+                            className="w-full max-w-[280px] bg-destructive/20 border border-destructive/50 text-destructive-foreground p-2 rounded-lg shadow-lg space-y-1.5 text-center mt-2 z-40"
+                        >
+                            <div className="flex items-center justify-center gap-1.5">
+                                <AlertTriangle className="h-4 w-4 animate-pulse" />
+                                <p className="font-bold text-sm sm:text-base">Tap Energy Depleted!</p>
+                            </div>
+                            <p className="text-xs">Wait for regeneration or refill your taps with Auron.</p>
+                        </motion.div>
+                    )}
                 </div>
             </div>
         </div>
