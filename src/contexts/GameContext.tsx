@@ -129,6 +129,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [toast]);
 
   const refreshDailyQuestsIfNeeded = useCallback(() => {
+    let shouldToast = false;
     setPlayerProfile(prev => {
         if (!prev) return null;
 
@@ -173,17 +174,22 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 usedTemplateIds.add(template.templateId);
             }
         }
-        setTimeout(() => {
-          toast({ title: "Daily Quests Refreshed!", description: "New challenges await you, Commander." });
-        }, 500);
+        shouldToast = true;
         return { ...prev, activeDailyQuests: newQuests, lastDailyQuestRefresh: now.getTime() };
     });
+
+    if (shouldToast) {
+       setTimeout(() => {
+          toast({ title: "Daily Quests Refreshed!", description: "New challenges await you, Commander." });
+        }, 500);
+    }
   }, [toast]);
 
   useEffect(() => {
     const savedProfile = localStorage.getItem('playerProfile');
     if (savedProfile) {
       let parsedProfile = JSON.parse(savedProfile) as PlayerProfile;
+      let shouldToast = false;
 
       // Initialize new fields for backward compatibility
       parsedProfile.lastLoginTimestamp = parsedProfile.lastLoginTimestamp ?? Date.now();
@@ -192,19 +198,25 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       // Calculate offline earnings
       const now = Date.now();
       const timeAwayInMinutes = Math.floor((now - parsedProfile.lastLoginTimestamp) / 60000);
+      let pointsGained = 0;
       if (timeAwayInMinutes > 1 && parsedProfile.muleDrones > 0) {
-        const pointsGained = Math.floor(parsedProfile.muleDrones * MULE_DRONE_BASE_RATE * timeAwayInMinutes);
+        pointsGained = Math.floor(parsedProfile.muleDrones * MULE_DRONE_BASE_RATE * timeAwayInMinutes);
         if (pointsGained > 0) {
           parsedProfile.points += pointsGained;
-          setTimeout(() => {
+          shouldToast = true;
+        }
+      }
+      parsedProfile.lastLoginTimestamp = now; // Update timestamp for the current session
+      
+      if (shouldToast) {
+         setTimeout(() => {
             toast({
               title: 'Welcome Back, Commander!',
               description: `Your M.U.L.E. Drones generated ${pointsGained.toLocaleString()} points while you were away.`,
             });
           }, 1000);
-        }
       }
-      parsedProfile.lastLoginTimestamp = now; // Update timestamp for the current session
+
 
       // Standard initializations
       parsedProfile.maxTaps = parsedProfile.maxTaps ?? INITIAL_MAX_TAPS;
@@ -249,7 +261,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (savedCoreMessages) {
         setCoreMessages(JSON.parse(savedCoreMessages));
     }
-  }, []);
+  }, [toast]);
 
   useEffect(() => {
     if (playerProfile && isInitialSetupDone) {
@@ -327,6 +339,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       let finalAmount = amount;
       let updatedProfile = { ...prev };
+      
+      let expiredBonuses: ActiveTapBonus[] = [];
 
       if (isFromTap && updatedProfile.activeTapBonuses && updatedProfile.activeTapBonuses.length > 0) {
         let totalBonusMultiplierFactor = 0; 
@@ -338,15 +352,20 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         
         finalAmount = amount * (1 + totalBonusMultiplierFactor);
 
-        
         updatedProfile.activeTapBonuses.forEach(oldBonus => {
             if (!stillActiveBonuses.find(b => b.id === oldBonus.id)) {
-                setTimeout(() => { 
-                    toast({ title: "Bonus Expired", description: `${oldBonus.name} has worn off.` });
-                }, 0);
+                expiredBonuses.push(oldBonus);
             }
         });
         updatedProfile.activeTapBonuses = stillActiveBonuses;
+      }
+      
+      if (expiredBonuses.length > 0) {
+          setTimeout(() => {
+              expiredBonuses.forEach(b => {
+                 toast({ title: "Bonus Expired", description: `${b.name} has worn off.` });
+              });
+          }, 0);
       }
 
       finalAmount = Math.round(finalAmount);
@@ -356,17 +375,26 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       let newXp = updatedProfile.xp + finalAmount;
       let levelChanged = false;
+      let newLevel = updatedProfile.level;
+      let newRank = updatedProfile.rankTitle;
+
       while (newXp >= updatedProfile.xpToNextLevel) {
         newXp -= updatedProfile.xpToNextLevel;
-        updatedProfile.level++;
+        newLevel++;
         levelChanged = true;
         updatedProfile.xpToNextLevel = Math.floor(updatedProfile.xpToNextLevel * XP_LEVEL_MULTIPLIER);
-        updatedProfile.rankTitle = getRankTitle(updatedProfile.level);
-        const levelUpMessage = `Congratulations Commander, you've reached Level ${updatedProfile.level} - ${updatedProfile.rankTitle}!`;
-        setTimeout(() => {
-            toast({ title: "Rank Up!", description: levelUpMessage });
-        }, 0);
+        newRank = getRankTitle(newLevel);
       }
+      
+      if (levelChanged) {
+          updatedProfile.level = newLevel;
+          updatedProfile.rankTitle = newRank;
+          const levelUpMessage = `Congratulations Commander, you've reached Level ${newLevel} - ${newRank}!`;
+          setTimeout(() => {
+              toast({ title: "Rank Up!", description: levelUpMessage });
+          }, 0);
+      }
+
       updatedProfile.xp = newXp;
       if (levelChanged) {
         updatedProfile.currentTierColor = getTierColorByLevel(updatedProfile.level);
@@ -385,14 +413,19 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       // Battle Pass XP Gain
       let newBattlePassXp = updatedProfile.battlePassXp + finalAmount; // 1 point = 1 BP XP for simplicity
+      let bpLevelledUp = false;
       while(newBattlePassXp >= updatedProfile.xpToNextBattlePassLevel) {
         newBattlePassXp -= updatedProfile.xpToNextBattlePassLevel;
         updatedProfile.battlePassLevel++;
-        setTimeout(() => {
-          toast({ title: "Battle Pass Level Up!", description: `You've reached Level ${updatedProfile.battlePassLevel} in the Battle Pass!` });
-        }, 500);
+        bpLevelledUp = true;
       }
       updatedProfile.battlePassXp = newBattlePassXp;
+      if (bpLevelledUp) {
+          setTimeout(() => {
+            toast({ title: "Battle Pass Level Up!", description: `You've reached Level ${updatedProfile.battlePassLevel} in the Battle Pass!` });
+          }, 500);
+      }
+
 
       return updatedProfile;
     });
@@ -411,48 +444,47 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [getUpgradeLevel]);
 
   const purchaseUpgrade = useCallback((upgradeId: string) => {
+    const upgradeInfo = UPGRADES_DATA.find(u => u.id === upgradeId);
+    if (!upgradeInfo) return;
+    
+    let canAfford = false;
+    let isMaxLevel = false;
+
     setPlayerProfile(prev => {
       if (!prev) return null;
       const cost = getUpgradeCost(upgradeId);
-      const upgradeInfo = UPGRADES_DATA.find(u => u.id === upgradeId);
+      const currentLevel = prev.upgrades[upgradeId] || 0;
+      
+      canAfford = prev.points >= cost;
+      isMaxLevel = !!(upgradeInfo.maxLevel && currentLevel >= upgradeInfo.maxLevel);
 
-      if (prev.points >= cost) {
-        const currentLevel = prev.upgrades[upgradeId] || 0;
-
-        if (upgradeInfo?.maxLevel && currentLevel >= upgradeInfo.maxLevel) {
-          setTimeout(() => {
-            toast({ title: "Max Level Reached", description: `${upgradeInfo.name} is already at its maximum level.`, variant: "default" });
-          }, 0);
-          return prev;
-        }
-        setTimeout(() => {
-          toast({ title: "Upgrade Purchased!", description: `Successfully upgraded ${upgradeInfo?.name}.` });
-        }, 0);
-
-        let updatedProfile = {
-          ...prev,
-          points: prev.points - cost,
-          upgrades: {
-            ...prev.upgrades,
-            [upgradeId]: (prev.upgrades[upgradeId] || 0) + 1,
-          }
-        };
-
-        // If it's a M.U.L.E. drone, also update the separate counter
-        if (upgradeId === 'muleDrone') {
-          updatedProfile.muleDrones = (updatedProfile.upgrades[upgradeId] || 0);
-        }
-
-        updatedProfile = updateQuestProgress(updatedProfile, 'purchase_upgrade', 1);
-        return updatedProfile;
-
-      } else {
-        setTimeout(() => {
-          toast({ title: "Insufficient Points", description: "Not enough points to purchase this upgrade.", variant: "destructive" });
-        }, 0);
+      if (!canAfford || isMaxLevel) {
         return prev;
       }
+
+      let updatedProfile = {
+        ...prev,
+        points: prev.points - cost,
+        upgrades: {
+          ...prev.upgrades,
+          [upgradeId]: currentLevel + 1,
+        }
+      };
+
+      if (upgradeId === 'muleDrone') {
+        updatedProfile.muleDrones = (updatedProfile.upgrades[upgradeId] || 0);
+      }
+
+      return updateQuestProgress(updatedProfile, 'purchase_upgrade', 1);
     });
+
+    if (isMaxLevel) {
+        toast({ title: "Max Level Reached", description: `${upgradeInfo.name} is already at its maximum level.`, variant: "default" });
+    } else if (!canAfford) {
+        toast({ title: "Insufficient Points", description: "Not enough points to purchase this upgrade.", variant: "destructive" });
+    } else {
+        toast({ title: "Upgrade Purchased!", description: `Successfully upgraded ${upgradeInfo.name}.` });
+    }
   }, [getUpgradeCost, toast, updateQuestProgress]);
 
   const getArkUpgradeById = useCallback((upgradeId: string) => {
@@ -460,92 +492,94 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const purchaseArkUpgrade = useCallback((upgradeId: string) => {
+    const arkUpgrade = ARK_UPGRADES_DATA.find(u => u.id === upgradeId);
+    if (!arkUpgrade) return;
+
+    let success = false;
+    
     setPlayerProfile(prev => {
-      if (!prev) return null;
-      const arkUpgrade = ARK_UPGRADES_DATA.find(u => u.id === upgradeId);
-      if (!arkUpgrade || prev.upgrades[upgradeId]) {
-        setTimeout(() => {
-          toast({ title: "Upgrade Invalid", description: "This Ark upgrade is already purchased or does not exist.", variant: "default" });
-        }, 0);
-        return prev;
-      }
-      if (prev.points >= arkUpgrade.cost) {
-        setTimeout(() => {
-          toast({ title: "Ark Upgrade Complete!", description: `${arkUpgrade.name} installed on your StarForge Ark.` });
-        }, 0);
+        if (!prev) return null;
+
+        if (prev.upgrades[upgradeId]) {
+            toast({ title: "Upgrade Invalid", description: "This Ark upgrade is already purchased or does not exist.", variant: "default" });
+            return prev;
+        }
+
+        if (prev.points < arkUpgrade.cost) {
+            toast({ title: "Insufficient Points", description: "Not enough points for this Ark upgrade.", variant: "destructive" });
+            return prev;
+        }
+
         const newUpgrades = { ...prev.upgrades, [upgradeId]: 1 };
         const allArkUpgradesPurchased = ARK_UPGRADES_DATA.every(u => newUpgrades[u.id]);
+        
+        success = true;
 
         let updatedProfile = {
-          ...prev,
-          points: prev.points - arkUpgrade.cost,
-          upgrades: newUpgrades,
-          arkHangarFullyUpgraded: allArkUpgradesPurchased,
+            ...prev,
+            points: prev.points - arkUpgrade.cost,
+            upgrades: newUpgrades,
+            arkHangarFullyUpgraded: allArkUpgradesPurchased,
         };
-        updatedProfile = updateQuestProgress(updatedProfile, 'purchase_upgrade', 1);
-        return updatedProfile;
-      } else {
-        setTimeout(() => {
-          toast({ title: "Insufficient Points", description: "Not enough points for this Ark upgrade.", variant: "destructive" });
-        }, 0);
-        return prev;
-      }
+        return updateQuestProgress(updatedProfile, 'purchase_upgrade', 1);
     });
+
+    if (success) {
+      toast({ title: "Ark Upgrade Complete!", description: `${arkUpgrade.name} installed on your StarForge Ark.` });
+    }
   }, [toast, updateQuestProgress]);
 
   const purchaseMarketplaceItem = useCallback((itemId: string) => {
+    const item = MARKETPLACE_ITEMS_DATA.find(i => i.id === itemId);
+    if (!item) {
+        toast({ title: "Item not found", variant: "destructive" });
+        return;
+    }
+
+    let success = false;
+
     setPlayerProfile(prev => {
-      if (!prev) return null;
-      const item = MARKETPLACE_ITEMS_DATA.find(i => i.id === itemId);
-      if (!item) {
-        setTimeout(() => {
-          toast({ title: "Item not found", variant: "destructive" });
-        }, 0);
-        return prev;
-      }
+        if (!prev) return null;
 
-      if (prev.auron < item.costInAuron) {
-        setTimeout(() => {
-          toast({ title: "Insufficient Auron", description: `You need ${item.costInAuron} Auron to purchase ${item.name}.`, variant: "destructive" });
-        }, 0);
-        return prev;
-      }
+        if (prev.auron < item.costInAuron) {
+            toast({ title: "Insufficient Auron", description: `You need ${item.costInAuron} Auron to purchase ${item.name}.`, variant: "destructive" });
+            return prev;
+        }
 
-      const newBonus: ActiveTapBonus = {
-        id: crypto.randomUUID(), 
-        marketItemId: item.id,
-        name: item.name,
-        remainingTaps: item.bonusEffect.durationTaps,
-        bonusMultiplier: item.bonusEffect.multiplier,
-        originalDurationTaps: item.bonusEffect.durationTaps,
-      };
+        const newBonus: ActiveTapBonus = {
+            id: crypto.randomUUID(), 
+            marketItemId: item.id,
+            name: item.name,
+            remainingTaps: item.bonusEffect.durationTaps,
+            bonusMultiplier: item.bonusEffect.multiplier,
+            originalDurationTaps: item.bonusEffect.durationTaps,
+        };
 
-      setTimeout(() => {
-        toast({ title: "Purchase Successful!", description: `${item.name} activated.` });
-      }, 0);
+        success = true;
 
-      let updatedProfile = {
-        ...prev,
-        auron: prev.auron - item.costInAuron,
-        activeTapBonuses: [...(prev.activeTapBonuses || []), newBonus],
-      };
-      updatedProfile = updateQuestProgress(updatedProfile, 'spend_auron', item.costInAuron);
-      return updatedProfile;
+        let updatedProfile = {
+            ...prev,
+            auron: prev.auron - item.costInAuron,
+            activeTapBonuses: [...(prev.activeTapBonuses || []), newBonus],
+        };
+        return updateQuestProgress(updatedProfile, 'spend_auron', item.costInAuron);
     });
+
+    if (success) {
+      toast({ title: "Purchase Successful!", description: `${item.name} activated.` });
+    }
   }, [toast, updateQuestProgress]);
 
   const connectWallet = useCallback(() => {
     setPlayerProfile(prev => {
       if (!prev || prev.isWalletConnected) return prev;
-      setTimeout(() => {
-        toast({ title: "Wallet Connected!", description: `You've received ${AURON_PER_WALLET_CONNECT} Auron bonus and unlocked the Ark Hangar!` });
-      }, 0);
       return {
         ...prev,
         isWalletConnected: true,
         auron: prev.auron + AURON_PER_WALLET_CONNECT,
       };
     });
+    toast({ title: "Wallet Connected!", description: `You've received ${AURON_PER_WALLET_CONNECT} Auron bonus and unlocked the Ark Hangar!` });
   }, [toast]);
 
   const baseTapPower = POINTS_PER_TAP;
@@ -562,11 +596,16 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const comboMultiplierValue = 1 + (comboBonusUpgradeLevel * 0.02) + (comboCount * 0.01);
 
   const handleTap = useCallback(() => {
-    let profileBeforeTap: PlayerProfile | null = null;
+    let tapResult = {
+        wasTapped: false,
+        isCritical: false,
+        isOutOfTaps: false,
+        newPiece: ''
+    };
+
     setPlayerProfile(prev => {
         if (!prev) return null;
-        profileBeforeTap = { ...prev }; 
-
+        
         let updatedProfile = {...prev};
         const now = Date.now();
 
@@ -579,35 +618,27 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
 
         if (updatedProfile.currentTaps <= 0) {
-            const timeLeft = Math.ceil((updatedProfile.tapsAvailableAt - now) / 1000);
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            setTimeout(() => {
-                toast({ title: "Out of Taps!", description: `Wait ${minutes}m ${seconds}s or refill.`, variant: "destructive" });
-            }, 0);
+            tapResult.isOutOfTaps = true;
             return updatedProfile;
         }
-
+        
+        tapResult.wasTapped = true;
         updatedProfile.currentTaps--;
         if (updatedProfile.currentTaps === 0) {
             updatedProfile.tapsAvailableAt = now + TAP_REGEN_COOLDOWN_MILLISECONDS;
         }
 
         let basePointsForTap = pointsPerTapValue;
-        const isCritical = Math.random() < criticalTapChance;
+        tapResult.isCritical = Math.random() < criticalTapChance;
 
-        if (isCritical) {
+        if (tapResult.isCritical) {
             basePointsForTap *= criticalTapMultiplier;
-            setTimeout(() => {
-                 toast({ title: "Critical Tap!", description: `Base power amplified!`, duration: 1500 });
-            },0);
         }
 
         basePointsForTap *= comboMultiplierValue;
         basePointsForTap = Math.round(basePointsForTap);
 
         addPoints(basePointsForTap, true); 
-
 
         updatedProfile.totalTapsForUniform = (updatedProfile.totalTapsForUniform || 0) + 1;
         let newEquippedUniformPieces = [...(updatedProfile.equippedUniformPieces || [])];
@@ -617,38 +648,49 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (targetEquippedCount > currentlyEquippedCount && currentlyEquippedCount < UNIFORM_PIECES_ORDER.length) {
             const newPiece = UNIFORM_PIECES_ORDER[currentlyEquippedCount];
             newEquippedUniformPieces.push(newPiece);
-            setTimeout(() => {
-                toast({ title: "Uniform Piece Unlocked!", description: `Acquired: ${newPiece}`});
-                addCoreMessage({ type: 'system_alert', content: `Commander, your combat readiness has increased. New gear acquired: ${newPiece}.` });
-            }, 0);
+            tapResult.newPiece = newPiece;
         }
         updatedProfile.equippedUniformPieces = newEquippedUniformPieces;
-        updatedProfile = updateQuestProgress(updatedProfile, 'taps', 1);
         
-        return updatedProfile;
+        return updateQuestProgress(updatedProfile, 'taps', 1);
     });
 
     setComboCount(prevCount => prevCount + 1);
     setTimeout(() => setComboCount(0), 3000);
 
-  }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, toast, addCoreMessage, updateQuestProgress, addPoints ]);
+    if (tapResult.isOutOfTaps) {
+         if (playerProfile) {
+            const timeLeft = Math.ceil((playerProfile.tapsAvailableAt - Date.now()) / 1000);
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            toast({ title: "Out of Taps!", description: `Wait ${minutes}m ${seconds}s or refill.`, variant: "destructive" });
+        }
+    }
+    
+    if(tapResult.isCritical) {
+        toast({ title: "Critical Tap!", description: `Base power amplified!`, duration: 1500 });
+    }
+
+    if(tapResult.newPiece) {
+        toast({ title: "Uniform Piece Unlocked!", description: `Acquired: ${tapResult.newPiece}`});
+        addCoreMessage({ type: 'system_alert', content: `Commander, your combat readiness has increased. New gear acquired: ${tapResult.newPiece}.` });
+    }
+
+  }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, toast, addCoreMessage, updateQuestProgress, addPoints, playerProfile ]);
 
 
   const switchCommanderSex = useCallback(() => {
     setPlayerProfile(prev => {
       if (!prev) return null;
       const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
-      setTimeout(() => {
-        toast({ title: "Commander Profile Updated", description: `Switched to ${newSex === 'male' ? 'Male' : 'Female'} Commander.` });
-      }, 0);
-      return {
-        ...prev,
-        commanderSex: newSex,
-      };
+       return { ...prev, commanderSex: newSex };
     });
-  }, [toast]);
+    toast({ title: "Commander Profile Updated", description: `Switched to ${playerProfile?.commanderSex === 'female' ? 'Male' : 'Female'} Commander.` });
+  }, [toast, playerProfile?.commanderSex]);
 
   const claimQuestReward = useCallback((questId: string) => {
+    let claimedQuest: DailyQuest | null = null;
+
     setPlayerProfile(prev => {
         if (!prev) return null;
         const questIndex = prev.activeDailyQuests.findIndex(q => q.id === questId);
@@ -656,7 +698,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         const quest = prev.activeDailyQuests[questIndex];
         if (!quest.isCompleted || quest.isClaimed) return prev;
-
+        
+        claimedQuest = quest;
         let updatedProfile = { ...prev };
         if (quest.reward.points) {
             updatedProfile.points += quest.reward.points;
@@ -677,36 +720,36 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         updatedQuests[questIndex] = { ...quest, isClaimed: true };
         updatedProfile.activeDailyQuests = updatedQuests;
 
-        setTimeout(() => {
-            toast({ title: "Quest Reward Claimed!", description: `You received rewards for: ${quest.title}` });
-        }, 0);
-
         return updatedProfile;
     });
+
+    if (claimedQuest) {
+       toast({ title: "Quest Reward Claimed!", description: `You received rewards for: ${claimedQuest.title}` });
+    }
   }, [toast]);
 
   const refillTaps = useCallback(() => {
+    let success = false;
     setPlayerProfile(prev => {
         if (!prev) return null;
         if (prev.auron < AURON_COST_FOR_TAP_REFILL) {
-            setTimeout(() => {
-                toast({ title: "Insufficient Auron", description: `You need ${AURON_COST_FOR_TAP_REFILL} Auron to refill taps.`, variant: "destructive" });
-            }, 0);
             return prev;
         }
-        setTimeout(() => {
-            toast({ title: "Taps Refilled!", description: `Your tap energy has been restored for ${AURON_COST_FOR_TAP_REFILL} Auron.` });
-        }, 0);
-
+        success = true;
         let updatedProfile = {
             ...prev,
             auron: prev.auron - AURON_COST_FOR_TAP_REFILL,
             currentTaps: prev.maxTaps,
             tapsAvailableAt: Date.now(),
         };
-        updatedProfile = updateQuestProgress(updatedProfile, 'spend_auron', AURON_COST_FOR_TAP_REFILL);
-        return updatedProfile;
+        return updateQuestProgress(updatedProfile, 'spend_auron', AURON_COST_FOR_TAP_REFILL);
     });
+
+    if (success) {
+        toast({ title: "Taps Refilled!", description: `Your tap energy has been restored for ${AURON_COST_FOR_TAP_REFILL} Auron.` });
+    } else {
+        toast({ title: "Insufficient Auron", description: `You need ${AURON_COST_FOR_TAP_REFILL} Auron to refill taps.`, variant: "destructive" });
+    }
   }, [toast, updateQuestProgress]);
 
 
@@ -772,56 +815,67 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [isInitialSetupDone, playerProfile, currentSeason.id, isCoreUnlocked, coreLastInteractionTime, addCoreMessage, getUpgradeCost, addPoints, isAICallInProgress]);
 
   const purchasePremiumPass = useCallback(() => {
+    let canAfford = false;
+    let alreadyHas = false;
     setPlayerProfile(prev => {
-      if (!prev) return null;
-      if (prev.hasPremiumPass) {
-        toast({ title: 'Already Unlocked', description: 'You already have the Premium Battle Pass.' });
-        return prev;
-      }
-      if (prev.auron < BATTLE_PASS_DATA.premiumCostInAuron) {
-        toast({ title: 'Insufficient Auron', description: `You need ${BATTLE_PASS_DATA.premiumCostInAuron} Auron to unlock the premium pass.`, variant: 'destructive' });
-        return prev;
-      }
-      toast({ title: 'Premium Pass Unlocked!', description: 'You now have access to premium rewards.' });
-      return {
-        ...prev,
-        auron: prev.auron - BATTLE_PASS_DATA.premiumCostInAuron,
-        hasPremiumPass: true,
-      };
+        if (!prev) return null;
+        if (prev.hasPremiumPass) {
+            alreadyHas = true;
+            return prev;
+        }
+        if (prev.auron < BATTLE_PASS_DATA.premiumCostInAuron) {
+            canAfford = false;
+            return prev;
+        }
+        canAfford = true;
+        return {
+            ...prev,
+            auron: prev.auron - BATTLE_PASS_DATA.premiumCostInAuron,
+            hasPremiumPass: true,
+        };
     });
+
+    if(alreadyHas) {
+        toast({ title: 'Already Unlocked', description: 'You already have the Premium Battle Pass.' });
+    } else if (!canAfford) {
+        toast({ title: 'Insufficient Auron', description: `You need ${BATTLE_PASS_DATA.premiumCostInAuron} Auron to unlock the premium pass.`, variant: 'destructive' });
+    } else {
+        toast({ title: 'Premium Pass Unlocked!', description: 'You now have access to premium rewards.' });
+    }
   }, [toast]);
 
   const claimBattlePassReward = useCallback((level: number, track: 'free' | 'premium') => {
+    let rewardToClaim: BattlePassReward | null = null;
+    let result = 'fail'; // 'fail', 'claimed', 'not_reached', 'premium_locked', 'success'
+
     setPlayerProfile(prev => {
       if (!prev) return null;
       
       const rewardLevel = BATTLE_PASS_DATA.levels.find(l => l.level === level);
-      if (!rewardLevel) return prev;
+      if (!rewardLevel) { result='fail'; return prev; }
 
       const reward = track === 'free' ? rewardLevel.freeReward : rewardLevel.premiumReward;
-      if (!reward) return prev;
+      if (!reward) { result='fail'; return prev; }
 
-      // Check if reward is already claimed
       if (prev.claimedBattlePassRewards[level]?.includes(track)) {
-        toast({ title: 'Reward Already Claimed', variant: 'default' });
+        result='claimed';
         return prev;
       }
 
-      // Check if player has reached the level
       if (prev.battlePassLevel < level) {
-         toast({ title: 'Level Not Reached', description: `You must reach level ${level} to claim this reward.`, variant: 'destructive' });
-        return prev;
+         result='not_reached';
+         return prev;
       }
       
-      // Check for premium pass if claiming premium reward
       if (track === 'premium' && !prev.hasPremiumPass) {
-        toast({ title: 'Premium Pass Required', description: 'Unlock the premium pass to claim this reward.', variant: 'destructive' });
+        result='premium_locked';
         return prev;
       }
 
+      result = 'success';
+      rewardToClaim = reward;
       let updatedProfile = { ...prev };
 
-      // Apply reward
       switch (reward.type) {
         case 'points':
           updatedProfile.points += reward.amount || 0;
@@ -839,17 +893,33 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           break;
       }
 
-      // Mark as claimed
       const claimedForLevel = updatedProfile.claimedBattlePassRewards[level] || [];
       updatedProfile.claimedBattlePassRewards = {
         ...updatedProfile.claimedBattlePassRewards,
         [level]: [...claimedForLevel, track],
       };
       
-      toast({ title: 'Reward Claimed!', description: `You have received: ${reward.amount || ''} ${reward.name || reward.type}` });
-
       return updatedProfile;
     });
+
+    setTimeout(() => {
+      switch(result) {
+        case 'success':
+            toast({ title: 'Reward Claimed!', description: `You have received: ${rewardToClaim?.amount || ''} ${rewardToClaim?.name || rewardToClaim?.type}` });
+            break;
+        case 'claimed':
+            toast({ title: 'Reward Already Claimed', variant: 'default' });
+            break;
+        case 'not_reached':
+            toast({ title: 'Level Not Reached', description: `You must reach level ${level} to claim this reward.`, variant: 'destructive' });
+            break;
+        case 'premium_locked':
+            toast({ title: 'Premium Pass Required', description: 'Unlock the premium pass to claim this reward.', variant: 'destructive' });
+            break;
+        default:
+             // fail case, maybe do nothing
+      }
+    }, 0);
   }, [toast]);
 
   return (
