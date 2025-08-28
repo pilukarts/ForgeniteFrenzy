@@ -30,7 +30,7 @@ const LevelMapPage: React.FC = () => {
         />
 
         {/* Layer 2: Shooting Stars Container */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
             <div className="shooting-star"></div>
@@ -117,5 +117,3 @@ const LevelMapPage: React.FC = () => {
 };
 
 export default LevelMapPage;
-
-    

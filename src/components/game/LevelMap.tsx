@@ -42,7 +42,7 @@ const LevelMap: React.FC = () => {
   }
 
   const { level: currentPlayerLevel, commanderSex } = playerProfile;
-  const commanderImgSrc = commanderSex === 'male' ? "https://i.imgur.com/iuRJVBZ.png" : "https://i.imgur.com/BQHeVWp.png";
+  const commanderImgSrc = commanderSex === 'male' ? "https://i.imgur.com/gB3i4OQ.png" : "https://i.imgur.com/J3tG1e4.png";
   const commanderAlt = commanderSex === 'male' ? "Male Commander" : "Female Commander";
   const commanderDataAiHint = commanderSex === 'male' ? "male soldier portrait" : "female soldier portrait";
 
@@ -67,13 +67,15 @@ const LevelMap: React.FC = () => {
 
   return (
     <div ref={scrollContainerRef} className="h-full w-full overflow-y-auto relative p-4">
-        <div style={{ height: `${(startLevel - 1) * 8}rem` }} />
+        {/* Spacer for levels before the rendered window, to keep scrollbar size consistent */}
+        <div style={{ height: `${(startLevel - 1) * 8}rem` }} /> 
         <div className="flex flex-col items-center gap-y-4">
             {levelsToRender.slice().reverse().map((level) => {
                 const isCurrent = level === currentPlayerLevel;
                 const isCompleted = level < currentPlayerLevel;
                 const stage = getStageForLevel(level);
 
+                // Create a sine wave path for the levels
                 const sineOffset = Math.sin(level * 0.5) * 40;
 
                 const stageStyles = {
@@ -150,6 +152,7 @@ const LevelMap: React.FC = () => {
                 );
             })}
         </div>
+        {/* Spacer for levels after the rendered window */}
         <div style={{ height: `${(TOTAL_LEVELS - endLevel) * 8}rem` }} />
     </div>
   );
