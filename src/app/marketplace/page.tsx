@@ -56,7 +56,7 @@ const MarketplacePage: React.FC = () => {
                   </CardHeader>
                   <CardContent className="flex-grow p-3 sm:p-4 pt-0"> {/* Adjusted padding */}
                     <p className="text-xs sm:text-sm text-primary flex items-center">
-                        Effect: +{(item.bonusEffect.multiplier - 1) * 100}% Tap Power for {item.bonusEffect.durationTaps} taps.
+                        Effect: +{Math.round((item.bonusEffect.multiplier - 1) * 100)}% Tap Power for {item.bonusEffect.durationTaps} taps.
                     </p>
                   </CardContent>
                   <CardFooter className="flex-col items-stretch space-y-1.5 sm:space-y-2 p-3 sm:p-4 pt-0"> {/* Adjusted padding and spacing */}
