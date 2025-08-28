@@ -10,14 +10,17 @@ import { Wallet, CreditCard, Landmark } from 'lucide-react';
 import CoreDisplay from '@/components/core/CoreDisplay';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import CommanderOrder from '@/components/game/CommanderOrder';
 
 interface AppLayoutProps {
   children: ReactNode;
 }
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
-  const { playerProfile, connectWallet } = useGame();
+  const { playerProfile, connectWallet, activeCommanderOrder, claimCommanderOrderReward, isCommanderOrderHidden, hideCommanderOrder } = useGame();
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
+  
+  const showCommanderOrder = activeCommanderOrder && !isCommanderOrderHidden;
 
   return (
     <div 
@@ -75,6 +78,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           
           {playerProfile && <CoreDisplay />}
           
+          {showCommanderOrder && <CommanderOrder order={activeCommanderOrder} onClaim={claimCommanderOrderReward} onHide={hideCommanderOrder} />}
+
           <BottomNavBar />
         </div>
       </div>
