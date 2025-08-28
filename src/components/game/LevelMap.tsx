@@ -7,6 +7,7 @@ import { Hexagon, Check, Lock } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { useToast } from '@/hooks/use-toast';
 
 // Constants for procedural layout
 const LEVELS_TO_GENERATE = 200; // Total levels for this "stage"
@@ -18,6 +19,7 @@ const HORIZONTAL_WAVE_FREQUENCY = 0.05;
 
 const LevelMap: React.FC = () => {
   const { playerProfile } = useGame();
+  const { toast } = useToast();
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const currentPlayerRef = useRef<HTMLDivElement>(null);
 
@@ -77,6 +79,16 @@ const LevelMap: React.FC = () => {
   const commanderAlt = commanderSex === 'male' ? "Male Commander" : "Female Commander";
   const commanderDataAiHint = commanderSex === 'male' ? "male soldier portrait" : "female soldier portrait";
 
+  const handleHexagonClick = (level: number, isUnlocked: boolean, isCurrent: boolean, isCompleted: boolean) => {
+    if (isCurrent) {
+        toast({ title: `C.O.R.E. Report`, description: `You are here, Commander. Mission: Level ${level}.` });
+    } else if (isCompleted) {
+        toast({ title: `Sector Cleared`, description: `Level ${level} has already been secured.` });
+    } else if (!isUnlocked) {
+        toast({ title: `Sector Locked`, description: `You must reach level ${level} to access this sector.`, variant: 'destructive' });
+    }
+  };
+
   return (
     <div className="relative w-full h-full overflow-auto" ref={mapContainerRef}>
       <div className="absolute" style={{ width: containerWidth, height: containerHeight }}>
@@ -107,10 +119,16 @@ const LevelMap: React.FC = () => {
                   zIndex: isCurrent ? 10 : 1,
                 }}
              >
-                <div className={cn(
-                    "relative w-full h-full flex items-center justify-center text-white font-bold",
-                    !isUnlocked && "opacity-50"
-                )}>
+                <button 
+                    onClick={() => handleHexagonClick(node.level, isUnlocked, isCurrent, isCompleted)}
+                    className={cn(
+                        "relative w-full h-full flex items-center justify-center text-white font-bold transition-transform duration-200",
+                        "focus:outline-none focus:ring-2 focus:ring-bright-gold focus:ring-offset-2 focus:ring-offset-background rounded-full",
+                        !isUnlocked && "opacity-50 cursor-not-allowed",
+                        isUnlocked && "hover:scale-110"
+                    )}
+                    aria-label={`Level ${node.level}`}
+                >
                     <Hexagon strokeWidth={1.5} className={cn(
                         "absolute w-full h-full transition-colors duration-300",
                         isUnlocked ? "text-primary/70 fill-primary/10" : "text-muted-foreground/30 fill-muted/10"
@@ -126,10 +144,10 @@ const LevelMap: React.FC = () => {
                                     data-ai-hint={commanderDataAiHint}
                                     width={60}
                                     height={60}
-                                    className="rounded-full object-cover border-2 border-bright-gold animate-pulse"
+                                    className="rounded-full object-cover border-2 border-bright-gold animate-pulse pointer-events-none"
                                     style={{ clipPath: 'circle(50% at 50% 50%)' }}
                                 />
-                                <span className="absolute -bottom-2 -right-2 text-xs bg-primary text-primary-foreground rounded-full h-5 w-5 flex items-center justify-center border-2 border-background">
+                                <span className="absolute -bottom-2 -right-2 text-xs bg-primary text-primary-foreground rounded-full h-5 w-5 flex items-center justify-center border-2 border-background pointer-events-none">
                                     {node.level}
                                 </span>
                            </div>
@@ -140,7 +158,7 @@ const LevelMap: React.FC = () => {
                            </>
                        )}
                     </div>
-                </div>
+                </button>
             </motion.div>
           )
         })}
