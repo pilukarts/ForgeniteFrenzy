@@ -41,7 +41,7 @@ const PlayerSetup: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <ScrollArea className="flex-grow">
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6 p-4">
               {/* Commander Selection */}
               <div className="space-y-3 text-center">
                 <Label className="text-foreground/80 text-base font-semibold">Select Commander Portrait</Label>
@@ -116,7 +116,7 @@ const PlayerSetup: React.FC = () => {
               </div>
           </CardContent>
         </ScrollArea>
-        <CardFooter className="flex-col flex-shrink-0 mt-auto pt-6">
+        <CardFooter className="flex-col flex-shrink-0 mt-auto pt-6 border-t border-border">
             <Button 
               onClick={handleSubmit}
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 text-lg"
@@ -134,3 +134,5 @@ const PlayerSetup: React.FC = () => {
 };
 
 export default PlayerSetup;
+
+    
