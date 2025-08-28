@@ -14,8 +14,8 @@ interface PlayerProfileHeaderProps {
 
 const PlayerProfileHeader: React.FC<PlayerProfileHeaderProps> = ({ profile }) => {
   const xpPercentage = profile.xpToNextLevel > 0 ? (profile.xp / profile.xpToNextLevel) * 100 : 0;
-  const avatarSrc = profile.commanderSex === 'male' ? "https://placehold.co/40x40.png" : "https://placehold.co/40x40.png";
-  const dataAiHint = profile.commanderSex === 'male' ? "diverse male" : "diverse female";
+  const avatarSrc = profile.commanderSex === 'male' ? "https://i.imgur.com/gB3i4OQ.png" : "https://i.imgur.com/J3tG1e4.png";
+  const dataAiHint = profile.commanderSex === 'male' ? "male commander" : "female commander";
 
   const { Icon: LeagueIcon, colorClass: leagueColorClass } = getLeagueIconAndColor(profile.league);
 

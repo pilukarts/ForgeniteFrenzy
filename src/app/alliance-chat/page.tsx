@@ -30,7 +30,7 @@ const AllianceChatPage: React.FC = () => {
           content: 'Welcome to the Alliance Strategic Comms, Commander. Coordinate with your allies here.',
           timestamp: Date.now() - 20000,
           isPlayer: false,
-          senderAvatar: 'https://placehold.co/40x40.png?text=CORE'
+          senderAvatar: 'https://i.imgur.com/8D3wW8E.png' // AI icon
         },
         {
           id: crypto.randomUUID(),
@@ -39,7 +39,7 @@ const AllianceChatPage: React.FC = () => {
           content: 'Glad to be here. Let\'s push for the next objective!',
           timestamp: Date.now() - 10000,
           isPlayer: false,
-          senderAvatar: 'https://placehold.co/40x40.png?text=CA'
+          senderAvatar: 'https://i.imgur.com/gB3i4OQ.png' // Generic male commander
         },
       ]);
     }
@@ -84,15 +84,16 @@ const AllianceChatPage: React.FC = () => {
 
   const getAvatarSrc = (msg: ChatMessage) => {
     if (msg.isPlayer) {
-        return playerProfile.commanderSex === 'male' ? "https://placehold.co/40x40.png" : "https://placehold.co/40x40.png";
+        return playerProfile.commanderSex === 'male' ? "https://i.imgur.com/gB3i4OQ.png" : "https://i.imgur.com/J3tG1e4.png";
     }
-    return msg.senderAvatar || "https://placehold.co/40x40.png";
+    return msg.senderAvatar || "https://i.imgur.com/8D3wW8E.png";
   }
    const getAvatarHint = (msg: ChatMessage) => {
     if (msg.isPlayer && playerProfile) { 
-        return playerProfile.commanderSex === 'male' ? "diverse male" : "diverse female";
+        return playerProfile.commanderSex === 'male' ? "male commander" : "female commander";
     }
-    return "avatar placeholder";
+     if (msg.senderId === 'core_system') return "ai hexagon";
+    return "male commander";
   }
 
 
