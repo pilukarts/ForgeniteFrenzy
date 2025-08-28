@@ -1,15 +1,13 @@
-
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Image from 'next/image';
-import { useGame } from '@/contexts/GameContext';
 import type { CommanderOrder } from '@/lib/types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Award, Timer, X } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { useGame } from '@/contexts/GameContext';
 
 interface CommanderOrderProps {
   order: CommanderOrder;
@@ -28,17 +26,16 @@ const formatTime = (ms: number) => {
 
 const CommanderOrderBanner: React.FC<CommanderOrderProps> = ({ order, onClaim, onHide }) => {
   const { playerProfile } = useGame();
-  const [timeLeft, setTimeLeft] = useState(order.endTime - Date.now());
-  const [key, setKey] = useState(order.id);
+  const [timeLeft, setTimeLeft] = React.useState(order.endTime - Date.now());
+  const [key, setKey] = React.useState(order.id);
 
-  // Corrected image URLs
   const commanderImgSrc = playerProfile?.commanderSex === 'male' 
     ? "https://i.imgur.com/gB3i4OQ.png"
     : "https://i.imgur.com/J3tG1e4.png";
   const commanderAlt = playerProfile?.commanderSex === 'male' ? 'Male Commander' : 'Female Commander';
   const commanderDataAiHint = playerProfile?.commanderSex === 'male' ? 'male commander headshot' : 'female commander headshot';
-
-  useEffect(() => {
+  
+  React.useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(prev => Math.max(0, prev - 1000));
     }, 1000);
@@ -46,8 +43,7 @@ const CommanderOrderBanner: React.FC<CommanderOrderProps> = ({ order, onClaim, o
     return () => clearInterval(timer);
   }, [order.id]);
   
-  useEffect(() => {
-    // Reset animation when a new order comes in
+  React.useEffect(() => {
     setKey(order.id);
   }, [order.id]);
 
@@ -62,10 +58,9 @@ const CommanderOrderBanner: React.FC<CommanderOrderProps> = ({ order, onClaim, o
         animate={{ y: 0 }}
         exit={{ y: '100%' }}
         transition={{ type: 'spring', stiffness: 100, damping: 20 }}
-        className="fixed bottom-0 left-0 right-0 w-full z-50 p-1 sm:p-2 pointer-events-none"
+        className="fixed bottom-0 left-0 right-0 w-full z-[50] p-1 sm:p-2 pointer-events-none"
       >
         <div className="relative pt-8 max-w-md mx-auto pointer-events-auto">
-            {/* Commander Portrait floating above */}
             <motion.div 
                 className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-24 z-20"
                 initial={{ scale: 0, y: 50}}
@@ -76,19 +71,19 @@ const CommanderOrderBanner: React.FC<CommanderOrderProps> = ({ order, onClaim, o
                 src={commanderImgSrc}
                 alt={commanderAlt}
                 data-ai-hint={commanderDataAiHint}
-                layout="fill"
+                width={100}
+                height={100}
                 className="object-contain drop-shadow-lg"
                 />
             </motion.div>
 
-            {/* Main Banner Content */}
-            <div className="relative bg-card/90 backdrop-blur-lg border-t-2 border-primary/50 rounded-t-lg shadow-2xl p-3 flex flex-col items-center text-center mb-[56px] sm:mb-0">
+            <div className="relative bg-card/90 backdrop-blur-lg border-t-2 border-primary/50 rounded-t-lg shadow-2xl p-3 flex flex-col items-center text-center">
                 <Button onClick={onHide} variant="ghost" size="icon" className="absolute top-1 right-1 h-6 w-6 text-muted-foreground hover:bg-black/20 hover:text-white z-10">
                     <X className="h-4 w-4" />
                     <span className="sr-only">Hide Order</span>
                 </Button>
 
-                <h4 className="font-headline text-primary text-base sm:text-lg mt-1">Commander's Orders</h4>
+                <h4 className="font-headline text-primary text-base sm:text-lg mt-4">Commander's Orders</h4>
                 <p className="text-sm text-foreground/90 leading-tight px-2">
                     {missionText}
                 </p>
@@ -101,7 +96,6 @@ const CommanderOrderBanner: React.FC<CommanderOrderProps> = ({ order, onClaim, o
                     <Progress value={timeProgressPercentage} className="h-1.5" indicatorClassName="bg-primary" />
                 </div>
             
-                {/* Claim Button appears in the footer area */}
                 {order.isCompleted && (
                     <motion.div
                         initial={{ scale: 0.5, opacity: 0 }}
