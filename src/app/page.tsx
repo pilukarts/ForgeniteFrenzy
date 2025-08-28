@@ -127,14 +127,14 @@ export default function HomePage() {
               )}
             </motion.div>
 
-            {/* Main Content Area */}
+            {/* Main Content Area: Two Columns */}
             <div className="flex flex-grow w-full items-end p-2 sm:p-4">
                 {/* Left Column Buttons */}
                 <motion.div 
                     initial={{ x: -100, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-                    className="flex flex-col gap-2 w-auto max-w-[120px] sm:max-w-[150px] items-start"
+                    className="flex flex-col gap-2 w-auto max-w-[120px] sm:max-w-[150px] items-start self-center"
                 >
                     <div className="flex items-center gap-2 p-2 rounded-md border border-input bg-background">
                         <Ship className="h-5 w-5 text-primary shrink-0" />
@@ -166,7 +166,7 @@ export default function HomePage() {
                 </motion.div>
 
                 {/* Right Column: Commander and Buttons */}
-                <div className="flex-grow flex flex-col items-center justify-end">
+                <div className="flex-grow flex flex-col items-center justify-end mr-4 mt-4">
                     <CommanderPortrait onTap={handleTap} />
 
                     {isOutOfTaps && (
@@ -289,3 +289,5 @@ export default function HomePage() {
     </AppLayout>
   );
 }
+
+    
