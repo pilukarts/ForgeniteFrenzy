@@ -22,8 +22,7 @@ const IntroScreen: React.FC = () => {
           alt="Alliance Forge: Forgeite Frenzy"
           width={1280} 
           height={720} 
-          className="object-contain mx-auto"
-          layout="responsive" 
+          className="object-contain mx-auto w-full h-auto"
           priority
           data-ai-hint="game logo title"
         />
@@ -38,8 +37,8 @@ const IntroScreen: React.FC = () => {
           <Image
             src={loadingGifUrl}
             alt="Loading..."
-            layout="fill"
-            objectFit="contain"
+            fill
+            className="object-contain"
             unoptimized 
           />
         </div>
