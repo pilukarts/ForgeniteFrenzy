@@ -1,6 +1,7 @@
+
 "use client";
 import Link from 'next/link';
-import { Home, ChevronsUp, Trophy, Users, ShoppingCart, MessagesSquare, ListChecks, ShieldQuestion, LifeBuoy, Swords, Map, Gamepad2 } from 'lucide-react';
+import { Home, ChevronsUp, Trophy, Users, ShoppingCart, MessagesSquare, ListChecks, ShieldQuestion, LifeBuoy, Swords, Map, Gamepad2, FileText } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
@@ -17,7 +18,7 @@ const navItems = [
   { href: '/minigame', label: 'Arcade', icon: Gamepad2 },
   { href: '/community', label: 'Community', icon: Users },
   { href: '/support', label: 'Support', icon: LifeBuoy },
-  { href: '/legal/transparency-statement', label: 'Legal', icon: ShieldQuestion },
+  { href: '/legal/smart-contracts', label: 'Contracts', icon: FileText },
 ];
 
 const BottomNavBar: React.FC = () => {

@@ -2,7 +2,7 @@
 "use client";
 
 import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, CommanderOrder } from '@/lib/types';
-import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL } from '@/lib/gameData';
+import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES } from '@/lib/gameData';
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getCoreBriefing } from '@/ai/flows/core-briefings';
@@ -14,6 +14,7 @@ const UNIFORM_PIECES_ORDER = ["Tactical Gloves", "Combat Boots", "Utility Belt",
 const NUMBER_OF_DAILY_QUESTS = 3;
 const TAP_REGEN_COOLDOWN_MILLISECONDS = TAP_REGEN_COOLDOWN_MINUTES * 60 * 1000;
 const COMMANDER_ORDER_COOLDOWN_HOURS = 1;
+const REWARDED_AD_COOLDOWN_MILLISECONDS = REWARDED_AD_COOLDOWN_MINUTES * 60 * 1000;
 
 
 interface GameContextType {
@@ -57,6 +58,10 @@ interface GameContextType {
   activeCommanderOrder: CommanderOrder | null;
   claimCommanderOrderReward: () => void;
   hideCommanderOrder: () => void;
+  // Rewarded Ad
+  watchRewardedAd: () => void;
+  rewardedAdCooldown: number;
+  isWatchingAd: boolean;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -96,6 +101,8 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
   // Commander Order
   activeCommanderOrder: null,
   lastCommanderOrderTimestamp: 0,
+  // Rewarded Ad
+  lastRewardedAdTimestamp: 0,
 };
 
 const generateReferralCode = (name: string): string => {
@@ -116,6 +123,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [comboCount, setComboCount] = useState(0);
   const [isAICallInProgress, setIsAICallInProgress] = useState(false);
   const [activeCommanderOrder, setActiveCommanderOrder] = useState<CommanderOrder | null>(null);
+  const [rewardedAdCooldown, setRewardedAdCooldown] = useState(0);
+  const [isWatchingAd, setIsWatchingAd] = useState(false);
+
 
   const { toast } = useToast();
 
@@ -126,6 +136,23 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         toast({ title: message.type.replace('_', ' ').toUpperCase(), description: message.content});
     }
   }, [toast]);
+
+  // Rewarded Ad Cooldown Timer
+  useEffect(() => {
+    if (!playerProfile) return;
+
+    const updateCooldown = () => {
+      const now = Date.now();
+      const lastAdTime = playerProfile.lastRewardedAdTimestamp || 0;
+      const timeSinceLastAd = now - lastAdTime;
+      const newCooldown = Math.max(0, REWARDED_AD_COOLDOWN_MILLISECONDS - timeSinceLastAd);
+      setRewardedAdCooldown(newCooldown);
+    };
+
+    updateCooldown();
+    const interval = setInterval(updateCooldown, 1000);
+    return () => clearInterval(interval);
+  }, [playerProfile]);
   
 
   // Handle Commander Order logic
@@ -351,6 +378,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       parsedProfile.activeCommanderOrder = parsedProfile.activeCommanderOrder ?? null;
       parsedProfile.lastCommanderOrderTimestamp = parsedProfile.lastCommanderOrderTimestamp ?? 0;
       setActiveCommanderOrder(parsedProfile.activeCommanderOrder);
+      
+      // Rewarded Ad initialization
+      parsedProfile.lastRewardedAdTimestamp = parsedProfile.lastRewardedAdTimestamp ?? 0;
 
 
       setPlayerProfile(parsedProfile);
@@ -425,6 +455,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       // Commander Order
       activeCommanderOrder: null,
       lastCommanderOrderTimestamp: 0,
+       // Rewarded Ad
+      lastRewardedAdTimestamp: 0,
     };
     setPlayerProfile(newProfileData);
     setIsInitialSetupDone(true);
@@ -1025,6 +1057,27 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [toast, addCoreMessage]);
 
+  const watchRewardedAd = useCallback(() => {
+    if (rewardedAdCooldown > 0 || isWatchingAd) return;
+
+    setIsWatchingAd(true);
+    // Simulate watching an ad for 3 seconds
+    setTimeout(() => {
+      setPlayerProfile(prev => {
+        if (!prev) return null;
+        
+        addCoreMessage({ type: 'system_alert', content: `Transmisión completada. Has recibido ${REWARDED_AD_AURON_REWARD} Auron.` }, true);
+
+        return {
+          ...prev,
+          auron: prev.auron + REWARDED_AD_AURON_REWARD,
+          lastRewardedAdTimestamp: Date.now()
+        };
+      });
+      setIsWatchingAd(false);
+    }, 3000);
+  }, [rewardedAdCooldown, isWatchingAd, addCoreMessage]);
+
   return (
     <GameContext.Provider value={{
         playerProfile,
@@ -1065,6 +1118,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         activeCommanderOrder,
         claimCommanderOrderReward,
         hideCommanderOrder,
+        watchRewardedAd,
+        rewardedAdCooldown,
+        isWatchingAd,
     }}>
       {children}
     </GameContext.Provider>

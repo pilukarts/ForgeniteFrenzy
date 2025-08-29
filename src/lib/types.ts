@@ -88,6 +88,9 @@ export interface PlayerProfile {
   // Commander Order
   activeCommanderOrder: CommanderOrder | null;
   lastCommanderOrderTimestamp: number;
+
+  // Rewarded Ad
+  lastRewardedAdTimestamp: number;
 }
 
 export interface Season {

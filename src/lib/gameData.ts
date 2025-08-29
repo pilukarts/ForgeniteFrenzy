@@ -190,6 +190,10 @@ export const INITIAL_MAX_TAPS = 100;
 export const TAP_REGEN_COOLDOWN_MINUTES = 4;
 export const AURON_COST_FOR_TAP_REFILL = 50;
 
+// Monetization constants
+export const REWARDED_AD_AURON_REWARD = 10;
+export const REWARDED_AD_COOLDOWN_MINUTES = 30; // 30 minutes
+
 const TIER_COLORS_HSL = {
   SILVER: '210 15% 75%',
   CYAN: '180 100% 50%',
@@ -344,5 +348,3 @@ export const LEVEL_STAGES: LevelStage[] = [
     { name: 'RUBY VEIL', startLevel: 4000, endLevel: 6999, colors: { primary: '350 80% 60%', fill: '350 25% 15%' } }, // Crimson Red
     { name: 'CELESTIAL FORGE', startLevel: 7000, endLevel: 10000, colors: { primary: '0 0% 100%', fill: '0 0% 20%' } }, // White/Light Gray
 ];
-
-    

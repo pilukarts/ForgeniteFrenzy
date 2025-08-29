@@ -1,6 +1,6 @@
 
 "use client";
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
@@ -8,10 +8,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { ScrollArea } from '@/components/ui/scroll-area';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Sparkles, HelpCircle, Gem } from 'lucide-react';
+import { Sparkles, HelpCircle, Gem, Clapperboard, Forward } from 'lucide-react';
 import type { MarketplaceItem } from '@/lib/types';
 import IntroScreen from '@/components/intro/IntroScreen';
 import { useToast } from '@/hooks/use-toast';
+import { REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES } from '@/lib/gameData';
 
 const auronPackages = [
   { id: 'auron_pack_1', amount: 100, price: 0.99, bestValue: false, icon: Gem },
@@ -22,8 +23,33 @@ const auronPackages = [
 
 
 const MarketplacePage: React.FC = () => {
-  const { playerProfile, marketplaceItems, purchaseMarketplaceItem, isLoading, isInitialSetupDone, addPoints, setPlayerProfile } = useGame();
+  const { 
+    playerProfile, 
+    marketplaceItems, 
+    purchaseMarketplaceItem, 
+    isLoading, 
+    isInitialSetupDone, 
+    addPoints, 
+    setPlayerProfile,
+    watchRewardedAd,
+    rewardedAdCooldown,
+    isWatchingAd,
+  } = useGame();
   const { toast } = useToast();
+  
+  const [cooldownTime, setCooldownTime] = useState('');
+
+  useEffect(() => {
+    if (rewardedAdCooldown > 0) {
+      const interval = setInterval(() => {
+        const minutes = Math.floor(rewardedAdCooldown / 60000);
+        const seconds = Math.floor((rewardedAdCooldown % 60000) / 1000);
+        setCooldownTime(`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [rewardedAdCooldown]);
+
 
   const handleAuronPurchase = (amount: number) => {
     if (!playerProfile) return;
@@ -58,6 +84,35 @@ const MarketplacePage: React.FC = () => {
         
         <ScrollArea className="h-[calc(100vh-var(--app-header-h,60px)-var(--page-header-h,80px)-var(--bottom-nav-h,56px))] px-2 sm:px-4">
           
+          {/* Rewarded Ad Section */}
+          <section className="mb-6 sm:mb-8">
+            <h2 className="text-xl sm:text-2xl font-headline text-accent mb-3 sm:mb-4">Centro de Transmisiones</h2>
+            <Card className="bg-card text-card-foreground shadow-lg flex flex-col items-center p-4">
+              <CardHeader className="items-center text-center p-2">
+                <Clapperboard className="h-10 w-10 text-primary" />
+                <CardTitle className="text-lg sm:text-xl font-semibold text-primary mt-2">Ver Anuncio</CardTitle>
+                <CardDescription className="text-base text-muted-foreground mt-1">
+                  Mira una transmisión de la Alianza para recibir una recompensa gratuita.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="text-center">
+                <p className="text-lg font-semibold text-bright-gold flex items-center justify-center">
+                  <Sparkles className="h-5 w-5 mr-1.5" />
+                  Gana {REWARDED_AD_AURON_REWARD} Auron
+                </p>
+              </CardContent>
+              <CardFooter className="w-full">
+                <Button 
+                  onClick={watchRewardedAd} 
+                  disabled={rewardedAdCooldown > 0 || isWatchingAd}
+                  className="w-full"
+                >
+                  {isWatchingAd ? 'Viendo Transmisión...' : rewardedAdCooldown > 0 ? `Siguiente en: ${cooldownTime}` : 'Ver Ahora'}
+                </Button>
+              </CardFooter>
+            </Card>
+          </section>
+
           {/* Buy Auron Section */}
           <section className="mb-6 sm:mb-8">
             <h2 className="text-xl sm:text-2xl font-headline text-accent mb-3 sm:mb-4">Purchase Auron</h2>
