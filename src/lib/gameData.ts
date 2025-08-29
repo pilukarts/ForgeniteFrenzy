@@ -336,15 +336,15 @@ export const BATTLE_PASS_DATA: BattlePass = {
 };
 
 export const LEVEL_STAGES: LevelStage[] = [
-    { name: 'SILVER STAGE', startLevel: 1, endLevel: 49, colors: { primary: '210 15% 70%', fill: '210 25% 15%' } },
-    { name: 'CYAN SECTOR', startLevel: 50, endLevel: 99, colors: { primary: '180 100% 50%', fill: '180 25% 15%' } },
-    { name: 'JADE NEBULA', startLevel: 100, endLevel: 199, colors: { primary: '120 100% 70%', fill: '120 25% 15%' } },
-    { name: 'VIOLET ABYSS', startLevel: 200, endLevel: 299, colors: { primary: '270 70% 60%', fill: '270 25% 15%' } },
-    { name: 'CORAL EXPANSE', startLevel: 300, endLevel: 499, colors: { primary: '16 80% 65%', fill: '16 25% 15%' } },
-    { name: 'INFERNO REALM', startLevel: 500, endLevel: 749, colors: { primary: '0 100% 50%', fill: '0 25% 15%' } },
-    { name: 'AETHERIS CORE', startLevel: 750, endLevel: 999, colors: { primary: '45 100% 50%', fill: '45 25% 15%' } },
-    { name: 'VOID OF STARS', startLevel: 1000, endLevel: 1999, colors: { primary: '240 50% 70%', fill: '240 25% 15%' } }, // Indigo
-    { name: 'EMERALD CHASM', startLevel: 2000, endLevel: 3999, colors: { primary: '145 70% 50%', fill: '145 25% 15%' } }, // Sea Green
-    { name: 'RUBY VEIL', startLevel: 4000, endLevel: 6999, colors: { primary: '350 80% 60%', fill: '350 25% 15%' } }, // Crimson Red
-    { name: 'CELESTIAL FORGE', startLevel: 7000, endLevel: 10000, colors: { primary: '0 0% 100%', fill: '0 0% 20%' } }, // White/Light Gray
+    { name: 'SILVER STAGE', startLevel: 1, endLevel: 49, colors: { primary: '210 15% 70%', fill: '210 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/8iL8gB1.jpeg', aiHint: 'silver nebula' },
+    { name: 'CYAN SECTOR', startLevel: 50, endLevel: 99, colors: { primary: '180 100% 50%', fill: '180 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/kCj4kS8.jpeg', aiHint: 'cyan nebula' },
+    { name: 'JADE NEBULA', startLevel: 100, endLevel: 199, colors: { primary: '120 100% 70%', fill: '120 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/7iRfE2f.jpeg', aiHint: 'green nebula' },
+    { name: 'VIOLET ABYSS', startLevel: 200, endLevel: 299, colors: { primary: '270 70% 60%', fill: '270 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/i1y4fT4.jpeg', aiHint: 'purple nebula' },
+    { name: 'CORAL EXPANSE', startLevel: 300, endLevel: 499, colors: { primary: '16 80% 65%', fill: '16 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/rS2aH5o.jpeg', aiHint: 'orange nebula' },
+    { name: 'INFERNO REALM', startLevel: 500, endLevel: 749, colors: { primary: '0 100% 50%', fill: '0 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/fLHSK91.jpeg', aiHint: 'red nebula' },
+    { name: 'AETHERIS CORE', startLevel: 750, endLevel: 999, colors: { primary: '45 100% 50%', fill: '45 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/lZk3xQ8.jpeg', aiHint: 'gold nebula' },
+    { name: 'VOID OF STARS', startLevel: 1000, endLevel: 1999, colors: { primary: '240 50% 70%', fill: '240 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/S5Tj8pA.jpeg', aiHint: 'dark space' },
+    { name: 'EMERALD CHASM', startLevel: 2000, endLevel: 3999, colors: { primary: '145 70% 50%', fill: '145 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/X4sWk5n.jpeg', aiHint: 'emerald galaxy' },
+    { name: 'RUBY VEIL', startLevel: 4000, endLevel: 6999, colors: { primary: '350 80% 60%', fill: '350 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/M6eCg2C.jpeg', aiHint: 'ruby galaxy' },
+    { name: 'CELESTIAL FORGE', startLevel: 7000, endLevel: 10000, colors: { primary: '0 0% 100%', fill: '0 0% 20%' }, backgroundImageUrl: 'https://i.imgur.com/yO8m88A.jpeg', aiHint: 'white galaxy' },
 ];

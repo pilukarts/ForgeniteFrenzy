@@ -221,5 +221,7 @@ export interface LevelStage {
     colors: {
         primary: string; // HSL string for the border/text
         fill: string; // HSL string for the hex fill
-    }
+    };
+    backgroundImageUrl: string;
+    aiHint: string;
 }

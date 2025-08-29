@@ -6,28 +6,43 @@ import LevelMap from '@/components/game/LevelMap';
 import { useGame } from '@/contexts/GameContext';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import IntroScreen from '@/components/intro/IntroScreen';
+import { LEVEL_STAGES } from '@/lib/gameData';
+import { cn } from '@/lib/utils';
 
 const LevelMapPage: React.FC = () => {
-    const { isLoading, isInitialSetupDone } = useGame();
-    const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
+    const { isLoading, isInitialSetupDone, playerProfile } = useGame();
 
     if (isLoading) {
         return <IntroScreen />;
     }
 
-    if (!isInitialSetupDone) {
+    if (!isInitialSetupDone || !playerProfile) {
         return <PlayerSetup />;
     }
+
+    const getStageForLevel = (level: number) => {
+        return LEVEL_STAGES.find(stage => level >= stage.startLevel && level <= stage.endLevel) || LEVEL_STAGES[0];
+    };
+    
+    const currentStage = getStageForLevel(playerProfile.level);
 
   return (
     <AppLayout>
       <div className="h-full w-full flex flex-col relative overflow-hidden">
-        {/* Layer 1: Animated Space Background */}
-        <div 
-            className="absolute inset-0 bg-black bg-cover bg-center animate-pan-background z-0"
-            style={{ backgroundImage: `url('${spaceImageUrl}')` }}
-            data-ai-hint="futuristic space background"
-        />
+        {/* Layer 1: Dynamic Backgrounds Container */}
+        <div className="absolute inset-0 bg-black z-0">
+          {LEVEL_STAGES.map((stage, index) => (
+            <div
+              key={stage.name}
+              className={cn(
+                "absolute inset-0 bg-cover bg-center transition-opacity duration-[2000ms] ease-in-out animate-pan-background",
+                currentStage.name === stage.name ? "opacity-100" : "opacity-0"
+              )}
+              style={{ backgroundImage: `url('${stage.backgroundImageUrl}')`, animationDelay: `${index * 10}s` }}
+              data-ai-hint={stage.aiHint}
+            />
+          ))}
+        </div>
 
         {/* Layer 2: Shooting Stars Container */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
@@ -46,12 +61,12 @@ const LevelMapPage: React.FC = () => {
       </div>
        <style jsx>{`
         @keyframes pan-background {
-            0% { transform: scale(1.1) translateX(0%); }
-            50% { transform: scale(1.1) translateX(5%); }
-            100% { transform: scale(1.1) translateX(0%); }
+            0% { transform: scale(1.1) translateX(0%) translateY(0%); }
+            50% { transform: scale(1.1) translateX(2%) translateY(1%); }
+            100% { transform: scale(1.1) translateX(0%) translateY(0%); }
         }
         .animate-pan-background {
-            animation: pan-background 90s linear infinite;
+            animation: pan-background 120s linear infinite;
         }
 
         .shooting-star {
