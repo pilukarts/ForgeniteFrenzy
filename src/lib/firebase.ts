@@ -8,9 +8,9 @@ const firebaseConfig = {
   apiKey: "AIzaSyDMdkst7F612rqEyu0iF86CaYOdJGBXPaw",
   authDomain: "ark-evac.firebaseapp.com",
   projectId: "ark-evac",
-  storageBucket: "ark-evac.appspot.com",
+  storageBucket: "ark-evac.firebasestorage.app",
   messagingSenderId: "928400685620",
-  appId: "1:928400685620:web:a6c60bd47e47d4ae9b6861"
+  appId: "1:928400685620:web:630f671a2fdaa4449b6861"
 };
 
 // Initialize Firebase
