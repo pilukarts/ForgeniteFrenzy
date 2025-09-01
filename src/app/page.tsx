@@ -15,16 +15,7 @@ import { AURON_COST_FOR_TAP_REFILL } from '@/lib/gameData';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
-type NewUserIntroPhase = 'pre' | 'main' | 'setup';
-
-const IntroScreenWithTransition: React.FC<{ onComplete: () => void; duration: number }> = ({ onComplete, duration }) => {
-  useEffect(() => {
-    const timer = setTimeout(onComplete, duration);
-    return () => clearTimeout(timer);
-  }, [onComplete, duration]);
-
-  return <IntroScreen />;
-};
+type NewUserIntroPhase = 'pre' | 'setup';
 
 const formatTimeLeft = (milliseconds: number): string => {
   if (milliseconds <= 0) return "00:00";
@@ -67,10 +58,7 @@ export default function HomePage() {
   
   if (!isInitialSetupDone) {
     if (newUserIntroPhase === 'pre') {
-      return <PreIntroScreen onCompletion={() => setNewUserIntroPhase('main')} />;
-    }
-    if (newUserIntroPhase === 'main') {
-      return <IntroScreenWithTransition onComplete={() => setNewUserIntroPhase('setup')} duration={2500} />; 
+      return <PreIntroScreen onCompletion={() => setNewUserIntroPhase('setup')} />;
     }
     if (newUserIntroPhase === 'setup') {
       return <PlayerSetup />;
