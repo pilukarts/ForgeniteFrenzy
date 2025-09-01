@@ -10,7 +10,10 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '../ui/scroll-area';
 import { countries } from '@/lib/countries';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Check, ChevronsUpDown } from 'lucide-react';
+
 
 const PlayerSetup: React.FC = () => {
   const { completeInitialSetup } = useGame();
@@ -18,6 +21,7 @@ const PlayerSetup: React.FC = () => {
   const [sex, setSex] = useState<'male' | 'female'>('female');
   const [country, setCountry] = useState('');
   const [referredBy, setReferredBy] = useState('');
+  const [isCountrySelectorOpen, setCountrySelectorOpen] = useState(false);
 
   const isFormValid = name.trim() !== '' && country !== '';
 
@@ -86,17 +90,52 @@ const PlayerSetup: React.FC = () => {
 
                {/* Country Selection */}
               <div className="space-y-2">
-                  <Label htmlFor="country" className="text-foreground/80 text-base">Select Home Nation</Label>
-                  <Select onValueChange={setCountry} value={country}>
-                      <SelectTrigger className="bg-input border-border focus:ring-primary" id="country">
-                          <SelectValue placeholder="Select your nation..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                          {countries.map(c => (
-                              <SelectItem key={c.code} value={c.code}>{c.name}</SelectItem>
-                          ))}
-                      </SelectContent>
-                  </Select>
+                <Label htmlFor="country" className="text-foreground/80 text-base">Select Home Nation</Label>
+                 <Popover open={isCountrySelectorOpen} onOpenChange={setCountrySelectorOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={isCountrySelectorOpen}
+                        className="w-full justify-between bg-input border-border hover:bg-input/80"
+                      >
+                        {country
+                          ? countries.find((c) => c.code === country)?.name
+                          : "Select your nation..."}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                      <Command>
+                        <CommandInput placeholder="Search nation..." />
+                        <CommandList>
+                            <CommandEmpty>No nation found.</CommandEmpty>
+                            <CommandGroup>
+                            <ScrollArea className="h-48">
+                            {countries.map((c) => (
+                                <CommandItem
+                                key={c.code}
+                                value={c.name}
+                                onSelect={() => {
+                                    setCountry(c.code);
+                                    setCountrySelectorOpen(false);
+                                }}
+                                >
+                                <Check
+                                    className={cn(
+                                    "mr-2 h-4 w-4",
+                                    country === c.code ? "opacity-100" : "opacity-0"
+                                    )}
+                                />
+                                {c.name}
+                                </CommandItem>
+                            ))}
+                            </ScrollArea>
+                            </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
               </div>
 
 
