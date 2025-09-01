@@ -35,7 +35,7 @@ const LevelMapPage: React.FC = () => {
             <div
               key={stage.name}
               className={cn(
-                "absolute inset-0 bg-cover bg-center transition-opacity duration-[2000ms] ease-in-out animate-pan-background",
+                "absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out animate-pan-background",
                 currentStage.name === stage.name ? "opacity-100" : "opacity-0"
               )}
               style={{ backgroundImage: `url('${stage.backgroundImageUrl}')`, animationDelay: `${index * 10}s` }}
