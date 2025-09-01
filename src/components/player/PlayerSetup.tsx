@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState } from 'react';
 import { useGame } from '@/contexts/GameContext';
@@ -110,28 +109,28 @@ const PlayerSetup: React.FC = () => {
                         <CommandInput placeholder="Search nation..." />
                         <CommandList>
                             <CommandEmpty>No nation found.</CommandEmpty>
-                            <CommandGroup>
-                            <ScrollArea className="h-48">
-                            {countries.map((c) => (
-                                <CommandItem
-                                key={c.code}
-                                value={c.name}
-                                onSelect={() => {
-                                    setCountry(c.code);
-                                    setCountrySelectorOpen(false);
-                                }}
-                                >
-                                <Check
-                                    className={cn(
-                                    "mr-2 h-4 w-4",
-                                    country === c.code ? "opacity-100" : "opacity-0"
-                                    )}
-                                />
-                                {c.name}
-                                </CommandItem>
-                            ))}
+                             <ScrollArea className="h-48">
+                                <CommandGroup>
+                                {countries.map((c) => (
+                                    <CommandItem
+                                    key={c.code}
+                                    value={c.name}
+                                    onSelect={() => {
+                                        setCountry(c.code);
+                                        setCountrySelectorOpen(false);
+                                    }}
+                                    >
+                                    <Check
+                                        className={cn(
+                                        "mr-2 h-4 w-4",
+                                        country === c.code ? "opacity-100" : "opacity-0"
+                                        )}
+                                    />
+                                    {c.name}
+                                    </CommandItem>
+                                ))}
+                                </CommandGroup>
                             </ScrollArea>
-                            </CommandGroup>
                         </CommandList>
                       </Command>
                     </PopoverContent>
