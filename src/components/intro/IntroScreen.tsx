@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -69,7 +70,7 @@ const IntroScreen: React.FC = () => {
                 Alliance Forge™
             </h1>
             <p className="font-body text-lg md:text-xl text-foreground -mt-1 tracking-wider">
-                <span className="text-blue-400">Forgeite</span> Frenzy
+              <span className="text-blue-400">Forgeite</span> Frenzy
             </p>
         </motion.div>
       </motion.div>
