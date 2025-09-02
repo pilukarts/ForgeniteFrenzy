@@ -81,7 +81,7 @@ interface AppLayoutProps {
 }
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
-  const { playerProfile, connectWallet, activeCommanderOrder, claimCommanderOrderReward, hideCommanderOrder, currentSeason, isLoading, isMusicPlaying, toggleMusic } = useGame();
+  const { playerProfile, connectWallet, activeCommanderOrder, claimCommanderOrderReward, hideCommanderOrder, currentSeason, isLoading, isInitialSetupDone, isMusicPlaying, toggleMusic } = useGame();
   const [isWalletDialogOpen, setWalletDialogOpen] = useState(false);
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -100,6 +100,10 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         audioElement.pause();
     }
   }, [isMusicPlaying]);
+  
+  if (isLoading || !isInitialSetupDone || !playerProfile) {
+    return <IntroScreen />;
+  }
 
   return (
     <>
@@ -117,55 +121,51 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         <div className="flex flex-col min-h-screen">
           <header className="sticky top-0 z-50 p-2 bg-background/80 backdrop-blur-md shadow-sm border-b border-border/50">
             <div className="flex items-center justify-between gap-2">
-              {playerProfile && (
-                <>
-                  <PlayerProfileHeader profile={playerProfile} />
-                  <div className="flex items-start gap-1">
-                    <ResourceDisplay 
-                      seasonResourceAmount={seasonProgress}
-                      auronCount={playerProfile.auron ?? 0} 
-                    />
-                    <div className="flex flex-col items-start gap-1 ml-1 pl-1 border-l border-border">
-                         <Button 
-                            variant="outline" 
-                            size="icon" 
-                            className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 h-7 w-7"
-                            onClick={toggleMusic}
-                          >
-                          {isMusicPlaying ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
-                          <span className="sr-only">Toggle Music</span>
-                        </Button>
-                        {!playerProfile.isWalletConnected && (
-                           <Button 
-                              variant="outline" 
-                              size="sm" 
-                              className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 whitespace-nowrap text-xs px-2 h-7 w-full justify-start"
-                              onClick={() => setWalletDialogOpen(true)}
-                            >
-                            <Wallet className="mr-1.5 h-3 w-3 text-bright-gold" /> Connect
-                          </Button>
-                        )}
-                        <Button asChild
-                            variant="outline" 
-                            size="sm" 
-                            className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 whitespace-nowrap text-xs px-2 h-7 w-full justify-start"
-                          >
-                          <Link href="/marketplace">
-                            <CreditCard className="mr-1.5 h-3 w-3" /> Buy
-                          </Link>
-                        </Button>
-                      </div>
+              <PlayerProfileHeader profile={playerProfile} />
+              <div className="flex items-start gap-1">
+                <ResourceDisplay 
+                  seasonResourceAmount={seasonProgress}
+                  auronCount={playerProfile.auron ?? 0} 
+                />
+                <div className="flex flex-col items-start gap-1 ml-1 pl-1 border-l border-border">
+                      <Button 
+                        variant="outline" 
+                        size="icon" 
+                        className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 h-7 w-7"
+                        onClick={toggleMusic}
+                      >
+                      {isMusicPlaying ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                      <span className="sr-only">Toggle Music</span>
+                    </Button>
+                    {!playerProfile.isWalletConnected && (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 whitespace-nowrap text-xs px-2 h-7 w-full justify-start"
+                          onClick={() => setWalletDialogOpen(true)}
+                        >
+                        <Wallet className="mr-1.5 h-3 w-3 text-bright-gold" /> Connect
+                      </Button>
+                    )}
+                    <Button asChild
+                        variant="outline" 
+                        size="sm" 
+                        className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 whitespace-nowrap text-xs px-2 h-7 w-full justify-start"
+                      >
+                      <Link href="/marketplace">
+                        <CreditCard className="mr-1.5 h-3 w-3" /> Buy
+                      </Link>
+                    </Button>
                   </div>
-                </>
-              )}
+              </div>
             </div>
           </header>
           
           <main className="flex-grow overflow-y-auto pb-[56px] sm:pb-[60px]">
-            {isLoading || !playerProfile ? <IntroScreen /> : children}
+            {children}
           </main>
           
-          {playerProfile && <CoreDisplay />}
+          <CoreDisplay />
           
           {showCommanderOrder && activeCommanderOrder && <CommanderOrder order={activeCommanderOrder} onClaim={claimCommanderOrderReward} onHide={hideCommanderOrder} />}
 

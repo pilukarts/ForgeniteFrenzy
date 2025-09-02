@@ -14,6 +14,8 @@ import IntroScreen from '@/components/intro/IntroScreen';
 import { getLeagueByPoints, getLeagueIconAndColor } from '@/lib/gameData';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { UserCircle } from 'lucide-react';
 
 const LeaderboardPage: React.FC = () => {
   const { playerProfile, isLoading, isInitialSetupDone } = useGame();
@@ -33,6 +35,7 @@ const LeaderboardPage: React.FC = () => {
           country: countries[i % countries.length],
           score: score,
           playerLeague: getLeagueByPoints(score),
+          avatarUrl: `https://i.imgur.com/${i%2 === 0 ? 'gB3i4OQ' : 'J3tG1e4'}.png` // Alternate male/female avatars
         });
       }
       mockData.sort((a, b) => b.score - a.score);
@@ -46,6 +49,7 @@ const LeaderboardPage: React.FC = () => {
             country: playerProfile.country,
             score: playerProfile.points,
             playerLeague: playerProfile.league,
+            avatarUrl: playerProfile.avatarUrl,
         };
         
         const existingPlayerIndex = mockData.findIndex(p => p.playerId === playerProfile.id);
@@ -94,6 +98,9 @@ const LeaderboardPage: React.FC = () => {
                 {data.map((entry) => {
                 const { Icon: LeagueIcon, colorClass: leagueColorClass } = getLeagueIconAndColor(entry.playerLeague);
                 const flagSrc = `https://flags.fmcdn.net/data/flags/w580/${entry.country.toLowerCase()}.png`;
+                const avatarSrc = entry.avatarUrl || (entry.playerId === playerProfile.id ? playerProfile.avatarUrl : "https://i.imgur.com/8D3wW8E.png");
+                const dataAiHint = "commander portrait";
+
                 return (
                     <TableRow key={entry.playerId} className={entry.playerId === playerProfile.id ? 'bg-primary/10' : ''}>
                     <TableCell className="font-medium text-center text-lg px-2 sm:px-4"> 
@@ -101,11 +108,24 @@ const LeaderboardPage: React.FC = () => {
                         {entry.rank}
                     </TableCell>
                     <TableCell className="text-base px-2 sm:px-4"> 
-                        <div className="flex items-center">
-                            <Image src={flagSrc} alt={entry.country} width={20} height={15} className="mr-2 rounded-sm" data-ai-hint="country flag" />
-                            <LeagueIcon className={cn("h-3.5 w-3.5 mr-1.5 shrink-0", leagueColorClass)} />
-                            <span>{entry.playerName}</span>
-                            {entry.playerId === playerProfile.id && <span className="ml-1 sm:ml-2 text-primary">(You)</span>}
+                        <div className="flex items-center gap-2">
+                            <Avatar className="h-8 w-8 border border-primary/50">
+                                <AvatarImage src={avatarSrc} alt={entry.playerName} data-ai-hint={dataAiHint} />
+                                <AvatarFallback>
+                                    {entry.playerName ? entry.playerName.substring(0, 1).toUpperCase() : <UserCircle className="h-5 w-5"/>}
+                                </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-grow">
+                                <div className="flex items-center">
+                                  <LeagueIcon className={cn("h-3.5 w-3.5 mr-1.5 shrink-0", leagueColorClass)} />
+                                  <span className="font-semibold">{entry.playerName}</span>
+                                  {entry.playerId === playerProfile.id && <span className="ml-1 sm:ml-2 text-primary text-xs">(You)</span>}
+                                </div>
+                                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                    <Image src={flagSrc} alt={entry.country} width={16} height={12} className="rounded-sm" data-ai-hint="country flag" />
+                                    <span>{entry.country}</span>
+                                </div>
+                            </div>
                         </div>
                     </TableCell>
                     <TableCell className="text-right font-mono text-primary text-base px-2 sm:px-4">{entry.score.toLocaleString()}</TableCell> 

@@ -44,6 +44,7 @@ export interface PlayerProfile {
   name: string;
   commanderSex: 'male' | 'female';
   country: string;
+  avatarUrl?: string; // URL for the selected profile picture
   points: number;
   auron: number;
   level: number;
@@ -134,6 +135,7 @@ export interface LeaderboardEntry {
   country: string;
   score: number;
   playerLeague: LeagueName; // Added for league display
+  avatarUrl?: string;
 }
 
 export interface CoreMessage {

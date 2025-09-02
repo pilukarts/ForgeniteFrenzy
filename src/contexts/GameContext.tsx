@@ -65,6 +65,8 @@ interface GameContextType {
   // Music
   isMusicPlaying: boolean;
   toggleMusic: () => void;
+  // Profile editing
+  updatePlayerProfile: (name: string, avatarUrl: string) => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -95,6 +97,7 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
   tapsAvailableAt: Date.now(),
   currentTierColor: INITIAL_TIER_COLOR,
   league: DEFAULT_LEAGUE,
+  avatarUrl: undefined,
   // Battle Pass
   battlePassLevel: 1,
   battlePassXp: 0,
@@ -357,6 +360,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       parsedProfile.activeTapBonuses = parsedProfile.activeTapBonuses ?? [];
       parsedProfile.totalTapsForUniform = parsedProfile.totalTapsForUniform ?? 0;
       parsedProfile.equippedUniformPieces = parsedProfile.equippedUniformPieces ?? [];
+      parsedProfile.avatarUrl = parsedProfile.avatarUrl ?? undefined;
       
       parsedProfile.activeDailyQuests = parsedProfile.activeDailyQuests ?? [];
       if (parsedProfile.activeDailyQuests) {
@@ -1096,6 +1100,16 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return { ...prev, isMusicPlaying: !prev.isMusicPlaying };
     });
   }, []);
+  
+  const updatePlayerProfile = useCallback((name: string, avatarUrl: string) => {
+    setPlayerProfile(prev => {
+      if (!prev) return null;
+      return { ...prev, name, avatarUrl };
+    });
+    addCoreMessage({type: 'system_alert', content: 'Player profile updated.'});
+    toast({title: 'Profile Updated', description: 'Your callsign and avatar have been updated.'});
+  }, [addCoreMessage, toast]);
+
 
   return (
     <GameContext.Provider value={{
@@ -1142,6 +1156,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         isWatchingAd,
         isMusicPlaying,
         toggleMusic,
+        updatePlayerProfile,
     }}>
       {children}
     </GameContext.Provider>
