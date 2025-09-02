@@ -41,18 +41,18 @@ const GemstoneBurst: React.FC = () => {
   const [gameOver, setGameOver] = useState<false | 'WIN' | 'LOSE'>(false);
   const gameLoopRef = useRef<number>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  let bubbleIdCounter = 0;
+  const bubbleIdCounter = useRef(0);
 
   const getBubbleColor = () => COLORS[Math.floor(Math.random() * COLORS.length)];
 
   const resetGame = useCallback(() => {
-    bubbleIdCounter = 0;
+    bubbleIdCounter.current = 0;
     const initialBubbles: Bubble[] = [];
     for (let row = 0; row < 5; row++) {
       for (let col = 0; col < (row % 2 === 0 ? COLS : COLS - 1); col++) {
         const x = col * BUBBLE_RADIUS * 2 + (row % 2 === 0 ? BUBBLE_RADIUS : BUBBLE_RADIUS * 2);
         const y = row * BUBBLE_RADIUS * 1.732 + BUBBLE_RADIUS;
-        initialBubbles.push({ id: bubbleIdCounter++, x, y, color: getBubbleColor(), isStatic: true });
+        initialBubbles.push({ id: bubbleIdCounter.current++, x, y, color: getBubbleColor(), isStatic: true });
       }
     }
     setBubbles(initialBubbles);
@@ -122,19 +122,12 @@ const GemstoneBurst: React.FC = () => {
 
 
   }, [bubbles, projectile, nextBubbleColor, shooterAngle]);
-
-  useEffect(() => {
-    gameLoopRef.current = requestAnimationFrame(draw);
-    return () => {
-      if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
-    };
-  }, [draw]);
-
-  const shoot = () => {
+  
+  const shoot = useCallback(() => {
     if (projectile || gameOver) return;
     const angleRad = (shooterAngle - 90) * Math.PI / 180;
     setProjectile({
-      id: bubbleIdCounter++,
+      id: bubbleIdCounter.current++,
       x: BOARD_WIDTH / 2,
       y: SHOOTER_Y,
       color: nextBubbleColor,
@@ -143,7 +136,7 @@ const GemstoneBurst: React.FC = () => {
       vy: Math.sin(angleRad) * 15
     });
     setNextBubbleColor(getBubbleColor());
-  };
+  }, [projectile, gameOver, shooterAngle, nextBubbleColor]);
 
   const handleAngleChange = (direction: 'left' | 'right') => {
       setShooterAngle(prev => {
@@ -156,7 +149,7 @@ const GemstoneBurst: React.FC = () => {
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (gameOver) return;
-            e.preventDefault();
+            // e.preventDefault(); Let's not prevent default to allow browser shortcuts
             switch (e.key) {
                 case 'ArrowLeft':
                     handleAngleChange('left');
@@ -165,6 +158,7 @@ const GemstoneBurst: React.FC = () => {
                     handleAngleChange('right');
                     break;
                 case 'ArrowUp':
+                case ' ': // Spacebar to shoot
                     shoot();
                     break;
             }
@@ -196,17 +190,18 @@ const GemstoneBurst: React.FC = () => {
   };
 
   const findFloating = (existingBubbles: Bubble[]): Bubble[] => {
-        const ceilingBubbles = new Set<Bubble>();
+        const connectedBubbles = new Set<Bubble>();
         const toCheck: Bubble[] = [];
 
+        // Find all bubbles connected to the ceiling
         existingBubbles.forEach(b => {
             if (b.y - BUBBLE_RADIUS <= 0) {
-                ceilingBubbles.add(b);
                 toCheck.push(b);
+                connectedBubbles.add(b);
             }
         });
-
-        const checked = new Set(ceilingBubbles.map(b => b.id));
+        
+        const checked = new Set(toCheck.map(b => b.id));
 
         while (toCheck.length > 0) {
             const current = toCheck.pop()!;
@@ -215,19 +210,25 @@ const GemstoneBurst: React.FC = () => {
                     const dist = Math.hypot(current.x - neighbor.x, current.y - neighbor.y);
                     if (dist < BUBBLE_RADIUS * 2.2) {
                         checked.add(neighbor.id);
+                        connectedBubbles.add(neighbor);
                         toCheck.push(neighbor);
                     }
                 }
             });
         }
         
-        return existingBubbles.filter(b => !checked.has(b.id));
+        return existingBubbles.filter(b => !connectedBubbles.has(b));
     };
 
   // Main game logic in useEffect
   useEffect(() => {
-    const handleProjectile = () => {
-      if (!projectile) return;
+    let animationFrameId: number;
+
+    const gameUpdate = () => {
+      if (!projectile) {
+        animationFrameId = requestAnimationFrame(gameUpdate);
+        return;
+      };
 
       let newProjectile = { ...projectile, x: projectile.x + projectile.vx, y: projectile.y + projectile.vy };
 
@@ -236,38 +237,37 @@ const GemstoneBurst: React.FC = () => {
         newProjectile.vx *= -1;
       }
       
+      let collision = false;
       // Ceiling collision
        if (newProjectile.y - BUBBLE_RADIUS < 0) {
           newProjectile.y = BUBBLE_RADIUS;
-          newProjectile.isStatic = true;
-          handleBubbleCollision(newProjectile);
-          return;
+          collision = true;
        }
 
-
       // Bubble collision
-      for (const bubble of bubbles) {
-        const dist = Math.hypot(newProjectile.x - bubble.x, newProjectile.y - bubble.y);
-        if (dist < BUBBLE_RADIUS * 2) {
-          newProjectile.isStatic = true;
-          handleBubbleCollision(newProjectile);
-          return;
+      if (!collision) {
+        for (const bubble of bubbles) {
+          const dist = Math.hypot(newProjectile.x - bubble.x, newProjectile.y - bubble.y);
+          if (dist < BUBBLE_RADIUS * 2) {
+            collision = true;
+            break;
+          }
         }
       }
 
-      setProjectile(newProjectile);
-    };
-    
-    const handleBubbleCollision = (collidedBubble: Projectile) => {
-        setProjectile(null);
+      if (collision) {
+        setProjectile(null); // Stop moving the projectile
+        const finalProjectile: Bubble = { ...newProjectile, isStatic: true };
+        let newBubbles = [...bubbles, finalProjectile];
         
-        let newBubbles = [...bubbles, { ...collidedBubble, isStatic: true }];
-        const matches = findMatches(collidedBubble, newBubbles);
+        const matches = findMatches(finalProjectile, newBubbles);
 
         if (matches.length >= 3) {
             const matchIds = new Set(matches.map(b => b.id));
             newBubbles = newBubbles.filter(b => !matchIds.has(b.id));
             const pointsEarned = matches.length * 10;
+            addPoints(pointsEarned);
+            setScore(s => s + pointsEarned);
 
             const floating = findFloating(newBubbles);
             if (floating.length > 0) {
@@ -278,9 +278,6 @@ const GemstoneBurst: React.FC = () => {
                  setScore(s => s + dropPoints);
                  toast({title: 'Nice Drop!', description: `+${dropPoints} bonus points!`});
             }
-
-            addPoints(pointsEarned);
-            setScore(s => s + pointsEarned);
         }
 
         setBubbles(newBubbles);
@@ -288,23 +285,31 @@ const GemstoneBurst: React.FC = () => {
         // Check for win/loss
         if (newBubbles.length === 0) {
           setGameOver('WIN');
-          toast({ title: 'You Win!', description: 'All gems cleared!' });
+          toast({ title: 'You Win!', description: 'All gems cleared! +5000 bonus points.' });
           addPoints(5000);
           setScore(s => s + 5000);
         } else if (newBubbles.some(b => b.y + BUBBLE_RADIUS > SHOOTER_Y - BUBBLE_RADIUS * 2)) {
           setGameOver('LOSE');
           toast({ title: 'Game Over', description: 'The gems reached the bottom!', variant: 'destructive' });
         }
+      } else {
+        setProjectile(newProjectile);
+      }
+      
+      animationFrameId = requestAnimationFrame(gameUpdate);
     };
 
-
-    const gameInterval = setInterval(handleProjectile, 1000 / 60); // 60 FPS
-    return () => clearInterval(gameInterval);
+    animationFrameId = requestAnimationFrame(gameUpdate);
+    return () => cancelAnimationFrame(animationFrameId);
   }, [projectile, bubbles, addPoints, toast]);
+
+   useEffect(() => {
+    draw();
+  }, [draw, bubbles, projectile]);
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <div className="text-lg font-headline text-primary">Score: {score}</div>
+      <div className="text-lg font-headline text-primary">Score: {score.toLocaleString()}</div>
       <div className="relative bg-card rounded-lg border-2 border-primary shadow-lg" style={{width: BOARD_WIDTH, height: BOARD_HEIGHT + 60}}>
          <AnimatePresence>
             {gameOver && (
@@ -331,5 +336,3 @@ const GemstoneBurst: React.FC = () => {
 };
 
 export default GemstoneBurst;
-
-    
