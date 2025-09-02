@@ -101,6 +101,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     }
   }, [isMusicPlaying]);
   
+  // This is the critical fix. We explicitly check for loading states here.
   if (isLoading || !isInitialSetupDone || !playerProfile) {
     return <IntroScreen />;
   }
