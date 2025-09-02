@@ -12,7 +12,7 @@ import { LEVEL_STAGES } from '@/lib/gameData';
 
 const LEVELS_BEFORE = 10; // How many past levels to show
 const LEVELS_AFTER = 30; // How many upcoming levels to show
-const TOTAL_LEVELS = 10000; // The total number of levels in this stage
+const TOTAL_LEVELS = 50000; // The total number of levels in this stage
 
 const LevelMap: React.FC = () => {
   const { playerProfile } = useGame();

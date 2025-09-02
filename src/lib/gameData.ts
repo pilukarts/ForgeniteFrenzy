@@ -347,4 +347,7 @@ export const LEVEL_STAGES: LevelStage[] = [
     { name: 'EMERALD CHASM', startLevel: 2000, endLevel: 3999, colors: { primary: '145 70% 50%', fill: '145 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/X4sWk5n.jpeg', aiHint: 'emerald galaxy' },
     { name: 'RUBY VEIL', startLevel: 4000, endLevel: 6999, colors: { primary: '350 80% 60%', fill: '350 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/M6eCg2C.jpeg', aiHint: 'ruby galaxy' },
     { name: 'CELESTIAL FORGE', startLevel: 7000, endLevel: 10000, colors: { primary: '0 0% 100%', fill: '0 0% 20%' }, backgroundImageUrl: 'https://i.imgur.com/yO8m88A.jpeg', aiHint: 'white galaxy' },
+    { name: 'OMEGA CLUSTER', startLevel: 10001, endLevel: 15000, colors: { primary: '300 100% 80%', fill: '300 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/5Jp9J5N.jpeg', aiHint: 'pink nebula' },
+    { name: 'HYPERION RIFT', startLevel: 15001, endLevel: 25000, colors: { primary: '210 100% 70%', fill: '210 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/v8tTj8H.jpeg', aiHint: 'light blue space' },
+    { name: 'GALACTIC CORE', startLevel: 25001, endLevel: 50000, colors: { primary: '60 100% 50%', fill: '60 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/Z7o5p6Y.jpeg', aiHint: 'bright galaxy core' },
 ];
