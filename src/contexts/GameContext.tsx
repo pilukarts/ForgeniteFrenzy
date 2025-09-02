@@ -62,6 +62,9 @@ interface GameContextType {
   watchRewardedAd: () => void;
   rewardedAdCooldown: number;
   isWatchingAd: boolean;
+  // Music
+  isMusicPlaying: boolean;
+  toggleMusic: () => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -103,6 +106,7 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
   lastCommanderOrderTimestamp: 0,
   // Rewarded Ad
   lastRewardedAdTimestamp: 0,
+  isMusicPlaying: false,
 };
 
 const generateReferralCode = (name: string): string => {
@@ -125,6 +129,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [activeCommanderOrder, setActiveCommanderOrder] = useState<CommanderOrder | null>(null);
   const [rewardedAdCooldown, setRewardedAdCooldown] = useState(0);
   const [isWatchingAd, setIsWatchingAd] = useState(false);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
 
 
   const { toast } = useToast();
@@ -381,6 +386,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       
       // Rewarded Ad initialization
       parsedProfile.lastRewardedAdTimestamp = parsedProfile.lastRewardedAdTimestamp ?? 0;
+      
+      // Music State
+      parsedProfile.isMusicPlaying = parsedProfile.isMusicPlaying ?? false;
+      setIsMusicPlaying(parsedProfile.isMusicPlaying);
 
 
       setPlayerProfile(parsedProfile);
@@ -457,6 +466,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       lastCommanderOrderTimestamp: 0,
        // Rewarded Ad
       lastRewardedAdTimestamp: 0,
+      // Music
+      isMusicPlaying: false,
     };
     setPlayerProfile(newProfileData);
     setIsInitialSetupDone(true);
@@ -1078,6 +1089,14 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, 3000);
   }, [rewardedAdCooldown, isWatchingAd, addCoreMessage]);
 
+  const toggleMusic = useCallback(() => {
+    setPlayerProfile(prev => {
+      if (!prev) return null;
+      setIsMusicPlaying(!prev.isMusicPlaying);
+      return { ...prev, isMusicPlaying: !prev.isMusicPlaying };
+    });
+  }, []);
+
   return (
     <GameContext.Provider value={{
         playerProfile,
@@ -1121,6 +1140,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         watchRewardedAd,
         rewardedAdCooldown,
         isWatchingAd,
+        isMusicPlaying,
+        toggleMusic,
     }}>
       {children}
     </GameContext.Provider>

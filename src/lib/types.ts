@@ -91,6 +91,9 @@ export interface PlayerProfile {
 
   // Rewarded Ad
   lastRewardedAdTimestamp: number;
+  
+  // Audio
+  isMusicPlaying: boolean;
 }
 
 export interface Season {
