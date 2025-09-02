@@ -5,7 +5,7 @@ import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCw, ArrowLeft, ArrowRight } from 'lucide-react';
+import { RefreshCw, ArrowLeft, ArrowRight, ArrowUp } from 'lucide-react';
 
 // --- Game Constants & Types ---
 const BUBBLE_RADIUS = 16;
@@ -152,6 +152,28 @@ const GemstoneBurst: React.FC = () => {
       });
   }
 
+  // Handle Keyboard Input for aiming and shooting
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (gameOver) return;
+            e.preventDefault();
+            switch (e.key) {
+                case 'ArrowLeft':
+                    handleAngleChange('left');
+                    break;
+                case 'ArrowRight':
+                    handleAngleChange('right');
+                    break;
+                case 'ArrowUp':
+                    shoot();
+                    break;
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [gameOver, shoot]);
+
+
   const findMatches = (startBubble: Bubble, existingBubbles: Bubble[]): Bubble[] => {
     const toCheck = [startBubble];
     const matched = [startBubble];
@@ -296,11 +318,11 @@ const GemstoneBurst: React.FC = () => {
                 </motion.div>
             )}
             </AnimatePresence>
-        <canvas ref={canvasRef} width={BOARD_WIDTH} height={BOARD_HEIGHT + 60} onClick={shoot} className="cursor-pointer z-10" />
+        <canvas ref={canvasRef} width={BOARD_WIDTH} height={BOARD_HEIGHT + 60} className="z-10" />
       </div>
        <div className="flex items-center gap-4 mt-2">
             <Button onClick={() => handleAngleChange('left')} variant="outline" size="icon" className="h-12 w-12"><ArrowLeft /></Button>
-            <Button onClick={shoot} className="h-16 w-24 text-lg font-bold">Shoot</Button>
+            <Button onClick={shoot} className="h-16 w-24 text-lg font-bold"><ArrowUp className="h-8 w-8" /></Button>
             <Button onClick={() => handleAngleChange('right')} variant="outline" size="icon" className="h-12 w-12"><ArrowRight /></Button>
        </div>
        <Button onClick={resetGame} variant="ghost" size="sm" className="mt-2"><RefreshCw className="mr-2 h-4 w-4" /> Reset</Button>
@@ -309,3 +331,5 @@ const GemstoneBurst: React.FC = () => {
 };
 
 export default GemstoneBurst;
+
+    
