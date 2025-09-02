@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { useGame } from '@/contexts/GameContext'; // Import useGame
 import { Hexagon } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+
 
 interface CommanderPortraitProps {
   onTap: () => void;
@@ -14,12 +16,19 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
   const { playerProfile } = useGame();
   const [isTapped, setIsTapped] = useState(false);
   
-  const commanderSex = playerProfile?.commanderSex || 'female';
-  const currentTierColor = playerProfile?.currentTierColor || '45 100% 50%';
-  const equippedPieces = playerProfile?.equippedUniformPieces || [];
+  if (!playerProfile) {
+    // Render a skeleton or nothing while the profile is loading to prevent server errors
+    return (
+        <div className="relative w-64 h-80 sm:w-72 sm:h-96 flex items-center justify-center">
+            <Skeleton className="w-full h-full" />
+        </div>
+    );
+  }
+  
+  const { commanderSex, currentTierColor, equippedUniformPieces } = playerProfile;
 
   const getCommanderImage = () => {
-    const equippedCount = equippedPieces.length;
+    const equippedCount = equippedUniformPieces?.length || 0;
     const sex = commanderSex;
 
     // Base Images (No uniform pieces)
@@ -58,7 +67,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
   const hexagonClipPath = 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)';
 
   const dynamicStyles = {
-    '--dynamic-commander-glow': currentTierColor
+    '--dynamic-commander-glow': currentTierColor || '45 100% 50%'
   } as React.CSSProperties;
 
   return (
