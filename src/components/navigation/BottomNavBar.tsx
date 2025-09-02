@@ -15,7 +15,7 @@ const navItems = [
   { href: '/leaderboard', label: 'Leaders', icon: Trophy },
   { href: '/alliance-chat', label: 'Chat', icon: MessagesSquare },
   { href: '/marketplace', label: 'Shop', icon: ShoppingCart },
-  { href: '/minigame', label: 'Arcade', icon: Gamepad2 },
+  { href: '/arcade', label: 'Arcade', icon: Gamepad2 },
   { href: '/community', label: 'Community', icon: Users },
   { href: '/support', label: 'Support', icon: LifeBuoy },
   { href: '/legal/smart-contracts', label: 'Contracts', icon: FileText },
@@ -29,17 +29,21 @@ const BottomNavBar: React.FC = () => {
       <ScrollArea className="w-full whitespace-nowrap">
         <div className="flex w-max justify-around items-center px-1">
           {navItems.map(({ href, label, icon: Icon }) => {
-            const isActive = pathname === href;
+            const isActive = pathname.startsWith(href) && (href !== '/' || pathname === '/');
+            const isArcadeActive = (pathname.startsWith('/arcade') || pathname.startsWith('/minigame')) && href === '/arcade';
+            
+            const finalIsActive = isArcadeActive || (isActive && !isArcadeActive);
+
             return (
               <Link
                 key={href}
                 href={href}
                 className={cn(
                   "flex flex-col items-center justify-center text-xs p-1 rounded-md transition-colors flex-shrink-0 mx-1 w-16 h-12",
-                  isActive ? "text-primary font-semibold bg-primary/10" : "text-muted-foreground hover:text-foreground",
+                  finalIsActive ? "text-primary font-semibold bg-primary/10" : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                <Icon className={cn("h-5 w-5 mb-0.5", isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} />
+                <Icon className={cn("h-5 w-5 mb-0.5", finalIsActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} />
                 {label}
               </Link>
             );
