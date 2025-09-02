@@ -1066,7 +1066,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setPlayerProfile(prev => {
         if (!prev) return null;
         
-        addCoreMessage({ type: 'system_alert', content: `Transmisión completada. Has recibido ${REWARDED_AD_AURON_REWARD} Auron.` }, true);
+        addCoreMessage({ type: 'system_alert', content: `Broadcast complete. You received ${REWARDED_AD_AURON_REWARD} Auron.` }, true);
 
         return {
           ...prev,

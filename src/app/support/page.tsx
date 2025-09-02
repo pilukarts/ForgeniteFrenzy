@@ -23,7 +23,7 @@ const SupportPage: React.FC = () => {
     return <PlayerSetup />;
   }
 
-  // IMPORTANTE: Reemplaza esta URL con tu enlace de donación de PayPal real.
+  // IMPORTANT: Replace this URL with your real PayPal donation link.
   const PAYPAL_DONATION_URL = 'https://www.paypal.com/pools/c/9hOQgVZ3wv';
 
   return (

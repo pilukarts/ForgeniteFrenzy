@@ -15,10 +15,10 @@ const TermsOfServicePage: React.FC = () => {
         <header className="mb-6">
           <h1 className="text-3xl sm:text-4xl font-headline text-primary flex items-center">
             <FileText className="mr-3 h-8 w-8 sm:h-10 sm:w-10" />
-            Términos de Servicio
+            Terms of Service
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground mt-1">
-            Reglas de enfrentamiento para todos los Comandantes de la Alianza.
+            Rules of engagement for all Alliance Commanders.
           </p>
         </header>
 
@@ -26,96 +26,96 @@ const TermsOfServicePage: React.FC = () => {
           <div className="space-y-6 text-sm sm:text-base text-foreground/90">
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">1. Aceptación de los Términos</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">1. Acceptance of Terms</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <p>
-                  Estos Términos de Servicio ("Términos") constituyen un acuerdo legalmente vinculante entre usted ("usted" o "Usuario") y [Tu Compañía/Estudio] ("nosotros", "nos" o "nuestro") que rige su uso del juego Alliance Forge ("Juego"). Al acceder, jugar o registrarse en nuestro Juego, usted acepta estar sujeto a estos Términos y a nuestra{' '}
+                  These Terms of Service ("Terms") constitute a legally binding agreement made between you ("you" or "User") and [Your Company/Studio] ("we," "us," or "our") concerning your access to and use of the Alliance Forge game ("Game"). By accessing, playing, or registering for our Game, you agree to be bound by these Terms and our{' '}
                   <Link href="/legal/transparency-statement" className="text-primary hover:underline">
-                    Declaración de Transparencia
-                  </Link>. Si no está de acuerdo con estos Términos, no debe usar el Juego.
+                    Transparency Statement
+                  </Link>. If you do not agree with these Terms, you must not use the Game.
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">2. Cuenta de Usuario</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">2. User Account</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <p><strong>Elegibilidad:</strong> Debe tener al menos 13 años de edad para crear una cuenta y jugar.</p>
-                <p><strong>Responsabilidad:</strong> Usted es responsable de mantener la confidencialidad de su cuenta y de todas las actividades que ocurran bajo ella. Acepta notificar inmediatamente cualquier uso no autorizado.</p>
-                <p><strong>Conducta:</strong> Se prohíbe el uso de trampas, exploits, bots, hacks o cualquier software de terceros no autorizado para modificar o automatizar la jugabilidad. La violación de esta regla puede resultar en la suspensión o terminación de la cuenta.</p>
+                <p><strong>Eligibility:</strong> You must be at least 13 years old to create an account and play the Game.</p>
+                <p><strong>Responsibility:</strong> You are responsible for maintaining the confidentiality of your account and for all activities that occur under it. You agree to immediately notify us of any unauthorized use.</p>
+                <p><strong>Conduct:</strong> Cheating, exploiting, using bots, hacks, or any unauthorized third-party software to modify or automate gameplay is prohibited. Violation of this rule may result in account suspension or termination.</p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">3. Activos Digitales y Propiedad Intelectual</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">3. Digital Assets & Intellectual Property</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <p><strong>Nuestra Propiedad Intelectual:</strong> El Juego, incluyendo todo el código, gráficos, personajes, nombres y otro contenido, es de nuestra propiedad o de nuestros licenciantes.</p>
-                <p><strong>Bienes Virtuales:</strong> Le otorgamos una licencia limitada, no exclusiva, intransferible y revocable para usar los bienes virtuales (como Puntos y Auron) dentro del Juego para fines de juego. No tienen valor monetario real y no son canjeables por dinero.</p>
-                <p><strong>Tokens No Fungibles (NFTs):</strong> Al adquirir un NFT, usted posee el token en la blockchain. Sin embargo, la propiedad intelectual del arte y los rasgos asociados permanece con nosotros. Le otorgamos una licencia para usar, mostrar y comercializar su NFT con fines personales y no comerciales.</p>
+                <p><strong>Our IP:</strong> The Game, including all code, graphics, characters, names, and other content, is owned by us or our licensors.</p>
+                <p><strong>Virtual Goods:</strong> We grant you a limited, non-exclusive, non-transferable, revocable license to use virtual goods (like Points and Auron) within the Game for gameplay purposes. They have no real-world monetary value and are not redeemable for cash.</p>
+                <p><strong>Non-Fungible Tokens (NFTs):</strong> By acquiring an NFT, you own the token on the blockchain. However, the intellectual property of the associated art and traits remains with us. We grant you a license to use, display, and trade your NFT for personal, non-commercial purposes.</p>
               </CardContent>
             </Card>
             
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">4. Código de Conducta del Jugador</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">4. Player Code of Conduct</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <p>Usted se compromete a no:</p>
+                <p>You agree not to:</p>
                 <ul className="list-disc pl-5 space-y-1">
-                    <li>Utilizar lenguaje o compartir contenido que sea ilegal, abusivo, odioso o discriminatorio.</li>
-                    <li>Hacerse pasar por otro jugador, un miembro del personal o cualquier otra persona.</li>
-                    <li>Interrumpir el juego o los servidores, o afectar negativamente la experiencia de otros jugadores.</li>
-                    <li>Participar en "comercio con dinero real" (RMT) de bienes virtuales o cuentas fuera de las plataformas de mercado de NFTs autorizadas.</li>
+                    <li>Use language or share content that is unlawful, abusive, hateful, or discriminatory.</li>
+                    <li>Impersonate another player, a staff member, or any other person.</li>
+                    <li>Disrupt the game or servers, or negatively affect other players' experiences.</li>
+                    <li>Engage in "real money trading" (RMT) of virtual goods or accounts outside of authorized NFT marketplace platforms.</li>
                 </ul>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">5. Terminación</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">5. Termination</CardTitle>
               </CardHeader>
               <CardContent>
                 <p>
-                  Nos reservamos el derecho de suspender o terminar su cuenta y acceso al Juego, sin previo aviso, por cualquier violación de estos Términos.
+                  We reserve the right to suspend or terminate your account and access to the Game, without notice, for any violation of these Terms.
                 </p>
               </CardContent>
             </Card>
             
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">6. Descargos de Responsabilidad y Limitación de Responsabilidad</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">6. Disclaimers and Limitation of Liability</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <p>EL JUEGO SE PROPORCIONA "TAL CUAL". NO OFRECEMOS GARANTÍAS DE NINGÚN TIPO. EN LA MÁXIMA MEDIDA PERMITIDA POR LA LEY, NO SEREMOS RESPONSABLES DE NINGÚN DAÑO INDIRECTO, INCIDENTAL O CONSECUENTE.</p>
-                <p>El valor de los activos de blockchain (NFTs, criptomonedas) es volátil. No somos responsables de ninguna pérdida financiera.</p>
+                <p>THE GAME IS PROVIDED "AS IS." WE MAKE NO WARRANTIES OF ANY KIND. TO THE FULLEST EXTENT PERMITTED BY LAW, WE WILL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES.</p>
+                <p>The value of blockchain assets (NFTs, cryptocurrencies) is volatile. We are not responsible for any financial losses.</p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">7. Cambios a los Términos</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">7. Changes to Terms</CardTitle>
               </CardHeader>
               <CardContent>
                 <p>
-                  Podemos modificar estos Términos en cualquier momento. Le notificaremos los cambios significativos. Su uso continuado del Juego después de los cambios constituye su aceptación de los nuevos Términos.
+                  We may modify these Terms at any time. We will notify you of significant changes. Your continued use of the Game after changes constitutes your acceptance of the new Terms.
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">8. Contacto</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">8. Contact</CardTitle>
               </CardHeader>
               <CardContent>
                 <p>
-                   Para preguntas sobre estos Términos, por favor contáctenos a través de nuestra{' '}
+                   For questions about these Terms, please contact us through our{' '}
                    <Link href="/support" className="text-primary hover:underline">
-                    página de soporte
+                    support page
                   </Link>.
                 </p>
               </CardContent>
@@ -144,5 +144,3 @@ const TermsOfServicePage: React.FC = () => {
 };
 
 export default TermsOfServicePage;
-
-    

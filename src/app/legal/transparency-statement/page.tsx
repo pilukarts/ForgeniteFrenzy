@@ -14,10 +14,10 @@ const TransparencyStatementPage: React.FC = () => {
         <header className="mb-6">
           <h1 className="text-3xl sm:text-4xl font-headline text-primary flex items-center">
             <ShieldQuestion className="mr-3 h-8 w-8 sm:h-10 sm:w-10" />
-            Declaración de Transparencia
+            Transparency Statement
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground mt-1">
-            Nuestro compromiso con la claridad respecto a los activos digitales y las economías de juego.
+            Our commitment to clarity regarding digital assets and game economies.
           </p>
         </header>
 
@@ -25,20 +25,20 @@ const TransparencyStatementPage: React.FC = () => {
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Introducción</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Introduction</CardTitle>
               </CardHeader>
               <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
                 <p>
-                  Bienvenido a Alliance Forge. Esta declaración describe información clave sobre cómo
-                  los activos digitales, incluyendo Tokens No Fungibles (NFTs), criptomonedas
-                  y bienes virtuales, funcionan dentro de nuestro juego. Nuestro objetivo es proporcionar una
-                  comprensión clara de estos elementos para asegurar una experiencia de juego transparente y justa.
+                  Welcome to Alliance Forge. This statement outlines key information about how
+                  digital assets, including Non-Fungible Tokens (NFTs), cryptocurrencies,
+                  and virtual goods, function within our game. Our goal is to provide a
+                  clear understanding of these elements to ensure a transparent and fair gameplay experience.
                 </p>
                 <p>
-                  Por favor, lee esta declaración detenidamente. Al participar en Alliance Forge e interactuar
-                  con sus activos digitales, reconoces y aceptas los términos aquí descritos y nuestros{' '}
+                  Please read this statement carefully. By participating in Alliance Forge and interacting
+                  with its digital assets, you acknowledge and agree to the terms outlined herein and our{' '}
                   <Link href="/legal/terms-of-service" className="text-primary hover:underline">
-                    Términos de Servicio
+                    Terms of Service
                   </Link>.
                 </p>
               </CardContent>
@@ -46,100 +46,100 @@ const TransparencyStatementPage: React.FC = () => {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Tokens No Fungibles (NFTs)</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Non-Fungible Tokens (NFTs)</CardTitle>
               </CardHeader>
               <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
                 <p>
-                  <strong>Definición:</strong> Los NFTs son identificadores digitales únicos registrados en una blockchain,
-                  utilizados para certificar la propiedad de un activo digital específico. En Alliance Forge,
-                  los NFTs pueden representar objetos como el "Arca del Fundador" u otros coleccionables únicos.
+                  <strong>Definition:</strong> NFTs are unique digital identifiers recorded on a blockchain,
+                  used to certify ownership of a specific digital asset. In Alliance Forge,
+                  NFTs may represent items such as the "Founder's Ark" or other unique collectibles.
                 </p>
                 <p>
-                  <strong>Adquisición:</strong> Los NFTs dentro de Alliance Forge se obtienen a través de logros
-                  significativos en el juego, participación en eventos especiales o compras específicas
-                  donde se indique explícitamente.
+                  <strong>Acquisition:</strong> NFTs within Alliance Forge are earned through significant
+                  in-game achievements, participation in special events, or specific purchases
+                  where explicitly stated.
                 </p>
                 <p>
-                  <strong>Propiedad y Blockchain:</strong> Cuando adquieres un NFT de Alliance Forge,
-                  se asocia con la dirección de tu monedero de criptomonedas conectado en la blockchain de [Especificar Blockchain, ej. Polygon, Ethereum].
-                  Tienes control sobre este NFT en tu monedero, sujeto a las reglas de la red de la blockchain.
+                  <strong>Ownership & Blockchain:</strong> When you acquire an Alliance Forge NFT,
+                  it is associated with your connected cryptocurrency wallet address on the [Specify Blockchain, e.g., Polygon, Ethereum] blockchain.
+                  You have control over this NFT in your wallet, subject to the rules of the blockchain network.
                 </p>
                 <p>
-                  <strong>Utilidad:</strong> La utilidad de los NFTs dentro de Alliance Forge será descrita
-                  en el punto de adquisición o en la documentación oficial del juego. La utilidad puede incluir
-                  beneficios en el juego, mejoras cosméticas o acceso a contenido exclusivo.
+                  <strong>Utility:</strong> The utility of NFTs within Alliance Forge will be described
+                  at the point of acquisition or in official game documentation. Utility may include
+                  in-game benefits, cosmetic enhancements, or access to exclusive content.
                 </p>
                 <p>
-                  <strong>Comercio y Valor:</strong> Eres libre de intercambiar, vender o transferir tus NFTs en mercados de terceros
-                  que soporten la blockchain y el estándar de NFT correspondiente. Alliance Forge no opera estos mercados
-                  y no es responsable de las transacciones realizadas en ellos. El valor de los NFTs es determinado por el mercado y la comunidad.
+                  <strong>Trading & Value:</strong> You are free to trade, sell, or transfer your NFTs on third-party marketplaces
+                  that support the relevant blockchain and NFT standard. Alliance Forge does not operate these marketplaces
+                  and is not responsible for transactions conducted on them. The value of NFTs is determined by the market and community.
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Criptomonedas y Moneda del Juego</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Cryptocurrency & In-Game Currency</CardTitle>
               </CardHeader>
               <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
                  <p>
-                  <strong>Auron (Moneda Premium del Juego):</strong> Auron es una moneda virtual interna del juego
-                  utilizada para comprar objetos premium, mejoras o contenido cosmético en Alliance Forge.
-                  Auron se adquiere principalmente a través de la conexión de un monedero de criptomonedas o mediante compras directas.
-                  Auron es una moneda virtual interna y NO es una criptomoneda. Existe solo dentro del ecosistema del juego.
+                  <strong>Auron (Premium In-Game Currency):</strong> Auron is an in-game virtual currency
+                  used to purchase premium items, boosts, or cosmetic content in Alliance Forge.
+                  Auron is primarily acquired by connecting a crypto wallet or through direct purchases.
+                  Auron is an internal virtual currency and is NOT a cryptocurrency. It exists only within the game's ecosystem.
                 </p>
                 <p>
-                  <strong>Puntos (Moneda Estándar del Juego):</strong> Los Puntos son la moneda principal que se gana
-                  a través del juego (ej. tocando, completando misiones). Se utilizan para mejoras estándar y progresión.
-                  Los Puntos son un bien virtual con utilidad únicamente dentro del juego.
+                  <strong>Points (Standard In-Game Currency):</strong> Points are the primary currency earned
+                  through gameplay (e.g., tapping, completing quests). They are used for standard upgrades and progression.
+                  Points are a virtual good with utility only inside the game.
                 </p>
                 <p>
-                  <strong>Futuro Token de Criptomoneda:</strong> Alliance Forge planea introducir su propio token de criptomoneda en el futuro.
-                  Los detalles sobre dicho token, incluyendo su utilidad, economía (tokenomics) y distribución (ej. mecánicas de airdrop basadas en el "Puntaje de Fundador"),
-                  serán proporcionados en un whitepaper o anuncio oficial separado. Trata con extrema precaución cualquier afirmación sobre un token de Alliance Forge existente fuera de los anuncios oficiales.
+                  <strong>Future Cryptocurrency Token:</strong> Alliance Forge plans to introduce its own cryptocurrency token in the future.
+                  Details about such a token, including its utility, economics (tokenomics), and distribution (e.g., airdrop mechanics based on "Founder's Score"),
+                  will be provided in a separate whitepaper or official announcement. Treat any claims of an existing Alliance Forge token outside of official announcements with extreme caution.
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Bienes Virtuales</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Virtual Goods</CardTitle>
               </CardHeader>
               <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
                 <p>
-                  <strong>Naturaleza:</strong> Los bienes virtuales en Alliance Forge incluyen todos los objetos del juego,
-                  monedas (Puntos, Auron), personajes, mejoras y otro contenido digital que se puede
-                  adquirir o usar dentro del juego.
+                  <strong>Nature:</strong> Virtual goods in Alliance Forge include all in-game items,
+                  currencies (Points, Auron), characters, upgrades, and other digital content that can be
+                  acquired or used within the game.
                 </p>
                 <p>
-                  <strong>Licencia:</strong> Cuando adquieres bienes virtuales, se te otorga una licencia limitada, no transferible,
-                  revocable para usar estos bienes dentro del juego, de acuerdo con nuestros{' '}
+                  <strong>License:</strong> When you acquire virtual goods, you are granted a limited, non-transferable,
+                  revocable license to use these goods within the game, according to our{' '}
                    <Link href="/legal/terms-of-service" className="text-primary hover:underline">
-                    Términos de Servicio
+                    Terms of Service
                   </Link>.
-                  No posees la propiedad intelectual subyacente de estos bienes virtuales.
+                  You do not own the underlying intellectual property of these virtual goods.
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Propiedad y Licencia</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Ownership & Licensing</CardTitle>
               </CardHeader>
               <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
                 <p>
-                  <strong>Juego y Propiedad Intelectual:</strong> Alliance Forge y todo su contenido asociado,
-                  incluyendo software, gráficos, personajes e historias, son propiedad de [Tu Compañía/Estudio]
-                  o sus licenciantes y están protegidos por derechos de autor y otras leyes de propiedad intelectual.
+                  <strong>Game and IP:</strong> Alliance Forge and all its associated content,
+                  including software, graphics, characters, and storylines, are owned by [Your Company/Studio]
+                  or its licensors and are protected by copyright and other intellectual property laws.
                 </p>
                 <p>
-                  <strong>Propiedad de NFT:</strong> Para los NFTs acuñados por Alliance Forge, la propiedad del token
-                  específico en la blockchain se te transfiere a ti tras la adquisición. Sin embargo, la propiedad
-                  intelectual subyacente (ej. el arte o diseño del personaje asociado con el NFT) permanece con [Tu Compañía/Estudio]
-                  o sus licenciantes. Tu propiedad del NFT te otorga ciertos derechos para usar y mostrar el arte asociado,
-                  típicamente para fines personales y no comerciales, según se detalla en nuestros{' '}
+                  <strong>NFT Ownership:</strong> For NFTs minted by Alliance Forge, ownership of the
+                  specific token on the blockchain is transferred to you upon acquisition. However, the underlying
+                  intellectual property (e.g., the art or character design associated with the NFT) remains with [Your Company/Studio]
+                  or its licensors. Your ownership of the NFT grants you certain rights to use and display the associated art,
+                  typically for personal, non-commercial purposes, as detailed in our{' '}
                   <Link href="/legal/terms-of-service" className="text-primary hover:underline">
-                    Términos de Servicio
+                    Terms of Service
                   </Link>.
                 </p>
               </CardContent>
@@ -147,47 +147,47 @@ const TransparencyStatementPage: React.FC = () => {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Riesgos y Divulgaciones</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Risks & Disclosures</CardTitle>
               </CardHeader>
               <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
                 <p>
-                  <strong>Volatilidad del Mercado (NFTs y Cripto):</strong> El valor de los NFTs y las criptomonedas
-                  puede ser extremadamente volátil. No hay garantía de valor o liquidez para ningún activo digital.
+                  <strong>Market Volatility (NFTs & Crypto):</strong> The value of NFTs and cryptocurrencies
+                  can be extremely volatile. There is no guarantee of value or liquidity for any digital asset.
                 </p>
                 <p>
-                  <strong>Incertidumbre Regulatoria:</strong> El panorama regulatorio para los activos digitales
-                  está en evolución. Los cambios en la regulación podrían afectar el uso, transferencia o valor
-                  de estos activos.
+                  <strong>Regulatory Uncertainty:</strong> The regulatory landscape for digital assets
+                  is evolving. Changes in regulation could impact the use, transfer, or value
+                  of these assets.
                 </p>
                 <p>
-                  <strong>Seguridad:</strong> Eres responsable de la seguridad de tu monedero de criptomonedas
-                  y de cualquier activo digital almacenado en él.
+                  <strong>Security:</strong> You are responsible for the security of your cryptocurrency wallet
+                  and any digital assets stored within it.
                 </p>
                 <p>
-                  <strong>No es Asesoramiento de Inversión:</strong> La información proporcionada por Alliance Forge
-                  no debe ser interpretada como asesoramiento financiero o de inversión.
+                  <strong>Not Investment Advice:</strong> Information provided by Alliance Forge
+                  should not be construed as financial or investment advice.
                 </p>
                  <p>
-                  <strong>Desarrollo del Juego:</strong> Alliance Forge es un juego en evolución. Las características,
-                  objetos y el equilibrio económico pueden cambiar. Nos reservamos el derecho de modificar
-                  o descontinuar aspectos del juego.
+                  <strong>Game Development:</strong> Alliance Forge is an evolving game. Features,
+                  items, and economic balancing may change. We reserve the right to modify
+                  or discontinue aspects of the game.
                 </p>
               </CardContent>
             </Card>
 
              <Card>
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Contacto</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Contact</CardTitle>
               </CardHeader>
               <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
                 <p>
-                  Si tienes alguna pregunta, por favor contáctanos a través de la{' '}
+                  If you have any questions, please contact us via the{' '}
                   <Link href="/support" className="text-primary hover:underline">
-                    página de soporte
+                    support page
                   </Link>.
                 </p>
                 <p>
-                  Última Actualización: [Fecha Actual]
+                  Last Updated: [Current Date]
                 </p>
               </CardContent>
             </Card>
@@ -214,6 +214,3 @@ const TransparencyStatementPage: React.FC = () => {
 };
 
 export default TransparencyStatementPage;
-    
-
-    

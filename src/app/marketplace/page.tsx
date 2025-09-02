@@ -86,19 +86,19 @@ const MarketplacePage: React.FC = () => {
           
           {/* Rewarded Ad Section */}
           <section className="mb-6 sm:mb-8">
-            <h2 className="text-xl sm:text-2xl font-headline text-accent mb-3 sm:mb-4">Centro de Transmisiones</h2>
+            <h2 className="text-xl sm:text-2xl font-headline text-accent mb-3 sm:mb-4">Broadcast Center</h2>
             <Card className="bg-card text-card-foreground shadow-lg flex flex-col items-center p-4">
               <CardHeader className="items-center text-center p-2">
                 <Clapperboard className="h-10 w-10 text-primary" />
-                <CardTitle className="text-lg sm:text-xl font-semibold text-primary mt-2">Ver Anuncio</CardTitle>
+                <CardTitle className="text-lg sm:text-xl font-semibold text-primary mt-2">Watch Ad</CardTitle>
                 <CardDescription className="text-base text-muted-foreground mt-1">
-                  Mira una transmisión de la Alianza para recibir una recompensa gratuita.
+                  Watch an Alliance broadcast to receive a free reward.
                 </CardDescription>
               </CardHeader>
               <CardContent className="text-center">
                 <p className="text-lg font-semibold text-bright-gold flex items-center justify-center">
                   <Sparkles className="h-5 w-5 mr-1.5" />
-                  Gana {REWARDED_AD_AURON_REWARD} Auron
+                  Earn {REWARDED_AD_AURON_REWARD} Auron
                 </p>
               </CardContent>
               <CardFooter className="w-full">
@@ -107,7 +107,7 @@ const MarketplacePage: React.FC = () => {
                   disabled={rewardedAdCooldown > 0 || isWatchingAd}
                   className="w-full"
                 >
-                  {isWatchingAd ? 'Viendo Transmisión...' : rewardedAdCooldown > 0 ? `Siguiente en: ${cooldownTime}` : 'Ver Ahora'}
+                  {isWatchingAd ? 'Watching Broadcast...' : rewardedAdCooldown > 0 ? `Next in: ${cooldownTime}` : 'Watch Now'}
                 </Button>
               </CardFooter>
             </Card>

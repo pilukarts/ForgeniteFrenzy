@@ -218,8 +218,8 @@ export const INITIAL_TIER_COLOR = getTierColorByLevel(1);
 export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
   {
     id: 'tap_boost_quick',
-    name: 'Impulso Rápido',
-    description: 'Aumenta ligeramente el poder de tus taps por un corto tiempo.',
+    name: 'Quick Boost',
+    description: 'Slightly increases tap power for a short time.',
     costInAuron: 25,
     bonusEffect: {
       durationTaps: 20, // Number of taps the boost lasts
@@ -229,8 +229,8 @@ export const MARKETPLACE_ITEMS_DATA: MarketplaceItem[] = [
   },
   {
     id: 'tap_boost_mini_pack',
-    name: 'Mini Paquete de Energía',
-    description: 'Un pequeño paquete para potenciar tus taps.',
+    name: 'Mini Energy Pack',
+    description: 'A small pack to empower your taps.',
     costInAuron: 50,
     bonusEffect: {
       durationTaps: 30,

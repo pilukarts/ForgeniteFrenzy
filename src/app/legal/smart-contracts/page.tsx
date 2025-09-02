@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 const SmartContractsPage: React.FC = () => {
-  // En una aplicación real, esta sería la dirección del contrato verificado en un explorador de blockchain.
+  // In a real application, this would be the address of the verified contract on a blockchain explorer.
   const MOCK_CONTRACT_URL = "https://etherscan.io/address/0x0000000000000000000000000000000000000000";
 
   return (
@@ -18,10 +18,10 @@ const SmartContractsPage: React.FC = () => {
         <header className="mb-6">
           <h1 className="text-3xl sm:text-4xl font-headline text-primary flex items-center">
             <FileText className="mr-3 h-8 w-8 sm:h-10 sm:w-10" />
-            Contratos Inteligentes
+            Smart Contracts
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground mt-1">
-            Garantizando la transparencia y la propiedad a través de la tecnología blockchain.
+            Ensuring transparency and ownership through blockchain technology.
           </p>
         </header>
 
@@ -29,39 +29,39 @@ const SmartContractsPage: React.FC = () => {
           <div className="space-y-6 text-sm sm:text-base text-foreground/90">
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">¿Qué es un Contrato Inteligente?</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">What is a Smart Contract?</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <p>
-                  Un contrato inteligente es un programa autoejecutable con los términos del acuerdo entre las partes directamente escritos en el código. El código y los acuerdos que contiene existen a través de una red de blockchain descentralizada. Los contratos inteligentes permiten que se realicen transacciones y acuerdos de confianza entre partes anónimas y dispares sin la necesidad de una autoridad central, un sistema legal o un mecanismo de aplicación externo.
+                  A smart contract is a self-executing program with the terms of the agreement between parties directly written into code. The code and the agreements contained therein exist across a decentralized blockchain network. Smart contracts permit trusted transactions and agreements to be carried out among disparate, anonymous parties without the need for a central authority, legal system, or external enforcement mechanism.
                 </p>
                 <p>
-                  En Alliance Forge, los utilizamos para garantizar que la propiedad de activos únicos, como el <strong>Arca del Fundador NFT</strong>, sea verificable, inmutable y esté verdaderamente en manos del jugador.
+                  In Alliance Forge, we use them to ensure ownership of unique assets, like the <strong>Founder's Ark NFT</strong>, is verifiable, immutable, and truly in the player's hands.
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Contrato del Arca del Fundador (AFS-ARK)</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Founder's Ark Contract (AFS-ARK)</CardTitle>
                 <CardDescription>
-                  Este contrato rige la acuñación (creación) y propiedad de los NFTs del Arca del Fundador.
+                  This contract governs the minting (creation) and ownership of the Founder's Ark NFTs.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
-                <p><strong>Estándar:</strong> ERC-721 (Estándar para Tokens No Fungibles)</p>
-                <p><strong>Funcionalidad Clave:</strong></p>
+                <p><strong>Standard:</strong> ERC-721 (Non-Fungible Token Standard)</p>
+                <p><strong>Key Functionality:</strong></p>
                 <ul className="list-disc pl-5 space-y-1">
-                    <li><strong>Acuñación Segura:</strong> Solo los jugadores que han mejorado completamente su Hangar del Arca en el juego pueden acuñar un NFT del Arca del Fundador. Esta acción es iniciada por el jugador y verificada por el contrato.</li>
-                    <li><strong>Propiedad Verificable:</strong> Cada NFT tiene un propietario único registrado en la blockchain. Puedes probar tu propiedad en cualquier momento sin depender de nuestros servidores.</li>
-                    <li><strong>Transferibilidad:</strong> Como propietario, tienes la libertad de vender, intercambiar o transferir tu Arca del Fundador en cualquier mercado de NFTs compatible.</li>
+                    <li><strong>Secure Minting:</strong> Only players who have fully upgraded their Ark Hangar in-game can mint a Founder's Ark NFT. This action is initiated by the player and verified by the contract.</li>
+                    <li><strong>Verifiable Ownership:</strong> Each NFT has a unique owner recorded on the blockchain. You can prove your ownership at any time without relying on our servers.</li>
+                    <li><strong>Transferability:</strong> As the owner, you have the freedom to sell, trade, or transfer your Founder's Ark on any compatible NFT marketplace.</li>
                 </ul>
               </CardContent>
               <CardFooter>
                  <a href={MOCK_CONTRACT_URL} target="_blank" rel="noopener noreferrer" className="w-full">
                     <Button className="w-full">
                         <ExternalLink className="mr-2 h-4 w-4" />
-                        Ver Contrato en Explorador (Simulado)
+                        View Contract on Explorer (Simulated)
                     </Button>
                 </a>
               </CardFooter>
@@ -69,13 +69,13 @@ const SmartContractsPage: React.FC = () => {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Nuestra Filosofía de Transparencia</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Our Philosophy of Transparency</CardTitle>
               </CardHeader>
               <CardContent>
                 <p>
-                  Al publicar las direcciones de nuestros contratos inteligentes, ofrecemos una total transparencia. Cualquiera puede auditar el código para verificar que las reglas del juego son justas y se aplican según lo prometido. Este es nuestro compromiso para construir un ecosistema de juego abierto y fiable. Para más detalles, por favor consulta nuestra{' '}
+                  By publishing our smart contract addresses, we offer full transparency. Anyone can audit the code to verify that the game's rules are fair and are enforced as promised. This is our commitment to building an open and trustworthy gaming ecosystem. For more details, please see our{' '}
                   <Link href="/legal/transparency-statement" className="text-primary hover:underline">
-                    Declaración de Transparencia
+                    Transparency Statement
                   </Link>.
                 </p>
               </CardContent>
