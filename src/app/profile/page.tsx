@@ -14,16 +14,16 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
 const ALL_AVATARS = [
-  // Female
-  { url: "https://i.imgur.com/N39gTto.png", sex: 'female' },
-  { url: "https://i.imgur.com/jAcb5Uv.png", sex: 'female' },
-  { url: "https://i.imgur.com/HiT9E0O.png", sex: 'female' },
-  { url: "https://i.imgur.com/J3tG1e4.png", sex: 'female' },
-  // Male
-  { url: "https://i.imgur.com/aCZy34s.png", sex: 'male' },
-  { url: "https://i.imgur.com/9lV8iJ4.png", sex: 'male' },
-  { url: "https://i.imgur.com/dZkYqRk.png", sex: 'male' },
-  { url: "https://i.imgur.com/gB3i4OQ.png", sex: 'male' },
+    // Female
+    { url: "https://picsum.photos/seed/female1/200", sex: 'female', hint: 'female commander' },
+    { url: "https://picsum.photos/seed/female2/200", sex: 'female', hint: 'female commander' },
+    { url: "https://picsum.photos/seed/female3/200", sex: 'female', hint: 'female commander' },
+    { url: "https://picsum.photos/seed/female4/200", sex: 'female', hint: 'female commander' },
+    // Male
+    { url: "https://picsum.photos/seed/male1/200", sex: 'male', hint: 'male commander' },
+    { url: "https://picsum.photos/seed/male2/200", sex: 'male', hint: 'male commander' },
+    { url: "https://picsum.photos/seed/male3/200", sex: 'male', hint: 'male commander' },
+    { url: "https://picsum.photos/seed/male4/200", sex: 'male', hint: 'male commander' },
 ];
 
 
@@ -104,7 +104,7 @@ const ProfilePage: React.FC = () => {
                       selectedAvatar === avatar.url ? 'border-primary ring-2 ring-primary/50' : 'border-transparent hover:border-primary/50'
                       )}
                   >
-                      <Image src={avatar.url} alt="Avatar" width={100} height={100} className="object-cover w-full h-auto aspect-square" data-ai-hint="commander portrait"/>
+                      <Image src={avatar.url} alt="Avatar" width={100} height={100} className="object-cover w-full h-auto aspect-square" data-ai-hint={avatar.hint}/>
                   </button>
                   ))}
               </div>
