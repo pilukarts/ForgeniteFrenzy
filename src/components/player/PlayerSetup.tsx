@@ -15,15 +15,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 
 const AVATARS = [
   // Female
-  { url: "https://i.imgur.com/J3tG1e4.png", sex: 'female' },
   { url: "https://i.imgur.com/N39gTto.png", sex: 'female' },
   { url: "https://i.imgur.com/jAcb5Uv.png", sex: 'female' },
   { url: "https://i.imgur.com/HiT9E0O.png", sex: 'female' },
+  { url: "https://i.imgur.com/J3tG1e4.png", sex: 'female' },
   // Male
-  { url: "https://i.imgur.com/gB3i4OQ.png", sex: 'male' },
   { url: "https://i.imgur.com/aCZy34s.png", sex: 'male' },
   { url: "https://i.imgur.com/9lV8iJ4.png", sex: 'male' },
   { url: "https://i.imgur.com/dZkYqRk.png", sex: 'male' },
+  { url: "https://i.imgur.com/gB3i4OQ.png", sex: 'male' },
 ];
 
 

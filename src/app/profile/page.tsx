@@ -15,15 +15,15 @@ import Image from 'next/image';
 
 const ALL_AVATARS = [
   // Female
-  "https://i.imgur.com/J3tG1e4.png",
-  "https://i.imgur.com/N39gTto.png",
-  "https://i.imgur.com/jAcb5Uv.png",
-  "https://i.imgur.com/HiT9E0O.png",
+  { url: "https://i.imgur.com/N39gTto.png", sex: 'female' },
+  { url: "https://i.imgur.com/jAcb5Uv.png", sex: 'female' },
+  { url: "https://i.imgur.com/HiT9E0O.png", sex: 'female' },
+  { url: "https://i.imgur.com/J3tG1e4.png", sex: 'female' },
   // Male
-  "https://i.imgur.com/gB3i4OQ.png",
-  "https://i.imgur.com/aCZy34s.png",
-  "https://i.imgur.com/9lV8iJ4.png",
-  "https://i.imgur.com/dZkYqRk.png",
+  { url: "https://i.imgur.com/aCZy34s.png", sex: 'male' },
+  { url: "https://i.imgur.com/9lV8iJ4.png", sex: 'male' },
+  { url: "https://i.imgur.com/dZkYqRk.png", sex: 'male' },
+  { url: "https://i.imgur.com/gB3i4OQ.png", sex: 'male' },
 ];
 
 
@@ -35,15 +35,15 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     if (playerProfile) {
       setName(playerProfile.name);
-      setSelectedAvatar(playerProfile.avatarUrl || ALL_AVATARS[0]);
+      setSelectedAvatar(playerProfile.avatarUrl || ALL_AVATARS[0].url);
     }
   }, [playerProfile]);
 
   const handleSave = () => {
     if (playerProfile) {
-      // Determine sex based on the selected avatar's URL to simplify things.
-      const avatarSex = ALL_AVATARS.indexOf(selectedAvatar) >= 4 ? 'male' : 'female';
-      updatePlayerProfile(name, selectedAvatar, avatarSex);
+      // Find the selected avatar object to determine the sex
+      const avatarData = ALL_AVATARS.find(a => a.url === selectedAvatar) || ALL_AVATARS[0];
+      updatePlayerProfile(name, selectedAvatar, avatarData.sex);
     }
   };
 
@@ -95,16 +95,16 @@ const ProfilePage: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-4 gap-2 sm:gap-4">
-                  {ALL_AVATARS.map((url) => (
+                  {ALL_AVATARS.map((avatar) => (
                   <button
-                      key={url}
-                      onClick={() => setSelectedAvatar(url)}
+                      key={avatar.url}
+                      onClick={() => setSelectedAvatar(avatar.url)}
                       className={cn(
                       "rounded-lg overflow-hidden border-2 transition-all",
-                      selectedAvatar === url ? 'border-primary ring-2 ring-primary/50' : 'border-transparent hover:border-primary/50'
+                      selectedAvatar === avatar.url ? 'border-primary ring-2 ring-primary/50' : 'border-transparent hover:border-primary/50'
                       )}
                   >
-                      <Image src={url} alt="Avatar" width={100} height={100} className="object-cover w-full h-auto aspect-square" data-ai-hint="commander portrait"/>
+                      <Image src={avatar.url} alt="Avatar" width={100} height={100} className="object-cover w-full h-auto aspect-square" data-ai-hint="commander portrait"/>
                   </button>
                   ))}
               </div>
