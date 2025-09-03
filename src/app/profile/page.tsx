@@ -15,17 +15,17 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
 const MALE_AVATARS = [
-  "https://i.imgur.com/gB3i4OQ.png",
-  "https://i.imgur.com/83pL36g.png",
-  "https://i.imgur.com/tQ4zJ2a.png",
-  "https://i.imgur.com/iR322b2.png",
+  "https://i.imgur.com/aCZy34s.png",
+  "https://i.imgur.com/9lV8iJ4.png",
+  "https://i.imgur.com/dZkYqRk.png",
+  "https://i.imgur.com/IMLpS3i.png",
 ];
 
 const FEMALE_AVATARS = [
-  "https://i.imgur.com/J3tG1e4.png",
-  "https://i.imgur.com/7L48yPE.png",
-  "https://i.imgur.com/26Xn9A8.png",
-  "https://i.imgur.com/K3tB9gH.png",
+  "https://i.imgur.com/N39gTto.png",
+  "https://i.imgur.com/jAcb5Uv.png",
+  "https://i.imgur.com/HiT9E0O.png",
+  "https://i.imgur.com/S8WJgUa.png",
 ];
 
 
