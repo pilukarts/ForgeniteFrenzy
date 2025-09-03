@@ -17,14 +17,53 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { UserCircle } from 'lucide-react';
 import { countries } from '@/lib/countries';
 
+const firstNames = ["Alex", "Jordan", "Kenji", "Liam", "Sofia", "Anya", "Chen", "Marco", "Elena", "Tariq", "Hana", "Ivan", "Freya", "Javier", "Nia", "Omar", "Isla", "Yuki", "Leo", "Zara"];
+const lastNames = ["Volkov", "Nakamura", "Smith", "Garcia", "Kim", "O'Connell", "Khan", "Rossi", "Silva", "Petrov", "Andersson", "Lee", "Santiago", "Müller", "Dubois", "Jones", "Chen", "Singh", "Williams", "Schneider"];
+
+
+const generateRealisticLeaderboard = (playerEntry: LeaderboardEntry): LeaderboardEntry[] => {
+    const mockEntries: LeaderboardEntry[] = [];
+    const numPlayers = 50;
+    
+    // Generate scores that are realistically distributed around the player's score
+    const topScore = playerEntry.score * 5 + 10000;
+    
+    for (let i = 0; i < numPlayers; i++) {
+        const score = Math.floor(topScore * (1 - (i / numPlayers)) * (Math.random() * 0.2 + 0.9));
+        const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+        const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+        const country = countries[Math.floor(Math.random() * countries.length)];
+
+        mockEntries.push({
+            rank: 0, // Rank will be set after sorting
+            playerId: crypto.randomUUID(),
+            playerName: `${firstName} ${lastName}`,
+            country: country.code,
+            score: score,
+            playerLeague: 'Gold', // This can be randomized further if needed
+            avatarUrl: `https://picsum.photos/seed/${firstName}${lastName}/200`,
+        });
+    }
+
+    // Add player to the list and sort
+    const fullLeaderboard = [...mockEntries, playerEntry].sort((a, b) => b.score - a.score);
+
+    // Assign ranks
+    return fullLeaderboard.map((entry, index) => ({
+        ...entry,
+        rank: index + 1,
+    }));
+};
+
+
 const LeaderboardPage: React.FC = () => {
   const { playerProfile, isLoading, isInitialSetupDone } = useGame();
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
 
   useEffect(() => {
-    if (playerProfile) {
+    if (playerProfile && isInitialSetupDone) {
       const playerEntry: LeaderboardEntry = {
-        rank: 1, 
+        rank: 0, // Placeholder rank
         playerId: playerProfile.id,
         playerName: playerProfile.name,
         country: playerProfile.country,
@@ -32,9 +71,11 @@ const LeaderboardPage: React.FC = () => {
         playerLeague: playerProfile.league,
         avatarUrl: playerProfile.avatarUrl,
       };
-      setLeaderboard([playerEntry]);
+      
+      const realisticLeaderboard = generateRealisticLeaderboard(playerEntry);
+      setLeaderboard(realisticLeaderboard);
     }
-  }, [playerProfile]);
+  }, [playerProfile, isInitialSetupDone]);
 
    if (isLoading) {
      return <IntroScreen />;
