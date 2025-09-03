@@ -15,15 +15,15 @@ import Image from 'next/image';
 
 const ALL_AVATARS = [
   // Female
+  "https://i.imgur.com/J3tG1e4.png",
   "https://i.imgur.com/N39gTto.png",
   "https://i.imgur.com/jAcb5Uv.png",
   "https://i.imgur.com/HiT9E0O.png",
-  "https://i.imgur.com/S8WJgUa.png",
   // Male
+  "https://i.imgur.com/gB3i4OQ.png",
   "https://i.imgur.com/aCZy34s.png",
   "https://i.imgur.com/9lV8iJ4.png",
   "https://i.imgur.com/dZkYqRk.png",
-  "https://i.imgur.com/IMLpS3i.png",
 ];
 
 
