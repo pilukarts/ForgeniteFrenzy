@@ -425,8 +425,15 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     if (playerProfile) {
+      // Create a serializable copy for Firestore by removing the icon components
+      const profileForFirestore = {
+        ...playerProfile,
+        activeDailyQuests: playerProfile.activeDailyQuests.map(({ icon, ...quest }) => quest),
+      };
+      
       localStorage.setItem('playerProfile', JSON.stringify(playerProfile));
-      syncPlayerProfileInFirestore(playerProfile); // Sync with Firestore on every change
+      syncPlayerProfileInFirestore(profileForFirestore); // Sync with Firestore on every change
+
       const season = SEASONS_DATA.find(s => s.id === playerProfile.currentSeasonId) || SEASONS_DATA[0];
       setCurrentSeason(season);
       const coreIsNowUnlocked = SEASONS_DATA.slice(0, SEASONS_DATA.findIndex(s => s.id === season.id) + 1).some(s => s.unlocksCore);
