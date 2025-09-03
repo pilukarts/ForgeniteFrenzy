@@ -41,9 +41,9 @@ const ProfilePage: React.FC = () => {
 
   const handleSave = () => {
     if (playerProfile) {
-      // For simplicity, we'll pass the same commanderSex logic for now, but it's not strictly needed if we allow free avatar choice.
-      // A more robust solution might determine sex from avatar choice if needed elsewhere.
-      updatePlayerProfile(name, selectedAvatar, playerProfile.commanderSex);
+      // Determine sex based on the selected avatar's URL to simplify things.
+      const avatarSex = ALL_AVATARS.indexOf(selectedAvatar) >= 4 ? 'male' : 'female';
+      updatePlayerProfile(name, selectedAvatar, avatarSex);
     }
   };
 
