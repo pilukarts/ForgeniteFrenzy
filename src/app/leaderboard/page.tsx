@@ -25,9 +25,9 @@ const LeaderboardPage: React.FC = () => {
   useEffect(() => {
     const generateMockLeaderboard = (count: number): LeaderboardEntry[] => {
       const mockData: LeaderboardEntry[] = [];
-      const firstNames = ['Alex', 'Sam', 'Jordan', 'Taylor', 'Morgan', 'Casey', 'Riley', 'Jessie', 'Jamie', 'Kai'];
-      const lastNames = ['Viper', 'Nova', 'Wraith', 'Blaze', 'Shade', 'Rogue', 'Apex', 'Fury', 'Stryker', 'Jolt'];
-
+      const firstNames = ['Li', 'Maria', 'Nushi', 'Jose', 'Mohammed', 'Wei', 'Anna', 'David', 'Fatima', 'Santiago', 'Olga', 'Kenji', 'Sofia', 'Ahmed', 'Lars', 'Isabella'];
+      const lastNames = ['Chen', 'Garcia', 'Patel', 'Gonzalez', 'Khan', 'Smith', 'Ivanova', 'Kim', 'Rodriguez', 'Tanaka', 'Müller', 'Silva', 'Nguyen', 'Jones'];
+      
       for (let i = 1; i <= count; i++) {
         // Create a more realistic score distribution (exponential decay)
         const score = Math.floor(10000000 * Math.exp(-i / 20) * (1 + Math.random() * 0.1));
@@ -39,7 +39,7 @@ const LeaderboardPage: React.FC = () => {
         mockData.push({
           rank: i,
           playerId: `player_${i}`,
-          playerName: `Cmdr. ${randomFirstName} '${randomLastName}'`,
+          playerName: `Cmdr. ${randomFirstName} ${randomLastName}`,
           country: randomCountry.code,
           score: score,
           playerLeague: getLeagueByPoints(score),
