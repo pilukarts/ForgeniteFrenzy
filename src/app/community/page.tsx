@@ -7,6 +7,8 @@ import { Users } from 'lucide-react';
 import { useGame } from '@/contexts/GameContext';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import IntroScreen from '@/components/intro/IntroScreen';
+import NewsletterSignup from '@/components/community/NewsletterSignup';
+import { Separator } from '@/components/ui/separator';
 
 const CommunityPage: React.FC = () => {
   const { isLoading, isInitialSetupDone } = useGame();
@@ -31,7 +33,11 @@ const CommunityPage: React.FC = () => {
             Share your feedback, suggestions, or report issues.
           </p>
         </header>
-        <FeedbackForm />
+        <div className="max-w-lg mx-auto space-y-8">
+          <FeedbackForm />
+          <Separator />
+          <NewsletterSignup />
+        </div>
       </div>
     </AppLayout>
   );
