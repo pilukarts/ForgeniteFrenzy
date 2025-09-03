@@ -32,7 +32,7 @@ interface GameContextType {
   addPoints: (amount: number, isFromTap?: boolean) => void;
   isLoading: boolean;
   isInitialSetupDone: boolean;
-  completeInitialSetup: (name: string, sex: 'male' | 'female', country: string, referredByCode?: string) => void;
+  completeInitialSetup: (name: string, sex: 'male' | 'female', avatarUrl: string, country: string, referredByCode?: string) => void;
   coreMessages: CoreMessage[];
   addCoreMessage: (message: Omit<CoreMessage, 'timestamp'>, isHighPriority?: boolean) => void;
   isCoreUnlocked: boolean;
@@ -46,7 +46,6 @@ interface GameContextType {
   setComboCount: React.Dispatch<React.SetStateAction<number>>;
   marketplaceItems: MarketplaceItem[];
   purchaseMarketplaceItem: (itemId: string) => void;
-  switchCommanderSex: () => void;
   claimQuestReward: (questId: string) => void;
   refreshDailyQuestsIfNeeded: () => void;
   refillTaps: () => void;
@@ -66,12 +65,12 @@ interface GameContextType {
   isMusicPlaying: boolean;
   toggleMusic: () => void;
   // Profile editing
-  updatePlayerProfile: (name: string, avatarUrl: string) => void;
+  updatePlayerProfile: (name: string, avatarUrl: string, commanderSex: 'male' | 'female') => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
-const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' | 'country' | 'currentSeasonId'> = {
+const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' | 'avatarUrl' | 'country' | 'currentSeasonId'> = {
   points: 0,
   auron: 0,
   level: 1,
@@ -97,7 +96,6 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
   tapsAvailableAt: Date.now(),
   currentTierColor: INITIAL_TIER_COLOR,
   league: DEFAULT_LEAGUE,
-  avatarUrl: undefined,
   // Battle Pass
   battlePassLevel: 1,
   battlePassXp: 0,
@@ -438,13 +436,14 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem('coreMessages', JSON.stringify(coreMessages));
   }, [coreMessages]);
 
-  const completeInitialSetup = (name: string, sex: 'male' | 'female', country: string, referredByCode?: string) => {
+  const completeInitialSetup = (name: string, sex: 'male' | 'female', avatarUrl: string, country: string, referredByCode?: string) => {
     const now = Date.now();
     const newProfileData: PlayerProfile = {
       ...defaultPlayerProfile,
       id: crypto.randomUUID(),
       name,
       commanderSex: sex,
+      avatarUrl,
       country,
       currentSeasonId: SEASONS_DATA[0].id,
       rankTitle: getRankTitle(1),
@@ -831,16 +830,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, addCoreMessage, updateQuestProgress, addPoints, playerProfile]);
 
-
-  const switchCommanderSex = useCallback(() => {
-    setPlayerProfile(prev => {
-      if (!prev) return null;
-      const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
-      addCoreMessage({ type: 'system_alert', content: `Commander profile switched to ${newSex}.` });
-       return { ...prev, commanderSex: newSex };
-    });
-  }, [addCoreMessage]);
-
   const claimQuestReward = useCallback((questId: string) => {
     let claimedQuest: DailyQuest | null = null;
     let success = false;
@@ -1101,10 +1090,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   }, []);
   
-  const updatePlayerProfile = useCallback((name: string, avatarUrl: string) => {
+  const updatePlayerProfile = useCallback((name: string, avatarUrl: string, commanderSex: 'male' | 'female') => {
     setPlayerProfile(prev => {
       if (!prev) return null;
-      return { ...prev, name, avatarUrl };
+      return { ...prev, name, avatarUrl, commanderSex };
     });
     addCoreMessage({type: 'system_alert', content: 'Player profile updated.'});
     toast({title: 'Profile Updated', description: 'Your callsign and avatar have been updated.'});
@@ -1141,7 +1130,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setComboCount,
         marketplaceItems: MARKETPLACE_ITEMS_DATA,
         purchaseMarketplaceItem,
-        switchCommanderSex,
         claimQuestReward,
         refreshDailyQuestsIfNeeded,
         refillTaps,

@@ -13,30 +13,37 @@ import { countries } from '@/lib/countries';
 import { Check, Search } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
+const AVATARS = [
+  // Female
+  { url: "https://i.imgur.com/N39gTto.png", sex: 'female' },
+  { url: "https://i.imgur.com/jAcb5Uv.png", sex: 'female' },
+  { url: "https://i.imgur.com/HiT9E0O.png", sex: 'female' },
+  { url: "https://i.imgur.com/S8WJgUa.png", sex: 'female' },
+  // Male
+  { url: "https://i.imgur.com/aCZy34s.png", sex: 'male' },
+  { url: "https://i.imgur.com/9lV8iJ4.png", sex: 'male' },
+  { url: "https://i.imgur.com/dZkYqRk.png", sex: 'male' },
+  { url: "https://i.imgur.com/IMLpS3i.png", sex: 'male' },
+];
+
+
 const PlayerSetup: React.FC = () => {
   const { completeInitialSetup } = useGame();
   const [name, setName] = useState('');
-  const [sex, setSex] = useState<'male' | 'female'>('female');
+  const [selectedAvatar, setSelectedAvatar] = useState(AVATARS[0]);
   const [country, setCountry] = useState('');
   const [referredBy, setReferredBy] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [isCountryModalOpen, setCountryModalOpen] = useState(false);
 
-  const isFormValid = name.trim() !== '' && country !== '';
+  const isFormValid = name.trim() !== '' && country !== '' && selectedAvatar.url !== '';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isFormValid) {
-      completeInitialSetup(name.trim(), sex, country, referredBy.trim());
+      completeInitialSetup(name.trim(), selectedAvatar.sex, selectedAvatar.url, country, referredBy.trim());
     }
   };
-
-  const femaleCommanderImg = "https://i.imgur.com/BQHeVWp.png";
-  const maleCommanderImg = "https://i.imgur.com/iuRJVBZ.png"; 
-
-  const filteredCountries = countries.filter(c => 
-    c.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
   
   const selectedCountryName = countries.find(c => c.code === country)?.name || 'Select your home nation';
 
@@ -53,32 +60,25 @@ const PlayerSetup: React.FC = () => {
         
         <ScrollArea className="flex-grow">
           <CardContent className="space-y-6 p-6">
-              {/* Commander Selection */}
-              <div className="space-y-3 text-center">
-                <Label className="text-foreground/80 text-lg font-semibold">Select Commander</Label>
-                <div className="flex justify-center gap-4">
-                  <div 
-                    className={cn(
-                      "rounded-lg p-2 border-2 cursor-pointer transition-all duration-300",
-                      sex === 'female' ? 'border-primary bg-primary/10 shadow-lg scale-105' : 'border-transparent opacity-70 hover:opacity-100'
-                    )}
-                    onClick={() => setSex('female')}
-                  >
-                    <Image src={femaleCommanderImg} alt="Female Commander" width={120} height={160} className="rounded-md object-contain" data-ai-hint="female soldier"/>
-                    <p className={cn("text-sm font-medium mt-1 text-center", sex === 'female' ? 'text-primary' : 'text-muted-foreground')}>Female</p>
-                  </div>
-                  <div 
-                    className={cn(
-                      "rounded-lg p-2 border-2 cursor-pointer transition-all duration-300",
-                      sex === 'male' ? 'border-primary bg-primary/10 shadow-lg scale-105' : 'border-transparent opacity-70 hover:opacity-100'
-                    )}
-                    onClick={() => setSex('male')}
-                  >
-                    <Image src={maleCommanderImg} alt="Male Commander" width={120} height={160} className="rounded-md object-contain" data-ai-hint="male soldier"/>
-                    <p className={cn("text-sm font-medium mt-1 text-center", sex === 'male' ? 'text-primary' : 'text-muted-foreground')}>Male</p>
-                  </div>
+              {/* Avatar Selection */}
+              <div className="space-y-3">
+                <Label className="text-foreground/80 text-lg font-semibold block text-center">Select Your Commander</Label>
+                <div className="grid grid-cols-4 gap-2">
+                  {AVATARS.map((avatar) => (
+                    <div 
+                      key={avatar.url}
+                      className={cn(
+                        "rounded-lg p-1 border-2 cursor-pointer transition-all duration-300",
+                        selectedAvatar.url === avatar.url ? 'border-primary bg-primary/10 shadow-lg scale-105' : 'border-transparent opacity-70 hover:opacity-100 hover:border-primary/50'
+                      )}
+                      onClick={() => setSelectedAvatar(avatar)}
+                    >
+                      <Image src={avatar.url} alt="Commander Avatar" width={100} height={100} className="rounded-md object-cover w-full h-auto aspect-square" data-ai-hint="commander portrait"/>
+                    </div>
+                  ))}
                 </div>
               </div>
+
 
               {/* Callsign and Nation */}
               <div className="space-y-4">

@@ -9,41 +9,41 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Check, Edit, UserCircle, Users } from 'lucide-react';
+import { Check, UserCircle, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
-const MALE_AVATARS = [
+const ALL_AVATARS = [
+  // Female
+  "https://i.imgur.com/N39gTto.png",
+  "https://i.imgur.com/jAcb5Uv.png",
+  "https://i.imgur.com/HiT9E0O.png",
+  "https://i.imgur.com/S8WJgUa.png",
+  // Male
   "https://i.imgur.com/aCZy34s.png",
   "https://i.imgur.com/9lV8iJ4.png",
   "https://i.imgur.com/dZkYqRk.png",
   "https://i.imgur.com/IMLpS3i.png",
 ];
 
-const FEMALE_AVATARS = [
-  "https://i.imgur.com/N39gTto.png",
-  "https://i.imgur.com/jAcb5Uv.png",
-  "https://i.imgur.com/HiT9E0O.png",
-  "https://i.imgur.com/S8WJgUa.png",
-];
-
 
 const ProfilePage: React.FC = () => {
-  const { playerProfile, isLoading, isInitialSetupDone, updatePlayerProfile, switchCommanderSex } = useGame();
+  const { playerProfile, isLoading, isInitialSetupDone, updatePlayerProfile } = useGame();
   const [name, setName] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState('');
 
   useEffect(() => {
     if (playerProfile) {
       setName(playerProfile.name);
-      setSelectedAvatar(playerProfile.avatarUrl || (playerProfile.commanderSex === 'male' ? MALE_AVATARS[0] : FEMALE_AVATARS[0]));
+      setSelectedAvatar(playerProfile.avatarUrl || ALL_AVATARS[0]);
     }
   }, [playerProfile]);
 
   const handleSave = () => {
     if (playerProfile) {
-      updatePlayerProfile(name, selectedAvatar);
+      // For simplicity, we'll pass the same commanderSex logic for now, but it's not strictly needed if we allow free avatar choice.
+      // A more robust solution might determine sex from avatar choice if needed elsewhere.
+      updatePlayerProfile(name, selectedAvatar, playerProfile.commanderSex);
     }
   };
 
@@ -56,8 +56,6 @@ const ProfilePage: React.FC = () => {
   }
 
   if (!playerProfile) return null;
-
-  const currentAvatars = playerProfile.commanderSex === 'male' ? MALE_AVATARS : FEMALE_AVATARS;
 
   return (
     <AppLayout>
@@ -97,7 +95,7 @@ const ProfilePage: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-4 gap-2 sm:gap-4">
-                  {currentAvatars.map((url) => (
+                  {ALL_AVATARS.map((url) => (
                   <button
                       key={url}
                       onClick={() => setSelectedAvatar(url)}
@@ -111,12 +109,6 @@ const ProfilePage: React.FC = () => {
                   ))}
               </div>
             </CardContent>
-            <CardFooter>
-                 <Button onClick={switchCommanderSex} variant="outline" size="sm" className="w-full justify-center">
-                    <Users className="mr-2 h-4 w-4" />
-                    Switch Commander Gender
-                </Button>
-            </CardFooter>
           </Card>
           
           <Button onClick={handleSave} className="w-full text-lg h-12" disabled={!name}>
