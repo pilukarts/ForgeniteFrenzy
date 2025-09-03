@@ -162,7 +162,7 @@ const GemstoneBurst: React.FC = () => {
 
       while (toCheck.length > 0) {
           const current = toCheck.pop()!;
-          if (current.color === targetColor || current.special === 'rainbow') {
+          if (current.color === targetColor || current.special === 'rainbow' || startBubble.special === 'rainbow') {
               matches.push(current);
               const neighbors = getNeighbors(current, allBubbles);
               for (const neighbor of neighbors) {
@@ -235,23 +235,26 @@ const GemstoneBurst: React.FC = () => {
         }
     }
     
-    // Only add projectile to board if no match was found
-    if (!matchFound) {
-      setBubbles(prev => [...prev, newBubble]);
-      if (newBubble.y >= SHOOTER_Y - BUBBLE_DIAMETER) {
-         setGameOver('LOSE');
-         toast({ title: 'Game Over!', description: 'The gems reached the bottom!', variant: 'destructive' });
-      }
-    } else {
+    let afterMatches = tempBubbles.filter(b => !bubblesToRemoveIds.has(b.id));
+
+    if (matchFound) {
       pointsThisShot += bubblesToRemoveIds.size * POINTS_PER_BUBBLE;
-      let afterMatches = tempBubbles.filter(b => !bubblesToRemoveIds.has(b.id));
       const floating = getFloatingBubbles(afterMatches);
       if(floating.length > 0) {
           floating.forEach(f => bubblesToRemoveIds.add(f.id));
           pointsThisShot += floating.length * POINTS_PER_DROPPED_BUBBLE;
           toast({ title: 'Nice Drop!', description: `+${floating.length * POINTS_PER_DROPPED_BUBBLE} bonus points!` });
       }
-      setBubbles(bubbles.filter(b => !bubblesToRemoveIds.has(b.id)));
+      afterMatches = tempBubbles.filter(b => !bubblesToRemoveIds.has(b.id));
+    }
+    
+    // Always add the new bubble if no match was found, otherwise add the remaining bubbles
+    const finalBubbles = !matchFound ? tempBubbles : afterMatches;
+    setBubbles(finalBubbles);
+
+    if (newBubble.y >= SHOOTER_Y - BUBBLE_DIAMETER && !gameOver) {
+       setGameOver('LOSE');
+       toast({ title: 'Game Over!', description: 'The gems reached the bottom!', variant: 'destructive' });
     }
     
     if (pointsThisShot > 0) {
@@ -261,32 +264,36 @@ const GemstoneBurst: React.FC = () => {
     
     setNextBubble(getNextBubbleType());
 
-  }, [bubbles, getGridPos, addPoints, toast, getNextBubbleType]);
+  }, [bubbles, getGridPos, addPoints, toast, getNextBubbleType, gameOver]);
   
   const advanceBubbles = useCallback(() => {
     let isGameOver = false;
-    const newBubbles = bubbles.map(b => {
-        const newRow = b.row + 1;
-        if (getGridPos(newRow, b.col).y >= SHOOTER_Y - BUBBLE_DIAMETER) isGameOver = true;
-        return { ...b, row: newRow };
-    }).map(b => ({...b, ...getGridPos(b.row, b.col)}));
+    setBubbles(prevBubbles => {
+        const newBubbles = prevBubbles.map(b => {
+            const newRow = b.row + 1;
+            if (getGridPos(newRow, b.col).y >= SHOOTER_Y - BUBBLE_DIAMETER) isGameOver = true;
+            return { ...b, row: newRow };
+        }).map(b => ({...b, ...getGridPos(b.row, b.col)}));
 
-    const newRow = 0;
-    const colsInRow = COLS - (newRow % 2);
-    for (let col = 0; col < colsInRow; col++) {
-        const { x, y } = getGridPos(newRow, col);
-        newBubbles.push({
-            id: bubbleIdCounter.current++, x, y, row: newRow, col,
-            color: COLORS[Math.floor(Math.random() * COLORS.length)],
-            special: null
-        });
-    }
-    setBubbles(newBubbles);
+        const newRow = 0;
+        const colsInRow = COLS - (newRow % 2);
+        for (let col = 0; col < colsInRow; col++) {
+            const { x, y } = getGridPos(newRow, col);
+            newBubbles.push({
+                id: bubbleIdCounter.current++, x, y, row: newRow, col,
+                color: COLORS[Math.floor(Math.random() * COLORS.length)],
+                special: null
+            });
+        }
+        return newBubbles;
+    });
+
     if (isGameOver && !gameOver) {
         setGameOver('LOSE');
         toast({ title: 'Game Over', description: 'The gems reached the bottom!', variant: 'destructive' });
     }
-  }, [bubbles, gameOver, toast, getGridPos]);
+}, [gameOver, getGridPos, toast]);
+
 
   useEffect(() => {
       if (shotsFired > 0 && shotsFired % SHOTS_BEFORE_ADVANCE === 0) {
@@ -472,3 +479,5 @@ const GemstoneBurst: React.FC = () => {
 };
 
 export default GemstoneBurst;
+
+    
