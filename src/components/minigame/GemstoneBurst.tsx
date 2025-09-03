@@ -9,27 +9,28 @@ import { RefreshCw, ArrowLeft, ArrowRight, ArrowUp, Bomb, Sparkles } from 'lucid
 
 // --- Game Constants & Types ---
 const COLS = 11;
-const ROWS = 14;
-const BUBBLE_RADIUS = 16;
-const BOARD_WIDTH = COLS * BUBBLE_RADIUS * 2 + BUBBLE_RADIUS;
-const BOARD_HEIGHT = ROWS * BUBBLE_RADIUS * 1.732;
+const ROWS = 14; // Max rows before game over
+const BUBBLE_DIAMETER = 32;
+const BUBBLE_RADIUS = BUBBLE_DIAMETER / 2;
+const BOARD_WIDTH = (COLS * BUBBLE_DIAMETER) + BUBBLE_RADIUS;
+const BOARD_HEIGHT = ROWS * (BUBBLE_DIAMETER * 0.866); // Using sine of 60 degrees for hex height
 const SHOOTER_Y = BOARD_HEIGHT + BUBBLE_RADIUS * 2;
 const PROJECTILE_SPEED = 20;
 const SHOTS_BEFORE_ADVANCE = 5;
 
-const COLORS = ['#FF5A5A', '#FFD700', '#5AFF5A', '#5A5AFF', '#FF5AE4', '#5AFFFF'];
+const COLORS = ['#FF5A5A', '#FFD700', '#5AFF5A', '#5A5AFF', '#FF5AE4', '#5AFFFF']; // Red, Yellow, Green, Blue, Pink, Cyan
 type BubbleColor = string;
 type SpecialType = 'bomb' | 'rainbow' | null;
 
 interface Bubble {
   id: number;
-  x: number;
-  y: number;
   row: number;
   col: number;
   color: BubbleColor;
   special: SpecialType;
   isStatic: boolean;
+  x: number;
+  y: number;
 }
 
 interface Projectile extends Omit<Bubble, 'row' | 'col' | 'isStatic'> {
@@ -51,16 +52,15 @@ const GemstoneBurst: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isClient, setIsClient] = useState(false);
 
-  // This is the key change: ensure component is mounted on the client before doing anything.
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  const getGridPos = (row: number, col: number) => {
-    const x = col * BUBBLE_RADIUS * 2 + (row % 2 === 0 ? BUBBLE_RADIUS : BUBBLE_RADIUS * 2);
-    const y = row * BUBBLE_RADIUS * 1.732 + BUBBLE_RADIUS;
+  const getGridPos = useCallback((row: number, col: number) => {
+    const x = col * BUBBLE_DIAMETER + (row % 2 === 1 ? BUBBLE_RADIUS : 0) + BUBBLE_RADIUS;
+    const y = row * (BUBBLE_DIAMETER * 0.866) + BUBBLE_RADIUS;
     return { x, y };
-  };
+  }, []);
 
   const getNextBubble = useCallback((): { color: BubbleColor; special: SpecialType } => {
     const availableColors = [...new Set(bubbles.filter(b => b.isStatic && b.special === null).map(b => b.color))];
@@ -77,24 +77,22 @@ const GemstoneBurst: React.FC = () => {
     }
     return { color: COLORS[Math.floor(Math.random() * COLORS.length)], special: null };
   }, [bubbles]);
-
+  
   const resetGame = useCallback(() => {
     bubbleIdCounter.current = 0;
     const initialBubbles: Bubble[] = [];
     for (let row = 0; row < 5; row++) {
-        const numCols = row % 2 === 0 ? COLS : COLS - 1;
-        for (let col = 0; col < numCols; col++) {
-            if (col < numCols) {
-                const { x, y } = getGridPos(row, col);
-                initialBubbles.push({
-                    id: bubbleIdCounter.current++,
-                    x, y, row, col,
-                    color: COLORS[Math.floor(Math.random() * COLORS.length)],
-                    special: null,
-                    isStatic: true,
-                });
-            }
-        }
+      const colsInRow = COLS - (row % 2);
+      for (let col = 0; col < colsInRow; col++) {
+        const { x, y } = getGridPos(row, col);
+        initialBubbles.push({
+          id: bubbleIdCounter.current++,
+          row, col, x, y,
+          color: COLORS[Math.floor(Math.random() * COLORS.length)],
+          special: null,
+          isStatic: true,
+        });
+      }
     }
     setBubbles(initialBubbles);
     setProjectile(null);
@@ -102,8 +100,12 @@ const GemstoneBurst: React.FC = () => {
     setGameOver(false);
     setShooterAngle(0);
     setShotsFired(0);
-    setNextBubble(getNextBubble());
-  }, [getNextBubble]);
+    // Directly setNextBubble without waiting for bubbles state
+    setNextBubble(initialBubbles.length > 0
+        ? { color: initialBubbles[Math.floor(Math.random() * initialBubbles.length)].color, special: null }
+        : { color: COLORS[Math.floor(Math.random() * COLORS.length)], special: null }
+    );
+  }, [getGridPos]);
 
   useEffect(() => {
     if (isClient) {
@@ -114,16 +116,15 @@ const GemstoneBurst: React.FC = () => {
   const advanceBubbles = useCallback(() => {
     let isGameOver = false;
     const newBubbles = bubbles.map(b => {
-        const { y: newY } = getGridPos(b.row + 1, b.col);
-        if (newY + BUBBLE_RADIUS >= SHOOTER_Y - BUBBLE_RADIUS * 2) {
-            isGameOver = true;
-        }
-        return { ...b, y: newY, row: b.row + 1 };
+        const newRow = b.row + 1;
+        if (newRow >= ROWS) isGameOver = true;
+        const { x, y } = getGridPos(newRow, b.col);
+        return { ...b, y, row: newRow };
     });
 
     const newRow = 0;
-    const numCols = newRow % 2 === 0 ? COLS : COLS - 1;
-    for (let col = 0; col < numCols; col++) {
+    const colsInRow = COLS - (newRow % 2);
+    for (let col = 0; col < colsInRow; col++) {
         const { x, y } = getGridPos(newRow, col);
         newBubbles.push({
             id: bubbleIdCounter.current++,
@@ -140,7 +141,7 @@ const GemstoneBurst: React.FC = () => {
         setGameOver('LOSE');
         toast({ title: 'Game Over', description: 'The gems reached the bottom!', variant: 'destructive' });
     }
-  }, [bubbles, gameOver, toast]);
+  }, [bubbles, gameOver, toast, getGridPos]);
 
   useEffect(() => {
       if (shotsFired > 0 && shotsFired % SHOTS_BEFORE_ADVANCE === 0) {
@@ -164,39 +165,35 @@ const GemstoneBurst: React.FC = () => {
     setNextBubble(getNextBubble());
   }, [projectile, gameOver, shooterAngle, nextBubble, getNextBubble]);
 
-  const findNeighbors = (target: Bubble, allBubbles: Bubble[]): Bubble[] => {
+  const getNeighbors = (bubble: Bubble, allBubbles: Bubble[]): Bubble[] => {
       return allBubbles.filter(other => {
-          if (target.id === other.id || !other.isStatic) return false;
-          const dist = Math.hypot(target.x - other.x, target.y - other.y);
-          return dist < BUBBLE_RADIUS * 2.1;
+          if (bubble.id === other.id) return false;
+          const dist = Math.hypot(bubble.x - other.x, bubble.y - other.y);
+          return dist < BUBBLE_DIAMETER;
       });
   };
 
   const getMatches = (startBubble: Bubble, allBubbles: Bubble[]): Bubble[] => {
-    if (startBubble.special) return [];
+      if (startBubble.special) return [];
 
-    const toCheck = [startBubble];
-    const checked = new Set<number>([startBubble.id]);
-    const matches: Bubble[] = [];
+      const toCheck = [startBubble];
+      const checked = new Set<number>([startBubble.id]);
+      const matches: Bubble[] = [startBubble];
 
-    while (toCheck.length > 0) {
-        const current = toCheck.pop()!;
-        if (current.special === 'rainbow' || current.color === startBubble.color) {
-            matches.push(current);
-            const neighbors = findNeighbors(current, allBubbles);
-            for (const neighbor of neighbors) {
-                if (!checked.has(neighbor.id)) {
-                    checked.add(neighbor.id);
-                    if (neighbor.special === 'rainbow' || neighbor.color === startBubble.color) {
-                      toCheck.push(neighbor);
-                    }
-                }
-            }
-        }
-    }
-    return matches;
+      while (toCheck.length > 0) {
+          const current = toCheck.pop()!;
+          const neighbors = getNeighbors(current, allBubbles);
+          for (const neighbor of neighbors) {
+              if (!checked.has(neighbor.id) && (neighbor.color === startBubble.color || neighbor.special === 'rainbow')) {
+                  checked.add(neighbor.id);
+                  toCheck.push(neighbor);
+                  matches.push(neighbor);
+              }
+          }
+      }
+      return matches;
   };
-
+  
   const getFloatingBubbles = (allBubbles: Bubble[]): Bubble[] => {
       const staticBubbles = allBubbles.filter(b => b.isStatic);
       const checked = new Set<number>();
@@ -212,7 +209,7 @@ const GemstoneBurst: React.FC = () => {
       let head = 0;
       while(head < toCheck.length) {
           const current = toCheck[head++];
-          const neighbors = findNeighbors(current, staticBubbles);
+          const neighbors = getNeighbors(current, staticBubbles);
           for (const neighbor of neighbors) {
               if (!checked.has(neighbor.id)) {
                   checked.add(neighbor.id);
@@ -220,47 +217,20 @@ const GemstoneBurst: React.FC = () => {
               }
           }
       }
-
       return staticBubbles.filter(b => !checked.has(b.id));
   };
   
   const handleCollision = (proj: Projectile) => {
-    let bestSnapPos: { x: number; y: number; row: number; col: number; dist: number } | null = null;
-    
-    // Calculate the potential final row/col
-    const estRow = Math.round((proj.y - BUBBLE_RADIUS) / (BUBBLE_RADIUS * 1.732));
-    const numColsInEstRow = estRow % 2 === 0 ? COLS : COLS - 1;
-    const estCol = Math.round(
-      (proj.x - (estRow % 2 === 0 ? BUBBLE_RADIUS : BUBBLE_RADIUS * 2)) / (BUBBLE_RADIUS * 2)
-    );
-    
-    for(let r = Math.max(0, estRow - 2); r < Math.min(ROWS, estRow + 3); r++) {
-        const numCols = r % 2 === 0 ? COLS : COLS - 1;
-        for (let c = Math.max(0, estCol - 2); c < Math.min(numCols, estCol + 3); c++) {
-            if (bubbles.some(b => b.row === r && b.col === c && b.isStatic)) continue;
-            
-            const gridPos = getGridPos(r, c);
-            const dist = Math.hypot(proj.x - gridPos.x, proj.y - gridPos.y);
+    setProjectile(null); // Stop projectile movement immediately
 
-            let hasNeighbor = bubbles.some(b => b.isStatic && Math.hypot(gridPos.x - b.x, gridPos.y - b.y) < BUBBLE_RADIUS * 2.1);
-            
-            if ((r === 0 || hasNeighbor) && (!bestSnapPos || dist < bestSnapPos.dist)) {
-                bestSnapPos = { ...gridPos, row: r, col: c, dist };
-            }
-        }
-    }
+    const row = Math.round(proj.y / (BUBBLE_DIAMETER * 0.866));
+    const col = Math.round((proj.x - (row % 2 === 1 ? BUBBLE_RADIUS : 0)) / BUBBLE_DIAMETER);
 
-    if (!bestSnapPos) {
-        setProjectile(null);
-        return;
-    }
-    
+    const { x, y } = getGridPos(row, col);
+
     const newBubble: Bubble = {
         id: proj.id,
-        x: bestSnapPos.x,
-        y: bestSnapPos.y,
-        row: bestSnapPos.row,
-        col: bestSnapPos.col,
+        row, col, x, y,
         color: proj.color,
         special: proj.special,
         isStatic: true,
@@ -271,27 +241,15 @@ const GemstoneBurst: React.FC = () => {
     let pointsThisShot = 0;
 
     if (newBubble.special === 'bomb') {
-        const neighbors = findNeighbors(newBubble, tempBubbles);
+        const neighbors = getNeighbors(newBubble, tempBubbles);
         neighbors.forEach(n => bubblesToRemove.add(n.id));
         bubblesToRemove.add(newBubble.id);
         pointsThisShot += bubblesToRemove.size * 20;
-        toast({ title: 'KABOOM!', description: `Bomb cleared ${bubblesToRemove.size} gems!`});
     } else {
-        if (newBubble.special === 'rainbow') {
-            const neighbors = findNeighbors(newBubble, tempBubbles);
-            const targetColor = neighbors.length > 0 ? neighbors[0].color : COLORS[0];
-            const rainbowMatches = getMatches({...newBubble, color: targetColor, special: null}, tempBubbles);
-             if (rainbowMatches.length >= 2) { // 2 + rainbow itself
-                rainbowMatches.forEach(m => bubblesToRemove.add(m.id));
-                bubblesToRemove.add(newBubble.id);
-                pointsThisShot += (rainbowMatches.length + 1) * 10 * (rainbowMatches.length + 1);
-            }
-        } else {
-            const matches = getMatches(newBubble, tempBubbles);
-            if (matches.length >= 3) {
-                matches.forEach(m => bubblesToRemove.add(m.id));
-                pointsThisShot += matches.length * 10 * matches.length;
-            }
+        const matches = getMatches(newBubble, tempBubbles);
+        if (matches.length >= 3) {
+            matches.forEach(m => bubblesToRemove.add(m.id));
+            pointsThisShot += matches.length * 10 * matches.length;
         }
     }
 
@@ -315,27 +273,17 @@ const GemstoneBurst: React.FC = () => {
     } else {
       setBubbles(prev => [...prev, newBubble]);
     }
-    
-    setProjectile(null);
 
-    // Check game state after shot
     setTimeout(() => {
-        setBubbles(currentBubbles => {
-            if (currentBubbles.filter(b => b.isStatic).length === 0) {
-                if (!gameOver) {
-                    setGameOver('WIN');
-                    const winBonus = 5000;
-                    addPoints(winBonus); setScore(s => s + winBonus);
-                    toast({ title: 'You Win!', description: `All gems cleared! +${winBonus} bonus points.` });
-                }
-            } else if (currentBubbles.some(b => b.y + BUBBLE_RADIUS >= SHOOTER_Y - BUBBLE_RADIUS*2)) {
-                 if (!gameOver) {
-                    setGameOver('LOSE');
-                    toast({ title: 'Game Over', description: 'The gems reached the bottom!', variant: 'destructive' });
-                 }
-            }
-            return currentBubbles;
-        });
+      setBubbles(currentBubbles => {
+        if (currentBubbles.filter(b => b.isStatic).length === 0 && !gameOver) {
+          setGameOver('WIN');
+          const winBonus = 5000;
+          addPoints(winBonus); setScore(s => s + winBonus);
+          toast({ title: 'You Win!', description: `All gems cleared! +${winBonus} bonus points.` });
+        }
+        return currentBubbles;
+      });
     }, 100);
   };
   
@@ -349,26 +297,29 @@ const GemstoneBurst: React.FC = () => {
         const newY = projectile.y + projectile.vy;
 
         let collided = false;
-
+        
+        // Wall bounce
         if (newX - BUBBLE_RADIUS < 0 || newX + BUBBLE_RADIUS > BOARD_WIDTH) {
           setProjectile(p => p ? { ...p, vx: -p.vx } : null);
+        }
+
+        // Top wall collision
+        if (newY - BUBBLE_RADIUS <= 0) {
+          collided = true;
         } else {
-          if (newY - BUBBLE_RADIUS <= 0) {
+          // Bubble collision
+          for (const bubble of bubbles) {
+            if (bubble.isStatic && Math.hypot(newX - bubble.x, newY - bubble.y) < BUBBLE_DIAMETER) {
               collided = true;
-          } else {
-              for (const bubble of bubbles) {
-                  if (bubble.isStatic && Math.hypot(newX - bubble.x, newY - bubble.y) < BUBBLE_RADIUS * 2) {
-                      collided = true;
-                      break;
-                  }
-              }
+              break;
+            }
           }
-          
-          if(collided) {
-             handleCollision({ ...projectile, x: newX, y: newY });
-          } else {
-             setProjectile(p => p ? { ...p, x: newX, y: newY } : null);
-          }
+        }
+        
+        if (collided) {
+           handleCollision({ ...projectile, x: newX, y: newY });
+        } else {
+           setProjectile(p => p ? { ...p, x: newX, y: newY } : null);
         }
       }
       animationFrameId = requestAnimationFrame(gameUpdate);
@@ -376,7 +327,7 @@ const GemstoneBurst: React.FC = () => {
 
     animationFrameId = requestAnimationFrame(gameUpdate);
     return () => cancelAnimationFrame(animationFrameId);
-  }, [isClient, projectile, bubbles, addPoints, toast, gameOver]);
+  }, [isClient, projectile, bubbles, addPoints, toast, gameOver, getGridPos]);
 
   const drawGame = useCallback(() => {
       const canvas = canvasRef.current;
@@ -388,61 +339,40 @@ const GemstoneBurst: React.FC = () => {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
-      // Draw bubbles
-      bubbles.forEach(bubble => {
-          if (!bubble.isStatic) return;
+      const drawBubble = (bubble: { x: number, y: number, color: string, special: SpecialType | null }) => {
           ctx.beginPath();
-          ctx.arc(bubble.x, bubble.y, BUBBLE_RADIUS, 0, Math.PI * 2);
+          ctx.arc(bubble.x, bubble.y, BUBBLE_RADIUS - 1, 0, Math.PI * 2);
           if (bubble.special === 'rainbow') {
             const gradient = ctx.createRadialGradient(bubble.x, bubble.y, 0, bubble.x, bubble.y, BUBBLE_RADIUS);
-            COLORS.forEach((c, i) => gradient.addColorStop(i / (COLORS.length -1), c));
+            COLORS.forEach((c, i) => gradient.addColorStop(i / (COLORS.length - 1), c));
             ctx.fillStyle = gradient;
           } else {
             ctx.fillStyle = bubble.color;
           }
           ctx.fill();
+          ctx.strokeStyle = "rgba(0,0,0,0.2)";
+          ctx.stroke();
+
           if (bubble.special === 'bomb') {
               ctx.fillStyle = 'white'; ctx.font = 'bold 16px sans-serif';
               ctx.fillText('B', bubble.x, bubble.y);
           }
-      });
-      // Draw projectile
-      if (projectile) {
-          ctx.beginPath();
-          ctx.arc(projectile.x, projectile.y, BUBBLE_RADIUS, 0, Math.PI * 2);
-          if (projectile.special === 'rainbow') {
-             const gradient = ctx.createRadialGradient(projectile.x, projectile.y, 0, projectile.x, projectile.y, BUBBLE_RADIUS);
-            COLORS.forEach((c, i) => gradient.addColorStop(i / (COLORS.length - 1), c));
-            ctx.fillStyle = gradient;
-          } else {
-             ctx.fillStyle = projectile.color;
-          }
-          ctx.fill();
-           if (projectile.special === 'bomb') {
-            ctx.fillStyle = 'white'; ctx.font = 'bold 16px sans-serif';
-            ctx.fillText('B', projectile.x, projectile.y);
-          }
-      }
+      };
+
+      bubbles.forEach(drawBubble);
+      if (projectile) drawBubble(projectile);
+      
       // Draw shooter
       const shooterX = BOARD_WIDTH / 2;
       const angleRad = (shooterAngle - 90) * Math.PI / 180;
       const endX = shooterX + 40 * Math.cos(angleRad);
       const endY = SHOOTER_Y + 40 * Math.sin(angleRad);
       ctx.beginPath(); ctx.moveTo(shooterX, SHOOTER_Y); ctx.lineTo(endX, endY);
-      ctx.strokeStyle = 'white'; ctx.lineWidth = 4; ctx.stroke();
+      ctx.strokeStyle = 'hsl(var(--primary))'; ctx.lineWidth = 4; ctx.stroke();
+      
       // Draw next bubble
-      ctx.beginPath(); ctx.arc(shooterX, SHOOTER_Y, BUBBLE_RADIUS + 2, 0, Math.PI * 2);
-       if(nextBubble.special === 'rainbow') {
-        const gradient = ctx.createRadialGradient(shooterX, SHOOTER_Y, 0, shooterX, SHOOTER_Y, BUBBLE_RADIUS);
-        COLORS.forEach((c, i) => gradient.addColorStop(i / (COLORS.length-1), c));
-        ctx.fillStyle = gradient;
-      } else {
-         ctx.fillStyle = nextBubble.color;
-      }
-      ctx.fill();
-      if (nextBubble.special === 'bomb') {
-        ctx.fillStyle = 'white'; ctx.font = 'bold 16px sans-serif';
-        ctx.fillText('B', shooterX, SHOOTER_Y);
+      if (!projectile) {
+        drawBubble({ x: shooterX, y: SHOOTER_Y, color: nextBubble.color, special: nextBubble.special });
       }
 
   }, [bubbles, projectile, shooterAngle, nextBubble]);
@@ -460,7 +390,6 @@ const GemstoneBurst: React.FC = () => {
       if(animFrame) cancelAnimationFrame(animFrame);
     }
   }, [isClient, drawGame]);
-
 
   const handleAngleChange = (direction: 'left' | 'right') => {
     if (gameOver) return;
@@ -501,7 +430,7 @@ const GemstoneBurst: React.FC = () => {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center z-20"
+              className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center z-20 rounded-lg"
             >
               <p className="text-4xl font-headline text-primary mb-2">{gameOver === 'LOSE' ? 'Game Over' : 'You Win!'}</p>
               <Button onClick={resetGame} variant="secondary">Play Again</Button>
@@ -523,5 +452,3 @@ const GemstoneBurst: React.FC = () => {
 };
 
 export default GemstoneBurst;
-
-    
