@@ -60,7 +60,7 @@ const WalletConnectDialog: React.FC<{
                         className="w-full h-14 text-lg justify-start" 
                         variant="outline" 
                         onClick={handleConnectClick}
-                        disabled={isConnecting}
+                        disabled-={isConnecting}
                     >
                          {isConnecting ? (
                             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -85,21 +85,42 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const [isWalletDialogOpen, setWalletDialogOpen] = useState(false);
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   const audioRef = useRef<HTMLAudioElement>(null);
+  const [hasInteracted, setHasInteracted] = useState(false);
   
   const showCommanderOrder = !!activeCommanderOrder;
 
   const seasonProgress = playerProfile?.seasonProgress?.[currentSeason.id] ?? 0;
+  
+  // This effect will run once on mount to add a global interaction listener
+  useEffect(() => {
+    const handleFirstInteraction = () => {
+      setHasInteracted(true);
+      window.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener('touchend', handleFirstInteraction);
+      window.removeEventListener('keydown', handleFirstInteraction);
+    };
+
+    window.addEventListener('click', handleFirstInteraction);
+    window.addEventListener('touchend', handleFirstInteraction);
+    window.addEventListener('keydown', handleFirstInteraction);
+
+    return () => {
+      window.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener('touchend', handleFirstInteraction);
+      window.removeEventListener('keydown', handleFirstInteraction);
+    };
+  }, []);
 
   useEffect(() => {
     const audioElement = audioRef.current;
     if (!audioElement) return;
 
-    if (isMusicPlaying) {
+    if (isMusicPlaying && hasInteracted) {
         audioElement.play().catch(error => console.error("Audio play failed:", error));
     } else {
         audioElement.pause();
     }
-  }, [isMusicPlaying]);
+  }, [isMusicPlaying, hasInteracted]);
   
   // This is the critical fix. We explicitly check for loading states here.
   if (isLoading || !isInitialSetupDone || !playerProfile) {
