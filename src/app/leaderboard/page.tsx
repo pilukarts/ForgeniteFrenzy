@@ -16,30 +16,36 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { UserCircle } from 'lucide-react';
+import { countries } from '@/lib/countries';
 
 const LeaderboardPage: React.FC = () => {
   const { playerProfile, isLoading, isInitialSetupDone } = useGame();
   const [globalLeaderboard, setGlobalLeaderboard] = useState<LeaderboardEntry[]>([]);
-  // const [countryLeaderboard, setCountryLeaderboard] = useState<LeaderboardEntry[]>([]); // For future use
 
   useEffect(() => {
     const generateMockLeaderboard = (count: number): LeaderboardEntry[] => {
       const mockData: LeaderboardEntry[] = [];
-      const countries = ['US', 'DE', 'GB', 'FR', 'CA', 'AU', 'JP', 'KR', 'CN', 'BR'];
+      const firstNames = ['Alex', 'Sam', 'Jordan', 'Taylor', 'Morgan', 'Casey', 'Riley', 'Jessie', 'Jamie', 'Kai'];
+      const lastNames = ['Viper', 'Nova', 'Wraith', 'Blaze', 'Shade', 'Rogue', 'Apex', 'Fury', 'Stryker', 'Jolt'];
+
       for (let i = 1; i <= count; i++) {
-        const score = Math.floor(Math.random() * 1000000) + 50000;
+        // Create a more realistic score distribution (exponential decay)
+        const score = Math.floor(10000000 * Math.exp(-i / 20) * (1 + Math.random() * 0.1));
+        const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+        const randomLastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+        const randomCountry = countries[Math.floor(Math.random() * countries.length)];
+        const sex = Math.random() > 0.5 ? 'male' : 'female';
+
         mockData.push({
           rank: i,
           playerId: `player_${i}`,
-          playerName: `Commander ${String.fromCharCode(65 + (i % 26))}${i % 100}`,
-          country: countries[i % countries.length],
+          playerName: `Cmdr. ${randomFirstName} '${randomLastName}'`,
+          country: randomCountry.code,
           score: score,
           playerLeague: getLeagueByPoints(score),
-          avatarUrl: `https://i.imgur.com/${i%2 === 0 ? 'gB3i4OQ' : 'J3tG1e4'}.png` // Alternate male/female avatars
+          avatarUrl: `https://picsum.photos/seed/${sex}${i}/200`
         });
       }
-      mockData.sort((a, b) => b.score - a.score);
-      mockData.forEach((entry, index) => entry.rank = index + 1);
       
       if (playerProfile) {
         const playerEntry: LeaderboardEntry = {
@@ -98,13 +104,15 @@ const LeaderboardPage: React.FC = () => {
                 {data.map((entry) => {
                 const { Icon: LeagueIcon, colorClass: leagueColorClass } = getLeagueIconAndColor(entry.playerLeague);
                 const flagSrc = `https://flags.fmcdn.net/data/flags/w580/${entry.country.toLowerCase()}.png`;
-                const avatarSrc = entry.avatarUrl || (entry.playerId === playerProfile.id ? playerProfile.avatarUrl : "https://i.imgur.com/8D3wW8E.png");
+                const avatarSrc = entry.avatarUrl || "https://picsum.photos/seed/default/200";
                 const dataAiHint = "commander portrait";
 
                 return (
                     <TableRow key={entry.playerId} className={entry.playerId === playerProfile.id ? 'bg-primary/10' : ''}>
                     <TableCell className="font-medium text-center text-lg px-2 sm:px-4"> 
-                        {entry.rank === 1 && <Trophy className="inline-block h-4 w-4 sm:h-5 sm:w-5 text-bright-gold mr-1" />}
+                        {entry.rank === 1 && <Trophy className="inline-block h-4 w-4 sm:h-5 sm:w-5 text-yellow-400 mr-1" />}
+                        {entry.rank === 2 && <Trophy className="inline-block h-4 w-4 sm:h-5 sm:w-5 text-gray-400 mr-1" />}
+                        {entry.rank === 3 && <Trophy className="inline-block h-4 w-4 sm:h-5 sm:w-5 text-yellow-600 mr-1" />}
                         {entry.rank}
                     </TableCell>
                     <TableCell className="text-base px-2 sm:px-4"> 
@@ -112,7 +120,7 @@ const LeaderboardPage: React.FC = () => {
                             <Avatar className="h-8 w-8 border border-primary/50">
                                 <AvatarImage src={avatarSrc} alt={entry.playerName} data-ai-hint={dataAiHint} />
                                 <AvatarFallback>
-                                    {entry.playerName ? entry.playerName.substring(0, 1).toUpperCase() : <UserCircle className="h-5 w-5"/>}
+                                    <UserCircle className="h-5 w-5"/>
                                 </AvatarFallback>
                             </Avatar>
                             <div className="flex-grow">
@@ -123,7 +131,7 @@ const LeaderboardPage: React.FC = () => {
                                 </div>
                                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                                     <Image src={flagSrc} alt={entry.country} width={16} height={12} className="rounded-sm" data-ai-hint="country flag" />
-                                    <span>{entry.country}</span>
+                                    <span>{countries.find(c => c.code === entry.country)?.name || entry.country}</span>
                                 </div>
                             </div>
                         </div>
