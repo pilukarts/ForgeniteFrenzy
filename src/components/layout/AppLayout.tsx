@@ -116,10 +116,22 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     if (!audioElement) return;
 
     if (isMusicPlaying && hasInteracted) {
-        audioElement.play().catch(error => console.error("Audio play failed:", error));
+        audioElement.play().catch(error => {
+          // AbortError is common on fast navigation, we can safely ignore it.
+          if (error.name !== 'AbortError') {
+            console.error("Audio play failed:", error)
+          }
+        });
     } else {
         audioElement.pause();
     }
+    
+    // Cleanup function to pause audio when the component unmounts
+    return () => {
+      if (audioElement) {
+        audioElement.pause();
+      }
+    };
   }, [isMusicPlaying, hasInteracted]);
   
   // This is the critical fix. We explicitly check for loading states here.
