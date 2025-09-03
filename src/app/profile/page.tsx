@@ -8,7 +8,7 @@ import IntroScreen from '@/components/intro/IntroScreen';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Check, Edit, UserCircle, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -72,47 +72,59 @@ const ProfilePage: React.FC = () => {
           </p>
         </header>
 
-        <Card className="max-w-xl mx-auto">
-          <CardContent className="p-4 sm:p-6 space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name" className="text-lg">Callsign</Label>
-              <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="text-base h-11"
-              />
-            </div>
-
-            <div className="space-y-3">
-              <Label className="text-lg">Select Avatar</Label>
+        <div className="max-w-xl mx-auto space-y-6">
+          <Card>
+            <CardHeader>
+                <CardTitle>Edit Callsign</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="space-y-2">
+                <Label htmlFor="name" className="text-lg">Callsign</Label>
+                <Input
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="text-base h-11"
+                />
+                </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+                <CardTitle>Select Avatar</CardTitle>
+                <CardDescription>Choose an avatar that matches your style.</CardDescription>
+            </CardHeader>
+            <CardContent>
               <div className="grid grid-cols-4 gap-2 sm:gap-4">
-                {currentAvatars.map((url) => (
+                  {currentAvatars.map((url) => (
                   <button
-                    key={url}
-                    onClick={() => setSelectedAvatar(url)}
-                    className={cn(
+                      key={url}
+                      onClick={() => setSelectedAvatar(url)}
+                      className={cn(
                       "rounded-lg overflow-hidden border-2 transition-all",
                       selectedAvatar === url ? 'border-primary ring-2 ring-primary/50' : 'border-transparent hover:border-primary/50'
-                    )}
+                      )}
                   >
-                    <Image src={url} alt="Avatar" width={100} height={100} className="object-cover w-full h-auto aspect-square" data-ai-hint="commander portrait"/>
+                      <Image src={url} alt="Avatar" width={100} height={100} className="object-cover w-full h-auto aspect-square" data-ai-hint="commander portrait"/>
                   </button>
-                ))}
+                  ))}
               </div>
-            </div>
-             <Button onClick={switchCommanderSex} variant="outline" size="sm" className="w-full justify-center">
-                <Users className="mr-2 h-4 w-4" />
-                Switch Commander Gender
-            </Button>
-          </CardContent>
-          <CardContent className="p-4 sm:p-6 pt-0">
-             <Button onClick={handleSave} className="w-full text-lg h-12" disabled={!name}>
-                <Check className="mr-2 h-5 w-5"/>
-                Save Changes
-            </Button>
-          </CardContent>
-        </Card>
+            </CardContent>
+            <CardFooter>
+                 <Button onClick={switchCommanderSex} variant="outline" size="sm" className="w-full justify-center">
+                    <Users className="mr-2 h-4 w-4" />
+                    Switch Commander Gender
+                </Button>
+            </CardFooter>
+          </Card>
+          
+          <Button onClick={handleSave} className="w-full text-lg h-12" disabled={!name}>
+              <Check className="mr-2 h-5 w-5"/>
+              Save All Changes
+          </Button>
+
+        </div>
       </div>
     </AppLayout>
   );
