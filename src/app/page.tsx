@@ -73,22 +73,52 @@ export default function HomePage() {
     return <IntroScreen />; 
   }
   
-  const handleInviteClick = () => {
+  const handleInviteClick = async () => {
     if (!playerProfile.referralCode) return;
-    navigator.clipboard.writeText(playerProfile.referralCode).then(() => {
-      toast({
-        title: "Referral Code Copied!",
-        description: "Your code is ready to be shared with new recruits.",
-      });
-    }).catch(err => {
-      console.error('Failed to copy referral code: ', err);
-      toast({
-        title: "Copy Failed",
-        description: "Could not copy the code. Please try again.",
-        variant: "destructive",
-      });
-    });
+    
+    // This URL should be the actual game URL for production
+    const referralLink = `https://alliance-forge.game/?ref=${playerProfile.referralCode}`; 
+    const shareData = {
+      title: 'Join Alliance Forge!',
+      text: `Join my alliance in Forgeite Frenzy and help humanity's escape! Use my link to get a head start.`,
+      url: referralLink,
+    };
+
+    try {
+        if (navigator.share) {
+            await navigator.share(shareData);
+            toast({
+                title: "Invitation Sent!",
+                description: "Your recruitment message is on its way, Commander.",
+            });
+        } else {
+            // Fallback for browsers that don't support navigator.share
+            await navigator.clipboard.writeText(referralLink);
+            toast({
+                title: "Referral Link Copied!",
+                description: "Your invite link has been copied to the clipboard.",
+            });
+        }
+    } catch (err) {
+        console.error('Failed to share or copy referral link: ', err);
+        // Fallback if sharing fails
+        try {
+            await navigator.clipboard.writeText(referralLink);
+            toast({
+                title: "Referral Link Copied!",
+                description: "Sharing was canceled, so the link was copied instead.",
+            });
+        } catch (copyErr) {
+            console.error('Fallback copy failed: ', copyErr);
+            toast({
+                title: "Action Failed",
+                description: "Could not share or copy the referral link. Please try again.",
+                variant: "destructive",
+            });
+        }
+    }
   };
+
 
   const isOutOfTaps = playerProfile.currentTaps <= 0 && timeLeftForTapRegen > 0;
   
