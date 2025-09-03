@@ -23,53 +23,69 @@ const LeaderboardPage: React.FC = () => {
   const [globalLeaderboard, setGlobalLeaderboard] = useState<LeaderboardEntry[]>([]);
 
   useEffect(() => {
+    // Extensive list for more realistic player names
     const generateMockLeaderboard = (count: number): LeaderboardEntry[] => {
-      const mockData: LeaderboardEntry[] = [];
-      const firstNames = ['Li', 'Maria', 'Nushi', 'Jose', 'Mohammed', 'Wei', 'Anna', 'David', 'Fatima', 'Santiago', 'Olga', 'Kenji', 'Sofia', 'Ahmed', 'Lars', 'Isabella'];
-      const lastNames = ['Chen', 'Garcia', 'Patel', 'Gonzalez', 'Khan', 'Smith', 'Ivanova', 'Kim', 'Rodriguez', 'Tanaka', 'Müller', 'Silva', 'Nguyen', 'Jones'];
-      
-      for (let i = 1; i <= count; i++) {
-        // Create a more realistic score distribution (exponential decay)
-        const score = Math.floor(10000000 * Math.exp(-i / 20) * (1 + Math.random() * 0.1));
-        const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-        const randomLastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-        const randomCountry = countries[Math.floor(Math.random() * countries.length)];
-        const sex = Math.random() > 0.5 ? 'male' : 'female';
+        const mockData: LeaderboardEntry[] = [];
+        const firstNames = [
+            'Alex', 'Jordan', 'Taylor', 'Casey', 'Riley', 'Jamie', 'Morgan', 'Skyler', 'Avery', 'Peyton',
+            'Hiroshi', 'Kenji', 'Yuki', 'Mei', 'Javier', 'Sofia', 'Mateo', 'Isabella', 'Liam', 'Olivia',
+            'Noah', 'Emma', 'Oliver', 'Ava', 'Elijah', 'Charlotte', 'William', 'Amelia', 'James', 'Mia',
+            'Benjamin', 'Harper', 'Lucas', 'Evelyn', 'Henry', 'Abigail', 'Alexander', 'Emily', 'Michael', 'Elizabeth',
+            'Daniel', 'Mila', 'Ethan', 'Ella', 'Joseph', 'Avery', 'Samuel', 'Sofia', 'David', 'Camila'
+        ];
+        const lastNames = [
+            'Sato', 'Suzuki', 'Takahashi', 'Tanaka', 'Watanabe', 'Ito', 'Yamamoto', 'Nakamura', 'Kobayashi', 'Kato',
+            'Garcia', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 'Perez', 'Sanchez', 'Ramirez', 'Torres',
+            'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Miller', 'Davis', 'Wilson', 'Moore', 'Taylor',
+            'Kim', 'Lee', 'Park', 'Choi', 'Jeong', 'Chen', 'Wang', 'Zhang', 'Liu', 'Yang'
+        ];
 
-        mockData.push({
-          rank: i,
-          playerId: `player_${i}`,
-          playerName: `Cmdr. ${randomFirstName} ${randomLastName}`,
-          country: randomCountry.code,
-          score: score,
-          playerLeague: getLeagueByPoints(score),
-          avatarUrl: `https://picsum.photos/seed/${sex}${i}/200`
-        });
-      }
-      
-      if (playerProfile) {
-        const playerEntry: LeaderboardEntry = {
-            rank: 0, 
-            playerId: playerProfile.id,
-            playerName: playerProfile.name,
-            country: playerProfile.country,
-            score: playerProfile.points,
-            playerLeague: playerProfile.league,
-            avatarUrl: playerProfile.avatarUrl,
-        };
-        
-        const existingPlayerIndex = mockData.findIndex(p => p.playerId === playerProfile.id);
-        if (existingPlayerIndex !== -1) {
-            mockData.splice(existingPlayerIndex, 1);
+        for (let i = 1; i <= count; i++) {
+            // Exponential decay for a more realistic score distribution
+            const score = Math.floor(25000000 * Math.exp(-i / 25) * (1 + Math.random() * 0.1));
+            const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+            const randomCountry = countries[Math.floor(Math.random() * countries.length)];
+            const sex = Math.random() > 0.5 ? 'male' : 'female';
+
+            mockData.push({
+                rank: i,
+                playerId: `player_${i}`,
+                playerName: `Cmdr. ${randomFirstName}`, // Using only first name for a "callsign" feel
+                country: randomCountry.code,
+                score: score,
+                playerLeague: getLeagueByPoints(score),
+                avatarUrl: `https://picsum.photos/seed/${sex}${i}/200`
+            });
         }
-        mockData.push(playerEntry);
-        mockData.sort((a, b) => b.score - a.score);
-        mockData.forEach((entry, index) => entry.rank = index + 1);
-      }
-      return mockData.slice(0, 50); 
+        
+        // Ensure player is in the list
+        if (playerProfile) {
+            const playerEntry: LeaderboardEntry = {
+                rank: 0, 
+                playerId: playerProfile.id,
+                playerName: playerProfile.name,
+                country: playerProfile.country,
+                score: playerProfile.points,
+                playerLeague: playerProfile.league,
+                avatarUrl: playerProfile.avatarUrl,
+            };
+            
+            const existingPlayerIndex = mockData.findIndex(p => p.playerId === playerProfile.id);
+            if (existingPlayerIndex !== -1) {
+                mockData.splice(existingPlayerIndex, 1);
+            }
+            mockData.push(playerEntry);
+            
+            // Re-sort and re-rank
+            mockData.sort((a, b) => b.score - a.score);
+            mockData.forEach((entry, index) => entry.rank = index + 1);
+        }
+        return mockData.slice(0, 100); // Show top 100
     };
 
-    setGlobalLeaderboard(generateMockLeaderboard(50));
+    if (playerProfile) {
+        setGlobalLeaderboard(generateMockLeaderboard(100));
+    }
   }, [playerProfile]);
 
    if (isLoading) {
