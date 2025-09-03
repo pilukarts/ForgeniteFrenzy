@@ -22,6 +22,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'flags.fmcdn.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
       }
     ],
   },
