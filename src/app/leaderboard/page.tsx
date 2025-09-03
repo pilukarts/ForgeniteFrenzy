@@ -3,15 +3,14 @@
 import React, { useEffect, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
 import { useGame } from '@/contexts/GameContext';
-import type { LeaderboardEntry, LeagueName } from '@/lib/types';
+import type { LeaderboardEntry } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PlayerSetup from '@/components/player/PlayerSetup';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Trophy, Globe, Flag, Shield, ShieldCheck, Award, Gem, Star, Crown, Sparkles, LucideIcon } from 'lucide-react';
+import { Trophy, Globe } from 'lucide-react';
 import IntroScreen from '@/components/intro/IntroScreen';
-import { getLeagueByPoints, getLeagueIconAndColor } from '@/lib/gameData';
+import { getLeagueIconAndColor } from '@/lib/gameData';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -20,71 +19,20 @@ import { countries } from '@/lib/countries';
 
 const LeaderboardPage: React.FC = () => {
   const { playerProfile, isLoading, isInitialSetupDone } = useGame();
-  const [globalLeaderboard, setGlobalLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
 
   useEffect(() => {
-    // Extensive list for more realistic player names
-    const generateMockLeaderboard = (count: number): LeaderboardEntry[] => {
-        const mockData: LeaderboardEntry[] = [];
-        const firstNames = [
-            'Alex', 'Jordan', 'Taylor', 'Casey', 'Riley', 'Jamie', 'Morgan', 'Skyler', 'Avery', 'Peyton',
-            'Hiroshi', 'Kenji', 'Yuki', 'Mei', 'Javier', 'Sofia', 'Mateo', 'Isabella', 'Liam', 'Olivia',
-            'Noah', 'Emma', 'Oliver', 'Ava', 'Elijah', 'Charlotte', 'William', 'Amelia', 'James', 'Mia',
-            'Benjamin', 'Harper', 'Lucas', 'Evelyn', 'Henry', 'Abigail', 'Alexander', 'Emily', 'Michael', 'Elizabeth',
-            'Daniel', 'Mila', 'Ethan', 'Ella', 'Joseph', 'Avery', 'Samuel', 'Sofia', 'David', 'Camila'
-        ];
-        const lastNames = [
-            'Sato', 'Suzuki', 'Takahashi', 'Tanaka', 'Watanabe', 'Ito', 'Yamamoto', 'Nakamura', 'Kobayashi', 'Kato',
-            'Garcia', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 'Perez', 'Sanchez', 'Ramirez', 'Torres',
-            'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Miller', 'Davis', 'Wilson', 'Moore', 'Taylor',
-            'Kim', 'Lee', 'Park', 'Choi', 'Jeong', 'Chen', 'Wang', 'Zhang', 'Liu', 'Yang'
-        ];
-
-        for (let i = 1; i <= count; i++) {
-            // Exponential decay for a more realistic score distribution
-            const score = Math.floor(25000000 * Math.exp(-i / 25) * (1 + Math.random() * 0.1));
-            const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-            const randomCountry = countries[Math.floor(Math.random() * countries.length)];
-            const sex = Math.random() > 0.5 ? 'male' : 'female';
-
-            mockData.push({
-                rank: i,
-                playerId: `player_${i}`,
-                playerName: `Cmdr. ${randomFirstName}`, // Using only first name for a "callsign" feel
-                country: randomCountry.code,
-                score: score,
-                playerLeague: getLeagueByPoints(score),
-                avatarUrl: `https://picsum.photos/seed/${sex}${i}/200`
-            });
-        }
-        
-        // Ensure player is in the list
-        if (playerProfile) {
-            const playerEntry: LeaderboardEntry = {
-                rank: 0, 
-                playerId: playerProfile.id,
-                playerName: playerProfile.name,
-                country: playerProfile.country,
-                score: playerProfile.points,
-                playerLeague: playerProfile.league,
-                avatarUrl: playerProfile.avatarUrl,
-            };
-            
-            const existingPlayerIndex = mockData.findIndex(p => p.playerId === playerProfile.id);
-            if (existingPlayerIndex !== -1) {
-                mockData.splice(existingPlayerIndex, 1);
-            }
-            mockData.push(playerEntry);
-            
-            // Re-sort and re-rank
-            mockData.sort((a, b) => b.score - a.score);
-            mockData.forEach((entry, index) => entry.rank = index + 1);
-        }
-        return mockData.slice(0, 100); // Show top 100
-    };
-
     if (playerProfile) {
-        setGlobalLeaderboard(generateMockLeaderboard(100));
+      const playerEntry: LeaderboardEntry = {
+        rank: 1, 
+        playerId: playerProfile.id,
+        playerName: playerProfile.name,
+        country: playerProfile.country,
+        score: playerProfile.points,
+        playerLeague: playerProfile.league,
+        avatarUrl: playerProfile.avatarUrl,
+      };
+      setLeaderboard([playerEntry]);
     }
   }, [playerProfile]);
 
@@ -127,8 +75,6 @@ const LeaderboardPage: React.FC = () => {
                     <TableRow key={entry.playerId} className={entry.playerId === playerProfile.id ? 'bg-primary/10' : ''}>
                     <TableCell className="font-medium text-center text-lg px-2 sm:px-4"> 
                         {entry.rank === 1 && <Trophy className="inline-block h-4 w-4 sm:h-5 sm:w-5 text-yellow-400 mr-1" />}
-                        {entry.rank === 2 && <Trophy className="inline-block h-4 w-4 sm:h-5 sm:w-5 text-gray-400 mr-1" />}
-                        {entry.rank === 3 && <Trophy className="inline-block h-4 w-4 sm:h-5 sm:w-5 text-yellow-600 mr-1" />}
                         {entry.rank}
                     </TableCell>
                     <TableCell className="text-base px-2 sm:px-4"> 
@@ -178,7 +124,7 @@ const LeaderboardPage: React.FC = () => {
             <TabsTrigger value="global" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-base">Global Rankings</TabsTrigger> 
           </TabsList>
           <TabsContent value="global">
-            {renderLeaderboardTable(globalLeaderboard, "Global Top Commanders", <Globe className="h-5 w-5 sm:h-6 sm:w-6" />)}
+            {renderLeaderboardTable(leaderboard, "Global Top Commanders", <Globe className="h-5 w-5 sm:h-6 sm:w-6" />)}
           </TabsContent>
         </Tabs>
       </div>
