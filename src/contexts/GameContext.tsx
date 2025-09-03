@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { getCoreBriefing } from '@/ai/flows/core-briefings';
 import { getCoreLoreSnippet } from '@/ai/flows/core-lore-snippets';
 import { getCoreProgressUpdate } from '@/ai/flows/core-progress-updates';
+import { syncPlayerProfileInFirestore } from '@/lib/firestore'; // Import the new Firestore function
 
 const TAPS_PER_UNIFORM_PIECE = 2000;
 const UNIFORM_PIECES_ORDER = ["Tactical Gloves", "Combat Boots", "Utility Belt", "Chest Rig", "Stealth Helmet"];
@@ -425,6 +426,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     if (playerProfile) {
       localStorage.setItem('playerProfile', JSON.stringify(playerProfile));
+      syncPlayerProfileInFirestore(playerProfile); // Sync with Firestore on every change
       const season = SEASONS_DATA.find(s => s.id === playerProfile.currentSeasonId) || SEASONS_DATA[0];
       setCurrentSeason(season);
       const coreIsNowUnlocked = SEASONS_DATA.slice(0, SEASONS_DATA.findIndex(s => s.id === season.id) + 1).some(s => s.unlocksCore);
