@@ -194,8 +194,6 @@ export const AURON_COST_FOR_TAP_REFILL = 50;
 // Monetization constants
 export const REWARDED_AD_AURON_REWARD = 10;
 export const REWARDED_AD_COOLDOWN_MINUTES = 30; // 30 minutes
-export const PAYPAL_DONATION_URL = 'https://www.paypal.com/pools/c/9hOQgVZ3wv';
-export const KOFI_DONATION_URL = 'https://ko-fi.com/mariadelpilarrodriguezcastillejo';
 
 const TIER_COLORS_HSL = {
   SILVER: '210 15% 75%',
@@ -354,5 +352,3 @@ export const LEVEL_STAGES: LevelStage[] = [
     { name: 'HYPERION RIFT', startLevel: 15001, endLevel: 25000, colors: { primary: '210 100% 70%', fill: '210 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/v8tTj8H.jpeg', aiHint: 'light blue space' },
     { name: 'GALACTIC CORE', startLevel: 25001, endLevel: 50000, colors: { primary: '60 100% 50%', fill: '60 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/Z7o5p6Y.jpeg', aiHint: 'bright galaxy core' },
 ];
-
-    
