@@ -1,0 +1,47 @@
+name: Send file to Telegram on push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  send_telegram:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install python-telegram-bot
+        run: pip install python-telegram-bot==13.15
+
+      - name: Send file to Telegram
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python <<EOF
+          import telegram
+          from telegram import InputFile
+          import os
+
+          token = os.environ['TELEGRAM_TOKEN']
+          chat_id = os.environ['TELEGRAM_CHAT_ID']
+
+          bot = telegram.Bot(token=token)
+
+          # Cambia el archivo que quieres enviar aquí. Por ejemplo: "README.md"
+          FILE_TO_SEND = "README.md"
+
+          if os.path.exists(FILE_TO_SEND):
+              with open(FILE_TO_SEND, "rb") as f:
+                  bot.send_document(chat_id=chat_id, document=InputFile(f))
+              print(f"Archivo enviado: {FILE_TO_SEND}")
+          else:
+              bot.send_message(chat_id=chat_id, text="No se encontró el archivo para enviar.")
+          EOF
