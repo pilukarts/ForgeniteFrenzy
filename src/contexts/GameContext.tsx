@@ -2,7 +2,7 @@
 "use client";
 
 import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, CommanderOrder } from '@/lib/types';
-import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES, PAYPAL_DONATION_URL, KOFI_DONATION_URL } from '@/lib/gameData';
+import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES } from '@/lib/gameData';
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getCoreBriefing } from '@/ai/flows/core-briefings';
@@ -324,6 +324,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [addCoreMessage]);
 
   useEffect(() => {
+    // This effect now ONLY handles loading from localStorage and runs once on the client.
     const savedProfile = localStorage.getItem('playerProfile');
     if (savedProfile) {
       let parsedProfile = JSON.parse(savedProfile) as PlayerProfile;
@@ -402,29 +403,20 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setCurrentSeason(season);
       setIsCoreUnlocked(!!parsedProfile.upgrades['coreUnlocked'] || SEASONS_DATA.slice(0, SEASONS_DATA.indexOf(season)).some(s => s.unlocksCore));
       setCoreLastInteractionTime(parsedProfile.lastLoginTimestamp || Date.now());
-    } else {
-        setIsLoading(false);
     }
+    
+    // Once done, set loading to false.
+    setIsLoading(false);
+    
     const savedCoreMessages = localStorage.getItem('coreMessages');
     if (savedCoreMessages) {
         setCoreMessages(JSON.parse(savedCoreMessages));
     }
-  }, []);
-
-  useEffect(() => {
-    if (playerProfile && isInitialSetupDone) {
-      refreshDailyQuestsIfNeeded();
-    }
-    const localSavedProfile = typeof window !== "undefined" ? localStorage.getItem('playerProfile') : null;
-    if (!localSavedProfile && !isLoading) {
-        setIsLoading(false);
-    } else if (localSavedProfile) {
-        setIsLoading(false);
-    }
-  }, [playerProfile, isInitialSetupDone, refreshDailyQuestsIfNeeded, isLoading]);
+  }, []); // Empty dependency array ensures this runs only once on mount.
 
 
   useEffect(() => {
+    // This effect now ONLY handles saving to localStorage.
     if (playerProfile) {
       // Create a serializable copy for Firestore by removing the icon components
       const profileForFirestore = {
