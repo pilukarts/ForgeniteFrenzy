@@ -9,14 +9,6 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  experimental: {
-    allowedDevOrigins: [
-        "https://*.cluster-l6vkdperq5ebaqo3qy4ksvoqom.cloudworkstations.dev", 
-        "http://localhost:3000",
-        "https://*.firebase.app",
-        "https://*.ark-evac.us-central1.hosted.app",
-    ],
-  },
   images: {
     remotePatterns: [
       {
