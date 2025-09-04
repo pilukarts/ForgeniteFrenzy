@@ -7,7 +7,7 @@ import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
-import { Zap, AlertTriangle, Trophy, Ship, Share2, Send, Users, Heart } from 'lucide-react';
+import { Zap, AlertTriangle, Trophy, Ship, Share2, Send, Users, Heart, Globe } from 'lucide-react';
 import IntroScreen from '@/components/intro/IntroScreen';
 import PreIntroScreen from '@/components/intro/PreIntroScreen';
 import { useToast } from "@/hooks/use-toast";
@@ -184,6 +184,11 @@ export default function HomePage() {
                             Refill ({AURON_COST_FOR_TAP_REFILL})
                         </Button>
                     )}
+                    <Button asChild variant="outline" size="sm" className="w-full justify-start">
+                        <a href="https://allianceforge.online" target="_blank" rel="noopener noreferrer">
+                            <Globe className="mr-2 h-4 w-4"/> Website
+                        </a>
+                    </Button>
                     <Button onClick={handleInviteClick} variant="outline" size="sm" className="w-full justify-start">
                         <Share2 className="mr-2 h-4 w-4"/> Invite
                     </Button>
@@ -312,5 +317,3 @@ export default function HomePage() {
     </AppLayout>
   );
 }
-
-    
