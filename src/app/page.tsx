@@ -7,7 +7,7 @@ import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
-import { Zap, AlertTriangle, Trophy, Ship, Share2, Send, Users, Heart, Globe, Coffee } from 'lucide-react';
+import { Zap, AlertTriangle, Trophy, Ship, Share2, Send, Users, Globe, Coffee } from 'lucide-react';
 import IntroScreen from '@/components/intro/IntroScreen';
 import PreIntroScreen from '@/components/intro/PreIntroScreen';
 import { useToast } from "@/hooks/use-toast";
@@ -29,23 +29,34 @@ export default function HomePage() {
   const { playerProfile, isLoading, isInitialSetupDone, handleTap, refillTaps, currentSeason } = useGame();
   const { toast } = useToast();
   const [newUserIntroPhase, setNewUserIntroPhase] = useState<NewUserIntroPhase>('pre');
-  const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number>(0);
+  const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number | null>(null);
   
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   
   useEffect(() => {
     if (!playerProfile || !isInitialSetupDone) return;
 
-    const timerId = setInterval(() => {
+    // This logic runs only on the client, preventing hydration mismatch
+    const calculateInitialTime = () => {
       if (playerProfile.currentTaps <= 0) {
         const remaining = playerProfile.tapsAvailableAt - Date.now();
         setTimeLeftForTapRegen(Math.max(0, remaining));
-        if (remaining <= 0) {
-           // The tap refill logic is handled in the GameContext now
-        }
       } else {
         setTimeLeftForTapRegen(0);
       }
+    };
+    
+    calculateInitialTime();
+
+    const timerId = setInterval(() => {
+      setTimeLeftForTapRegen(prevTime => {
+        if (prevTime === null) return null;
+        if (prevTime <= 1000) {
+            // The tap refill logic is handled in the GameContext, so we just stop the timer here
+            return 0;
+        }
+        return prevTime - 1000;
+      });
     }, 1000);
 
     return () => clearInterval(timerId);
@@ -120,7 +131,7 @@ export default function HomePage() {
   };
 
 
-  const isOutOfTaps = playerProfile.currentTaps <= 0 && timeLeftForTapRegen > 0;
+  const isOutOfTaps = playerProfile.currentTaps <= 0 && timeLeftForTapRegen !== null && timeLeftForTapRegen > 0;
   
   return (
     <AppLayout>
@@ -149,7 +160,7 @@ export default function HomePage() {
               <p className="text-xl sm:text-2xl font-semibold text-primary font-headline">
                 Taps: {playerProfile.currentTaps} / {playerProfile.maxTaps}
               </p>
-              {isOutOfTaps && (
+              {isOutOfTaps && timeLeftForTapRegen !== null && (
                 <p className="text-sm sm:text-base text-orange-400 animate-pulse">
                   Regeneration in: {formatTimeLeft(timeLeftForTapRegen)}
                 </p>
