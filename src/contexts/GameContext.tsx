@@ -417,7 +417,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     // This effect now ONLY handles saving to localStorage.
-    if (playerProfile) {
+    if (playerProfile && isInitialSetupDone) {
       // Create a serializable copy for Firestore by removing the icon components
       const profileForFirestore = {
         ...playerProfile,
@@ -432,11 +432,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const coreIsNowUnlocked = SEASONS_DATA.slice(0, SEASONS_DATA.findIndex(s => s.id === season.id) + 1).some(s => s.unlocksCore);
       setIsCoreUnlocked(coreIsNowUnlocked);
     }
-  }, [playerProfile]);
+  }, [playerProfile, isInitialSetupDone]);
 
   useEffect(() => {
-    localStorage.setItem('coreMessages', JSON.stringify(coreMessages));
-  }, [coreMessages]);
+    if (isInitialSetupDone) {
+      localStorage.setItem('coreMessages', JSON.stringify(coreMessages));
+    }
+  }, [coreMessages, isInitialSetupDone]);
 
   const completeInitialSetup = (name: string, sex: 'male' | 'female', avatarUrl: string, country: string, referredByCode?: string) => {
     const now = Date.now();
@@ -1088,8 +1090,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const toggleMusic = useCallback(() => {
     setPlayerProfile(prev => {
       if (!prev) return null;
-      setIsMusicPlaying(!prev.isMusicPlaying);
-      return { ...prev, isMusicPlaying: !prev.isMusicPlaying };
+      const newIsMusicPlaying = !prev.isMusicPlaying;
+      setIsMusicPlaying(newIsMusicPlaying);
+      return { ...prev, isMusicPlaying: newIsMusicPlaying };
     });
   }, []);
   

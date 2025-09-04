@@ -84,11 +84,15 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const { playerProfile, connectWallet, activeCommanderOrder, claimCommanderOrderReward, hideCommanderOrder, currentSeason, isLoading, isInitialSetupDone, isMusicPlaying, toggleMusic } = useGame();
   const [isWalletDialogOpen, setWalletDialogOpen] = useState(false);
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
+    if(typeof Audio !== "undefined") {
+      audioRef.current = new Audio("https://cdn.pixabay.com/download/audio/2022/08/04/audio_2bbe433c2a.mp3");
+      audioRef.current.loop = true;
+    }
   }, []);
   
   const showCommanderOrder = !!activeCommanderOrder;
@@ -101,24 +105,16 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
     if (isMusicPlaying) {
         audioElement.play().catch(error => {
-          // AbortError is common on fast navigation, we can safely ignore it.
-          if (error.name !== 'AbortError') {
+          if (error.name !== 'AbortError' && error.name !== 'NotAllowedError') {
             console.error("Audio play failed:", error)
           }
         });
     } else {
         audioElement.pause();
+        audioElement.currentTime = 0; // Optional: Reset audio to the beginning
     }
-    
-    // Cleanup function to pause audio when the component unmounts
-    return () => {
-      if (audioElement) {
-        audioElement.pause();
-      }
-    };
   }, [isMusicPlaying, isClient]);
   
-  // This is the critical fix. We explicitly check for loading states here.
   if (isLoading || !isInitialSetupDone || !playerProfile) {
     return <IntroScreen />;
   }
@@ -135,12 +131,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       }}
     >
       <div className="relative flex flex-col w-full h-full max-w-md bg-background/95 shadow-2xl overflow-hidden sm:rounded-2xl border border-border/20">
-        {isClient && (
-          <audio ref={audioRef} loop>
-            <source src="https://cdn.pixabay.com/download/audio/2022/08/04/audio_2bbe433c2a.mp3" type="audio/mpeg" />
-            Your browser does not support the audio element.
-          </audio>
-        )}
         <div className="flex flex-col min-h-screen">
           <header className="sticky top-0 z-50 p-2 bg-background/80 backdrop-blur-md shadow-sm border-b border-border/50">
             <div className="flex items-center justify-between gap-2">
