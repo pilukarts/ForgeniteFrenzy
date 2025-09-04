@@ -7,11 +7,11 @@ import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
-import { Zap, AlertTriangle, Trophy, Ship, Share2, Send, Users, Heart, Globe } from 'lucide-react';
+import { Zap, AlertTriangle, Trophy, Ship, Share2, Send, Users, Heart, Globe, Coffee } from 'lucide-react';
 import IntroScreen from '@/components/intro/IntroScreen';
 import PreIntroScreen from '@/components/intro/PreIntroScreen';
 import { useToast } from "@/hooks/use-toast";
-import { AURON_COST_FOR_TAP_REFILL, PAYPAL_DONATION_URL } from '@/lib/gameData';
+import { AURON_COST_FOR_TAP_REFILL, PAYPAL_DONATION_URL, KOFI_DONATION_URL } from '@/lib/gameData';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -195,6 +195,11 @@ export default function HomePage() {
                      <Button asChild variant="outline" size="sm" className="w-full justify-start">
                         <a href={PAYPAL_DONATION_URL} target="_blank" rel="noopener noreferrer">
                             <Heart className="mr-2 h-4 w-4"/> Donate
+                        </a>
+                    </Button>
+                     <Button asChild variant="outline" size="sm" className="w-full justify-start">
+                        <a href={KOFI_DONATION_URL} target="_blank" rel="noopener noreferrer">
+                            <Coffee className="mr-2 h-4 w-4"/> Ko-fi
                         </a>
                     </Button>
                     <Button asChild variant="outline" size="sm" className="w-full justify-start">

@@ -195,6 +195,7 @@ export const AURON_COST_FOR_TAP_REFILL = 50;
 export const REWARDED_AD_AURON_REWARD = 10;
 export const REWARDED_AD_COOLDOWN_MINUTES = 30; // 30 minutes
 export const PAYPAL_DONATION_URL = 'https://www.paypal.com/pools/c/9hOQgVZ3wv';
+export const KOFI_DONATION_URL = 'https://ko-fi.com/mariadelpilarrodriguezcastillejo';
 
 const TIER_COLORS_HSL = {
   SILVER: '210 15% 75%',
