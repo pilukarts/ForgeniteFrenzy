@@ -2,7 +2,7 @@
 "use client";
 
 import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, CommanderOrder } from '@/lib/types';
-import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES } from '@/lib/gameData';
+import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES, PAYPAL_DONATION_URL, KOFI_DONATION_URL } from '@/lib/gameData';
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getCoreBriefing } from '@/ai/flows/core-briefings';
@@ -333,6 +333,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       parsedProfile.country = parsedProfile.country ?? ''; // Handle country
       parsedProfile.lastLoginTimestamp = parsedProfile.lastLoginTimestamp ?? Date.now();
       parsedProfile.muleDrones = parsedProfile.upgrades['muleDrone'] || 0; // Sync muleDrones with upgrade level
+      parsedProfile.equippedUniformPieces = parsedProfile.equippedUniformPieces ?? [];
+
 
       // Calculate offline earnings
       const now = Date.now();
@@ -358,7 +360,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       parsedProfile.tapsAvailableAt = parsedProfile.tapsAvailableAt ?? Date.now();
       parsedProfile.activeTapBonuses = parsedProfile.activeTapBonuses ?? [];
       parsedProfile.totalTapsForUniform = parsedProfile.totalTapsForUniform ?? 0;
-      parsedProfile.equippedUniformPieces = parsedProfile.equippedUniformPieces ?? [];
       parsedProfile.avatarUrl = parsedProfile.avatarUrl ?? undefined;
       
       parsedProfile.activeDailyQuests = parsedProfile.activeDailyQuests ?? [];
@@ -428,7 +429,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       // Create a serializable copy for Firestore by removing the icon components
       const profileForFirestore = {
         ...playerProfile,
-        activeDailyQuests: playerProfile.activeDailyQuests.map(({ icon, ...quest }) => quest),
+        activeDailyQuests: playerProfile.activeDailyQuests ? playerProfile.activeDailyQuests.map(({ icon, ...quest }) => quest) : [],
       };
       
       localStorage.setItem('playerProfile', JSON.stringify(playerProfile));
@@ -467,6 +468,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       currentTierColor: getTierColorByLevel(1),
       league: DEFAULT_LEAGUE,
       activeTapBonuses: [],
+      equippedUniformPieces: [],
       // Battle Pass
       battlePassLevel: 1,
       battlePassXp: 0,
