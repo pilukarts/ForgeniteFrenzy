@@ -10,6 +10,7 @@ import IntroScreen from '@/components/intro/IntroScreen';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { PAYPAL_DONATION_URL } from '@/lib/gameData';
 
 
 const SupportPage: React.FC = () => {
@@ -22,9 +23,6 @@ const SupportPage: React.FC = () => {
   if (!isInitialSetupDone) {
     return <PlayerSetup />;
   }
-
-  // IMPORTANT: Replace this URL with your real PayPal donation link.
-  const PAYPAL_DONATION_URL = 'https://www.paypal.com/pools/c/9hOQgVZ3wv';
 
   return (
     <AppLayout>
@@ -74,3 +72,5 @@ const SupportPage: React.FC = () => {
 };
 
 export default SupportPage;
+
+    

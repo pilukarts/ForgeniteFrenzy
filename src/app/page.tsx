@@ -7,11 +7,11 @@ import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
-import { Zap, AlertTriangle, Trophy, Ship, Share2, Send, Users } from 'lucide-react';
+import { Zap, AlertTriangle, Trophy, Ship, Share2, Send, Users, Heart } from 'lucide-react';
 import IntroScreen from '@/components/intro/IntroScreen';
 import PreIntroScreen from '@/components/intro/PreIntroScreen';
 import { useToast } from "@/hooks/use-toast";
-import { AURON_COST_FOR_TAP_REFILL } from '@/lib/gameData';
+import { AURON_COST_FOR_TAP_REFILL, PAYPAL_DONATION_URL } from '@/lib/gameData';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -186,6 +186,11 @@ export default function HomePage() {
                     )}
                     <Button onClick={handleInviteClick} variant="outline" size="sm" className="w-full justify-start">
                         <Share2 className="mr-2 h-4 w-4"/> Invite
+                    </Button>
+                     <Button asChild variant="outline" size="sm" className="w-full justify-start">
+                        <a href={PAYPAL_DONATION_URL} target="_blank" rel="noopener noreferrer">
+                            <Heart className="mr-2 h-4 w-4"/> Donate
+                        </a>
                     </Button>
                     <Button asChild variant="outline" size="sm" className="w-full justify-start">
                         <Link href="https://t.me/allianceforge" target="_blank" rel="noopener noreferrer">
