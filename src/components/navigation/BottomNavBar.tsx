@@ -1,4 +1,3 @@
-
 "use client";
 import Link from 'next/link';
 import { Home, ChevronsUp, Trophy, Users, ShoppingCart, MessagesSquare, ListChecks, ShieldQuestion, LifeBuoy, Swords, Map, Gamepad2, FileText, UserCircle } from 'lucide-react';
@@ -30,10 +29,12 @@ const BottomNavBar: React.FC = () => {
       <ScrollArea className="w-full whitespace-nowrap">
         <div className="flex w-max justify-around items-center px-1">
           {navItems.map(({ href, label, icon: Icon }) => {
-            const isActive = pathname.startsWith(href) && (href !== '/' || pathname === '/');
-            const isArcadeActive = (pathname.startsWith('/arcade') || pathname.startsWith('/minigame')) && href === '/arcade';
+            // Check for exact match on '/', otherwise check for startsWith
+            const isActive = href === '/' ? pathname === href : pathname.startsWith(href);
+            // Special case for arcade to highlight it for minigame pages
+            const isArcadeActive = (href === '/arcade' && (pathname.startsWith('/arcade') || pathname.startsWith('/minigame')));
             
-            const finalIsActive = isArcadeActive || (isActive && !isArcadeActive);
+            const finalIsActive = isArcadeActive || (!isArcadeActive && isActive);
 
             return (
               <Link
