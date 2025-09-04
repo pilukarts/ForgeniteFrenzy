@@ -85,37 +85,21 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const [isWalletDialogOpen, setWalletDialogOpen] = useState(false);
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [hasInteracted, setHasInteracted] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   
   const showCommanderOrder = !!activeCommanderOrder;
 
   const seasonProgress = playerProfile?.seasonProgress?.[currentSeason.id] ?? 0;
   
-  // This effect will run once on mount to add a global interaction listener
-  useEffect(() => {
-    const handleFirstInteraction = () => {
-      setHasInteracted(true);
-      window.removeEventListener('click', handleFirstInteraction);
-      window.removeEventListener('touchend', handleFirstInteraction);
-      window.removeEventListener('keydown', handleFirstInteraction);
-    };
-
-    window.addEventListener('click', handleFirstInteraction);
-    window.addEventListener('touchend', handleFirstInteraction);
-    window.addEventListener('keydown', handleFirstInteraction);
-
-    return () => {
-      window.removeEventListener('click', handleFirstInteraction);
-      window.removeEventListener('touchend', handleFirstInteraction);
-      window.removeEventListener('keydown', handleFirstInteraction);
-    };
-  }, []);
-
   useEffect(() => {
     const audioElement = audioRef.current;
-    if (!audioElement) return;
+    if (!audioElement || !isClient) return;
 
-    if (isMusicPlaying && hasInteracted) {
+    if (isMusicPlaying) {
         audioElement.play().catch(error => {
           // AbortError is common on fast navigation, we can safely ignore it.
           if (error.name !== 'AbortError') {
@@ -132,7 +116,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         audioElement.pause();
       }
     };
-  }, [isMusicPlaying, hasInteracted]);
+  }, [isMusicPlaying, isClient]);
   
   // This is the critical fix. We explicitly check for loading states here.
   if (isLoading || !isInitialSetupDone || !playerProfile) {
@@ -151,10 +135,12 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       }}
     >
       <div className="relative flex flex-col w-full h-full max-w-md bg-background/95 shadow-2xl overflow-hidden sm:rounded-2xl border border-border/20">
-        <audio ref={audioRef} loop>
-          <source src="https://cdn.pixabay.com/download/audio/2022/08/04/audio_2bbe433c2a.mp3" type="audio/mpeg" />
-          Your browser does not support the audio element.
-        </audio>
+        {isClient && (
+          <audio ref={audioRef} loop>
+            <source src="https://cdn.pixabay.com/download/audio/2022/08/04/audio_2bbe433c2a.mp3" type="audio/mpeg" />
+            Your browser does not support the audio element.
+          </audio>
+        )}
         <div className="flex flex-col min-h-screen">
           <header className="sticky top-0 z-50 p-2 bg-background/80 backdrop-blur-md shadow-sm border-b border-border/50">
             <div className="flex items-center justify-between gap-2">
