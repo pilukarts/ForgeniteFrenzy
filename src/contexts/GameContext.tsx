@@ -140,8 +140,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // This effect runs once on component mount on the client side.
   // It's responsible for loading all data from localStorage and setting the initial game state.
   useEffect(() => {
+    setIsLoading(true);
     let savedProfile: string | null = null;
-
     try {
         savedProfile = localStorage.getItem('playerProfile');
     } catch (e) {
@@ -198,12 +198,11 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setIsCoreUnlocked(coreUnlocked);
         setCoreLastInteractionTime(now);
         setIsInitialSetupDone(true);
-        setIsLoading(false);
     } else {
-        // This is a new player
+        // This is a new player, they need to go through setup
         setIsInitialSetupDone(false);
-        setIsLoading(false);
     }
+    setIsLoading(false);
   }, []);
 
 

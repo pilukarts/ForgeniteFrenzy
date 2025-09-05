@@ -97,29 +97,12 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const { playerProfile, connectWallet, activeCommanderOrder, claimCommanderOrderReward, hideCommanderOrder, currentSeason, isLoading, isInitialSetupDone } = useGame();
   const [isWalletDialogOpen, setWalletDialogOpen] = useState(false);
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
-  const [isMounted, setIsMounted] = useState(false);
-  const [showIntro, setShowIntro] = useState(true);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  useEffect(() => {
-     // Show intro for a minimum amount of time
-    const introTimer = setTimeout(() => {
-      if (!isLoading) {
-          setShowIntro(false);
-      }
-    }, 2000); 
-
-    return () => clearTimeout(introTimer);
-  }, [isLoading]);
 
   const showCommanderOrder = !!activeCommanderOrder;
 
   const seasonProgress = playerProfile?.seasonProgress?.[currentSeason.id] ?? 0;
   
-  if (showIntro || isLoading || !isInitialSetupDone || !playerProfile) {
+  if (isLoading || !isInitialSetupDone || !playerProfile) {
     return <IntroScreen />;
   }
 
