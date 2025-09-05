@@ -210,12 +210,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // This effect handles saving the player profile to localStorage whenever it changes.
     if (playerProfile && isInitialSetupDone) {
       localStorage.setItem('playerProfile', JSON.stringify(playerProfile));
-      
-      const profileForFirestore = {
-        ...playerProfile,
-        activeDailyQuests: playerProfile.activeDailyQuests.map(({ icon, ...rest }) => rest), // Remove icon for Firestore
-      };
-      syncPlayerProfileInFirestore(profileForFirestore);
     }
   }, [playerProfile, isInitialSetupDone]);
 
@@ -722,6 +716,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       referralCode: generateReferralCode(name),
       referredByCode: referredByCode?.trim() || undefined,
     };
+    
+    const profileForFirestore = {
+      ...newProfileData,
+      activeDailyQuests: newProfileData.activeDailyQuests.map(({ icon, ...rest }) => rest), // Remove icon for Firestore
+    };
+    syncPlayerProfileInFirestore(profileForFirestore);
+    
     setPlayerProfile(newProfileData);
     setIsInitialSetupDone(true);
     setCurrentSeason(SEASONS_DATA[0]);
@@ -887,7 +888,15 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const updatePlayerProfile = useCallback((name: string, avatarUrl: string, commanderSex: 'male' | 'female') => {
     setPlayerProfile(prev => {
       if (!prev) return null;
-      return { ...prev, name, avatarUrl, commanderSex };
+      const updatedProfile = { ...prev, name, avatarUrl, commanderSex };
+      
+      const profileForFirestore = {
+        ...updatedProfile,
+        activeDailyQuests: updatedProfile.activeDailyQuests.map(({ icon, ...rest }) => rest), // Remove icon for Firestore
+      };
+      syncPlayerProfileInFirestore(profileForFirestore);
+      
+      return updatedProfile;
     });
     addCoreMessage({type: 'system_alert', content: 'Player profile updated.'});
     toast({title: 'Profile Updated', description: 'Your callsign and avatar have been updated.'});
