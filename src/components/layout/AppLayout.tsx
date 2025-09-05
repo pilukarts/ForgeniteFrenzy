@@ -6,7 +6,7 @@ import PlayerProfileHeader from '@/components/player/PlayerProfileHeader';
 import ResourceDisplay from '@/components/game/ResourceDisplay';
 import { Button } from '@/components/ui/button';
 import { useGame } from '@/contexts/GameContext';
-import { Wallet, CreditCard, Loader2, Music, Music2, Volume2, VolumeX } from 'lucide-react'; 
+import { Wallet, CreditCard, Loader2 } from 'lucide-react'; 
 import CoreDisplay from '@/components/core/CoreDisplay';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -94,19 +94,14 @@ interface AppLayoutProps {
 }
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
-  const { playerProfile, connectWallet, activeCommanderOrder, claimCommanderOrderReward, hideCommanderOrder, currentSeason, isLoading, isInitialSetupDone, isMusicPlaying, toggleMusic } = useGame();
+  const { playerProfile, connectWallet, activeCommanderOrder, claimCommanderOrderReward, hideCommanderOrder, currentSeason, isLoading, isInitialSetupDone } = useGame();
   const [isWalletDialogOpen, setWalletDialogOpen] = useState(false);
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isMounted, setIsMounted] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
 
   useEffect(() => {
     setIsMounted(true);
-    if(typeof Audio !== "undefined" && !audioRef.current) {
-      audioRef.current = new Audio("/audio/background-music.mp3");
-      audioRef.current.loop = true;
-    }
   }, []);
 
   useEffect(() => {
@@ -123,24 +118,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const showCommanderOrder = !!activeCommanderOrder;
 
   const seasonProgress = playerProfile?.seasonProgress?.[currentSeason.id] ?? 0;
-  
-  useEffect(() => {
-    const audioElement = audioRef.current;
-    if (!audioElement || !isMounted) return;
-
-    if (isMusicPlaying) {
-      const playPromise = audioElement.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(error => {
-          if (error.name !== 'AbortError' && error.name !== 'NotAllowedError') {
-            console.error("Audio play failed:", error);
-          }
-        });
-      }
-    } else {
-      audioElement.pause();
-    }
-  }, [isMusicPlaying, isMounted]);
   
   if (showIntro || isLoading || !isInitialSetupDone || !playerProfile) {
     return <IntroScreen />;
@@ -168,15 +145,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                   auronCount={playerProfile.auron ?? 0} 
                 />
                 <div className="flex flex-col items-start gap-1 ml-1 pl-1 border-l border-border">
-                      <Button 
-                        variant="outline" 
-                        size="icon" 
-                        className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 h-7 w-7"
-                        onClick={toggleMusic}
-                      >
-                      {isMounted && isMusicPlaying ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
-                      <span className="sr-only">Toggle Music</span>
-                    </Button>
                     {!playerProfile.isWalletConnected && (
                         <Button 
                           variant="outline" 

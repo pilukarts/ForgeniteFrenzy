@@ -60,9 +60,6 @@ interface GameContextType {
   watchRewardedAd: () => void;
   rewardedAdCooldown: number;
   isWatchingAd: boolean;
-  // Music
-  isMusicPlaying: boolean;
-  toggleMusic: () => void;
   // Profile editing
   updatePlayerProfile: (name: string, avatarUrl: string, commanderSex: 'male' | 'female') => void;
 }
@@ -106,7 +103,6 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
   lastCommanderOrderTimestamp: 0,
   // Rewarded Ad
   lastRewardedAdTimestamp: 0,
-  isMusicPlaying: false,
 };
 
 const generateReferralCode = (name: string): string => {
@@ -129,7 +125,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [activeCommanderOrder, setActiveCommanderOrder] = useState<CommanderOrder | null>(null);
   const [rewardedAdCooldown, setRewardedAdCooldown] = useState(0);
   const [isWatchingAd, setIsWatchingAd] = useState(false);
-  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
 
 
   const { toast } = useToast();
@@ -195,7 +190,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         };
         
         setPlayerProfile(hydratedProfile);
-        setIsMusicPlaying(hydratedProfile.isMusicPlaying);
         setActiveCommanderOrder(hydratedProfile.activeCommanderOrder);
         
         const season = SEASONS_DATA.find(s => s.id === hydratedProfile.currentSeasonId) || SEASONS_DATA[0];
@@ -900,15 +894,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, 3000);
   }, [rewardedAdCooldown, isWatchingAd, addCoreMessage]);
 
-  const toggleMusic = useCallback(() => {
-    setPlayerProfile(prev => {
-      if (!prev) return null;
-      const newIsMusicPlaying = !prev.isMusicPlaying;
-      setIsMusicPlaying(newIsMusicPlaying);
-      return { ...prev, isMusicPlaying: newIsMusicPlaying };
-    });
-  }, []);
-  
   const updatePlayerProfile = useCallback((name: string, avatarUrl: string, commanderSex: 'male' | 'female') => {
     setPlayerProfile(prev => {
       if (!prev) return null;
@@ -965,8 +950,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         watchRewardedAd,
         rewardedAdCooldown,
         isWatchingAd,
-        isMusicPlaying,
-        toggleMusic,
         updatePlayerProfile,
     }}>
       {children}
