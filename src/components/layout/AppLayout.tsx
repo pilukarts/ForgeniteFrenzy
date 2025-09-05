@@ -104,7 +104,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   useEffect(() => {
     setIsMounted(true);
     if(typeof Audio !== "undefined" && !audioRef.current) {
-      audioRef.current = new Audio("https://cdn.pixabay.com/download/audio/2022/10/19/audio_a718c1130e.mp3");
+      audioRef.current = new Audio("/audio/background-music.mp3");
       audioRef.current.loop = true;
     }
   }, []);
