@@ -1,7 +1,8 @@
+
 import { Telegraf, Context } from 'telegraf';
 
 const TOKEN = '8275463245:AAEG-X1D8Y-xtppY_7WVJobn488WMxkYLEw';
-const GAME_URL = 'https://studio--ark-evac.us-central1.hosted.app'; // Cambia por tu URL
+const GAME_URL = 'https://forgeite-frenzy.web.app';
 
 const bot = new Telegraf(TOKEN);
 

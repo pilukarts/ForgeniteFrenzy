@@ -1,8 +1,9 @@
+
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var telegraf_1 = require("telegraf");
 var TOKEN = '8275463245:AAEG-X1D8Y-xtppY_7WVJobn488WMxkYLEw';
-var GAME_URL = 'https://studio--ark-evac.us-central1.hosted.app'; // Cambia por tu URL
+var GAME_URL = 'https://forgeite-frenzy.web.app';
 var bot = new telegraf_1.Telegraf(TOKEN);
 bot.start(function (ctx) {
     ctx.reply('Welcome to Forgenite Frenzy!\nType /play to launch the game or /help for more info.');
