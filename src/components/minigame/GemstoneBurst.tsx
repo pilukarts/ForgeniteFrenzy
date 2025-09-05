@@ -258,10 +258,11 @@ const GemstoneBurst: React.FC = () => {
     
     let finalBubbles = !matchFound ? tempBubbles : afterMatches;
     
-    if (finalBubbles.length === 0) {
+    if (finalBubbles.length === 0 && !gameOver) {
         toast({ title: 'Board Cleared!', description: `+${CLEAR_BOARD_BONUS.toLocaleString()} bonus points.` });
         addPoints(CLEAR_BOARD_BONUS);
         setScore(s => s + CLEAR_BOARD_BONUS);
+        // Instead of ending, create new bubbles
         finalBubbles = createInitialBubbles();
     }
 
@@ -512,7 +513,7 @@ const GemstoneBurst: React.FC = () => {
               onPointerLeave={handlePointerUp}
             />
         ) : (
-             <div style={{ width: BOARD_WIDTH, height: BOARD_HEIGHT }}>
+             <div className="flex items-center justify-center bg-muted" style={{ width: BOARD_WIDTH, height: BOARD_HEIGHT }}>
                 <Skeleton className="w-full h-full" />
              </div>
         )}
@@ -530,3 +531,5 @@ const GemstoneBurst: React.FC = () => {
 };
 
 export default GemstoneBurst;
+
+    

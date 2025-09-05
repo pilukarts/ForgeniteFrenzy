@@ -61,10 +61,6 @@ const GalacticPacman: React.FC = () => {
     setGameOver(false);
   }, []);
 
-  useEffect(() => {
-    resetGame();
-  }, [resetGame]);
-
   const move = useCallback((pos: Position, dir: Direction | null): Position => {
     if (!dir) return pos;
     let { x, y } = pos;
@@ -177,7 +173,7 @@ const GalacticPacman: React.FC = () => {
                 <p className="text-lg font-headline text-primary">Star Fragments Left: {totalPellets.current - (score / POINTS_PER_PELLET)}</p>
             </div>
             <div
-                className="grid border-2 border-primary"
+                className="grid border-2 border-primary relative"
                 style={{
                 gridTemplateColumns: `repeat(${GRID_SIZE}, ${CELL_SIZE}px)`,
                 width: GRID_SIZE * CELL_SIZE,
