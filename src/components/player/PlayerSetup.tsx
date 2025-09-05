@@ -105,28 +105,31 @@ const PlayerSetup: React.FC = () => {
                       <Command>
                         <CommandInput placeholder="Search nation..." />
                         <CommandEmpty>No nation found.</CommandEmpty>
-                        <ScrollArea className="h-64">
-                          <CommandGroup>
-                            {countries.map((c) => (
-                              <CommandItem
-                                key={c.code}
-                                value={c.name}
-                                onSelect={() => {
-                                  setCountry(c.code);
-                                  setCountryPopoverOpen(false);
-                                }}
-                              >
-                                <Check
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    country === c.code ? "opacity-100" : "opacity-0"
-                                  )}
-                                />
-                                {c.name}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </ScrollArea>
+                         {/* Render the list only when the popover is open */}
+                        {isCountryPopoverOpen && (
+                          <ScrollArea className="h-64">
+                            <CommandGroup>
+                              {countries.map((c) => (
+                                <CommandItem
+                                  key={c.code}
+                                  value={c.name}
+                                  onSelect={() => {
+                                    setCountry(c.code);
+                                    setCountryPopoverOpen(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      country === c.code ? "opacity-100" : "opacity-0"
+                                    )}
+                                  />
+                                  {c.name}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </ScrollArea>
+                        )}
                       </Command>
                     </PopoverContent>
                   </Popover>
