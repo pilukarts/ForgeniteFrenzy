@@ -12,6 +12,8 @@ import { ScrollArea } from '../ui/scroll-area';
 import { countries } from '@/lib/countries';
 import { Check, Search } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import IntroScreen from '../intro/IntroScreen';
+
 
 const AVATARS = [
     // Female
@@ -28,7 +30,7 @@ const AVATARS = [
 
 
 const PlayerSetup: React.FC = () => {
-  const { completeInitialSetup } = useGame();
+  const { playerProfile, completeInitialSetup } = useGame();
   const [name, setName] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState(AVATARS[0]);
   const [country, setCountry] = useState('');
@@ -44,6 +46,11 @@ const PlayerSetup: React.FC = () => {
       completeInitialSetup(name.trim(), selectedAvatar.sex, selectedAvatar.url, country, referredBy.trim());
     }
   };
+  
+  if (!playerProfile) {
+    return <IntroScreen />;
+  }
+
 
   const filteredCountries = countries.filter(c => 
     c.name.toLowerCase().includes(searchTerm.toLowerCase())
