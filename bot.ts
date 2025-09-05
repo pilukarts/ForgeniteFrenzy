@@ -8,7 +8,7 @@ const bot = new Telegraf(TOKEN);
 
 bot.start((ctx: Context) => {
   ctx.reply(
-    'Welcome to Forgenite Frenzy!\nType /play to launch the game or /help for more info.'
+    'Welcome to Forgeite Frenzy!\nType /play to launch the game or /help for more info.'
   );
 });
 
@@ -32,7 +32,7 @@ bot.command('play', (ctx: Context) => {
       keyboard: [
         [
           {
-            text: '▶️ Play Forgenite Frenzy',
+            text: '▶️ Play Forgeite Frenzy',
             web_app: { url: GAME_URL }
           },
         ],
