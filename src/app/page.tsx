@@ -7,7 +7,7 @@ import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
-import { Zap, AlertTriangle, Trophy, Ship, Share2, Send, Users, Globe, Coffee } from 'lucide-react';
+import { Zap, AlertTriangle, Trophy, Ship, Share2, Send, Users, Globe, Coffee, Gamepad2 } from 'lucide-react';
 import IntroScreen from '@/components/intro/IntroScreen';
 import PreIntroScreen from '@/components/intro/PreIntroScreen';
 import { useToast } from "@/hooks/use-toast";
@@ -34,33 +34,32 @@ export default function HomePage() {
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   
   useEffect(() => {
-    if (!playerProfile || !isInitialSetupDone) return;
-
-    // This logic runs only on the client, preventing hydration mismatch
+    if (!isInitialSetupDone || !playerProfile) return;
+  
     const calculateInitialTime = () => {
-      if (playerProfile.currentTaps <= 0) {
-        const remaining = playerProfile.tapsAvailableAt - Date.now();
-        setTimeLeftForTapRegen(Math.max(0, remaining));
-      } else {
-        setTimeLeftForTapRegen(0);
-      }
+        if (playerProfile.currentTaps <= 0) {
+            const remaining = playerProfile.tapsAvailableAt - Date.now();
+            setTimeLeftForTapRegen(Math.max(0, remaining));
+        } else {
+            setTimeLeftForTapRegen(0);
+        }
     };
-    
+
     calculateInitialTime();
 
     const timerId = setInterval(() => {
-      setTimeLeftForTapRegen(prevTime => {
-        if (prevTime === null) return null;
-        if (prevTime <= 1000) {
-            // The tap refill logic is handled in the GameContext, so we just stop the timer here
-            return 0;
-        }
-        return prevTime - 1000;
-      });
+        setTimeLeftForTapRegen(prevTime => {
+            if (prevTime === null) return null;
+            if (prevTime <= 1000) {
+                return 0;
+            }
+            return prevTime - 1000;
+        });
     }, 1000);
 
     return () => clearInterval(timerId);
   }, [playerProfile, isInitialSetupDone]);
+
 
   // --- Render logic based on setup/loading state ---
   if (isLoading) {
@@ -173,7 +172,7 @@ export default function HomePage() {
                     initial={{ x: -100, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-                    className="flex flex-col gap-2 w-auto max-w-[120px] sm:max-w-[150px] items-start self-center"
+                    className="flex flex-col gap-2 w-auto max-w-[150px] sm:max-w-[180px] items-start self-center"
                 >
                     <div className="flex items-center gap-2 p-2 rounded-md border border-input bg-background">
                         <Ship className="h-5 w-5 text-primary shrink-0" />
@@ -205,7 +204,12 @@ export default function HomePage() {
                     </Button>
                     <Button asChild variant="outline" size="sm" className="w-full justify-start">
                         <Link href="https://t.me/allianceforge" target="_blank" rel="noopener noreferrer">
-                            <Send className="mr-2 h-4 w-4"/> Telegram
+                            <Send className="mr-2 h-4 w-4"/> Comunidad
+                        </Link>
+                    </Button>
+                     <Button asChild variant="outline" size="sm" className="w-full justify-start">
+                        <Link href="https://t.me/YOUR_MINIGAME_BOT_HERE" target="_blank" rel="noopener noreferrer">
+                            <Gamepad2 className="mr-2 h-4 w-4"/> TG Mini Game
                         </Link>
                     </Button>
                      <Button asChild variant="outline" size="sm" className="w-full justify-start">
@@ -214,7 +218,7 @@ export default function HomePage() {
                             <title>X</title>
                             <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
                             </svg>
-                            X
+                            X (Twitter)
                         </Link>
                     </Button>
                      <Button asChild variant="outline" size="sm" className="w-full justify-start">
@@ -323,3 +327,5 @@ export default function HomePage() {
     </AppLayout>
   );
 }
+
+    
