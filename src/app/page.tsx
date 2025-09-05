@@ -37,12 +37,8 @@ export default function HomePage() {
     if (!isInitialSetupDone || !playerProfile) return;
   
     const calculateInitialTime = () => {
-        if (playerProfile.currentTaps <= 0) {
-            const remaining = playerProfile.tapsAvailableAt - Date.now();
-            setTimeLeftForTapRegen(Math.max(0, remaining));
-        } else {
-            setTimeLeftForTapRegen(0);
-        }
+        const remaining = (playerProfile.tapsAvailableAt || 0) - Date.now();
+        setTimeLeftForTapRegen(Math.max(0, remaining));
     };
 
     calculateInitialTime();
@@ -73,20 +69,16 @@ export default function HomePage() {
     if (newUserIntroPhase === 'setup') {
       return <PlayerSetup />;
     }
-    // Fallback loading screen
     return <IntroScreen />;
   }
 
-  // From here, we know the player setup is done and profile should exist
   if (!playerProfile) {
-    // This case should ideally not be hit if logic is correct, but it's a safe fallback.
     return <IntroScreen />; 
   }
   
   const handleInviteClick = async () => {
     if (!playerProfile.referralCode) return;
     
-    // This URL should be the actual game URL for production
     const referralLink = `https://alliance-forge.game/?ref=${playerProfile.referralCode}`; 
     const shareData = {
       title: 'Join Alliance Forge!',
@@ -102,7 +94,6 @@ export default function HomePage() {
                 description: "Your recruitment message is on its way, Commander.",
             });
         } else {
-            // Fallback for browsers that don't support navigator.share
             await navigator.clipboard.writeText(referralLink);
             toast({
                 title: "Referral Link Copied!",
@@ -111,7 +102,6 @@ export default function HomePage() {
         }
     } catch (err) {
         console.error('Failed to share or copy referral link: ', err);
-        // Fallback if sharing fails
         try {
             await navigator.clipboard.writeText(referralLink);
             toast({
@@ -327,5 +317,3 @@ export default function HomePage() {
     </AppLayout>
   );
 }
-
-    

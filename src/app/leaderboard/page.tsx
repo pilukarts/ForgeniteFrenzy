@@ -43,10 +43,8 @@ const LeaderboardPage: React.FC = () => {
     return <PlayerSetup />;
   }
   
-  // This is the critical fix: Do not render the main content until the player profile is fully loaded client-side.
-  // This prevents a hydration mismatch where the server renders an empty table but the client tries to render a highlighted row.
   if (!playerProfile) {
-    return <IntroScreen />; // Or a more specific loading component
+    return <IntroScreen />; 
   }
 
   const renderLeaderboardTable = (data: LeaderboardEntry[], title: string, icon: React.ReactNode) => {

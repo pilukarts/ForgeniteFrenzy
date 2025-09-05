@@ -55,7 +55,7 @@ const ProfilePage: React.FC = () => {
     return <PlayerSetup />;
   }
 
-  if (!playerProfile) return null;
+  if (!playerProfile) return <IntroScreen />;
 
   return (
     <AppLayout>

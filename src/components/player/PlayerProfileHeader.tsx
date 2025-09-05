@@ -15,6 +15,7 @@ interface PlayerProfileHeaderProps {
 }
 
 const PlayerProfileHeader: React.FC<PlayerProfileHeaderProps> = ({ profile }) => {
+  const { isInitialSetupDone } = useGame();
   const xpPercentage = profile.xpToNextLevel > 0 ? (profile.xp / profile.xpToNextLevel) * 100 : 0;
   
   // Use the profile's avatar if set, otherwise fallback to the sex-based one
@@ -23,9 +24,16 @@ const PlayerProfileHeader: React.FC<PlayerProfileHeaderProps> = ({ profile }) =>
 
   const leagueName = profile.league || DEFAULT_LEAGUE;
   const { Icon: LeagueIcon, colorClass: leagueColorClass } = getLeagueIconAndColor(leagueName);
+  
+  const ProfileWrapper = ({ children }: {children: React.ReactNode}) => {
+    if (isInitialSetupDone) {
+      return <Link href="/profile" className="flex items-center gap-2 p-1 rounded-lg bg-card/50 shadow-sm min-w-0 hover:bg-card/70 transition-colors">{children}</Link>;
+    }
+    return <div className="flex items-center gap-2 p-1 rounded-lg bg-card/50 shadow-sm min-w-0">{children}</div>;
+  };
 
   return (
-    <Link href="/profile" className="flex items-center gap-2 p-1 rounded-lg bg-card/50 shadow-sm min-w-0 hover:bg-card/70 transition-colors">
+    <ProfileWrapper>
       <Avatar className="h-8 w-8 border-2 border-primary">
         <AvatarImage src={avatarSrc} alt={profile.name} data-ai-hint={dataAiHint} />
         <AvatarFallback>
@@ -48,7 +56,7 @@ const PlayerProfileHeader: React.FC<PlayerProfileHeaderProps> = ({ profile }) =>
         </div>
         <Progress value={xpPercentage} className="h-1 mt-1 bg-muted" indicatorClassName="bg-primary" />
       </div>
-    </Link>
+    </ProfileWrapper>
   );
 };
 

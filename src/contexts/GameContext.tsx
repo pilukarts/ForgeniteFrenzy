@@ -144,6 +144,123 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [toast]);
 
+  // This effect runs once on component mount on the client side.
+  // It's responsible for loading all data from localStorage and setting the initial game state.
+  useEffect(() => {
+    const loadGame = () => {
+      try {
+        const savedProfile = localStorage.getItem('playerProfile');
+        if (savedProfile) {
+          let parsedProfile = JSON.parse(savedProfile) as PlayerProfile;
+          let offlineEarnings = 0;
+
+          // Initialize new fields for backward compatibility
+          parsedProfile.country = parsedProfile.country ?? '';
+          parsedProfile.lastLoginTimestamp = parsedProfile.lastLoginTimestamp ?? Date.now();
+          parsedProfile.muleDrones = parsedProfile.upgrades?.['muleDrone'] || 0;
+          parsedProfile.equippedUniformPieces = parsedProfile.equippedUniformPieces ?? [];
+
+          const now = Date.now();
+          const timeAwayInMinutes = Math.floor((now - parsedProfile.lastLoginTimestamp) / 60000);
+          if (timeAwayInMinutes > 1 && parsedProfile.muleDrones > 0) {
+            offlineEarnings = Math.floor(parsedProfile.muleDrones * MULE_DRONE_BASE_RATE * timeAwayInMinutes);
+            if (offlineEarnings > 0) {
+              parsedProfile.points += offlineEarnings;
+            }
+          }
+          parsedProfile.lastLoginTimestamp = now;
+          
+          if (offlineEarnings > 0) {
+            const offlineMessage: CoreMessage = { type: 'system_alert', content: `Welcome back, Commander. Your M.U.L.E. Drones generated ${offlineEarnings.toLocaleString()} points while you were away.`, timestamp: Date.now() };
+            const savedMessages = localStorage.getItem('coreMessages');
+            const currentMessages = savedMessages ? JSON.parse(savedMessages) : [];
+            setCoreMessages([offlineMessage, ...currentMessages.slice(0, 49)]);
+          } else {
+             const savedMessages = localStorage.getItem('coreMessages');
+             if (savedMessages) {
+                setCoreMessages(JSON.parse(savedMessages));
+             }
+          }
+
+          // Standard initializations
+          parsedProfile.maxTaps = parsedProfile.maxTaps ?? INITIAL_MAX_TAPS;
+          parsedProfile.currentTaps = parsedProfile.currentTaps ?? parsedProfile.maxTaps;
+          parsedProfile.tapsAvailableAt = parsedProfile.tapsAvailableAt ?? now;
+          parsedProfile.activeTapBonuses = parsedProfile.activeTapBonuses ?? [];
+          parsedProfile.totalTapsForUniform = parsedProfile.totalTapsForUniform ?? 0;
+          parsedProfile.avatarUrl = parsedProfile.avatarUrl ?? undefined;
+          
+          parsedProfile.activeDailyQuests = (parsedProfile.activeDailyQuests ?? []).map(q => {
+            const template = DAILY_QUESTS_POOL.find(t => t.templateId === q.templateId);
+            return { ...q, icon: template?.icon };
+          });
+          
+          parsedProfile.lastDailyQuestRefresh = parsedProfile.lastDailyQuestRefresh ?? 0;
+          parsedProfile.referralCode = parsedProfile.referralCode ?? undefined;
+          parsedProfile.referredByCode = parsedProfile.referredByCode ?? undefined;
+          parsedProfile.currentTierColor = parsedProfile.currentTierColor ?? getTierColorByLevel(parsedProfile.level);
+          parsedProfile.league = parsedProfile.league ?? getLeagueByPoints(parsedProfile.points);
+          
+          parsedProfile.battlePassLevel = parsedProfile.battlePassLevel ?? 1;
+          parsedProfile.battlePassXp = parsedProfile.battlePassXp ?? 0;
+          parsedProfile.xpToNextBattlePassLevel = parsedProfile.xpToNextBattlePassLevel ?? BATTLE_PASS_XP_PER_LEVEL;
+          parsedProfile.hasPremiumPass = parsedProfile.hasPremiumPass ?? false;
+          parsedProfile.claimedBattlePassRewards = parsedProfile.claimedBattlePassRewards ?? {};
+          
+          parsedProfile.activeCommanderOrder = parsedProfile.activeCommanderOrder ?? null;
+          parsedProfile.lastCommanderOrderTimestamp = parsedProfile.lastCommanderOrderTimestamp ?? 0;
+          
+          parsedProfile.lastRewardedAdTimestamp = parsedProfile.lastRewardedAdTimestamp ?? 0;
+          
+          parsedProfile.isMusicPlaying = parsedProfile.isMusicPlaying ?? false;
+          
+          setPlayerProfile(parsedProfile);
+          setIsMusicPlaying(parsedProfile.isMusicPlaying);
+          setActiveCommanderOrder(parsedProfile.activeCommanderOrder);
+          const season = SEASONS_DATA.find(s => s.id === parsedProfile.currentSeasonId) || SEASONS_DATA[0];
+          setCurrentSeason(season);
+          const coreUnlocked = !!parsedProfile.upgrades['coreUnlocked'] || SEASONS_DATA.slice(0, SEASONS_DATA.indexOf(season)).some(s => s.unlocksCore);
+          setIsCoreUnlocked(coreUnlocked);
+          setCoreLastInteractionTime(parsedProfile.lastLoginTimestamp || now);
+          setIsInitialSetupDone(true);
+        } else {
+            // No profile found, user needs to do initial setup.
+            setIsInitialSetupDone(false);
+        }
+      } catch (error) {
+        console.error("Failed to load game state from localStorage:", error);
+        localStorage.removeItem('playerProfile');
+        localStorage.removeItem('coreMessages');
+        setIsInitialSetupDone(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadGame();
+  }, []); // Empty dependency array ensures this runs only once on mount.
+
+
+  useEffect(() => {
+    // This effect handles saving the player profile to localStorage whenever it changes.
+    if (playerProfile && isInitialSetupDone) {
+      localStorage.setItem('playerProfile', JSON.stringify(playerProfile));
+      
+      const profileForFirestore = {
+        ...playerProfile,
+        activeDailyQuests: playerProfile.activeDailyQuests.map(({ icon, ...rest }) => rest), // Remove icon for Firestore
+      };
+      syncPlayerProfileInFirestore(profileForFirestore);
+    }
+  }, [playerProfile, isInitialSetupDone]);
+
+  useEffect(() => {
+    // This effect handles saving core messages to localStorage.
+    if (isInitialSetupDone) {
+      localStorage.setItem('coreMessages', JSON.stringify(coreMessages));
+    }
+  }, [coreMessages, isInitialSetupDone]);
+
   // Rewarded Ad Cooldown Timer
   useEffect(() => {
     if (!playerProfile) return;
@@ -322,123 +439,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }, 500);
     }
   }, [addCoreMessage]);
-
-  useEffect(() => {
-    // This effect now ONLY handles loading from localStorage and runs once on the client.
-    const savedProfile = localStorage.getItem('playerProfile');
-    if (savedProfile) {
-      let parsedProfile = JSON.parse(savedProfile) as PlayerProfile;
-      let offlineEarnings = 0;
-
-      // Initialize new fields for backward compatibility
-      parsedProfile.country = parsedProfile.country ?? ''; // Handle country
-      parsedProfile.lastLoginTimestamp = parsedProfile.lastLoginTimestamp ?? Date.now();
-      parsedProfile.muleDrones = parsedProfile.upgrades['muleDrone'] || 0; // Sync muleDrones with upgrade level
-      parsedProfile.equippedUniformPieces = parsedProfile.equippedUniformPieces ?? [];
-
-
-      // Calculate offline earnings
-      const now = Date.now();
-      const timeAwayInMinutes = Math.floor((now - parsedProfile.lastLoginTimestamp) / 60000);
-      let pointsGained = 0;
-      if (timeAwayInMinutes > 1 && parsedProfile.muleDrones > 0) {
-        pointsGained = Math.floor(parsedProfile.muleDrones * MULE_DRONE_BASE_RATE * timeAwayInMinutes);
-        if (pointsGained > 0) {
-          parsedProfile.points += pointsGained;
-          offlineEarnings = pointsGained;
-        }
-      }
-      parsedProfile.lastLoginTimestamp = now; // Update timestamp for the current session
-      
-      if (offlineEarnings > 0) {
-        addCoreMessage({ type: 'system_alert', content: `Welcome back, Commander. Your M.U.L.E. Drones generated ${offlineEarnings.toLocaleString()} points while you were away.`}, true);
-      }
-
-
-      // Standard initializations
-      parsedProfile.maxTaps = parsedProfile.maxTaps ?? INITIAL_MAX_TAPS;
-      parsedProfile.currentTaps = parsedProfile.currentTaps ?? parsedProfile.maxTaps;
-      parsedProfile.tapsAvailableAt = parsedProfile.tapsAvailableAt ?? Date.now();
-      parsedProfile.activeTapBonuses = parsedProfile.activeTapBonuses ?? [];
-      parsedProfile.totalTapsForUniform = parsedProfile.totalTapsForUniform ?? 0;
-      parsedProfile.avatarUrl = parsedProfile.avatarUrl ?? undefined;
-      
-      parsedProfile.activeDailyQuests = parsedProfile.activeDailyQuests ?? [];
-      if (parsedProfile.activeDailyQuests) {
-        parsedProfile.activeDailyQuests = parsedProfile.activeDailyQuests.map(q => {
-          const template = DAILY_QUESTS_POOL.find(t => t.templateId === q.templateId);
-          return { ...q, icon: template ? template.icon : undefined };
-        });
-      }
-      
-      parsedProfile.lastDailyQuestRefresh = parsedProfile.lastDailyQuestRefresh ?? 0;
-      parsedProfile.referralCode = parsedProfile.referralCode ?? undefined;
-      parsedProfile.referredByCode = parsedProfile.referredByCode ?? undefined;
-      parsedProfile.currentTierColor = parsedProfile.currentTierColor ?? getTierColorByLevel(parsedProfile.level);
-      parsedProfile.league = parsedProfile.league ?? getLeagueByPoints(parsedProfile.points);
-      
-      // Battle Pass initialization
-      parsedProfile.battlePassLevel = parsedProfile.battlePassLevel ?? 1;
-      parsedProfile.battlePassXp = parsedProfile.battlePassXp ?? 0;
-      parsedProfile.xpToNextBattlePassLevel = parsedProfile.xpToNextBattlePassLevel ?? BATTLE_PASS_XP_PER_LEVEL;
-      parsedProfile.hasPremiumPass = parsedProfile.hasPremiumPass ?? false;
-      parsedProfile.claimedBattlePassRewards = parsedProfile.claimedBattlePassRewards ?? {};
-      
-      // Commander Order initialization
-      parsedProfile.activeCommanderOrder = parsedProfile.activeCommanderOrder ?? null;
-      parsedProfile.lastCommanderOrderTimestamp = parsedProfile.lastCommanderOrderTimestamp ?? 0;
-      setActiveCommanderOrder(parsedProfile.activeCommanderOrder);
-      
-      // Rewarded Ad initialization
-      parsedProfile.lastRewardedAdTimestamp = parsedProfile.lastRewardedAdTimestamp ?? 0;
-      
-      // Music State
-      parsedProfile.isMusicPlaying = parsedProfile.isMusicPlaying ?? false;
-      setIsMusicPlaying(parsedProfile.isMusicPlaying);
-
-
-      setPlayerProfile(parsedProfile);
-      setIsInitialSetupDone(true);
-      const season = SEASONS_DATA.find(s => s.id === parsedProfile.currentSeasonId) || SEASONS_DATA[0];
-      setCurrentSeason(season);
-      setIsCoreUnlocked(!!parsedProfile.upgrades['coreUnlocked'] || SEASONS_DATA.slice(0, SEASONS_DATA.indexOf(season)).some(s => s.unlocksCore));
-      setCoreLastInteractionTime(parsedProfile.lastLoginTimestamp || Date.now());
-    }
-    
-    // Once done, set loading to false.
-    setIsLoading(false);
-    
-    const savedCoreMessages = localStorage.getItem('coreMessages');
-    if (savedCoreMessages) {
-        setCoreMessages(JSON.parse(savedCoreMessages));
-    }
-  }, []); // Empty dependency array ensures this runs only once on mount.
-
-
-  useEffect(() => {
-    // This effect now ONLY handles saving to localStorage.
-    if (playerProfile && isInitialSetupDone) {
-      // Create a serializable copy for Firestore by removing the icon components
-      const profileForFirestore = {
-        ...playerProfile,
-        activeDailyQuests: playerProfile.activeDailyQuests ? playerProfile.activeDailyQuests.map(({ icon, ...quest }) => quest) : [],
-      };
-      
-      localStorage.setItem('playerProfile', JSON.stringify(playerProfile));
-      syncPlayerProfileInFirestore(profileForFirestore); // Sync with Firestore on every change
-
-      const season = SEASONS_DATA.find(s => s.id === playerProfile.currentSeasonId) || SEASONS_DATA[0];
-      setCurrentSeason(season);
-      const coreIsNowUnlocked = SEASONS_DATA.slice(0, SEASONS_DATA.findIndex(s => s.id === season.id) + 1).some(s => s.unlocksCore);
-      setIsCoreUnlocked(coreIsNowUnlocked);
-    }
-  }, [playerProfile, isInitialSetupDone]);
-
-  useEffect(() => {
-    if (isInitialSetupDone) {
-      localStorage.setItem('coreMessages', JSON.stringify(coreMessages));
-    }
-  }, [coreMessages, isInitialSetupDone]);
 
   const completeInitialSetup = (name: string, sex: 'male' | 'female', avatarUrl: string, country: string, referredByCode?: string) => {
     const now = Date.now();

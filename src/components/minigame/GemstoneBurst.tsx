@@ -53,11 +53,12 @@ const GemstoneBurst: React.FC = () => {
   const [shooterAngle, setShooterAngle] = useState(0);
   const [score, setScore] = useState(0);
   const [shotsFired, setShotsFired] = useState(0);
-  const [gameOver, setGameOver] = useState<false | 'WIN' | 'LOSE'>(false); // 'WIN' is no longer used but kept for structure
+  const [gameOver, setGameOver] = useState<boolean>(false);
   const bubbleIdCounter = useRef(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isClient, setIsClient] = useState(false);
   const gameUpdateRef = useRef<number>();
+  const isInteracting = useRef(false);
 
 
   // Ensure component only runs on the client
@@ -213,7 +214,7 @@ const GemstoneBurst: React.FC = () => {
 
     const row = Math.round((proj.y - BUBBLE_RADIUS) / ROW_HEIGHT);
     const colOffset = row % 2 === 1 ? BUBBLE_RADIUS : 0;
-    const col = Math.round((proj.x - colOffset - BUBble_RADIUS) / BUBBLE_DIAMETER);
+    const col = Math.round((proj.x - colOffset - BUBBLE_RADIUS) / BUBBLE_DIAMETER);
     const { x, y } = getGridPos(row, col);
 
     const newBubble: Bubble = {
@@ -255,22 +256,19 @@ const GemstoneBurst: React.FC = () => {
       afterMatches = tempBubbles.filter(b => !bubblesToRemoveIds.has(b.id));
     }
     
-    // Always add the new bubble if no match was found, otherwise add the remaining bubbles
     let finalBubbles = !matchFound ? tempBubbles : afterMatches;
     
-    // ** INFINITE MODE LOGIC **
     if (finalBubbles.length === 0) {
         toast({ title: 'Board Cleared!', description: `+${CLEAR_BOARD_BONUS.toLocaleString()} bonus points.` });
         addPoints(CLEAR_BOARD_BONUS);
         setScore(s => s + CLEAR_BOARD_BONUS);
-        // Repopulate the board instead of ending the game
         finalBubbles = createInitialBubbles();
     }
 
     setBubbles(finalBubbles);
 
-    if (newBubble.y >= SHOOTER_Y - BUBBLE_DIAMETER && !gameOver) {
-       setGameOver('LOSE');
+    if (finalBubbles.some(b => b.y >= SHOOTER_Y - BUBBLE_DIAMETER) && !gameOver) {
+       setGameOver(true);
        toast({ title: 'Game Over!', description: 'The gems reached the bottom!', variant: 'destructive' });
     }
     
@@ -306,7 +304,7 @@ const GemstoneBurst: React.FC = () => {
     });
 
     if (isGameOver && !gameOver) {
-        setGameOver('LOSE');
+        setGameOver(true);
         toast({ title: 'Game Over', description: 'The gems reached the bottom!', variant: 'destructive' });
     }
 }, [gameOver, getGridPos, toast]);
@@ -431,6 +429,39 @@ const GemstoneBurst: React.FC = () => {
     setShooterAngle(prev => Math.max(-80, Math.min(80, prev + (direction === 'left' ? -10 : 10))));
   };
 
+  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+      if(gameOver) return;
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const dx = x - (BOARD_WIDTH / 2);
+      const dy = y - SHOOTER_Y;
+      let angle = Math.atan2(dy, dx) * 180 / Math.PI + 90;
+      
+      // Clamp angle to prevent shooting backwards
+      angle = Math.max(-80, Math.min(80, angle));
+      setShooterAngle(angle);
+
+      if (isInteracting.current) {
+         e.preventDefault();
+      }
+  }
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+      if(gameOver) return;
+      isInteracting.current = true;
+      handlePointerMove(e);
+  }
+  
+  const handlePointerUp = () => {
+      if(gameOver || !isInteracting.current) return;
+      isInteracting.current = false;
+      shoot();
+  }
+
   useEffect(() => {
     if (!isClient) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -470,12 +501,23 @@ const GemstoneBurst: React.FC = () => {
           )}
         </AnimatePresence>
         {isClient ? (
-            <canvas ref={canvasRef} width={BOARD_WIDTH} height={BOARD_HEIGHT} className="z-10 rounded-lg" />
+            <canvas 
+              ref={canvasRef} 
+              width={BOARD_WIDTH} 
+              height={BOARD_HEIGHT} 
+              className="z-10 rounded-lg touch-none"
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onPointerLeave={handlePointerUp}
+            />
         ) : (
-            <Skeleton className="w-full h-full" />
+             <div style={{ width: BOARD_WIDTH, height: BOARD_HEIGHT }}>
+                <Skeleton className="w-full h-full" />
+             </div>
         )}
       </div>
-      <div className="flex items-center gap-4 mt-2">
+      <div className="flex items-center gap-4 mt-2 sm:hidden">
         <Button onClick={() => handleAngleChange('left')} variant="outline" size="icon" className="h-12 w-12"><ArrowLeft /></Button>
         <Button onClick={shoot} className="h-16 w-24 text-lg font-bold">
           {renderNextBubbleIcon()}
@@ -488,5 +530,3 @@ const GemstoneBurst: React.FC = () => {
 };
 
 export default GemstoneBurst;
-
-    
