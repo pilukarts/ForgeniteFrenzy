@@ -2,7 +2,7 @@
 "use client";
 
 import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, CommanderOrder } from '@/lib/types';
-import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES, UNIFORM_PIECES_ORDER, TAPS_PER_UNIFORM_PIECE } from '@/lib/gameData';
+import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES, UNIFORM_PIECES_ORDER, TAPS_PER_UNIFORM_PIECE, ALL_AVATARS } from '@/lib/gameData';
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getCoreBriefing } from '@/ai/flows/core-briefings';
@@ -141,7 +141,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // It's responsible for loading all data from localStorage and setting the initial game state.
   useEffect(() => {
     let savedProfile: string | null = null;
-    let timeoutId: NodeJS.Timeout;
 
     try {
         savedProfile = localStorage.getItem('playerProfile');
@@ -201,18 +200,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setIsInitialSetupDone(true);
         setIsLoading(false);
     } else {
+        // This is a new player
         setIsInitialSetupDone(false);
-         // Fallback to ensure loading screen doesn't get stuck
-        timeoutId = setTimeout(() => {
-            setIsLoading(false);
-        }, 2000); // 2 seconds timeout
+        setIsLoading(false);
     }
-
-    return () => {
-        if (timeoutId) {
-            clearTimeout(timeoutId);
-        }
-    };
   }, []);
 
 
