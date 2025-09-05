@@ -357,14 +357,6 @@ export const TAPS_PER_UNIFORM_PIECE = 2000;
 export const UNIFORM_PIECES_ORDER = ["Tactical Gloves", "Combat Boots", "Utility Belt", "Chest Rig", "Stealth Helmet"];
 
 export const ALL_AVATARS = [
-    // Female
-    { url: "https://i.imgur.com/J3tG1e4.png", sex: 'female', hint: 'female commander' },
-    { url: "https://i.imgur.com/2XfS1DD.png", sex: 'female', hint: 'female soldier' },
-    { url: "https://i.imgur.com/K3tB9gH.png", sex: 'female', hint: 'female warrior' },
-    { url: "https://i.imgur.com/7L48yPE.png", sex: 'female', hint: 'female general' },
-    // Male
     { url: "https://i.imgur.com/gB3i4OQ.png", sex: 'male', hint: 'male commander' },
-    { url: "https://i.imgur.com/tQ4zJ2a.png", sex: 'male', hint: 'male soldier' },
-    { url: "https://i.imgur.com/83pL36g.png", sex: 'male', hint: 'male warrior' },
-    { url: "https://i.imgur.com/iuRJVBZ.png", sex: 'male', hint: 'male general' },
+    { url: "https://i.imgur.com/J3tG1e4.png", sex: 'female', hint: 'female commander' },
 ];
