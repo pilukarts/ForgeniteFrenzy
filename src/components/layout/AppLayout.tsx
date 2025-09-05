@@ -1,4 +1,3 @@
-
 "use client";
 import React, { ReactNode, useState, useRef, useEffect } from 'react';
 import BottomNavBar from '../navigation/BottomNavBar';
@@ -60,7 +59,7 @@ const WalletConnectDialog: React.FC<{
                         className="w-full h-14 text-lg justify-start" 
                         variant="outline" 
                         onClick={handleConnectClick}
-                        disabled-={isConnecting}
+                        disabled={isConnecting}
                     >
                          {isConnecting ? (
                             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -68,6 +67,19 @@ const WalletConnectDialog: React.FC<{
                             <Image src="https://i.imgur.com/J3h23L2.png" alt="Coinbase" width={28} height={28} className="mr-3" data-ai-hint="coinbase logo" />
                         )}
                         Coinbase Wallet (Simulated)
+                    </Button>
+                    <Button 
+                        className="w-full h-14 text-lg justify-start" 
+                        variant="outline" 
+                        onClick={handleConnectClick}
+                        disabled={isConnecting}
+                    >
+                         {isConnecting ? (
+                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        ) : (
+                            <Image src="https://i.imgur.com/3g7bZ7I.png" alt="Cronos" width={28} height={28} className="mr-3" data-ai-hint="cronos logo" />
+                        )}
+                        Cronos | Crypto.com (Simulated)
                     </Button>
                 </div>
             </DialogContent>
@@ -85,11 +97,11 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const [isWalletDialogOpen, setWalletDialogOpen] = useState(false);
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isClient, setIsClient] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
-    if(typeof Audio !== "undefined") {
+    setIsMounted(true);
+    if(typeof Audio !== "undefined" && !audioRef.current) {
       audioRef.current = new Audio("https://cdn.pixabay.com/download/audio/2022/08/04/audio_2bbe433c2a.mp3");
       audioRef.current.loop = true;
     }
@@ -101,19 +113,21 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   
   useEffect(() => {
     const audioElement = audioRef.current;
-    if (!audioElement || !isClient) return;
+    if (!audioElement || !isMounted) return;
 
     if (isMusicPlaying) {
-        audioElement.play().catch(error => {
+      const playPromise = audioElement.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
           if (error.name !== 'AbortError' && error.name !== 'NotAllowedError') {
-            console.error("Audio play failed:", error)
+            console.error("Audio play failed:", error);
           }
         });
+      }
     } else {
-        audioElement.pause();
-        audioElement.currentTime = 0; // Optional: Reset audio to the beginning
+      audioElement.pause();
     }
-  }, [isMusicPlaying, isClient]);
+  }, [isMusicPlaying, isMounted]);
   
   if (isLoading || !isInitialSetupDone || !playerProfile) {
     return <IntroScreen />;
@@ -147,7 +161,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                         className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 h-7 w-7"
                         onClick={toggleMusic}
                       >
-                      {isMusicPlaying ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                      {isMounted && isMusicPlaying ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
                       <span className="sr-only">Toggle Music</span>
                     </Button>
                     {!playerProfile.isWalletConnected && (

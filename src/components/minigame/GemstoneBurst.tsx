@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RefreshCw, ArrowLeft, ArrowRight, ArrowUp, Bomb, Sparkles } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 // --- Game Constants & Types ---
 const COLS = 11;
@@ -18,7 +19,7 @@ const BOARD_HEIGHT = (ROWS - 1) * ROW_HEIGHT + BUBBLE_DIAMETER;
 const SHOOTER_Y = BOARD_HEIGHT - BUBBLE_RADIUS;
 const PROJECTILE_SPEED = 20;
 const SHOTS_BEFORE_ADVANCE = 6;
-const WIN_BONUS = 5000;
+const CLEAR_BOARD_BONUS = 5000;
 const POINTS_PER_BUBBLE = 10;
 const POINTS_PER_DROPPED_BUBBLE = 50;
 
@@ -52,7 +53,7 @@ const GemstoneBurst: React.FC = () => {
   const [shooterAngle, setShooterAngle] = useState(0);
   const [score, setScore] = useState(0);
   const [shotsFired, setShotsFired] = useState(0);
-  const [gameOver, setGameOver] = useState<false | 'WIN' | 'LOSE'>(false);
+  const [gameOver, setGameOver] = useState<false | 'WIN' | 'LOSE'>(false); // 'WIN' is no longer used but kept for structure
   const bubbleIdCounter = useRef(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isClient, setIsClient] = useState(false);
@@ -73,6 +74,24 @@ const GemstoneBurst: React.FC = () => {
     const y = row * ROW_HEIGHT + BUBBLE_RADIUS;
     return { x, y };
   }, []);
+
+  const createInitialBubbles = useCallback(() => {
+    bubbleIdCounter.current = 0;
+    const initialBubbles: Bubble[] = [];
+    for (let row = 0; row < 6; row++) {
+      const colsInRow = COLS - (row % 2);
+      for (let col = 0; col < colsInRow; col++) {
+        const { x, y } = getGridPos(row, col);
+        initialBubbles.push({
+          id: bubbleIdCounter.current++,
+          row, col, x, y,
+          color: COLORS[Math.floor(Math.random() * COLORS.length)],
+          special: null,
+        });
+      }
+    }
+    return initialBubbles;
+  }, [getGridPos]);
 
   // --- Game State Management ---
   const getNextBubbleType = useCallback((): { color: BubbleColor; special: SpecialType } => {
@@ -95,20 +114,7 @@ const GemstoneBurst: React.FC = () => {
 
   const resetGame = useCallback(() => {
     if (gameUpdateRef.current) cancelAnimationFrame(gameUpdateRef.current);
-    bubbleIdCounter.current = 0;
-    const initialBubbles: Bubble[] = [];
-    for (let row = 0; row < 6; row++) {
-      const colsInRow = COLS - (row % 2);
-      for (let col = 0; col < colsInRow; col++) {
-        const { x, y } = getGridPos(row, col);
-        initialBubbles.push({
-          id: bubbleIdCounter.current++,
-          row, col, x, y,
-          color: COLORS[Math.floor(Math.random() * COLORS.length)],
-          special: null,
-        });
-      }
-    }
+    const initialBubbles = createInitialBubbles();
     setBubbles(initialBubbles);
     setProjectile(null);
     setScore(0);
@@ -119,7 +125,7 @@ const GemstoneBurst: React.FC = () => {
         ? { color: initialBubbles[Math.floor(Math.random() * initialBubbles.length)].color, special: null }
         : { color: COLORS[Math.floor(Math.random() * COLORS.length)], special: null }
     );
-  }, [getGridPos]);
+  }, [createInitialBubbles]);
 
   useEffect(() => {
     if (isClient) {
@@ -177,6 +183,7 @@ const GemstoneBurst: React.FC = () => {
   };
   
   const getFloatingBubbles = (allBubbles: Bubble[]): Bubble[] => {
+      if (allBubbles.length === 0) return [];
       const checked = new Set<number>();
       const toCheck: Bubble[] = [];
 
@@ -206,7 +213,7 @@ const GemstoneBurst: React.FC = () => {
 
     const row = Math.round((proj.y - BUBBLE_RADIUS) / ROW_HEIGHT);
     const colOffset = row % 2 === 1 ? BUBBLE_RADIUS : 0;
-    const col = Math.round((proj.x - colOffset - BUBBLE_RADIUS) / BUBBLE_DIAMETER);
+    const col = Math.round((proj.x - colOffset - BUBble_RADIUS) / BUBBLE_DIAMETER);
     const { x, y } = getGridPos(row, col);
 
     const newBubble: Bubble = {
@@ -249,7 +256,17 @@ const GemstoneBurst: React.FC = () => {
     }
     
     // Always add the new bubble if no match was found, otherwise add the remaining bubbles
-    const finalBubbles = !matchFound ? tempBubbles : afterMatches;
+    let finalBubbles = !matchFound ? tempBubbles : afterMatches;
+    
+    // ** INFINITE MODE LOGIC **
+    if (finalBubbles.length === 0) {
+        toast({ title: 'Board Cleared!', description: `+${CLEAR_BOARD_BONUS.toLocaleString()} bonus points.` });
+        addPoints(CLEAR_BOARD_BONUS);
+        setScore(s => s + CLEAR_BOARD_BONUS);
+        // Repopulate the board instead of ending the game
+        finalBubbles = createInitialBubbles();
+    }
+
     setBubbles(finalBubbles);
 
     if (newBubble.y >= SHOOTER_Y - BUBBLE_DIAMETER && !gameOver) {
@@ -264,7 +281,7 @@ const GemstoneBurst: React.FC = () => {
     
     setNextBubble(getNextBubbleType());
 
-  }, [bubbles, getGridPos, addPoints, toast, getNextBubbleType, gameOver]);
+  }, [bubbles, getGridPos, addPoints, toast, getNextBubbleType, gameOver, createInitialBubbles]);
   
   const advanceBubbles = useCallback(() => {
     let isGameOver = false;
@@ -300,16 +317,6 @@ const GemstoneBurst: React.FC = () => {
           advanceBubbles();
       }
   }, [shotsFired, advanceBubbles]);
-
-  // Check for win condition
-  useEffect(() => {
-    if (bubbles.length === 0 && !gameOver && shotsFired > 0) {
-      setGameOver('WIN');
-      addPoints(WIN_BONUS); setScore(s => s + WIN_BONUS);
-      toast({ title: 'You Win!', description: `All gems cleared! +${WIN_BONUS.toLocaleString()} bonus points.` });
-    }
-  }, [bubbles, gameOver, addPoints, toast, shotsFired]);
-
 
   // Game Loop
   useEffect(() => {
@@ -387,20 +394,22 @@ const GemstoneBurst: React.FC = () => {
           }
       };
 
-      bubbles.forEach(drawBubble);
-      if (projectile) drawBubble(projectile);
-      
-      // Draw shooter line
-      const shooterX = BOARD_WIDTH / 2;
-      const angleRad = (shooterAngle - 90) * Math.PI / 180;
-      const endX = shooterX + 60 * Math.cos(angleRad);
-      const endY = SHOOTER_Y + 60 * Math.sin(angleRad);
-      ctx.beginPath(); ctx.moveTo(shooterX, SHOOTER_Y); ctx.lineTo(endX, endY);
-      ctx.strokeStyle = 'hsl(var(--primary))'; ctx.lineWidth = 4; ctx.stroke();
-      
-      // Draw next bubble at shooter position
-      drawBubble({ x: shooterX, y: SHOOTER_Y, color: nextBubble.color, special: nextBubble.special });
-  }, [bubbles, projectile, shooterAngle, nextBubble]);
+      if (isClient) {
+        bubbles.forEach(drawBubble);
+        if (projectile) drawBubble(projectile);
+        
+        // Draw shooter line
+        const shooterX = BOARD_WIDTH / 2;
+        const angleRad = (shooterAngle - 90) * Math.PI / 180;
+        const endX = shooterX + 60 * Math.cos(angleRad);
+        const endY = SHOOTER_Y + 60 * Math.sin(angleRad);
+        ctx.beginPath(); ctx.moveTo(shooterX, SHOOTER_Y); ctx.lineTo(endX, endY);
+        ctx.strokeStyle = 'hsl(var(--primary))'; ctx.lineWidth = 4; ctx.stroke();
+        
+        // Draw next bubble at shooter position
+        drawBubble({ x: shooterX, y: SHOOTER_Y, color: nextBubble.color, special: nextBubble.special });
+      }
+  }, [isClient, bubbles, projectile, shooterAngle, nextBubble]);
 
   useEffect(() => {
     let animFrame: number;
@@ -438,10 +447,6 @@ const GemstoneBurst: React.FC = () => {
   }, [isClient, gameOver, shoot]);
 
   // --- Render ---
-  if (!isClient) {
-    return <div className="text-lg font-headline text-primary animate-pulse">Loading Minigame...</div>;
-  }
-
   const renderNextBubbleIcon = () => {
     if (nextBubble.special === 'bomb') return <Bomb className="h-8 w-8 text-white" />;
     if (nextBubble.special === 'rainbow') return <Sparkles className="h-8 w-8 text-purple-400" />;
@@ -459,12 +464,16 @@ const GemstoneBurst: React.FC = () => {
               animate={{ opacity: 1 }}
               className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center z-20 rounded-lg"
             >
-              <p className="text-4xl font-headline text-primary mb-2">{gameOver === 'LOSE' ? 'Game Over' : 'You Win!'}</p>
+              <p className="text-4xl font-headline text-primary mb-2">Game Over</p>
               <Button onClick={resetGame} variant="secondary">Play Again</Button>
             </motion.div>
           )}
         </AnimatePresence>
-        <canvas ref={canvasRef} width={BOARD_WIDTH} height={BOARD_HEIGHT} className="z-10 rounded-lg" />
+        {isClient ? (
+            <canvas ref={canvasRef} width={BOARD_WIDTH} height={BOARD_HEIGHT} className="z-10 rounded-lg" />
+        ) : (
+            <Skeleton className="w-full h-full" />
+        )}
       </div>
       <div className="flex items-center gap-4 mt-2">
         <Button onClick={() => handleAngleChange('left')} variant="outline" size="icon" className="h-12 w-12"><ArrowLeft /></Button>
