@@ -145,8 +145,15 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // This effect runs once on component mount on the client side.
   // It's responsible for loading all data from localStorage and setting the initial game state.
   useEffect(() => {
-    setIsLoading(true);
-    const savedProfile = localStorage.getItem('playerProfile');
+    let savedProfile: string | null = null;
+    let timeoutId: NodeJS.Timeout;
+
+    try {
+        savedProfile = localStorage.getItem('playerProfile');
+    } catch (e) {
+        console.error("Could not access localStorage. Starting fresh.", e);
+    }
+  
     if (savedProfile) {
         let parsedProfile = JSON.parse(savedProfile) as PlayerProfile;
         
@@ -198,10 +205,20 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setIsCoreUnlocked(coreUnlocked);
         setCoreLastInteractionTime(now);
         setIsInitialSetupDone(true);
+        setIsLoading(false);
     } else {
         setIsInitialSetupDone(false);
+         // Fallback to ensure loading screen doesn't get stuck
+        timeoutId = setTimeout(() => {
+            setIsLoading(false);
+        }, 2000); // 2 seconds timeout
     }
-    setIsLoading(false);
+
+    return () => {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+    };
   }, []);
 
 
@@ -561,59 +578,58 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         basePointsForTap *= comboMultiplierValue;
         
-        // This must call a function that doesn't set state directly
-        // The state update is handled inside `addPoints`
         const finalAmount = Math.round(basePointsForTap);
-        updatedProfile.points += finalAmount;
-        updatedProfile.seasonProgress[currentSeason.id] = (updatedProfile.seasonProgress[currentSeason.id] || 0) + finalAmount;
         
-        let newXp = updatedProfile.xp + finalAmount;
+        let profileAfterPoints = { ...updatedProfile, points: updatedProfile.points + finalAmount };
+        profileAfterPoints.seasonProgress[currentSeason.id] = (profileAfterPoints.seasonProgress[currentSeason.id] || 0) + finalAmount;
+
+        let newXp = profileAfterPoints.xp + finalAmount;
         let levelChanged = false;
-        while (newXp >= updatedProfile.xpToNextLevel) {
-            newXp -= updatedProfile.xpToNextLevel;
-            updatedProfile.level++;
+        while (newXp >= profileAfterPoints.xpToNextLevel) {
+            newXp -= profileAfterPoints.xpToNextLevel;
+            profileAfterPoints.level++;
             levelChanged = true;
-            updatedProfile.xpToNextLevel = Math.floor(updatedProfile.xpToNextLevel * XP_LEVEL_MULTIPLIER);
-            updatedProfile.rankTitle = getRankTitle(updatedProfile.level);
+            profileAfterPoints.xpToNextLevel = Math.floor(profileAfterPoints.xpToNextLevel * XP_LEVEL_MULTIPLIER);
+            profileAfterPoints.rankTitle = getRankTitle(profileAfterPoints.level);
         }
-        updatedProfile.xp = newXp;
+        profileAfterPoints.xp = newXp;
         if (levelChanged) {
-            updatedProfile.currentTierColor = getTierColorByLevel(updatedProfile.level);
-            toast({ title: 'Level Up!', description: `Congrats Commander! You passed to level ${updatedProfile.level}.` });
+            profileAfterPoints.currentTierColor = getTierColorByLevel(profileAfterPoints.level);
+            toast({ title: 'Level Up!', description: `Congrats Commander! You passed to level ${profileAfterPoints.level}.` });
         }
 
-        const previousLeague = updatedProfile.league;
-        const newLeague = getLeagueByPoints(updatedProfile.points);
+        const previousLeague = profileAfterPoints.league;
+        const newLeague = getLeagueByPoints(profileAfterPoints.points);
         if (newLeague !== previousLeague) {
-            updatedProfile.league = newLeague;
+            profileAfterPoints.league = newLeague;
             addCoreMessage({ type: 'system_alert', content: `Promotion! You've reached the ${newLeague} league.` }, true);
         }
 
-        let newBattlePassXp = updatedProfile.battlePassXp + finalAmount;
+        let newBattlePassXp = profileAfterPoints.battlePassXp + finalAmount;
         let bpLevelledUp = false;
-        while(newBattlePassXp >= updatedProfile.xpToNextBattlePassLevel) {
-            newBattlePassXp -= updatedProfile.xpToNextBattlePassLevel;
-            updatedProfile.battlePassLevel++;
+        while(newBattlePassXp >= profileAfterPoints.xpToNextBattlePassLevel) {
+            newBattlePassXp -= profileAfterPoints.xpToNextBattlePassLevel;
+            profileAfterPoints.battlePassLevel++;
             bpLevelledUp = true;
         }
-        updatedProfile.battlePassXp = newBattlePassXp;
+        profileAfterPoints.battlePassXp = newBattlePassXp;
         if (bpLevelledUp) {
-            addCoreMessage({ type: 'system_alert', content: `Battle Pass Level Up! Reached Level ${updatedProfile.battlePassLevel}.` }, true);
+            addCoreMessage({ type: 'system_alert', content: `Battle Pass Level Up! Reached Level ${profileAfterPoints.battlePassLevel}.` }, true);
         }
 
-        updatedProfile.totalTapsForUniform = (updatedProfile.totalTapsForUniform || 0) + 1;
-        let newEquippedUniformPieces = [...(updatedProfile.equippedUniformPieces || [])];
+        profileAfterPoints.totalTapsForUniform = (profileAfterPoints.totalTapsForUniform || 0) + 1;
+        let newEquippedUniformPieces = [...(profileAfterPoints.equippedUniformPieces || [])];
         const currentlyEquippedCount = newEquippedUniformPieces.length;
-        const targetEquippedCount = Math.floor(updatedProfile.totalTapsForUniform / TAPS_PER_UNIFORM_PIECE);
+        const targetEquippedCount = Math.floor(profileAfterPoints.totalTapsForUniform / TAPS_PER_UNIFORM_PIECE);
 
         if (targetEquippedCount > currentlyEquippedCount && currentlyEquippedCount < UNIFORM_PIECES_ORDER.length) {
             const piece = UNIFORM_PIECES_ORDER[currentlyEquippedCount];
             newEquippedUniformPieces.push(piece);
             newPiece = piece;
         }
-        updatedProfile.equippedUniformPieces = newEquippedUniformPieces;
+        profileAfterPoints.equippedUniformPieces = newEquippedUniformPieces;
         
-        let profileAfterTapQuests = updateQuestProgress(updatedProfile, 'taps', 1);
+        let profileAfterTapQuests = updateQuestProgress(profileAfterPoints, 'taps', 1);
         profileAfterTapQuests = updateQuestProgress(profileAfterTapQuests, 'points_earned', finalAmount);
 
 
@@ -630,7 +646,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setComboCount(prevCount => prevCount + 1);
     setTimeout(() => setComboCount(0), 3000);
 
-  }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, addCoreMessage, updateQuestProgress, toast, currentSeason.id]);
+  }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, addCoreMessage, updateQuestProgress, toast, currentSeason.id, setPlayerProfile, setComboCount]);
 
   const claimQuestReward = useCallback((questId: string) => {
     setPlayerProfile(prev => {
@@ -661,6 +677,50 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         
         addCoreMessage({ type: 'system_alert', content: `Reward claimed for quest: ${quest.title}.` });
         return updatedProfile;
+    });
+  }, [addCoreMessage]);
+
+  const refreshDailyQuestsIfNeeded = useCallback(() => {
+    setPlayerProfile(prev => {
+        if (!prev) return null;
+
+        const now = new Date();
+        const lastRefreshDate = new Date(prev.lastDailyQuestRefresh);
+        const isNewDay = now.getFullYear() > lastRefreshDate.getFullYear() ||
+                         now.getMonth() > lastRefreshDate.getMonth() ||
+                         now.getDate() > lastRefreshDate.getDate();
+
+        if (!isNewDay && prev.activeDailyQuests && prev.activeDailyQuests.length > 0) {
+            return prev;
+        }
+
+        const availableQuestTemplates = [...DAILY_QUESTS_POOL];
+        const newQuests: DailyQuest[] = [];
+        const usedTemplateIds = new Set<string>();
+
+        while (newQuests.length < NUMBER_OF_DAILY_QUESTS && availableQuestTemplates.length > 0) {
+            const randomIndex = Math.floor(Math.random() * availableQuestTemplates.length);
+            const template = availableQuestTemplates.splice(randomIndex, 1)[0];
+
+            if (!usedTemplateIds.has(template.templateId)) {
+                newQuests.push({
+                    id: `${template.templateId}-${now.getTime()}`,
+                    templateId: template.templateId,
+                    title: template.title,
+                    description: template.description,
+                    type: template.type,
+                    target: template.target,
+                    progress: template.type === 'login' ? template.target : 0,
+                    reward: { ...template.reward },
+                    isCompleted: template.type === 'login',
+                    isClaimed: false,
+                    icon: template.icon,
+                });
+                usedTemplateIds.add(template.templateId);
+            }
+        }
+        addCoreMessage({ type: 'system_alert', content: 'Daily Quest objectives refreshed. New challenges await.'}, true);
+        return { ...prev, activeDailyQuests: newQuests, lastDailyQuestRefresh: now.getTime() };
     });
   }, [addCoreMessage]);
 
@@ -721,50 +781,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   }, [addCoreMessage]);
   
-  const refreshDailyQuestsIfNeeded = useCallback(() => {
-    setPlayerProfile(prev => {
-        if (!prev) return null;
-
-        const now = new Date();
-        const lastRefreshDate = new Date(prev.lastDailyQuestRefresh);
-        const isNewDay = now.getFullYear() > lastRefreshDate.getFullYear() ||
-                         now.getMonth() > lastRefreshDate.getMonth() ||
-                         now.getDate() > lastRefreshDate.getDate();
-
-        if (!isNewDay && prev.activeDailyQuests && prev.activeDailyQuests.length > 0) {
-            return prev;
-        }
-
-        const availableQuestTemplates = [...DAILY_QUESTS_POOL];
-        const newQuests: DailyQuest[] = [];
-        const usedTemplateIds = new Set<string>();
-
-        while (newQuests.length < NUMBER_OF_DAILY_QUESTS && availableQuestTemplates.length > 0) {
-            const randomIndex = Math.floor(Math.random() * availableQuestTemplates.length);
-            const template = availableQuestTemplates.splice(randomIndex, 1)[0];
-
-            if (!usedTemplateIds.has(template.templateId)) {
-                newQuests.push({
-                    id: `${template.templateId}-${now.getTime()}`,
-                    templateId: template.templateId,
-                    title: template.title,
-                    description: template.description,
-                    type: template.type,
-                    target: template.target,
-                    progress: template.type === 'login' ? template.target : 0,
-                    reward: { ...template.reward },
-                    isCompleted: template.type === 'login',
-                    isClaimed: false,
-                    icon: template.icon,
-                });
-                usedTemplateIds.add(template.templateId);
-            }
-        }
-        addCoreMessage({ type: 'system_alert', content: 'Daily Quest objectives refreshed. New challenges await.'}, true);
-        return { ...prev, activeDailyQuests: newQuests, lastDailyQuestRefresh: now.getTime() };
-    });
-  }, [addCoreMessage]);
-
   const claimCommanderOrderReward = useCallback(() => {
     setPlayerProfile(prev => {
       if (!prev || !prev.activeCommanderOrder || !prev.activeCommanderOrder.isCompleted) {
@@ -901,6 +917,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     addCoreMessage({type: 'system_alert', content: 'Player profile updated.'});
     toast({title: 'Profile Updated', description: 'Your callsign and avatar have been updated.'});
   }, [addCoreMessage, toast]);
+  
+  const getArkUpgradeById = useCallback((upgradeId: string) => {
+    return ARK_UPGRADES_DATA.find(u => u.id === upgradeId);
+  }, []);
 
 
   return (

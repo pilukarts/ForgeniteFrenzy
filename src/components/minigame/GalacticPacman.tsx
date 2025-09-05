@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Ship, Bot, Star, ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Skeleton } from '@/components/ui/skeleton';
 
 // --- Game Constants ---
 const GRID_SIZE = 15;
@@ -39,7 +40,7 @@ type Position = { x: number; y: number };
 type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT' | null;
 
 const GalacticPacman: React.FC = () => {
-  const { addPoints } = useGame();
+  const { addPoints, playerProfile } = useGame();
   const { toast } = useToast();
   
   const [grid, setGrid] = useState(levelLayout);
@@ -127,7 +128,7 @@ const GalacticPacman: React.FC = () => {
       toast({ title: "Caught!", description: "The patrol drone caught you. Try again!", variant: "destructive" });
     }
     
-    if (score === totalPellets.current * POINTS_PER_PELLET) {
+    if (score === totalPellets.current * POINTS_PER_PELLET && totalPellets.current > 0) {
       setGameOver('WIN');
       addPoints(WIN_BONUS);
       toast({ title: "Success!", description: `Labrynth cleared! You earned a bonus of ${WIN_BONUS.toLocaleString()} points.` });
@@ -163,6 +164,11 @@ const GalacticPacman: React.FC = () => {
       </div>
     );
   };
+  
+  // Loading state guard
+  if (!playerProfile) {
+    return <Skeleton className="w-[360px] h-[480px]" />;
+  }
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -213,5 +219,3 @@ const GalacticPacman: React.FC = () => {
 };
 
 export default GalacticPacman;
-
-    
