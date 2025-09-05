@@ -1,7 +1,7 @@
 
 
 import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate, LeagueName, LeagueTier, BattlePass, LevelStage } from './types';
-import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle, Shield, ShieldCheck, Award, Star, Crown, LucideIcon, Swords, Shirt } from 'lucide-react';
+import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle, Shield, ShieldCheck, Award, Star, Crown, LucideIcon, Swords, Shirt, Replace } from 'lucide-react';
 
 export const SEASONS_DATA: Season[] = [
   {
@@ -351,4 +351,20 @@ export const LEVEL_STAGES: LevelStage[] = [
     { name: 'OMEGA CLUSTER', startLevel: 10001, endLevel: 15000, colors: { primary: '300 100% 80%', fill: '300 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/5Jp9J5N.jpeg', aiHint: 'pink nebula' },
     { name: 'HYPERION RIFT', startLevel: 15001, endLevel: 25000, colors: { primary: '210 100% 70%', fill: '210 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/v8tTj8H.jpeg', aiHint: 'light blue space' },
     { name: 'GALACTIC CORE', startLevel: 25001, endLevel: 50000, colors: { primary: '60 100% 50%', fill: '60 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/Z7o5p6Y.jpeg', aiHint: 'bright galaxy core' },
+];
+
+export const TAPS_PER_UNIFORM_PIECE = 2000;
+export const UNIFORM_PIECES_ORDER = ["Tactical Gloves", "Combat Boots", "Utility Belt", "Chest Rig", "Stealth Helmet"];
+
+export const ALL_AVATARS = [
+    // Female
+    { url: "https://picsum.photos/seed/female1/200", sex: 'female', hint: 'female commander' },
+    { url: "https://picsum.photos/seed/female2/200", sex: 'female', hint: 'female commander' },
+    { url: "https://picsum.photos/seed/female3/200", sex: 'female', hint: 'female commander' },
+    { url: "https://picsum.photos/seed/female4/200", sex: 'female', hint: 'female commander' },
+    // Male
+    { url: "https://picsum.photos/seed/male1/200", sex: 'male', hint: 'male commander' },
+    { url: "https://picsum.photos/seed/male2/200", sex: 'male', hint: 'male commander' },
+    { url: "https://picsum.photos/seed/male3/200", sex: 'male', hint: 'male commander' },
+    { url: "https://picsum.photos/seed/male4/200", sex: 'male', hint: 'male commander' },
 ];

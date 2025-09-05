@@ -2,7 +2,7 @@
 "use client";
 
 import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, CommanderOrder } from '@/lib/types';
-import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES } from '@/lib/gameData';
+import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES, UNIFORM_PIECES_ORDER, TAPS_PER_UNIFORM_PIECE } from '@/lib/gameData';
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getCoreBriefing } from '@/ai/flows/core-briefings';
@@ -10,8 +10,6 @@ import { getCoreLoreSnippet } from '@/ai/flows/core-lore-snippets';
 import { getCoreProgressUpdate } from '@/ai/flows/core-progress-updates';
 import { syncPlayerProfileInFirestore } from '@/lib/firestore'; // Import the new Firestore function
 
-const TAPS_PER_UNIFORM_PIECE = 2000;
-const UNIFORM_PIECES_ORDER = ["Tactical Gloves", "Combat Boots", "Utility Belt", "Chest Rig", "Stealth Helmet"];
 const NUMBER_OF_DAILY_QUESTS = 3;
 const TAP_REGEN_COOLDOWN_MILLISECONDS = TAP_REGEN_COOLDOWN_MINUTES * 60 * 1000;
 const COMMANDER_ORDER_COOLDOWN_HOURS = 1;
@@ -143,102 +141,68 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         toast({ title: message.type.replace('_', ' ').toUpperCase(), description: message.content});
     }
   }, [toast]);
-
+  
   // This effect runs once on component mount on the client side.
   // It's responsible for loading all data from localStorage and setting the initial game state.
   useEffect(() => {
-    const loadGame = () => {
-      try {
-        const savedProfile = localStorage.getItem('playerProfile');
-        if (savedProfile) {
-          let parsedProfile = JSON.parse(savedProfile) as PlayerProfile;
-          let offlineEarnings = 0;
-
-          // Initialize new fields for backward compatibility
-          parsedProfile.country = parsedProfile.country ?? '';
-          parsedProfile.lastLoginTimestamp = parsedProfile.lastLoginTimestamp ?? Date.now();
-          parsedProfile.muleDrones = parsedProfile.upgrades?.['muleDrone'] || 0;
-          parsedProfile.equippedUniformPieces = parsedProfile.equippedUniformPieces ?? [];
-
-          const now = Date.now();
-          const timeAwayInMinutes = Math.floor((now - parsedProfile.lastLoginTimestamp) / 60000);
-          if (timeAwayInMinutes > 1 && parsedProfile.muleDrones > 0) {
+    setIsLoading(true);
+    const savedProfile = localStorage.getItem('playerProfile');
+    if (savedProfile) {
+        let parsedProfile = JSON.parse(savedProfile) as PlayerProfile;
+        
+        // ---- OFFLINE PROGRESS ----
+        const now = Date.now();
+        const lastLogin = parsedProfile.lastLoginTimestamp ?? now;
+        const timeAwayInMinutes = Math.floor((now - lastLogin) / 60000);
+        let offlineEarnings = 0;
+        
+        if (timeAwayInMinutes > 1 && parsedProfile.muleDrones > 0) {
             offlineEarnings = Math.floor(parsedProfile.muleDrones * MULE_DRONE_BASE_RATE * timeAwayInMinutes);
             if (offlineEarnings > 0) {
-              parsedProfile.points += offlineEarnings;
+                parsedProfile.points += offlineEarnings;
             }
-          }
-          parsedProfile.lastLoginTimestamp = now;
-          
-          if (offlineEarnings > 0) {
-            const offlineMessage: CoreMessage = { type: 'system_alert', content: `Welcome back, Commander. Your M.U.L.E. Drones generated ${offlineEarnings.toLocaleString()} points while you were away.`, timestamp: Date.now() };
-            const savedMessages = localStorage.getItem('coreMessages');
-            const currentMessages = savedMessages ? JSON.parse(savedMessages) : [];
-            setCoreMessages([offlineMessage, ...currentMessages.slice(0, 49)]);
-          } else {
-             const savedMessages = localStorage.getItem('coreMessages');
-             if (savedMessages) {
-                setCoreMessages(JSON.parse(savedMessages));
-             }
-          }
-
-          // Standard initializations
-          parsedProfile.maxTaps = parsedProfile.maxTaps ?? INITIAL_MAX_TAPS;
-          parsedProfile.currentTaps = parsedProfile.currentTaps ?? parsedProfile.maxTaps;
-          parsedProfile.tapsAvailableAt = parsedProfile.tapsAvailableAt ?? now;
-          parsedProfile.activeTapBonuses = parsedProfile.activeTapBonuses ?? [];
-          parsedProfile.totalTapsForUniform = parsedProfile.totalTapsForUniform ?? 0;
-          parsedProfile.avatarUrl = parsedProfile.avatarUrl ?? undefined;
-          
-          parsedProfile.activeDailyQuests = (parsedProfile.activeDailyQuests ?? []).map(q => {
-            const template = DAILY_QUESTS_POOL.find(t => t.templateId === q.templateId);
-            return { ...q, icon: template?.icon };
-          });
-          
-          parsedProfile.lastDailyQuestRefresh = parsedProfile.lastDailyQuestRefresh ?? 0;
-          parsedProfile.referralCode = parsedProfile.referralCode ?? undefined;
-          parsedProfile.referredByCode = parsedProfile.referredByCode ?? undefined;
-          parsedProfile.currentTierColor = parsedProfile.currentTierColor ?? getTierColorByLevel(parsedProfile.level);
-          parsedProfile.league = parsedProfile.league ?? getLeagueByPoints(parsedProfile.points);
-          
-          parsedProfile.battlePassLevel = parsedProfile.battlePassLevel ?? 1;
-          parsedProfile.battlePassXp = parsedProfile.battlePassXp ?? 0;
-          parsedProfile.xpToNextBattlePassLevel = parsedProfile.xpToNextBattlePassLevel ?? BATTLE_PASS_XP_PER_LEVEL;
-          parsedProfile.hasPremiumPass = parsedProfile.hasPremiumPass ?? false;
-          parsedProfile.claimedBattlePassRewards = parsedProfile.claimedBattlePassRewards ?? {};
-          
-          parsedProfile.activeCommanderOrder = parsedProfile.activeCommanderOrder ?? null;
-          parsedProfile.lastCommanderOrderTimestamp = parsedProfile.lastCommanderOrderTimestamp ?? 0;
-          
-          parsedProfile.lastRewardedAdTimestamp = parsedProfile.lastRewardedAdTimestamp ?? 0;
-          
-          parsedProfile.isMusicPlaying = parsedProfile.isMusicPlaying ?? false;
-          
-          setPlayerProfile(parsedProfile);
-          setIsMusicPlaying(parsedProfile.isMusicPlaying);
-          setActiveCommanderOrder(parsedProfile.activeCommanderOrder);
-          const season = SEASONS_DATA.find(s => s.id === parsedProfile.currentSeasonId) || SEASONS_DATA[0];
-          setCurrentSeason(season);
-          const coreUnlocked = !!parsedProfile.upgrades['coreUnlocked'] || SEASONS_DATA.slice(0, SEASONS_DATA.indexOf(season)).some(s => s.unlocksCore);
-          setIsCoreUnlocked(coreUnlocked);
-          setCoreLastInteractionTime(parsedProfile.lastLoginTimestamp || now);
-          setIsInitialSetupDone(true);
-        } else {
-            // No profile found, user needs to do initial setup.
-            setIsInitialSetupDone(false);
         }
-      } catch (error) {
-        console.error("Failed to load game state from localStorage:", error);
-        localStorage.removeItem('playerProfile');
-        localStorage.removeItem('coreMessages');
+        parsedProfile.lastLoginTimestamp = now;
+
+        // ---- MESSAGES ----
+        const savedMessages = localStorage.getItem('coreMessages');
+        let currentMessages = savedMessages ? JSON.parse(savedMessages) : [];
+        if (offlineEarnings > 0) {
+            const offlineMessage: CoreMessage = { type: 'system_alert', content: `Welcome back, Commander. Your M.U.L.E. Drones generated ${offlineEarnings.toLocaleString()} points while you were away.`, timestamp: Date.now() };
+            currentMessages = [offlineMessage, ...currentMessages.slice(0, 49)];
+        }
+        setCoreMessages(currentMessages);
+        
+        // --- PROFILE HYDRATION & DEFAULTS ---
+        const hydratedProfile: PlayerProfile = {
+            ...defaultPlayerProfile,
+            ...parsedProfile,
+            lastLoginTimestamp: now,
+            muleDrones: parsedProfile.upgrades?.['muleDrone'] || 0,
+            activeDailyQuests: (parsedProfile.activeDailyQuests ?? []).map(q => {
+                const template = DAILY_QUESTS_POOL.find(t => t.templateId === q.templateId);
+                return { ...q, icon: template?.icon };
+            }),
+            league: getLeagueByPoints(parsedProfile.points),
+            currentTierColor: getTierColorByLevel(parsedProfile.level),
+        };
+        
+        setPlayerProfile(hydratedProfile);
+        setIsMusicPlaying(hydratedProfile.isMusicPlaying);
+        setActiveCommanderOrder(hydratedProfile.activeCommanderOrder);
+        
+        const season = SEASONS_DATA.find(s => s.id === hydratedProfile.currentSeasonId) || SEASONS_DATA[0];
+        setCurrentSeason(season);
+        
+        const coreUnlocked = !!hydratedProfile.upgrades['coreUnlocked'] || SEASONS_DATA.slice(0, SEASONS_DATA.indexOf(season)).some(s => s.unlocksCore);
+        setIsCoreUnlocked(coreUnlocked);
+        setCoreLastInteractionTime(now);
+        setIsInitialSetupDone(true);
+    } else {
         setIsInitialSetupDone(false);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    loadGame();
-  }, []); // Empty dependency array ensures this runs only once on mount.
+    }
+    setIsLoading(false);
+  }, []);
 
 
   useEffect(() => {
@@ -319,40 +283,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [playerProfile, isInitialSetupDone, addCoreMessage, activeCommanderOrder]);
   
-  const claimCommanderOrderReward = useCallback(() => {
-    setPlayerProfile(prev => {
-      if (!prev || !prev.activeCommanderOrder || !prev.activeCommanderOrder.isCompleted) {
-        return prev;
-      }
-      
-      const order = prev.activeCommanderOrder;
-      
-      addCoreMessage({
-        type: 'system_alert',
-        content: `Excellent work, Commander. You've earned a reward of ${order.reward.auron} Auron.`
-      }, true);
-
-      return {
-        ...prev,
-        auron: prev.auron + (order.reward.auron || 0),
-        points: prev.points + (order.reward.points || 0),
-        activeCommanderOrder: null,
-        lastCommanderOrderTimestamp: Date.now(),
-      };
-    });
-  }, [addCoreMessage]);
-
-  const hideCommanderOrder = useCallback(() => {
-    setPlayerProfile(prev => {
-        if (!prev) return null;
-        // Sets the order to null, effectively dismissing it until the next cooldown cycle.
-        return {
-            ...prev,
-            activeCommanderOrder: null,
-            lastCommanderOrderTimestamp: Date.now(),
-        }
-    });
-  }, []);
 
   const updateQuestProgress = useCallback((profile: PlayerProfile, type: QuestType, value: number): PlayerProfile => {
     if (!profile.activeDailyQuests) return profile;
@@ -383,115 +313,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return { ...profile, activeDailyQuests: updatedQuests, activeCommanderOrder: updatedOrder };
   }, [addCoreMessage]);
 
-  const refreshDailyQuestsIfNeeded = useCallback(() => {
-    let shouldToast = false;
-    setPlayerProfile(prev => {
-        if (!prev) return null;
-
-        const now = new Date();
-        const lastRefreshDate = new Date(prev.lastDailyQuestRefresh);
-        const isNewDay = now.getFullYear() > lastRefreshDate.getFullYear() ||
-                         now.getMonth() > lastRefreshDate.getMonth() ||
-                         now.getDate() > lastRefreshDate.getDate();
-
-        if (!isNewDay && prev.activeDailyQuests && prev.activeDailyQuests.length > 0) {
-            return prev;
-        }
-
-        const availableQuestTemplates = [...DAILY_QUESTS_POOL];
-        const newQuests: DailyQuest[] = [];
-        const usedTemplateIds = new Set<string>();
-
-        while (newQuests.length < NUMBER_OF_DAILY_QUESTS && availableQuestTemplates.length > 0) {
-            const randomIndex = Math.floor(Math.random() * availableQuestTemplates.length);
-            const template = availableQuestTemplates.splice(randomIndex, 1)[0];
-
-            if (!usedTemplateIds.has(template.templateId)) {
-                let progress = 0;
-                let isCompleted = false;
-                if (template.type === 'login') {
-                    progress = 1;
-                    isCompleted = progress >= template.target;
-                }
-                newQuests.push({
-                    id: `${template.templateId}-${now.getTime()}`,
-                    templateId: template.templateId,
-                    title: template.title,
-                    description: template.description,
-                    type: template.type,
-                    target: template.target,
-                    progress: progress,
-                    reward: { ...template.reward },
-                    isCompleted: isCompleted,
-                    isClaimed: false,
-                    icon: template.icon,
-                });
-                usedTemplateIds.add(template.templateId);
-            }
-        }
-        shouldToast = true;
-        return { ...prev, activeDailyQuests: newQuests, lastDailyQuestRefresh: now.getTime() };
-    });
-
-    if (shouldToast) {
-       setTimeout(() => {
-          addCoreMessage({ type: 'system_alert', content: 'Daily Quest objectives refreshed. New challenges await.'}, true);
-        }, 500);
-    }
-  }, [addCoreMessage]);
-
-  const completeInitialSetup = (name: string, sex: 'male' | 'female', avatarUrl: string, country: string, referredByCode?: string) => {
-    const now = Date.now();
-    const newProfileData: PlayerProfile = {
-      ...defaultPlayerProfile,
-      id: crypto.randomUUID(),
-      name,
-      commanderSex: sex,
-      avatarUrl,
-      country,
-      currentSeasonId: SEASONS_DATA[0].id,
-      rankTitle: getRankTitle(1),
-      lastLoginTimestamp: now,
-      lastDailyQuestRefresh: 0,
-      activeDailyQuests: [],
-      referralCode: generateReferralCode(name),
-      referredByCode: referredByCode?.trim() || undefined,
-      maxTaps: INITIAL_MAX_TAPS,
-      currentTaps: INITIAL_MAX_TAPS,
-      tapsAvailableAt: now,
-      currentTierColor: getTierColorByLevel(1),
-      league: DEFAULT_LEAGUE,
-      activeTapBonuses: [],
-      equippedUniformPieces: [],
-      // Battle Pass
-      battlePassLevel: 1,
-      battlePassXp: 0,
-      xpToNextBattlePassLevel: BATTLE_PASS_XP_PER_LEVEL,
-      hasPremiumPass: false,
-      claimedBattlePassRewards: {},
-      // Commander Order
-      activeCommanderOrder: null,
-      lastCommanderOrderTimestamp: 0,
-       // Rewarded Ad
-      lastRewardedAdTimestamp: 0,
-      // Music
-      isMusicPlaying: false,
-    };
-    setPlayerProfile(newProfileData);
-    setIsInitialSetupDone(true);
-    setCurrentSeason(SEASONS_DATA[0]);
-    let welcomeMessage = `Welcome, Commander ${name}! Your mission begins now. Your unique referral code is ${newProfileData.referralCode}. Share it with allies!`;
-    if (referredByCode) {
-        welcomeMessage += ` We acknowledge Commander ${referredByCode} for recruiting you.`
-    }
-    addCoreMessage({ type: 'briefing', content: welcomeMessage});
-    setCoreLastInteractionTime(now);
-  };
-
   const addPoints = useCallback((amount: number, isFromTap: boolean = false) => {
-    let levelUpOccurred = false;
-    let newLevel = 0;
-    
     setPlayerProfile(prev => {
       if (!prev) return null;
 
@@ -531,25 +353,22 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       let newXp = updatedProfile.xp + finalAmount;
       let levelChanged = false;
-      let tempLevel = updatedProfile.level;
 
       while (newXp >= updatedProfile.xpToNextLevel) {
         newXp -= updatedProfile.xpToNextLevel;
-        tempLevel++;
+        updatedProfile.level++;
         levelChanged = true;
         updatedProfile.xpToNextLevel = Math.floor(updatedProfile.xpToNextLevel * XP_LEVEL_MULTIPLIER);
-        updatedProfile.rankTitle = getRankTitle(tempLevel);
+        updatedProfile.rankTitle = getRankTitle(updatedProfile.level);
       }
       
-      if (levelChanged) {
-          updatedProfile.level = tempLevel;
-          levelUpOccurred = true;
-          newLevel = tempLevel;
-      }
-
       updatedProfile.xp = newXp;
       if (levelChanged) {
         updatedProfile.currentTierColor = getTierColorByLevel(updatedProfile.level);
+        toast({
+            title: 'Level Up!',
+            description: `Congrats Commander! You passed to level ${updatedProfile.level}.`,
+        });
       }
       
       const previousLeague = updatedProfile.league;
@@ -564,29 +383,19 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       // Battle Pass XP Gain
       let newBattlePassXp = updatedProfile.battlePassXp + finalAmount; // 1 point = 1 BP XP for simplicity
       let bpLevelledUp = false;
-      let tempBpLevel = updatedProfile.battlePassLevel;
       while(newBattlePassXp >= updatedProfile.xpToNextBattlePassLevel) {
         newBattlePassXp -= updatedProfile.xpToNextBattlePassLevel;
-        tempBpLevel++;
+        updatedProfile.battlePassLevel++;
         bpLevelledUp = true;
       }
       updatedProfile.battlePassXp = newBattlePassXp;
       if (bpLevelledUp) {
-          updatedProfile.battlePassLevel = tempBpLevel;
           addCoreMessage({ type: 'system_alert', content: `Battle Pass Level Up! Reached Level ${updatedProfile.battlePassLevel}.` }, true);
       }
 
-
       return updatedProfile;
     });
-
-    if (levelUpOccurred) {
-        toast({
-            title: 'Level Up!',
-            description: `Congrats Commander! You passed to level ${newLevel}.`,
-        });
-    }
-  }, [currentSeason, addCoreMessage, updateQuestProgress, toast]);
+  }, [currentSeason.id, addCoreMessage, updateQuestProgress, toast]);
 
 
   const getUpgradeLevel = useCallback((upgradeId: string) => {
@@ -604,22 +413,20 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const upgradeInfo = UPGRADES_DATA.find(u => u.id === upgradeId);
     if (!upgradeInfo) return;
     
-    let canAfford = false;
-    let isMaxLevel = false;
-    let success = false;
-
     setPlayerProfile(prev => {
       if (!prev) return null;
       const cost = getUpgradeCost(upgradeId);
       const currentLevel = prev.upgrades[upgradeId] || 0;
       
-      canAfford = prev.points >= cost;
-      isMaxLevel = !!(upgradeInfo.maxLevel && currentLevel >= upgradeInfo.maxLevel);
-
-      if (!canAfford || isMaxLevel) {
+      if(prev.points < cost) {
+        toast({ title: "Insufficient Points", description: "Not enough points to purchase this upgrade.", variant: "destructive" });
         return prev;
       }
-      success = true;
+      if(upgradeInfo.maxLevel && currentLevel >= upgradeInfo.maxLevel) {
+        toast({ title: "Max Level Reached", description: `${upgradeInfo.name} is already at its maximum level.`, variant: "default" });
+        return prev;
+      }
+      
       let updatedProfile = {
         ...prev,
         points: prev.points - cost,
@@ -632,45 +439,29 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (upgradeId === 'muleDrone') {
         updatedProfile.muleDrones = (updatedProfile.upgrades[upgradeId] || 0);
       }
-
+      
+      addCoreMessage({ type: 'system_alert', content: `Upgrade complete: ${upgradeInfo.name}.`});
       return updateQuestProgress(updatedProfile, 'purchase_upgrade', 1);
     });
-
-    if (success) {
-      addCoreMessage({ type: 'system_alert', content: `Upgrade complete: ${upgradeInfo.name}.`});
-    } else if (isMaxLevel) {
-        toast({ title: "Max Level Reached", description: `${upgradeInfo.name} is already at its maximum level.`, variant: "default" });
-    } else {
-        toast({ title: "Insufficient Points", description: "Not enough points to purchase this upgrade.", variant: "destructive" });
-    }
   }, [getUpgradeCost, toast, updateQuestProgress, addCoreMessage]);
-
-  const getArkUpgradeById = useCallback((upgradeId: string) => {
-    return ARK_UPGRADES_DATA.find(u => u.id === upgradeId);
-  }, []);
 
   const purchaseArkUpgrade = useCallback((upgradeId: string) => {
     const arkUpgrade = ARK_UPGRADES_DATA.find(u => u.id === upgradeId);
     if (!arkUpgrade) return;
 
-    let success = false;
-    let alreadyPurchased = false;
-    let insufficientPoints = false;
-    
     setPlayerProfile(prev => {
         if (!prev) return null;
 
         if (prev.upgrades[upgradeId]) {
-            alreadyPurchased = true;
+            toast({ title: "Upgrade Invalid", description: "This Ark upgrade is already purchased or does not exist.", variant: "default" });
             return prev;
         }
 
         if (prev.points < arkUpgrade.cost) {
-            insufficientPoints = true;
+            toast({ title: "Insufficient Points", description: "Not enough points for this Ark upgrade.", variant: "destructive" });
             return prev;
         }
 
-        success = true;
         const newUpgrades = { ...prev.upgrades, [upgradeId]: 1 };
         const allArkUpgradesPurchased = ARK_UPGRADES_DATA.every(u => newUpgrades[u.id]);
         
@@ -680,16 +471,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             upgrades: newUpgrades,
             arkHangarFullyUpgraded: allArkUpgradesPurchased,
         };
+        addCoreMessage({ type: 'system_alert', content: `Ark upgrade installed: ${arkUpgrade.name}.` });
         return updateQuestProgress(updatedProfile, 'purchase_upgrade', 1);
     });
-
-    if (success) {
-      addCoreMessage({ type: 'system_alert', content: `Ark upgrade installed: ${arkUpgrade.name}.` });
-    } else if (alreadyPurchased) {
-      toast({ title: "Upgrade Invalid", description: "This Ark upgrade is already purchased or does not exist.", variant: "default" });
-    } else if (insufficientPoints) {
-      toast({ title: "Insufficient Points", description: "Not enough points for this Ark upgrade.", variant: "destructive" });
-    }
   }, [toast, updateQuestProgress, addCoreMessage]);
 
   const purchaseMarketplaceItem = useCallback((itemId: string) => {
@@ -699,19 +483,16 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         return;
     }
 
-    let success = false;
-    let insufficientAuron = false;
-
     setPlayerProfile(prev => {
         if (!prev) return null;
 
         if (prev.auron < item.costInAuron) {
-            insufficientAuron = true;
+            toast({ title: "Insufficient Auron", description: `You need ${item.costInAuron} Auron to purchase ${item.name}.`, variant: "destructive" });
             return prev;
         }
-        success = true;
+
         const newBonus: ActiveTapBonus = {
-            id: crypto.randomUUID(), 
+            id: `${Date.now()}-${Math.random()}`, 
             marketItemId: item.id,
             name: item.name,
             remainingTaps: item.bonusEffect.durationTaps,
@@ -724,27 +505,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             auron: prev.auron - item.costInAuron,
             activeTapBonuses: [...(prev.activeTapBonuses || []), newBonus],
         };
+        addCoreMessage({ type: 'system_alert', content: `${item.name} activated.` });
         return updateQuestProgress(updatedProfile, 'spend_auron', item.costInAuron);
     });
-
-    if (success) {
-      addCoreMessage({ type: 'system_alert', content: `${item.name} activated.` });
-    } else if (insufficientAuron) {
-       toast({ title: "Insufficient Auron", description: `You need ${item.costInAuron} Auron to purchase ${item.name}.`, variant: "destructive" });
-    }
   }, [toast, updateQuestProgress, addCoreMessage]);
-
-  const connectWallet = useCallback(() => {
-    setPlayerProfile(prev => {
-      if (!prev || prev.isWalletConnected) return prev;
-      return {
-        ...prev,
-        isWalletConnected: true,
-        auron: prev.auron + AURON_PER_WALLET_CONNECT,
-      };
-    });
-    addCoreMessage({ type: 'system_alert', content: `Wallet Connected! Received ${AURON_PER_WALLET_CONNECT} Auron bonus and unlocked the Ark Hangar.` }, true);
-  }, [addCoreMessage]);
 
   const baseTapPower = POINTS_PER_TAP;
   const tapPowerUpgradeLevel = getUpgradeLevel('tapPower');
@@ -760,9 +524,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const comboMultiplierValue = 1 + (comboBonusUpgradeLevel * 0.02) + (comboCount * 0.01);
 
   const handleTap = useCallback(() => {
-    let wasTapped = false;
     let isCritical = false;
-    let isOutOfTaps = false;
     let newPiece = '';
 
     setPlayerProfile(prev => {
@@ -778,11 +540,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
 
         if (updatedProfile.currentTaps <= 0) {
-            isOutOfTaps = true;
+            const timeLeft = Math.ceil((prev.tapsAvailableAt - Date.now()) / 1000);
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            addCoreMessage({ type: 'system_alert', content: `Out of Taps! Regeneration in ${minutes}m ${seconds}s.` });
             return updatedProfile;
         }
         
-        wasTapped = true;
         updatedProfile.currentTaps--;
         if (updatedProfile.currentTaps === 0) {
             updatedProfile.tapsAvailableAt = now + TAP_REGEN_COOLDOWN_MILLISECONDS;
@@ -796,8 +560,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
 
         basePointsForTap *= comboMultiplierValue;
-        basePointsForTap = Math.round(basePointsForTap);
-
         addPoints(basePointsForTap, true); 
 
         updatedProfile.totalTapsForUniform = (updatedProfile.totalTapsForUniform || 0) + 1;
@@ -812,33 +574,24 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
         updatedProfile.equippedUniformPieces = newEquippedUniformPieces;
         
-        return updateQuestProgress(updatedProfile, 'taps', 1);
+        // This must return the profile directly, not call another state-setting function
+        const profileAfterTapQuests = updateQuestProgress(updatedProfile, 'taps', 1);
+        return profileAfterTapQuests;
     });
 
     setComboCount(prevCount => prevCount + 1);
     setTimeout(() => setComboCount(0), 3000);
-
-    if (isOutOfTaps && playerProfile) {
-        const timeLeft = Math.ceil((playerProfile.tapsAvailableAt - Date.now()) / 1000);
-        const minutes = Math.floor(timeLeft / 60);
-        const seconds = timeLeft % 60;
-        addCoreMessage({ type: 'system_alert', content: `Out of Taps! Regeneration in ${minutes}m ${seconds}s.` });
-    }
     
     if(isCritical) {
         addCoreMessage({ type: 'system_alert', content: `Critical Tap! Power amplified.` });
     }
-
     if(newPiece) {
         addCoreMessage({ type: 'system_alert', content: `New gear acquired: ${newPiece}.` }, true);
     }
 
-  }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, addCoreMessage, updateQuestProgress, addPoints, playerProfile]);
+  }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, addCoreMessage, updateQuestProgress, addPoints]);
 
   const claimQuestReward = useCallback((questId: string) => {
-    let claimedQuest: DailyQuest | null = null;
-    let success = false;
-
     setPlayerProfile(prev => {
         if (!prev) return null;
         const questIndex = prev.activeDailyQuests.findIndex(q => q.id === questId);
@@ -847,8 +600,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const quest = prev.activeDailyQuests[questIndex];
         if (!quest.isCompleted || quest.isClaimed) return prev;
         
-        claimedQuest = quest;
-        success = true;
         let updatedProfile = { ...prev };
         if (quest.reward.points) {
             updatedProfile.points += quest.reward.points;
@@ -866,176 +617,191 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const updatedQuests = [...updatedProfile.activeDailyQuests];
         updatedQuests[questIndex] = { ...quest, isClaimed: true };
         updatedProfile.activeDailyQuests = updatedQuests;
-
+        
+        addCoreMessage({ type: 'system_alert', content: `Reward claimed for quest: ${quest.title}.` });
         return updatedProfile;
     });
-
-    if (success && claimedQuest) {
-        addCoreMessage({ type: 'system_alert', content: `Reward claimed for quest: ${claimedQuest.title}.` });
-    }
   }, [addCoreMessage]);
 
-  const refillTaps = useCallback(() => {
-    let success = false;
-    let insufficientAuron = false;
+  const completeInitialSetup = useCallback((name: string, sex: 'male' | 'female', avatarUrl: string, country: string, referredByCode?: string) => {
+    const now = Date.now();
+    const newProfileData: PlayerProfile = {
+      ...defaultPlayerProfile,
+      id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
+      name,
+      commanderSex: sex,
+      avatarUrl,
+      country,
+      currentSeasonId: SEASONS_DATA[0].id,
+      lastLoginTimestamp: now,
+      referralCode: generateReferralCode(name),
+      referredByCode: referredByCode?.trim() || undefined,
+    };
+    setPlayerProfile(newProfileData);
+    setIsInitialSetupDone(true);
+    setCurrentSeason(SEASONS_DATA[0]);
+    let welcomeMessage = `Welcome, Commander ${name}! Your mission begins now. Your unique referral code is ${newProfileData.referralCode}. Share it with allies!`;
+    if (referredByCode) {
+        welcomeMessage += ` We acknowledge Commander ${referredByCode} for recruiting you.`
+    }
+    addCoreMessage({ type: 'briefing', content: welcomeMessage});
+    setCoreLastInteractionTime(now);
+    refreshDailyQuestsIfNeeded();
+  }, [addCoreMessage, refreshDailyQuestsIfNeeded]);
 
+  const refillTaps = useCallback(() => {
     setPlayerProfile(prev => {
         if (!prev) return null;
         if (prev.auron < AURON_COST_FOR_TAP_REFILL) {
-            insufficientAuron = true;
+            toast({ title: "Insufficient Auron", description: `You need ${AURON_COST_FOR_TAP_REFILL} Auron to refill taps.`, variant: "destructive" });
             return prev;
         }
-        success = true;
+        
         let updatedProfile = {
             ...prev,
             auron: prev.auron - AURON_COST_FOR_TAP_REFILL,
             currentTaps: prev.maxTaps,
             tapsAvailableAt: Date.now(),
         };
+        addCoreMessage({ type: 'system_alert', content: `Tap energy restored for ${AURON_COST_FOR_TAP_REFILL} Auron.` });
         return updateQuestProgress(updatedProfile, 'spend_auron', AURON_COST_FOR_TAP_REFILL);
     });
-
-    if (success) {
-        addCoreMessage({ type: 'system_alert', content: `Tap energy restored for ${AURON_COST_FOR_TAP_REFILL} Auron.` });
-    } else if (insufficientAuron) {
-        toast({ title: "Insufficient Auron", description: `You need ${AURON_COST_FOR_TAP_REFILL} Auron to refill taps.`, variant: "destructive" });
-    }
   }, [toast, updateQuestProgress, addCoreMessage]);
+  
+  const connectWallet = useCallback(() => {
+    setPlayerProfile(prev => {
+      if (!prev || prev.isWalletConnected) return prev;
+      addCoreMessage({ type: 'system_alert', content: `Wallet Connected! Received ${AURON_PER_WALLET_CONNECT} Auron bonus and unlocked the Ark Hangar.` }, true);
+      return {
+        ...prev,
+        isWalletConnected: true,
+        auron: prev.auron + AURON_PER_WALLET_CONNECT,
+      };
+    });
+  }, [addCoreMessage]);
+  
+  const refreshDailyQuestsIfNeeded = useCallback(() => {
+    setPlayerProfile(prev => {
+        if (!prev) return null;
 
+        const now = new Date();
+        const lastRefreshDate = new Date(prev.lastDailyQuestRefresh);
+        const isNewDay = now.getFullYear() > lastRefreshDate.getFullYear() ||
+                         now.getMonth() > lastRefreshDate.getMonth() ||
+                         now.getDate() > lastRefreshDate.getDate();
 
-  useEffect(() => {
-    if (isInitialSetupDone && playerProfile && isCoreUnlocked && !isAICallInProgress && Date.now() - coreLastInteractionTime > 300000) {
-      setIsAICallInProgress(true);
-      (async () => {
-        try {
-          const briefingInput = {
-            season: currentSeason.title,
-            playerProgress: `Level ${playerProfile.level}, League: ${playerProfile.league}, Objective Progress: ${playerProfile.seasonProgress[currentSeason.id] || 0}`,
-          };
-          const briefing = await getCoreBriefing(briefingInput);
-          addCoreMessage({ type: 'briefing', content: briefing.briefing });
-
-          const progressUpdateInput = {
-            seasonObjective: currentSeason.coreBriefingObjective,
-            playerProgress: playerProfile.points,
-            playerLevel: playerProfile.level,
-            availableUpgrades: UPGRADES_DATA.map(u => `${u.name} (Cost: ${getUpgradeCost(u.id)})`).join(', '),
-          };
-          const progressUpdate = await getCoreProgressUpdate(progressUpdateInput);
-          addCoreMessage({ type: 'advice', content: progressUpdate.advice });
-          if (progressUpdate.loreSnippet) {
-            addCoreMessage({ type: 'lore_snippet', content: progressUpdate.loreSnippet });
-          }
-
-          if(playerProfile.lastLoginTimestamp) {
-            const timeAwayMinutes = Math.floor((Date.now() - playerProfile.lastLoginTimestamp) / 60000);
-            if (timeAwayMinutes > 5) {
-                const resourcesGained = playerProfile.muleDrones * MULE_DRONE_BASE_RATE * timeAwayMinutes;
-                if (resourcesGained > 0) addPoints(resourcesGained); 
-
-                const loreSnippetInput = {
-                    timeAway: timeAwayMinutes,
-                    resourcesGained,
-                };
-                const loreSnippet = await getCoreLoreSnippet(loreSnippetInput);
-                 if (loreSnippet.snippet) {
-                    addCoreMessage({ type: 'lore_snippet', content: loreSnippet.snippet });
-                 }
-            }
-          }
-          setPlayerProfile(p => p ? {...p, lastLoginTimestamp: Date.now(), currentTierColor: getTierColorByLevel(p.level), league: getLeagueByPoints(p.points) } : null);
-        } catch (error: any) {
-          console.error("C.O.R.E. API Error:", error);
-          let errorMessage = "C.O.R.E. systems experiencing interference. Stand by, Commander.";
-          const errorString = error.message ? error.message.toLowerCase() : (error.toString ? error.toString().toLowerCase() : "");
-
-           if (errorString.includes("503") || errorString.includes("service unavailable") || errorString.includes("overloaded")) {
-            errorMessage = "C.O.R.E. uplink temporarily disrupted due to high traffic. Systems recalibrating. Please stand by, Commander.";
-          } else if (errorString.includes("429") || errorString.includes("too many requests")) {
-            errorMessage = "C.O.R.E. communication channels are currently saturated. Please allow a moment for recalibration, Commander.";
-          }
-          addCoreMessage({ type: 'system_alert', content: errorMessage });
-        } finally {
-            setCoreLastInteractionTime(Date.now());
-            setIsAICallInProgress(false);
+        if (!isNewDay && prev.activeDailyQuests && prev.activeDailyQuests.length > 0) {
+            return prev;
         }
-      })();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isInitialSetupDone, playerProfile, currentSeason.id, isCoreUnlocked, coreLastInteractionTime, addCoreMessage, getUpgradeCost, addPoints, isAICallInProgress]);
+
+        const availableQuestTemplates = [...DAILY_QUESTS_POOL];
+        const newQuests: DailyQuest[] = [];
+        const usedTemplateIds = new Set<string>();
+
+        while (newQuests.length < NUMBER_OF_DAILY_QUESTS && availableQuestTemplates.length > 0) {
+            const randomIndex = Math.floor(Math.random() * availableQuestTemplates.length);
+            const template = availableQuestTemplates.splice(randomIndex, 1)[0];
+
+            if (!usedTemplateIds.has(template.templateId)) {
+                newQuests.push({
+                    id: `${template.templateId}-${now.getTime()}`,
+                    templateId: template.templateId,
+                    title: template.title,
+                    description: template.description,
+                    type: template.type,
+                    target: template.target,
+                    progress: template.type === 'login' ? template.target : 0,
+                    reward: { ...template.reward },
+                    isCompleted: template.type === 'login',
+                    isClaimed: false,
+                    icon: template.icon,
+                });
+                usedTemplateIds.add(template.templateId);
+            }
+        }
+        addCoreMessage({ type: 'system_alert', content: 'Daily Quest objectives refreshed. New challenges await.'}, true);
+        return { ...prev, activeDailyQuests: newQuests, lastDailyQuestRefresh: now.getTime() };
+    });
+  }, [addCoreMessage]);
+
+  const claimCommanderOrderReward = useCallback(() => {
+    setPlayerProfile(prev => {
+      if (!prev || !prev.activeCommanderOrder || !prev.activeCommanderOrder.isCompleted) {
+        return prev;
+      }
+      
+      const order = prev.activeCommanderOrder;
+      
+      addCoreMessage({
+        type: 'system_alert',
+        content: `Excellent work, Commander. You've earned a reward of ${order.reward.auron} Auron.`
+      }, true);
+
+      return {
+        ...prev,
+        auron: prev.auron + (order.reward.auron || 0),
+        points: prev.points + (order.reward.points || 0),
+        activeCommanderOrder: null,
+        lastCommanderOrderTimestamp: Date.now(),
+      };
+    });
+  }, [addCoreMessage]);
+
+  const hideCommanderOrder = useCallback(() => {
+    setPlayerProfile(prev => {
+        if (!prev) return null;
+        return { ...prev, activeCommanderOrder: null, lastCommanderOrderTimestamp: Date.now() };
+    });
+  }, []);
 
   const purchasePremiumPass = useCallback(() => {
-    let canAfford = false;
-    let alreadyHas = false;
-    let success = false;
-
     setPlayerProfile(prev => {
         if (!prev) return null;
         if (prev.hasPremiumPass) {
-            alreadyHas = true;
+            toast({ title: 'Already Unlocked', description: 'You already have the Premium Battle Pass.' });
             return prev;
         }
         if (prev.auron < BATTLE_PASS_DATA.premiumCostInAuron) {
-            canAfford = false;
+            toast({ title: 'Insufficient Auron', description: `You need ${BATTLE_PASS_DATA.premiumCostInAuron} Auron to unlock the premium pass.`, variant: 'destructive' });
             return prev;
         }
-        success = true;
-        canAfford = true;
+        addCoreMessage({ type: 'system_alert', content: 'Premium Battle Pass unlocked! Access to premium rewards granted.' }, true);
         return {
             ...prev,
             auron: prev.auron - BATTLE_PASS_DATA.premiumCostInAuron,
             hasPremiumPass: true,
         };
     });
-
-    if(alreadyHas) {
-        toast({ title: 'Already Unlocked', description: 'You already have the Premium Battle Pass.' });
-    } else if (!canAfford) {
-        toast({ title: 'Insufficient Auron', description: `You need ${BATTLE_PASS_DATA.premiumCostInAuron} Auron to unlock the premium pass.`, variant: 'destructive' });
-    } else if (success) {
-        addCoreMessage({ type: 'system_alert', content: 'Premium Battle Pass unlocked! Access to premium rewards granted.' }, true);
-    }
   }, [toast, addCoreMessage]);
 
   const claimBattlePassReward = useCallback((level: number, track: 'free' | 'premium') => {
-    let rewardToClaim: BattlePassReward | null = null;
-    let result = 'fail'; // 'fail', 'claimed', 'not_reached', 'premium_locked', 'success'
-
     setPlayerProfile(prev => {
       if (!prev) return null;
       
       const rewardLevel = BATTLE_PASS_DATA.levels.find(l => l.level === level);
-      if (!rewardLevel) { result='fail'; return prev; }
+      if (!rewardLevel) { return prev; }
 
       const reward = track === 'free' ? rewardLevel.freeReward : rewardLevel.premiumReward;
-      if (!reward) { result='fail'; return prev; }
+      if (!reward) { return prev; }
 
       if (prev.claimedBattlePassRewards[level]?.includes(track)) {
-        result='claimed';
+        toast({ title: 'Reward Already Claimed', variant: 'default' });
         return prev;
       }
-
       if (prev.battlePassLevel < level) {
-         result='not_reached';
+         toast({ title: 'Level Not Reached', description: `You must reach level ${level} to claim this reward.`, variant: 'destructive' });
          return prev;
       }
-      
       if (track === 'premium' && !prev.hasPremiumPass) {
-        result='premium_locked';
+        toast({ title: 'Premium Pass Required', description: 'Unlock the premium pass to claim this reward.', variant: 'destructive' });
         return prev;
       }
 
-      result = 'success';
-      rewardToClaim = reward;
       let updatedProfile = { ...prev };
 
       switch (reward.type) {
-        case 'points':
-          updatedProfile.points += reward.amount || 0;
-          break;
-        case 'auron':
-          updatedProfile.auron += reward.amount || 0;
-          break;
+        case 'points': updatedProfile.points += reward.amount || 0; break;
+        case 'auron': updatedProfile.auron += reward.amount || 0; break;
         case 'uniform_piece':
            if (reward.name && !updatedProfile.equippedUniformPieces.includes(reward.name)) {
              updatedProfile.equippedUniformPieces.push(reward.name);
@@ -1052,25 +818,15 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         [level]: [...claimedForLevel, track],
       };
       
+      addCoreMessage({ type: 'system_alert', content: `Battle Pass reward claimed: ${reward?.amount || ''} ${reward?.name || reward?.type}` });
       return updatedProfile;
     });
-
-    if (result === 'success' && rewardToClaim) {
-        addCoreMessage({ type: 'system_alert', content: `Battle Pass reward claimed: ${rewardToClaim?.amount || ''} ${rewardToClaim?.name || rewardToClaim?.type}` });
-    } else if (result === 'claimed') {
-        toast({ title: 'Reward Already Claimed', variant: 'default' });
-    } else if (result === 'not_reached') {
-        toast({ title: 'Level Not Reached', description: `You must reach level ${level} to claim this reward.`, variant: 'destructive' });
-    } else if (result === 'premium_locked') {
-        toast({ title: 'Premium Pass Required', description: 'Unlock the premium pass to claim this reward.', variant: 'destructive' });
-    }
   }, [toast, addCoreMessage]);
 
   const watchRewardedAd = useCallback(() => {
     if (rewardedAdCooldown > 0 || isWatchingAd) return;
 
     setIsWatchingAd(true);
-    // Simulate watching an ad for 3 seconds
     setTimeout(() => {
       setPlayerProfile(prev => {
         if (!prev) return null;

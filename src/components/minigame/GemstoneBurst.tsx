@@ -501,22 +501,16 @@ const GemstoneBurst: React.FC = () => {
             </motion.div>
           )}
         </AnimatePresence>
-        {isClient ? (
-            <canvas 
-              ref={canvasRef} 
-              width={BOARD_WIDTH} 
-              height={BOARD_HEIGHT} 
-              className="z-10 rounded-lg touch-none"
-              onPointerDown={handlePointerDown}
-              onPointerMove={handlePointerMove}
-              onPointerUp={handlePointerUp}
-              onPointerLeave={handlePointerUp}
-            />
-        ) : (
-             <div className="flex items-center justify-center bg-muted" style={{ width: BOARD_WIDTH, height: BOARD_HEIGHT }}>
-                <Skeleton className="w-full h-full" />
-             </div>
-        )}
+        <canvas 
+          ref={canvasRef} 
+          width={BOARD_WIDTH} 
+          height={BOARD_HEIGHT} 
+          className="z-10 rounded-lg touch-none"
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerLeave={handlePointerUp}
+        />
       </div>
       <div className="flex items-center gap-4 mt-2 sm:hidden">
         <Button onClick={() => handleAngleChange('left')} variant="outline" size="icon" className="h-12 w-12"><ArrowLeft /></Button>
