@@ -10,8 +10,9 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '../ui/scroll-area';
 import { countries } from '@/lib/countries';
-import { Check, Search } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Check, Search, ChevronsUpDown } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import IntroScreen from '../intro/IntroScreen';
 import { ALL_AVATARS } from '@/lib/gameData';
 
@@ -22,8 +23,7 @@ const PlayerSetup: React.FC = () => {
   const [selectedAvatar, setSelectedAvatar] = useState(ALL_AVATARS[0]);
   const [country, setCountry] = useState('');
   const [referredBy, setReferredBy] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isCountryModalOpen, setCountryModalOpen] = useState(false);
+  const [isCountryPopoverOpen, setCountryPopoverOpen] = useState(false);
 
   const isFormValid = name.trim() !== '' && country !== '' && selectedAvatar.url !== '';
 
@@ -37,13 +37,8 @@ const PlayerSetup: React.FC = () => {
   if (!playerProfile) {
     return <IntroScreen />;
   }
-
-
-  const filteredCountries = countries.filter(c => 
-    c.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
   
-  const selectedCountryName = countries.find(c => c.code === country)?.name || 'Select your home nation';
+  const selectedCountryName = countries.find(c => c.code === country)?.name || 'Select your home nation...';
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4">
@@ -94,52 +89,47 @@ const PlayerSetup: React.FC = () => {
                 
                  <div className="space-y-2">
                   <Label className="text-foreground/80 text-base">Select Nation</Label>
-                  <Dialog open={isCountryModalOpen} onOpenChange={setCountryModalOpen}>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" className="w-full justify-start text-left h-11 text-base">
+                   <Popover open={isCountryPopoverOpen} onOpenChange={setCountryPopoverOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={isCountryPopoverOpen}
+                        className="w-full justify-between h-11 text-base font-normal"
+                      >
                         {selectedCountryName}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
-                    </DialogTrigger>
-                    <DialogContent className="p-0 max-w-md h-[80vh] flex flex-col">
-                      <DialogHeader className="p-4 border-b">
-                        <DialogTitle>Select Your Home Nation</DialogTitle>
-                         <div className="relative mt-2">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input 
-                                id="country-search"
-                                placeholder="Search nation..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-9 bg-input border-border focus:ring-primary"
-                            />
-                        </div>
-                      </DialogHeader>
-                      <ScrollArea className="flex-grow">
-                          <div className="p-2">
-                              {filteredCountries.length > 0 ? filteredCountries.map(c => (
-                                  <Button
-                                      key={c.code}
-                                      variant="ghost"
-                                      className={cn(
-                                          "w-full justify-start text-left h-auto py-2 px-3 text-base",
-                                          country === c.code && "bg-primary/20 text-primary"
-                                      )}
-                                      onClick={() => {
-                                        setCountry(c.code);
-                                        setCountryModalOpen(false);
-                                        setSearchTerm('');
-                                      }}
-                                  >
-                                      {country === c.code && <Check className="mr-2 h-4 w-4" />}
-                                      <span>{c.name}</span>
-                                  </Button>
-                              )) : (
-                                  <p className="p-4 text-center text-sm text-muted-foreground">No nations found.</p>
-                              )}
-                          </div>
-                      </ScrollArea>
-                    </DialogContent>
-                  </Dialog>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                      <Command>
+                        <CommandInput placeholder="Search nation..." />
+                        <CommandEmpty>No nation found.</CommandEmpty>
+                        <ScrollArea className="h-64">
+                          <CommandGroup>
+                            {countries.map((c) => (
+                              <CommandItem
+                                key={c.code}
+                                value={c.name}
+                                onSelect={() => {
+                                  setCountry(c.code);
+                                  setCountryPopoverOpen(false);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    country === c.code ? "opacity-100" : "opacity-0"
+                                  )}
+                                />
+                                {c.name}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </ScrollArea>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                 </div>
 
 
