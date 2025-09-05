@@ -247,7 +247,7 @@ export default function HomePage() {
                           </Link>
                       </Button>
                        <Button asChild variant="outline" size="sm" className="w-full justify-start">
-                          <Link href="https://t.me/YOUR_MINIGAME_BOT_HERE" target="_blank" rel="noopener noreferrer">
+                          <Link href="https://t.me/ForgeiteFrenzyGame_bot" target="_blank" rel="noopener noreferrer">
                               <Gamepad2 className="mr-2 h-4 w-4"/> TG Mini Game
                           </Link>
                       </Button>
