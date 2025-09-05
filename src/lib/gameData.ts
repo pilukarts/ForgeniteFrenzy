@@ -358,5 +358,12 @@ export const UNIFORM_PIECES_ORDER = ["Tactical Gloves", "Combat Boots", "Utility
 
 export const ALL_AVATARS = [
     { url: "https://i.imgur.com/s42syGg.png", sex: 'male', hint: 'male soldier portrait' },
+    { url: "https://i.imgur.com/gB3i4OQ.png", sex: 'male', hint: 'male commander portrait' },
+    { url: "https://i.imgur.com/tQ4zJ2a.png", sex: 'male', hint: 'male commander armor' },
+    { url: "https://i.imgur.com/iR322b2.png", sex: 'male', hint: 'male commander helmet' },
     { url: "https://i.imgur.com/R3p4f2x.png", sex: 'female', hint: 'female soldier portrait' },
+    { url: "https://i.imgur.com/J3tG1e4.png", sex: 'female', hint: 'female commander portrait' },
+    { url: "https://i.imgur.com/26Xn9A8.png", sex: 'female', hint: 'female commander armor' },
+    { url: "https://i.imgur.com/K3tB9gH.png", sex: 'female', hint: 'female commander helmet' },
 ];
+
