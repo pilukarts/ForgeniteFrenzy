@@ -358,13 +358,13 @@ export const UNIFORM_PIECES_ORDER = ["Tactical Gloves", "Combat Boots", "Utility
 
 export const ALL_AVATARS = [
     // Female
-    { url: "https://picsum.photos/seed/female1/200", sex: 'female', hint: 'female commander' },
-    { url: "https://picsum.photos/seed/female2/200", sex: 'female', hint: 'female commander' },
-    { url: "https://picsum.photos/seed/female3/200", sex: 'female', hint: 'female commander' },
-    { url: "https://picsum.photos/seed/female4/200", sex: 'female', hint: 'female commander' },
+    { url: "https://i.imgur.com/J3tG1e4.png", sex: 'female', hint: 'female commander' },
+    { url: "https://i.imgur.com/2XfS1DD.png", sex: 'female', hint: 'female soldier' },
+    { url: "https://i.imgur.com/K3tB9gH.png", sex: 'female', hint: 'female warrior' },
+    { url: "https://i.imgur.com/7L48yPE.png", sex: 'female', hint: 'female general' },
     // Male
-    { url: "https://picsum.photos/seed/male1/200", sex: 'male', hint: 'male commander' },
-    { url: "https://picsum.photos/seed/male2/200", sex: 'male', hint: 'male commander' },
-    { url: "https://picsum.photos/seed/male3/200", sex: 'male', hint: 'male commander' },
-    { url: "https://picsum.photos/seed/male4/200", sex: 'male', hint: 'male commander' },
+    { url: "https://i.imgur.com/gB3i4OQ.png", sex: 'male', hint: 'male commander' },
+    { url: "https://i.imgur.com/tQ4zJ2a.png", sex: 'male', hint: 'male soldier' },
+    { url: "https://i.imgur.com/83pL36g.png", sex: 'male', hint: 'male warrior' },
+    { url: "https://i.imgur.com/iuRJVBZ.png", sex: 'male', hint: 'male general' },
 ];

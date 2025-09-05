@@ -30,29 +30,20 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
   const getCommanderImage = () => {
     const equippedCount = equippedUniformPieces?.length || 0;
     const sex = commanderSex;
+    let imageInfo = { src: "", hint: "" };
 
-    // Base Images (No uniform pieces)
-    if (equippedCount === 0) {
-      return sex === 'male' 
-        ? { src: "https://i.imgur.com/iuRJVBZ.png", hint: "fullbody male commander" }
-        : { src: "https://i.imgur.com/BQHeVWp.png", hint: "fullbody female commander" };
+    if (sex === 'male') {
+        imageInfo = { src: "https://i.imgur.com/iuRJVBZ.png", hint: "fullbody male commander" }; // Default
+        if (equippedCount >= 1) imageInfo = { src: "https://i.imgur.com/83pL36g.png", hint: "male commander gloves boots" };
+        if (equippedCount >= 3) imageInfo = { src: "https://i.imgur.com/tQ4zJ2a.png", hint: "male commander armor" };
+        if (equippedCount >= 5) imageInfo = { src: "https://i.imgur.com/iR322b2.png", hint: "male commander full armor helmet" };
+    } else { // female
+        imageInfo = { src: "https://i.imgur.com/BQHeVWp.png", hint: "fullbody female commander" }; // Default
+        if (equippedCount >= 1) imageInfo = { src: "https://i.imgur.com/7L48yPE.png", hint: "female commander gloves boots" };
+        if (equippedCount >= 3) imageInfo = { src: "https://i.imgur.com/26Xn9A8.png", hint: "female commander armor" };
+        if (equippedCount >= 5) imageInfo = { src: "https://i.imgur.com/K3tB9gH.png", hint: "female commander full armor helmet" };
     }
-    // Stage 1: Gloves + Boots (2 pieces)
-    if (equippedCount <= 2) {
-       return sex === 'male' 
-        ? { src: "https://i.imgur.com/83pL36g.png", hint: "male commander gloves boots" }
-        : { src: "https://i.imgur.com/7L48yPE.png", hint: "female commander gloves boots" };
-    }
-    // Stage 2: Gloves + Boots + Belt/Rig (4 pieces)
-    if (equippedCount <= 4) {
-       return sex === 'male' 
-        ? { src: "https://i.imgur.com/tQ4zJ2a.png", hint: "male commander armor" }
-        : { src: "https://i.imgur.com/26Xn9A8.png", hint: "female commander armor" };
-    }
-    // Stage 3: Full Uniform (5 pieces)
-     return sex === 'male' 
-        ? { src: "https://i.imgur.com/iR322b2.png", hint: "male commander full armor helmet" }
-        : { src: "https://i.imgur.com/K3tB9gH.png", hint: "female commander full armor helmet" };
+    return imageInfo;
   };
 
   const { src: imageUrl, hint: dataAiHint } = getCommanderImage();

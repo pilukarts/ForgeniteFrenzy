@@ -12,19 +12,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Check, UserCircle, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-
-const ALL_AVATARS = [
-    // Female
-    { url: "https://picsum.photos/seed/female1/200", sex: 'female', hint: 'female commander' },
-    { url: "https://picsum.photos/seed/female2/200", sex: 'female', hint: 'female commander' },
-    { url: "https://picsum.photos/seed/female3/200", sex: 'female', hint: 'female commander' },
-    { url: "https://picsum.photos/seed/female4/200", sex: 'female', hint: 'female commander' },
-    // Male
-    { url: "https://picsum.photos/seed/male1/200", sex: 'male', hint: 'male commander' },
-    { url: "https://picsum.photos/seed/male2/200", sex: 'male', hint: 'male commander' },
-    { url: "https://picsum.photos/seed/male3/200", sex: 'male', hint: 'male commander' },
-    { url: "https://picsum.photos/seed/male4/200", sex: 'male', hint: 'male commander' },
-];
+import { ALL_AVATARS } from '@/lib/gameData';
 
 
 const ProfilePage: React.FC = () => {

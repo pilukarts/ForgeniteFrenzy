@@ -86,6 +86,11 @@ export default function HomePage() {
         setTimeLeftForTapRegen(prevTime => {
             if (prevTime === null) return null;
             if (prevTime <= 1000) {
+                // When the timer hits zero, check the profile again to see if taps were refilled.
+                if(playerProfile.currentTaps < playerProfile.maxTaps) {
+                    const remaining = (playerProfile.tapsAvailableAt || 0) - Date.now();
+                    return Math.max(0, remaining);
+                }
                 return 0;
             }
             return prevTime - 1000;
@@ -370,5 +375,3 @@ export default function HomePage() {
     </>
   );
 }
-
-    

@@ -13,26 +13,13 @@ import { countries } from '@/lib/countries';
 import { Check, Search } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import IntroScreen from '../intro/IntroScreen';
-
-
-const AVATARS = [
-    // Female
-    { url: "https://picsum.photos/seed/female1/200", sex: 'female', hint: 'female commander' },
-    { url: "https://picsum.photos/seed/female2/200", sex: 'female', hint: 'female commander' },
-    { url: "https://picsum.photos/seed/female3/200", sex: 'female', hint: 'female commander' },
-    { url: "https://picsum.photos/seed/female4/200", sex: 'female', hint: 'female commander' },
-    // Male
-    { url: "https://picsum.photos/seed/male1/200", sex: 'male', hint: 'male commander' },
-    { url: "https://picsum.photos/seed/male2/200", sex: 'male', hint: 'male commander' },
-    { url: "https://picsum.photos/seed/male3/200", sex: 'male', hint: 'male commander' },
-    { url: "https://picsum.photos/seed/male4/200", sex: 'male', hint: 'male commander' },
-];
+import { ALL_AVATARS } from '@/lib/gameData';
 
 
 const PlayerSetup: React.FC = () => {
   const { playerProfile, completeInitialSetup } = useGame();
   const [name, setName] = useState('');
-  const [selectedAvatar, setSelectedAvatar] = useState(AVATARS[0]);
+  const [selectedAvatar, setSelectedAvatar] = useState(ALL_AVATARS[0]);
   const [country, setCountry] = useState('');
   const [referredBy, setReferredBy] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
@@ -75,7 +62,7 @@ const PlayerSetup: React.FC = () => {
               <div className="space-y-3">
                 <Label className="text-foreground/80 text-lg font-semibold block text-center">Select Your Commander</Label>
                 <div className="grid grid-cols-4 gap-2">
-                  {AVATARS.map((avatar) => (
+                  {ALL_AVATARS.map((avatar) => (
                     <div 
                       key={avatar.url}
                       className={cn(

@@ -560,7 +560,46 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
 
         basePointsForTap *= comboMultiplierValue;
-        addPoints(basePointsForTap, true); 
+        
+        // This must call a function that doesn't set state directly
+        // The state update is handled inside `addPoints`
+        const finalAmount = Math.round(basePointsForTap);
+        updatedProfile.points += finalAmount;
+        updatedProfile.seasonProgress[currentSeason.id] = (updatedProfile.seasonProgress[currentSeason.id] || 0) + finalAmount;
+        
+        let newXp = updatedProfile.xp + finalAmount;
+        let levelChanged = false;
+        while (newXp >= updatedProfile.xpToNextLevel) {
+            newXp -= updatedProfile.xpToNextLevel;
+            updatedProfile.level++;
+            levelChanged = true;
+            updatedProfile.xpToNextLevel = Math.floor(updatedProfile.xpToNextLevel * XP_LEVEL_MULTIPLIER);
+            updatedProfile.rankTitle = getRankTitle(updatedProfile.level);
+        }
+        updatedProfile.xp = newXp;
+        if (levelChanged) {
+            updatedProfile.currentTierColor = getTierColorByLevel(updatedProfile.level);
+            toast({ title: 'Level Up!', description: `Congrats Commander! You passed to level ${updatedProfile.level}.` });
+        }
+
+        const previousLeague = updatedProfile.league;
+        const newLeague = getLeagueByPoints(updatedProfile.points);
+        if (newLeague !== previousLeague) {
+            updatedProfile.league = newLeague;
+            addCoreMessage({ type: 'system_alert', content: `Promotion! You've reached the ${newLeague} league.` }, true);
+        }
+
+        let newBattlePassXp = updatedProfile.battlePassXp + finalAmount;
+        let bpLevelledUp = false;
+        while(newBattlePassXp >= updatedProfile.xpToNextBattlePassLevel) {
+            newBattlePassXp -= updatedProfile.xpToNextBattlePassLevel;
+            updatedProfile.battlePassLevel++;
+            bpLevelledUp = true;
+        }
+        updatedProfile.battlePassXp = newBattlePassXp;
+        if (bpLevelledUp) {
+            addCoreMessage({ type: 'system_alert', content: `Battle Pass Level Up! Reached Level ${updatedProfile.battlePassLevel}.` }, true);
+        }
 
         updatedProfile.totalTapsForUniform = (updatedProfile.totalTapsForUniform || 0) + 1;
         let newEquippedUniformPieces = [...(updatedProfile.equippedUniformPieces || [])];
@@ -574,22 +613,24 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
         updatedProfile.equippedUniformPieces = newEquippedUniformPieces;
         
-        // This must return the profile directly, not call another state-setting function
-        const profileAfterTapQuests = updateQuestProgress(updatedProfile, 'taps', 1);
+        let profileAfterTapQuests = updateQuestProgress(updatedProfile, 'taps', 1);
+        profileAfterTapQuests = updateQuestProgress(profileAfterTapQuests, 'points_earned', finalAmount);
+
+
+        if (isCritical) {
+            addCoreMessage({ type: 'system_alert', content: `Critical Tap! Power amplified.` });
+        }
+        if(newPiece) {
+            addCoreMessage({ type: 'system_alert', content: `New gear acquired: ${newPiece}.` }, true);
+        }
+
         return profileAfterTapQuests;
     });
 
     setComboCount(prevCount => prevCount + 1);
     setTimeout(() => setComboCount(0), 3000);
-    
-    if(isCritical) {
-        addCoreMessage({ type: 'system_alert', content: `Critical Tap! Power amplified.` });
-    }
-    if(newPiece) {
-        addCoreMessage({ type: 'system_alert', content: `New gear acquired: ${newPiece}.` }, true);
-    }
 
-  }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, addCoreMessage, updateQuestProgress, addPoints]);
+  }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, addCoreMessage, updateQuestProgress, toast, currentSeason.id]);
 
   const claimQuestReward = useCallback((questId: string) => {
     setPlayerProfile(prev => {
