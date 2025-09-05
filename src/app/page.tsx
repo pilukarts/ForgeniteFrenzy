@@ -209,6 +209,10 @@ export default function HomePage() {
                       transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
                       className="flex flex-col gap-2 w-auto max-w-[150px] sm:max-w-[180px] items-start self-center"
                   >
+                      <Button onClick={() => setCommanderSwitchOpen(true)} variant="outline" size="sm" className="w-full justify-start">
+                        <Replace className="mr-2 h-4 w-4" />
+                        Switch Commander
+                      </Button>
                       <div className="flex items-center gap-2 p-2 rounded-md border border-input bg-background">
                           <Ship className="h-5 w-5 text-primary shrink-0" />
                           <div>
@@ -272,11 +276,6 @@ export default function HomePage() {
                     className="flex-grow flex flex-col items-center justify-center"
                   >
                       <CommanderPortrait onTap={handleTap} />
-
-                      <Button onClick={() => setCommanderSwitchOpen(true)} variant="outline" size="sm" className="mt-2">
-                        <Replace className="mr-2 h-4 w-4" />
-                        Switch Commander
-                      </Button>
 
                       {isOutOfTaps && (
                           <motion.div
