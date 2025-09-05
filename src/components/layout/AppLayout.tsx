@@ -99,15 +99,27 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
 
   useEffect(() => {
     setIsMounted(true);
     if(typeof Audio !== "undefined" && !audioRef.current) {
-      audioRef.current = new Audio("https://cdn.pixabay.com/download/audio/2022/08/04/audio_2bbe433c2a.mp3");
+      audioRef.current = new Audio("https://cdn.pixabay.com/download/audio/2022/10/19/audio_a718c1130e.mp3");
       audioRef.current.loop = true;
     }
   }, []);
-  
+
+  useEffect(() => {
+     // Show intro for a minimum amount of time
+    const introTimer = setTimeout(() => {
+      if (!isLoading) {
+          setShowIntro(false);
+      }
+    }, 2000); 
+
+    return () => clearTimeout(introTimer);
+  }, [isLoading]);
+
   const showCommanderOrder = !!activeCommanderOrder;
 
   const seasonProgress = playerProfile?.seasonProgress?.[currentSeason.id] ?? 0;
@@ -130,7 +142,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     }
   }, [isMusicPlaying, isMounted]);
   
-  if (isLoading || !isInitialSetupDone || !playerProfile) {
+  if (showIntro || isLoading || !isInitialSetupDone || !playerProfile) {
     return <IntroScreen />;
   }
 
