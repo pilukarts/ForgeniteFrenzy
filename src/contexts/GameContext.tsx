@@ -8,7 +8,8 @@ import { useToast } from '@/hooks/use-toast';
 import { getCoreBriefing } from '@/ai/flows/core-briefings';
 import { getCoreLoreSnippet } from '@/ai/flows/core-lore-snippets';
 import { getCoreProgressUpdate } from '@/ai/flows/core-progress-updates';
-import { syncPlayerProfileInFirestore } from '@/lib/firestore'; // Import the new Firestore function
+import { syncPlayerProfileInFirestore } from '@/lib/firestore';
+import { app } from '@/lib/firebase'; // Import the initialized app
 
 const NUMBER_OF_DAILY_QUESTS = 3;
 const TAP_REGEN_COOLDOWN_MILLISECONDS = TAP_REGEN_COOLDOWN_MINUTES * 60 * 1000;
@@ -140,7 +141,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // This effect runs once on component mount on the client side.
   // It's responsible for loading all data from localStorage and setting the initial game state.
   useEffect(() => {
-    setIsLoading(true);
     let savedProfile: string | null = null;
     try {
         savedProfile = localStorage.getItem('playerProfile');

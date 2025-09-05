@@ -1,20 +1,10 @@
-
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { getFirestore } from 'firebase/firestore';
+import { firebaseConfig } from "./firebaseConfig";
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyDMdkst7F612rqEyu0iF86CaYOdJGBXPaw",
-  authDomain: "forgeite-frenzy.firebaseapp.com",
-  projectId: "forgeite-frenzy",
-  storageBucket: "forgeite-frenzy.appspot.com",
-  messagingSenderId: "928400685620",
-  appId: "1:928400685620:web:630f671a2fdaa4449b6861"
-};
+// Initialize Firebase for SSR
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+const db = getFirestore(app);
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
-export { app };
+export { app, db };

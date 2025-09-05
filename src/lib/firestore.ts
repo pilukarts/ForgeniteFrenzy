@@ -1,11 +1,9 @@
 
 'use server';
-import { app } from './firebase';
-import { getFirestore, doc, setDoc, getDocs, collection, query, orderBy, limit } from 'firebase/firestore';
+import { db } from './firebase'; // Import the shared db instance
+import { doc, setDoc, getDocs, collection, query, orderBy, limit } from 'firebase/firestore';
 import type { PlayerProfile, LeaderboardEntry } from './types';
 
-// Initialize Firestore through the Firebase app
-const db = getFirestore(app);
 const PLAYERS_COLLECTION = 'players';
 
 /**
