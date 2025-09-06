@@ -885,24 +885,31 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [rewardedAdCooldown, isWatchingAd, addCoreMessage]);
 
   const updatePlayerProfile = useCallback(async (name: string, avatarUrl: string, commanderSex: 'male' | 'female') => {
-    let updatedProfile: PlayerProfile | null = null;
+    let newProfile: PlayerProfile | undefined;
     
     setPlayerProfile(prev => {
-      if (!prev) return null;
-      updatedProfile = { ...prev, name, avatarUrl, commanderSex };
-      return updatedProfile;
+        if (!prev) return null;
+        const updatedProfile = { ...prev, name, avatarUrl, commanderSex };
+        newProfile = updatedProfile;
+        return updatedProfile;
     });
-  
-    if (updatedProfile) {
-      const profileForFirestore = {
-        ...updatedProfile,
-        activeDailyQuests: updatedProfile.activeDailyQuests.map(({ icon, ...rest }) => rest),
-      };
-      await syncPlayerProfileInFirestore(profileForFirestore);
+    
+    // We need to wait for the state to update, but we can't await setPlayerProfile.
+    // Instead, we use the `newProfile` variable which holds the new state.
+    if (newProfile) {
+        try {
+            const profileForFirestore = {
+                ...newProfile,
+                activeDailyQuests: newProfile.activeDailyQuests.map(({ icon, ...rest }) => rest),
+            };
+            await syncPlayerProfileInFirestore(profileForFirestore);
+            addCoreMessage({ type: 'system_alert', content: 'Player profile updated.' });
+            toast({ title: 'Profile Updated', description: 'Your callsign and avatar have been updated.' });
+        } catch (error) {
+            console.error("Failed to sync profile after update:", error);
+            toast({ title: 'Sync Failed', description: 'Could not save profile to server.', variant: 'destructive' });
+        }
     }
-  
-    addCoreMessage({ type: 'system_alert', content: 'Player profile updated.' });
-    toast({ title: 'Profile Updated', description: 'Your callsign and avatar have been updated.' });
   }, [addCoreMessage, toast]);
   
   const getArkUpgradeById = useCallback((upgradeId: string) => {
