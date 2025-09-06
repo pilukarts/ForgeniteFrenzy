@@ -8,7 +8,7 @@ import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
-import { Zap, AlertTriangle, Trophy, Ship, Share2, Send, Users, Globe, Coffee, Gamepad2, Replace } from 'lucide-react';
+import { Zap, AlertTriangle, Trophy, Ship, Share2, Send, Users, Globe, Coffee, Gamepad2, Replace, RefreshCw } from 'lucide-react';
 import PreIntroScreen from '@/components/intro/PreIntroScreen';
 import { useToast } from "@/hooks/use-toast";
 import { AURON_COST_FOR_TAP_REFILL, ALL_AVATARS } from '@/lib/gameData';
@@ -28,7 +28,7 @@ const formatTimeLeft = (milliseconds: number): string => {
 };
 
 export default function HomePage() {
-  const { playerProfile, isLoading, isInitialSetupDone, handleTap, refillTaps, currentSeason, toggleCommander } = useGame();
+  const { playerProfile, isLoading, isInitialSetupDone, handleTap, refillTaps, currentSeason, toggleCommander, resetGame } = useGame();
   const { toast } = useToast();
   const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number | null>(null);
   
@@ -185,6 +185,10 @@ export default function HomePage() {
                               Refill ({AURON_COST_FOR_TAP_REFILL})
                           </Button>
                       )}
+                      <Button onClick={resetGame} variant="destructive" size="sm" className="w-full justify-start">
+                        <RefreshCw className="mr-2 h-4 w-4" />
+                        Reset Game
+                      </Button>
                       <Button asChild variant="outline" size="sm" className="w-full justify-start">
                           <a href="https://allianceforge.online" target="_blank" rel="noopener noreferrer">
                               <Globe className="mr-2 h-4 w-4"/> Website
@@ -194,7 +198,7 @@ export default function HomePage() {
                           <Share2 className="mr-2 h-4 w-4"/> Invite
                       </Button>
                       <Button asChild variant="outline" size="sm" className="w-full justify-start">
-                          <Link href="https://t.me/allianceforge" target="_blank" rel="noopener noreferrer">
+                          <Link href="https://t.me/AllianceForge_esp" target="_blank" rel="noopener noreferrer">
                               <Send className="mr-2 h-4 w-4"/> Comunidad
                           </Link>
                       </Button>

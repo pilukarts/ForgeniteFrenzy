@@ -64,6 +64,8 @@ interface GameContextType {
   // Profile editing
   updatePlayerProfile: (name: string, avatarUrl: string, commanderSex: 'male' | 'female') => void;
   toggleCommander: () => void;
+  // Testing
+  resetGame: () => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -539,25 +541,21 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setPlayerProfile(prev => {
       if (!prev) return null;
       
-      const now = Date.now();
       let updatedProfile = { ...prev };
 
-      // Regenerate taps if needed
-      if (updatedProfile.currentTaps <= 0 && now >= updatedProfile.tapsAvailableAt) {
-          updatedProfile.currentTaps = updatedProfile.maxTaps;
-          updatedProfile.tapsAvailableAt = now;
-          addCoreMessage({ type: 'system_alert', content: "Tap energy recharged." });
-      }
-
-      // Check if out of taps
       if (updatedProfile.currentTaps <= 0) {
-          return updatedProfile; // No more taps, do nothing
+          const now = Date.now();
+          if (now >= updatedProfile.tapsAvailableAt) {
+              updatedProfile.currentTaps = updatedProfile.maxTaps;
+          } else {
+              return prev; // Still in cooldown
+          }
       }
 
       // Consume a tap
       updatedProfile.currentTaps--;
       if (updatedProfile.currentTaps === 0) {
-          updatedProfile.tapsAvailableAt = now + TAP_REGEN_COOLDOWN_MILLISECONDS;
+          updatedProfile.tapsAvailableAt = Date.now() + TAP_REGEN_COOLDOWN_MILLISECONDS;
       }
       
       // Calculate points from this tap (will be added to profile later)
@@ -569,9 +567,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       basePointsForTap *= comboMultiplierValue;
       const finalAmount = Math.round(basePointsForTap);
 
-      // Update quests and commander order progress
-      updatedProfile = updateQuestProgress(updatedProfile, 'taps', 1);
-      
       // Add points and update all derived stats
       addPoints(finalAmount, true);
 
@@ -579,7 +574,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           addCoreMessage({ type: 'system_alert', content: `Critical Tap! Power amplified.` });
       }
       
-      return updatedProfile;
+      // Return the profile state *before* addPoints runs, because addPoints triggers its own state update.
+      // This prevents a double state update which can cause issues.
+      // The `addPoints` function will handle updating the score and derived stats.
+      return updateQuestProgress(updatedProfile, 'taps', 1);
     });
 
     setComboCount(prevCount => prevCount + 1);
@@ -861,6 +859,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const updatePlayerProfile = useCallback((name: string, avatarUrl: string, commanderSex: 'male' | 'female') => {
     setPlayerProfile(prev => {
         if (!prev) return null;
+        // This is a full profile update, so we ensure all related fields are consistent.
         return { ...prev, name, avatarUrl, commanderSex };
     });
     addCoreMessage({ type: 'system_alert', content: 'Player profile updated.' });
@@ -885,6 +884,23 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const getArkUpgradeById = useCallback((upgradeId: string) => {
     return ARK_UPGRADES_DATA.find(u => u.id === upgradeId);
   }, []);
+
+  const resetGame = useCallback(() => {
+    if (window.confirm("Are you sure you want to reset all game data? This cannot be undone.")) {
+      try {
+        localStorage.removeItem('playerProfile');
+        localStorage.removeItem('coreMessages');
+        window.location.reload();
+      } catch (e) {
+        console.error("Failed to clear game data from localStorage", e);
+        toast({
+          title: "Reset Failed",
+          description: "Could not clear game data. Please try clearing your browser cache.",
+          variant: "destructive",
+        });
+      }
+    }
+  }, [toast]);
 
 
   return (
@@ -931,6 +947,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         isWatchingAd,
         updatePlayerProfile,
         toggleCommander,
+        resetGame,
     }}>
       {children}
     </GameContext.Provider>
