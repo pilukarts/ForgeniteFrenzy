@@ -101,16 +101,8 @@ export default function HomePage() {
 
 
   // --- Render logic based on setup/loading state ---
-  if (isLoading) {
-    return <IntroScreen />;
-  }
-
-  if (!isInitialSetupDone) {
-    return <PlayerSetup />;
-  }
-  
   if (!playerProfile) {
-    return <IntroScreen />;
+    return null; // AppLayout will handle the IntroScreen
   }
   
   const handleInviteClick = async () => {

@@ -1,66 +1,30 @@
 
 'use server';
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getFirestore, doc, setDoc, getDocs, collection, query, orderBy, limit } from 'firebase/firestore';
-import type { PlayerProfile, LeaderboardEntry } from './types';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import type { PlayerProfile } from './types';
 import { firebaseConfig } from "./firebaseConfig";
 
 const PLAYERS_COLLECTION = 'players';
 
 const getDb = () => {
+    // This function ensures that we initialize Firebase only once.
     return getFirestore(getApps().length === 0 ? initializeApp(firebaseConfig) : getApp());
 }
 
 /**
  * Creates or updates a player's entire profile in Firestore.
- * This is useful for initial setup or full profile syncs.
+ * This is a server action and should only be called from server components or other server actions.
  * @param playerProfile The full player profile object.
  */
 export const syncPlayerProfileInFirestore = async (playerProfile: PlayerProfile): Promise<void> => {
   try {
     const db = getDb();
     const playerDocRef = doc(db, PLAYERS_COLLECTION, playerProfile.id);
-    await setDoc(playerDocRef, playerProfile, { merge: true }); // Use merge to avoid overwriting with partial data
+    await setDoc(playerDocRef, playerProfile, { merge: true });
   } catch (error) {
     console.error("Error syncing player profile to Firestore: ", error);
-    // Depending on the app's needs, you might want to handle this more gracefully
-    // We re-throw the error so the caller can handle it.
+    // Re-throwing the error so the calling function can handle it, e.g., by showing a toast to the user.
     throw new Error("Failed to sync profile with the server.");
   }
-};
-
-
-/**
- * Fetches the top players from Firestore to build the leaderboard.
- * @returns A promise that resolves to an array of LeaderboardEntry objects.
- */
-export const getLeaderboardFromFirestore = async (): Promise<LeaderboardEntry[]> => {
-    try {
-        const db = getDb();
-        const playersRef = collection(db, PLAYERS_COLLECTION);
-        // Query to get the top 50 players ordered by points
-        const q = query(playersRef, orderBy('points', 'desc'), limit(50));
-        
-        const querySnapshot = await getDocs(q);
-        
-        const leaderboard: LeaderboardEntry[] = [];
-        let rank = 1;
-        querySnapshot.forEach((doc) => {
-            const playerData = doc.data() as PlayerProfile;
-            leaderboard.push({
-                rank: rank++,
-                playerId: doc.id,
-                playerName: playerData.name,
-                score: playerData.points,
-                playerLeague: playerData.league,
-                country: playerData.country,
-                avatarUrl: playerData.avatarUrl,
-            });
-        });
-        
-        return leaderboard;
-    } catch (error) {
-        console.error("Error fetching leaderboard from Firestore: ", error);
-        return []; // Return an empty array in case of error
-    }
 };
