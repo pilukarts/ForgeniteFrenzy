@@ -13,6 +13,9 @@ import PlayerSetup from '@/components/player/PlayerSetup';
 import IntroScreen from '@/components/intro/IntroScreen';
 import { cn } from '@/lib/utils';
 
+// Helper to generate a simple unique ID compatible with all environments
+const generateUniqueId = () => `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+
 const AllianceChatPage: React.FC = () => {
   const { playerProfile, isLoading, isInitialSetupDone } = useGame();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -24,7 +27,7 @@ const AllianceChatPage: React.FC = () => {
     if (playerProfile) {
       setMessages([
         {
-          id: crypto.randomUUID(),
+          id: generateUniqueId(),
           senderId: 'core_system',
           senderName: 'C.O.R.E.',
           content: 'Welcome to the Alliance Strategic Comms, Commander. Coordinate with your allies here.',
@@ -33,7 +36,7 @@ const AllianceChatPage: React.FC = () => {
           senderAvatar: 'https://i.imgur.com/8D3wW8E.png' // AI icon
         },
         {
-          id: crypto.randomUUID(),
+          id: generateUniqueId(),
           senderId: 'commander_alpha',
           senderName: 'Cmdr. Alpha',
           content: 'Glad to be here. Let\'s push for the next objective!',
@@ -60,7 +63,7 @@ const AllianceChatPage: React.FC = () => {
     if (newMessage.trim() === '' || !playerProfile) return;
 
     const messageToSend: ChatMessage = {
-      id: crypto.randomUUID(),
+      id: generateUniqueId(),
       senderId: playerProfile.id,
       senderName: playerProfile.name,
       senderCommanderSex: playerProfile.commanderSex,
