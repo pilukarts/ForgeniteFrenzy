@@ -1,8 +1,9 @@
 
 'use server';
-import { db } from './firebase'; // Import the shared db instance
-import { doc, setDoc, getDocs, collection, query, orderBy, limit } from 'firebase/firestore';
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { getFirestore, doc, setDoc, getDocs, collection, query, orderBy, limit } from 'firebase/firestore';
 import type { PlayerProfile, LeaderboardEntry } from './types';
+import { firebaseConfig } from "./firebaseConfig";
 
 const PLAYERS_COLLECTION = 'players';
 
@@ -13,11 +14,16 @@ const PLAYERS_COLLECTION = 'players';
  */
 export const syncPlayerProfileInFirestore = async (playerProfile: PlayerProfile): Promise<void> => {
   try {
+    const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    // Create a db instance inside the server function to ensure it's isolated.
+    const db = getFirestore(app);
     const playerDocRef = doc(db, PLAYERS_COLLECTION, playerProfile.id);
     await setDoc(playerDocRef, playerProfile, { merge: true }); // Use merge to avoid overwriting with partial data
   } catch (error) {
     console.error("Error syncing player profile to Firestore: ", error);
     // Depending on the app's needs, you might want to handle this more gracefully
+    // We re-throw the error so the caller can handle it.
+    throw new Error("Failed to sync profile with the server.");
   }
 };
 
@@ -28,6 +34,8 @@ export const syncPlayerProfileInFirestore = async (playerProfile: PlayerProfile)
  */
 export const getLeaderboardFromFirestore = async (): Promise<LeaderboardEntry[]> => {
     try {
+        const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+        const db = getFirestore(app);
         const playersRef = collection(db, PLAYERS_COLLECTION);
         // Query to get the top 50 players ordered by points
         const q = query(playersRef, orderBy('points', 'desc'), limit(50));

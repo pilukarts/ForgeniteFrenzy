@@ -727,12 +727,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       referredByCode: referredByCode?.trim() || undefined,
     };
     
-    const profileForFirestore = {
-      ...newProfileData,
-      activeDailyQuests: newProfileData.activeDailyQuests.map(({ icon, ...rest }) => rest), // Remove icon for Firestore
-    };
-    syncPlayerProfileInFirestore(profileForFirestore);
-    
     setPlayerProfile(newProfileData);
     setIsInitialSetupDone(true);
     setCurrentSeason(SEASONS_DATA[0]);
@@ -743,7 +737,16 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     addCoreMessage({ type: 'briefing', content: welcomeMessage});
     setCoreLastInteractionTime(now);
     refreshDailyQuestsIfNeeded();
-  }, [addCoreMessage, refreshDailyQuestsIfNeeded]);
+
+    const profileForFirestore = {
+        ...newProfileData,
+        activeDailyQuests: newProfileData.activeDailyQuests.map(({ icon, ...rest }) => rest), // Remove icon for Firestore
+    };
+    syncPlayerProfileInFirestore(profileForFirestore).catch(error => {
+        console.error("Failed to sync profile on initial setup:", error);
+        toast({ title: 'Sync Failed', description: 'Could not save initial profile to server.', variant: 'destructive' });
+    });
+  }, [addCoreMessage, refreshDailyQuestsIfNeeded, toast]);
 
   const refillTaps = useCallback(() => {
     setPlayerProfile(prev => {
@@ -895,32 +898,26 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, 3000);
   }, [rewardedAdCooldown, isWatchingAd, addCoreMessage]);
 
-  const updatePlayerProfile = useCallback(async (name: string, avatarUrl: string, commanderSex: 'male' | 'female') => {
-    let newProfile: PlayerProfile | undefined;
-    
-    setPlayerProfile(prev => {
-        if (!prev) return null;
-        const updatedProfile = { ...prev, name, avatarUrl, commanderSex };
-        newProfile = updatedProfile;
-        return updatedProfile;
-    });
-    
-    // We need to wait for the state to update, but we can't await setPlayerProfile.
-    // Instead, we use the `newProfile` variable which holds the new state.
-    if (newProfile) {
-        try {
-            const profileForFirestore = {
-                ...newProfile,
-                activeDailyQuests: newProfile.activeDailyQuests.map(({ icon, ...rest }) => rest),
-            };
-            await syncPlayerProfileInFirestore(profileForFirestore);
-            addCoreMessage({ type: 'system_alert', content: 'Player profile updated.' });
-            toast({ title: 'Profile Updated', description: 'Your callsign and avatar have been updated.' });
-        } catch (error) {
-            console.error("Failed to sync profile after update:", error);
-            toast({ title: 'Sync Failed', description: 'Could not save profile to server.', variant: 'destructive' });
-        }
-    }
+  const updatePlayerProfile = useCallback((name: string, avatarUrl: string, commanderSex: 'male' | 'female') => {
+      setPlayerProfile(prev => {
+          if (!prev) return null;
+          const updatedProfile = { ...prev, name, avatarUrl, commanderSex };
+          
+          // Asynchronously sync with Firestore after the state is updated
+          const profileForFirestore = {
+            ...updatedProfile,
+            activeDailyQuests: updatedProfile.activeDailyQuests.map(({ icon, ...rest }) => rest), // Remove icon for Firestore
+          };
+          syncPlayerProfileInFirestore(profileForFirestore).catch(error => {
+              console.error("Failed to sync profile after update:", error);
+              toast({ title: 'Sync Failed', description: 'Could not save profile to server.', variant: 'destructive' });
+          });
+          
+          addCoreMessage({ type: 'system_alert', content: 'Player profile updated.' });
+          toast({ title: 'Profile Updated', description: 'Your callsign and avatar have been updated.' });
+          
+          return updatedProfile;
+      });
   }, [addCoreMessage, toast]);
   
   const getArkUpgradeById = useCallback((upgradeId: string) => {
