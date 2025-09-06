@@ -25,15 +25,23 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     if (playerProfile) {
       setName(playerProfile.name);
-      setSelectedAvatar(playerProfile.avatarUrl || ALL_AVATARS[0].url);
+      setSelectedAvatar(playerProfile.avatarUrl || ALL_AVATARS.find(a => a.url.includes('Wq9PqxG') || a.url.includes('BOKoTIM'))!.url);
     }
   }, [playerProfile]);
 
   const handleSave = () => {
     if (playerProfile && name.trim()) {
       // Find the selected avatar object to determine the sex
-      const avatarData = ALL_AVATARS.find(a => a.url === selectedAvatar) || ALL_AVATARS[0];
-      updatePlayerProfile(name.trim(), selectedAvatar, avatarData.sex);
+      const avatarData = ALL_AVATARS.find(a => a.url === selectedAvatar);
+      if (avatarData) {
+        updatePlayerProfile(name.trim(), selectedAvatar, avatarData.sex);
+      } else {
+         toast({
+            title: "Avatar Error",
+            description: "Could not find selected avatar data. Please try again.",
+            variant: "destructive",
+        });
+      }
     } else {
         toast({
             title: "Invalid Name",
@@ -59,6 +67,9 @@ const ProfilePage: React.FC = () => {
   }
 
   if (!playerProfile) return <IntroScreen />;
+
+  const displayAvatars = ALL_AVATARS.filter(a => a.url.includes('Wq9PqxG') || a.url.includes('BOKoTIM'));
+
 
   return (
     <AppLayout>
@@ -98,7 +109,7 @@ const ProfilePage: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-4 gap-2 sm:gap-4">
-                  {ALL_AVATARS.map((avatar) => (
+                  {displayAvatars.map((avatar) => (
                     <button
                         key={avatar.url}
                         onClick={() => setSelectedAvatar(avatar.url)}
