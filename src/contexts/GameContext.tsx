@@ -537,7 +537,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const handleTap = useCallback(() => {
     let isCritical = false;
-    let newPiece = '';
 
     setPlayerProfile(prev => {
         if (!prev) return null;
@@ -575,73 +574,60 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         
         const finalAmount = Math.round(basePointsForTap);
         
-        let profileAfterPoints = { ...updatedProfile, points: updatedProfile.points + finalAmount };
-        profileAfterPoints.seasonProgress[currentSeason.id] = (profileAfterPoints.seasonProgress[currentSeason.id] || 0) + finalAmount;
+        // This is a consolidated update.
+        // We'll update points, xp, levels, league, and quests all at once.
+        updatedProfile.points += finalAmount;
+        updatedProfile.seasonProgress[currentSeason.id] = (updatedProfile.seasonProgress[currentSeason.id] || 0) + finalAmount;
 
-        let newXp = profileAfterPoints.xp + finalAmount;
+        let newXp = updatedProfile.xp + finalAmount;
         let levelChanged = false;
-        while (newXp >= profileAfterPoints.xpToNextLevel) {
-            newXp -= profileAfterPoints.xpToNextLevel;
-            profileAfterPoints.level++;
+        while (newXp >= updatedProfile.xpToNextLevel) {
+            newXp -= updatedProfile.xpToNextLevel;
+            updatedProfile.level++;
             levelChanged = true;
-            profileAfterPoints.xpToNextLevel = Math.floor(profileAfterPoints.xpToNextLevel * XP_LEVEL_MULTIPLIER);
-            profileAfterPoints.rankTitle = getRankTitle(profileAfterPoints.level);
+            updatedProfile.xpToNextLevel = Math.floor(updatedProfile.xpToNextLevel * XP_LEVEL_MULTIPLIER);
+            updatedProfile.rankTitle = getRankTitle(updatedProfile.level);
         }
-        profileAfterPoints.xp = newXp;
+        updatedProfile.xp = newXp;
         if (levelChanged) {
-            profileAfterPoints.currentTierColor = getTierColorByLevel(profileAfterPoints.level);
-            toast({ title: 'Level Up!', description: `Congrats Commander! You passed to level ${profileAfterPoints.level}.` });
+            updatedProfile.currentTierColor = getTierColorByLevel(updatedProfile.level);
+            toast({ title: 'Level Up!', description: `Congrats Commander! You passed to level ${updatedProfile.level}.` });
         }
 
-        const previousLeague = profileAfterPoints.league;
-        const newLeague = getLeagueByPoints(profileAfterPoints.points);
+        const previousLeague = updatedProfile.league;
+        const newLeague = getLeagueByPoints(updatedProfile.points);
         if (newLeague !== previousLeague) {
-            profileAfterPoints.league = newLeague;
+            updatedProfile.league = newLeague;
             addCoreMessage({ type: 'system_alert', content: `Promotion! You've reached the ${newLeague} league.` }, true);
         }
 
-        let newBattlePassXp = profileAfterPoints.battlePassXp + finalAmount;
+        let newBattlePassXp = updatedProfile.battlePassXp + finalAmount;
         let bpLevelledUp = false;
-        while(newBattlePassXp >= profileAfterPoints.xpToNextBattlePassLevel) {
-            newBattlePassXp -= profileAfterPoints.xpToNextBattlePassLevel;
-            profileAfterPoints.battlePassLevel++;
+        while(newBattlePassXp >= updatedProfile.xpToNextBattlePassLevel) {
+            newBattlePassXp -= updatedProfile.xpToNextBattlePassLevel;
+            updatedProfile.battlePassLevel++;
             bpLevelledUp = true;
         }
-        profileAfterPoints.battlePassXp = newBattlePassXp;
+        updatedProfile.battlePassXp = newBattlePassXp;
         if (bpLevelledUp) {
-            addCoreMessage({ type: 'system_alert', content: `Battle Pass Level Up! Reached Level ${profileAfterPoints.battlePassLevel}.` }, true);
+            addCoreMessage({ type: 'system_alert', content: `Battle Pass Level Up! Reached Level ${updatedProfile.battlePassLevel}.` }, true);
         }
 
-        profileAfterPoints.totalTapsForUniform = (profileAfterPoints.totalTapsForUniform || 0) + 1;
-        let newEquippedUniformPieces = [...(profileAfterPoints.equippedUniformPieces || [])];
-        const currentlyEquippedCount = newEquippedUniformPieces.length;
-        const targetEquippedCount = Math.floor(profileAfterPoints.totalTapsForUniform / TAPS_PER_UNIFORM_PIECE);
-
-        if (targetEquippedCount > currentlyEquippedCount && currentlyEquippedCount < UNIFORM_PIECES_ORDER.length) {
-            const piece = UNIFORM_PIECES_ORDER[currentlyEquippedCount];
-            newEquippedUniformPieces.push(piece);
-            newPiece = piece;
-        }
-        profileAfterPoints.equippedUniformPieces = newEquippedUniformPieces;
-        
-        let profileAfterTapQuests = updateQuestProgress(profileAfterPoints, 'taps', 1);
-        profileAfterTapQuests = updateQuestProgress(profileAfterTapQuests, 'points_earned', finalAmount);
-
+        let profileAfterTapQuests = updateQuestProgress(updatedProfile, 'taps', 1);
+        let finalProfile = updateQuestProgress(profileAfterTapQuests, 'points_earned', finalAmount);
 
         if (isCritical) {
             addCoreMessage({ type: 'system_alert', content: `Critical Tap! Power amplified.` });
         }
-        if(newPiece) {
-            addCoreMessage({ type: 'system_alert', content: `New gear acquired: ${newPiece}.` }, true);
-        }
-
-        return profileAfterTapQuests;
+        
+        return finalProfile;
     });
 
     setComboCount(prevCount => prevCount + 1);
     setTimeout(() => setComboCount(0), 3000);
 
   }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, addCoreMessage, updateQuestProgress, toast, currentSeason.id, setPlayerProfile, setComboCount]);
+
 
   const claimQuestReward = useCallback((questId: string) => {
     setPlayerProfile(prev => {

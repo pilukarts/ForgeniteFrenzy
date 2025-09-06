@@ -24,7 +24,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
     );
   }
   
-  const { commanderSex, currentTierColor, equippedUniformPieces } = playerProfile;
+  const { commanderSex, currentTierColor } = playerProfile;
 
   // --- Simplified and Corrected Logic ---
   const getCommanderImage = () => {
