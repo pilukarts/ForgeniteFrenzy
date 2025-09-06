@@ -198,7 +198,18 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setCoreLastInteractionTime(now);
         setIsInitialSetupDone(true);
     } else {
-        // This is a new player, they need to go through setup
+        // This is a new player. Create a placeholder profile so the app can render the setup screen.
+        const tempProfile: PlayerProfile = {
+            ...defaultPlayerProfile,
+            id: 'temp-new-player',
+            name: '',
+            commanderSex: 'male',
+            avatarUrl: ALL_AVATARS[0].url,
+            country: '',
+            currentSeasonId: SEASONS_DATA[0].id,
+            lastLoginTimestamp: Date.now(),
+        };
+        setPlayerProfile(tempProfile);
         setIsInitialSetupDone(false);
     }
     setIsLoading(false);
