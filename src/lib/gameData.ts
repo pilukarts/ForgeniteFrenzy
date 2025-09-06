@@ -359,6 +359,11 @@ export const UNIFORM_PIECES_ORDER = ["Tactical Gloves", "Combat Boots", "Utility
 export const ALL_AVATARS = [
     { url: "https://i.imgur.com/BOKoTIM.png", sex: 'male', hint: 'male commander portrait' },
     { url: "https://i.imgur.com/Wq9PqxG.png", sex: 'female', hint: 'female commander portrait' },
+    { url: "https://i.imgur.com/gB3i4OQ.png", sex: 'male', hint: 'male commander portrait realistic' },
+    { url: "https://i.imgur.com/J3tG1e4.png", sex: 'female', hint: 'female commander portrait realistic' },
 ];
 
 
+
+
+    

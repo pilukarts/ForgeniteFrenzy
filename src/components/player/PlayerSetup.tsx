@@ -1,4 +1,5 @@
 
+
 "use client";
 import React, { useState } from 'react';
 import { useGame } from '@/contexts/GameContext';
@@ -12,7 +13,7 @@ import { ScrollArea } from '../ui/scroll-area';
 import { countries } from '@/lib/countries';
 import { Check, Search, ChevronsUpDown } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import IntroScreen from '../intro/IntroScreen';
 import { ALL_AVATARS } from '@/lib/gameData';
 
@@ -113,7 +114,7 @@ const PlayerSetup: React.FC = () => {
                           onValueChange={setSearchTerm}
                         />
                         <CommandEmpty>No nation found.</CommandEmpty>
-                        <CommandGroup>
+                        <CommandList>
                             <ScrollArea className="h-64">
                               {filteredCountries.map((c) => (
                                 <CommandItem
@@ -134,7 +135,7 @@ const PlayerSetup: React.FC = () => {
                                 </CommandItem>
                               ))}
                             </ScrollArea>
-                        </CommandGroup>
+                        </CommandList>
                       </Command>
                     </PopoverContent>
                   </Popover>
@@ -172,3 +173,6 @@ const PlayerSetup: React.FC = () => {
 };
 
 export default PlayerSetup;
+
+
+    
