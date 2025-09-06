@@ -1,4 +1,5 @@
 
+
 "use client";
 import React, { ReactNode, useState, useRef, useEffect } from 'react';
 import BottomNavBar from '../navigation/BottomNavBar';
@@ -102,7 +103,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
   const seasonProgress = playerProfile?.seasonProgress?.[currentSeason.id] ?? 0;
   
-  if (isLoading || !isInitialSetupDone || !playerProfile) {
+  // This is the new, centralized loading logic.
+  if (isLoading || !playerProfile) {
     return <IntroScreen />;
   }
 

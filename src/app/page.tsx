@@ -9,7 +9,6 @@ import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
 import { Zap, AlertTriangle, Trophy, Ship, Share2, Send, Users, Globe, Coffee, Gamepad2, Replace } from 'lucide-react';
-import IntroScreen from '@/components/intro/IntroScreen';
 import PreIntroScreen from '@/components/intro/PreIntroScreen';
 import { useToast } from "@/hooks/use-toast";
 import { AURON_COST_FOR_TAP_REFILL, ALL_AVATARS } from '@/lib/gameData';
@@ -64,7 +63,7 @@ const CommanderSwitchDialog: React.FC<{
 
 
 export default function HomePage() {
-  const { playerProfile, isLoading, isInitialSetupDone, handleTap, refillTaps, currentSeason, updatePlayerProfile } = useGame();
+  const { playerProfile, isInitialSetupDone, handleTap, refillTaps, currentSeason, updatePlayerProfile } = useGame();
   const { toast } = useToast();
   type NewUserIntroPhase = 'pre' | 'setup';
   const [newUserIntroPhase, setNewUserIntroPhase] = useState<NewUserIntroPhase>('pre');
@@ -103,10 +102,6 @@ export default function HomePage() {
 
 
   // --- Render logic based on setup/loading state ---
-  if (isLoading) {
-    return <IntroScreen />;
-  }
-  
   if (!isInitialSetupDone) {
     if (newUserIntroPhase === 'pre') {
       return <PreIntroScreen onCompletion={() => setNewUserIntroPhase('setup')} />;
@@ -114,11 +109,11 @@ export default function HomePage() {
     if (newUserIntroPhase === 'setup') {
       return <PlayerSetup />;
     }
-    return <IntroScreen />;
   }
 
   if (!playerProfile) {
-    return <IntroScreen />; 
+    // This state should be handled by AppLayout now, but as a fallback.
+    return null; 
   }
   
   const handleInviteClick = async () => {
