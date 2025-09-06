@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -17,7 +16,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
   const [isTapped, setIsTapped] = useState(false);
   
   if (!playerProfile) {
-    // Render a skeleton or nothing while the profile is loading to prevent server errors
+    // Render a skeleton while the profile is loading to prevent server errors
     return (
         <div className="relative w-64 h-80 sm:w-72 sm:h-96 flex items-center justify-center">
             <Skeleton className="w-full h-full" />
@@ -27,21 +26,15 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
   
   const { commanderSex, currentTierColor, equippedUniformPieces } = playerProfile;
 
+  // --- Simplified and Corrected Logic ---
   const getCommanderImage = () => {
-    const equippedCount = equippedUniformPieces?.length || 0;
     let imageInfo = { src: "", hint: "" };
-
-    // This logic directly checks the 'commanderSex' from the profile.
+    
+    // This logic directly and simply checks the 'commanderSex' from the profile.
     if (commanderSex === 'male') {
-        imageInfo = { src: "https://i.imgur.com/iuRJVBZ.png", hint: "fullbody male commander" }; // Default
-        if (equippedCount >= 1) imageInfo = { src: "https://i.imgur.com/83pL36g.png", hint: "male commander gloves boots" };
-        if (equippedCount >= 3) imageInfo = { src: "https://i.imgur.com/tQ4zJ2a.png", hint: "male commander armor" };
-        if (equippedCount >= 5) imageInfo = { src: "https://i.imgur.com/iR322b2.png", hint: "male commander full armor helmet" };
-    } else { // female
-        imageInfo = { src: "https://i.imgur.com/BQHeVWp.png", hint: "fullbody female commander" }; // Default
-        if (equippedCount >= 1) imageInfo = { src: "https://i.imgur.com/7L48yPE.png", hint: "female commander gloves boots" };
-        if (equippedCount >= 3) imageInfo = { src: "https://i.imgur.com/26Xn9A8.png", hint: "female commander armor" };
-        if (equippedCount >= 5) imageInfo = { src: "https://i.imgur.com/K3tB9gH.png", hint: "female commander full armor helmet" };
+        imageInfo = { src: "https://i.imgur.com/iuRJVBZ.png", hint: "fullbody male commander" };
+    } else { // 'female'
+        imageInfo = { src: "https://i.imgur.com/BQHeVWp.png", hint: "fullbody female commander" };
     }
     return imageInfo;
   };
