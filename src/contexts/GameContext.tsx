@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, CommanderOrder } from '@/lib/types';
@@ -62,6 +63,7 @@ interface GameContextType {
   isWatchingAd: boolean;
   // Profile editing
   updatePlayerProfile: (name: string, avatarUrl: string, commanderSex: 'male' | 'female') => void;
+  toggleCommander: () => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -911,6 +913,18 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     toast({ title: 'Profile Updated', description: 'Your callsign and avatar have been updated.' });
   }, [addCoreMessage, toast]);
   
+  const toggleCommander = useCallback(() => {
+    setPlayerProfile(prev => {
+        if (!prev) return null;
+        const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
+        const newAvatar = ALL_AVATARS.find(avatar => avatar.sex === newSex);
+        if (!newAvatar) return prev; // Should not happen
+
+        toast({ title: 'Commander Switched', description: `Now playing as the ${newSex} commander.` });
+        return { ...prev, commanderSex: newSex, avatarUrl: newAvatar.url };
+    });
+  }, [toast]);
+  
   const getArkUpgradeById = useCallback((upgradeId: string) => {
     return ARK_UPGRADES_DATA.find(u => u.id === upgradeId);
   }, []);
@@ -959,6 +973,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         rewardedAdCooldown,
         isWatchingAd,
         updatePlayerProfile,
+        toggleCommander,
     }}>
       {children}
     </GameContext.Provider>

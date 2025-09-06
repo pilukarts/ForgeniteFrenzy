@@ -27,47 +27,10 @@ const formatTimeLeft = (milliseconds: number): string => {
   return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 };
 
-const CommanderSwitchDialog: React.FC<{
-  isOpen: boolean;
-  onClose: () => void;
-  currentAvatarUrl: string | undefined;
-  onSelect: (avatar: { url: string, sex: 'male' | 'female', hint: string }) => void;
-}> = ({ isOpen, onClose, currentAvatarUrl, onSelect }) => {
-  return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-headline text-primary">Switch Commander</DialogTitle>
-          <DialogDescription>Select a new commander avatar.</DialogDescription>
-        </DialogHeader>
-        <div className="grid grid-cols-4 gap-2 sm:gap-4 py-4">
-          {ALL_AVATARS.map((avatar) => (
-            <button
-              key={avatar.url}
-              onClick={() => {
-                onSelect(avatar);
-                onClose();
-              }}
-              className={cn(
-                "rounded-lg overflow-hidden border-2 transition-all",
-                currentAvatarUrl === avatar.url ? 'border-primary ring-2 ring-primary/50' : 'border-transparent hover:border-primary/50'
-              )}
-            >
-              <Image src={avatar.url} alt="Avatar" width={100} height={100} className="object-cover w-full h-auto aspect-square" data-ai-hint={avatar.hint} />
-            </button>
-          ))}
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-
 export default function HomePage() {
-  const { playerProfile, isLoading, isInitialSetupDone, handleTap, refillTaps, currentSeason, updatePlayerProfile } = useGame();
+  const { playerProfile, isLoading, isInitialSetupDone, handleTap, refillTaps, currentSeason, toggleCommander } = useGame();
   const { toast } = useToast();
   const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number | null>(null);
-  const [isCommanderSwitchOpen, setCommanderSwitchOpen] = useState(false);
   
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   
@@ -198,7 +161,7 @@ export default function HomePage() {
                       transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
                       className="flex flex-col gap-2 w-auto max-w-[150px] sm:max-w-[180px] items-start self-center"
                   >
-                      <Button onClick={() => setCommanderSwitchOpen(true)} variant="outline" size="sm" className="w-full justify-start">
+                      <Button onClick={toggleCommander} variant="outline" size="sm" className="w-full justify-start">
                         <Replace className="mr-2 h-4 w-4" />
                         Switch Commander
                       </Button>
@@ -251,7 +214,7 @@ export default function HomePage() {
                       </Button>
                        <Button asChild variant="outline" size="sm" className="w-full justify-start">
                           <Link href="https://discord.gg/xnWDwGBC" target="_blank" rel="noopener noreferrer">
-                              <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mr-2 h-4 w-4 fill-current"><title>Discord</title><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.446.825-.667 1.284-1.39-1.29-3.91-1.516-3.91-1.516l-.044-.02-3.91 1.516c-.22-.46-.456-.909-.667-1.284a.074.074 0 0 0-.078-.037A19.791 19.791 0 0 0 3.682 4.37a.069.069 0 0 0-.032.023C.543 9.046-.32 13.58.1 18.058a.08.08 0 0 0 .041.058c1.837.775 3.652 1.165 5.447 1.165a12.602 12.602 0 0 0 2.378-.221.074.074 0 0 0 .063-.056c.208-1.01.43-2.06.435-2.22a.074.074 0 0 0-.045-.083c-.933-.424-1.782-1.026-2.52-1.844a.074.074 0 0 1 .018-.11.632.632 0 0 1 .036-.027 10.872 10.872 0 0 1 2.982-1.108.074.074 0 0 1 .084.026c.462.632 1.053 1.253 1.725 1.799a.074.074 0 0 0 .084.026c1.13-.39 2.1-1.107 2.982-1.107a.632.632 0 0 1 .036.027.074.074 0 0 1 .018.11c-.738.818-1.587 1.42-2.52 1.844a.074.074 0 0 0-.045.083c.005.16.227 1.21.435 2.22a.074.074 0 0 0 .063.056 12.602 12.602 0 0 0 2.378.221c1.795 0 3.61-.39 5.447-1.165a.08.08 0 0 0 .041-.058c.418-4.478-1.242-9.012-4.015-13.664a.069.069 0 0 0-.032-.023zM8.02 15.33c-.94 0-1.7-.76-1.7-1.7s.76-1.7 1.7-1.7 1.7.76 1.7 1.7-.76 1.7-1.7 1.7zm7.96 0c-.94 0-1.7-.76-1.7-1.7s.76-1.7 1.7-1.7 1.7.76 1.7 1.7-.76 1.7-1.7 1.7z" /></svg>
+                              <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="mr-2 h-4 w-4 fill-current"><title>Discord</title><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.446.825-.667 1.284-1.39-1.29-3.91-1.516-3.91-1.516l-.044-.02-3.91 1.516c-.22-.46-.456-.909-.667-1.284a.074.074 0 0 0-.078-.037A19.791 19.791 0 0 0 3.682 4.37a.069.069 0 0 0-.032.023C.543 9.046-.32 13.58.1 18.058a.08.08 0 0 0 .041.058c1.837.775 3.652 1.165 5.447 1.165a12.602 12.602 0 0 0 2.378-.221.074.074 0 0 0 .063-.056c.208-1.01.43-2.06.435-2.22a.074.074 0 0 0-.045-.083c-.933-.424-1.782-1.026-2.52-1.844a.074.074 0 0 1 .018-.11c0-.009.012-.018.036-.027a10.872 10.872 0 0 1 2.982-1.108.074.074 0 0 1 .084.026c.462.632 1.053 1.253 1.725 1.799a.074.074 0 0 0 .084.026c1.13-.39 2.1-1.107 2.982-1.107.012 0 .024.009.036.027a.074.074 0 0 1 .018.11c-.738.818-1.587 1.42-2.52 1.844a.074.074 0 0 0-.045.083c.005.16.227 1.21.435 2.22a.074.074 0 0 0 .063.056c.792.264 1.582.424 2.378.221 1.795 0 3.61-.39 5.447-1.165a.08.08 0 0 0 .041-.058c.418-4.478-1.242-9.012-4.015-13.664a.069.069 0 0 0-.032-.023zM8.02 15.33c-.94 0-1.7-.76-1.7-1.7s.76-1.7 1.7-1.7 1.7.76 1.7 1.7-.76 1.7-1.7 1.7zm7.96 0c-.94 0-1.7-.76-1.7-1.7s.76-1.7 1.7-1.7 1.7.76 1.7 1.7-.76 1.7-1.7 1.7z" /></svg>
                                   Discord
                           </Link>
                       </Button>
@@ -354,12 +317,6 @@ export default function HomePage() {
           `}</style>
         </div>
       </AppLayout>
-      <CommanderSwitchDialog
-        isOpen={isCommanderSwitchOpen}
-        onClose={() => setCommanderSwitchOpen(false)}
-        currentAvatarUrl={playerProfile.avatarUrl}
-        onSelect={(avatar) => updatePlayerProfile(playerProfile.name, avatar.url, avatar.sex)}
-      />
     </>
   );
 }
