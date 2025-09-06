@@ -7,6 +7,10 @@ import { firebaseConfig } from "./firebaseConfig";
 
 const PLAYERS_COLLECTION = 'players';
 
+const getDb = () => {
+    return getFirestore(getApps().length === 0 ? initializeApp(firebaseConfig) : getApp());
+}
+
 /**
  * Creates or updates a player's entire profile in Firestore.
  * This is useful for initial setup or full profile syncs.
@@ -14,9 +18,7 @@ const PLAYERS_COLLECTION = 'players';
  */
 export const syncPlayerProfileInFirestore = async (playerProfile: PlayerProfile): Promise<void> => {
   try {
-    const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-    // Create a db instance inside the server function to ensure it's isolated.
-    const db = getFirestore(app);
+    const db = getDb();
     const playerDocRef = doc(db, PLAYERS_COLLECTION, playerProfile.id);
     await setDoc(playerDocRef, playerProfile, { merge: true }); // Use merge to avoid overwriting with partial data
   } catch (error) {
@@ -34,8 +36,7 @@ export const syncPlayerProfileInFirestore = async (playerProfile: PlayerProfile)
  */
 export const getLeaderboardFromFirestore = async (): Promise<LeaderboardEntry[]> => {
     try {
-        const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-        const db = getFirestore(app);
+        const db = getDb();
         const playersRef = collection(db, PLAYERS_COLLECTION);
         // Query to get the top 50 players ordered by points
         const q = query(playersRef, orderBy('points', 'desc'), limit(50));
