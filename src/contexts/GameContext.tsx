@@ -9,7 +9,6 @@ import { getCoreBriefing } from '@/ai/flows/core-briefings';
 import { getCoreLoreSnippet } from '@/ai/flows/core-lore-snippets';
 import { getCoreProgressUpdate } from '@/ai/flows/core-progress-updates';
 import { syncPlayerProfileInFirestore } from '@/lib/firestore';
-import { app } from '@/lib/firebase'; // Import the initialized app
 
 const NUMBER_OF_DAILY_QUESTS = 3;
 const TAP_REGEN_COOLDOWN_MILLISECONDS = TAP_REGEN_COOLDOWN_MINUTES * 60 * 1000;
@@ -885,21 +884,25 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, 3000);
   }, [rewardedAdCooldown, isWatchingAd, addCoreMessage]);
 
-  const updatePlayerProfile = useCallback((name: string, avatarUrl: string, commanderSex: 'male' | 'female') => {
+  const updatePlayerProfile = useCallback(async (name: string, avatarUrl: string, commanderSex: 'male' | 'female') => {
+    let updatedProfile: PlayerProfile | null = null;
+    
     setPlayerProfile(prev => {
       if (!prev) return null;
-      const updatedProfile = { ...prev, name, avatarUrl, commanderSex };
-      
-      const profileForFirestore = {
-        ...updatedProfile,
-        activeDailyQuests: updatedProfile.activeDailyQuests.map(({ icon, ...rest }) => rest), // Remove icon for Firestore
-      };
-      syncPlayerProfileInFirestore(profileForFirestore);
-      
+      updatedProfile = { ...prev, name, avatarUrl, commanderSex };
       return updatedProfile;
     });
-    addCoreMessage({type: 'system_alert', content: 'Player profile updated.'});
-    toast({title: 'Profile Updated', description: 'Your callsign and avatar have been updated.'});
+  
+    if (updatedProfile) {
+      const profileForFirestore = {
+        ...updatedProfile,
+        activeDailyQuests: updatedProfile.activeDailyQuests.map(({ icon, ...rest }) => rest),
+      };
+      await syncPlayerProfileInFirestore(profileForFirestore);
+    }
+  
+    addCoreMessage({ type: 'system_alert', content: 'Player profile updated.' });
+    toast({ title: 'Profile Updated', description: 'Your callsign and avatar have been updated.' });
   }, [addCoreMessage, toast]);
   
   const getArkUpgradeById = useCallback((upgradeId: string) => {
