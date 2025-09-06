@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check, UserCircle, Users, Upload } from 'lucide-react';
+import { Check, UserCircle, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { ALL_AVATARS } from '@/lib/gameData';
@@ -30,10 +30,16 @@ const ProfilePage: React.FC = () => {
   }, [playerProfile]);
 
   const handleSave = () => {
-    if (playerProfile) {
+    if (playerProfile && name.trim()) {
       // Find the selected avatar object to determine the sex
       const avatarData = ALL_AVATARS.find(a => a.url === selectedAvatar) || ALL_AVATARS[0];
-      updatePlayerProfile(name, selectedAvatar, avatarData.sex);
+      updatePlayerProfile(name.trim(), selectedAvatar, avatarData.sex);
+    } else {
+        toast({
+            title: "Invalid Name",
+            description: "Please enter a valid callsign.",
+            variant: "destructive",
+        });
     }
   };
 
