@@ -68,7 +68,8 @@ interface GameContextType {
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
-const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' | 'avatarUrl' | 'country' | 'currentSeasonId'> = {
+const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' | 'avatarUrl' | 'currentSeasonId'> = {
+  country: '',
   points: 0,
   auron: 0,
   level: 1,
