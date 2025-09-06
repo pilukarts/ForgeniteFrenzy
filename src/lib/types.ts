@@ -44,7 +44,7 @@ export interface PlayerProfile {
   id: string;
   name: string;
   commanderSex: 'male' | 'female';
-  country: string;
+  country?: string;
   avatarUrl?: string; // URL for the selected profile picture
   points: number;
   auron: number;
@@ -130,7 +130,7 @@ export interface LeaderboardEntry {
   rank: number;
   playerId: string;
   playerName:string;
-  country: string;
+  country?: string;
   score: number;
   playerLeague: LeagueName; // Added for league display
   avatarUrl?: string;
