@@ -194,7 +194,7 @@ export default function HomePage() {
                           <Share2 className="mr-2 h-4 w-4"/> Invite
                       </Button>
                       <Button asChild variant="outline" size="sm" className="w-full justify-start">
-                          <Link href="https://t.me/allianceforge" target="_blank" rel="noopener noreferrer">
+                          <Link href="https://t.me/AllianceForge_esp" target="_blank" rel="noopener noreferrer">
                               <Send className="mr-2 h-4 w-4"/> Comunidad
                           </Link>
                       </Button>
