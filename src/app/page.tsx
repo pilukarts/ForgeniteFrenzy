@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import IntroScreen from '@/components/intro/IntroScreen';
 
 
 const formatTimeLeft = (milliseconds: number): string => {
@@ -63,17 +64,15 @@ const CommanderSwitchDialog: React.FC<{
 
 
 export default function HomePage() {
-  const { playerProfile, isInitialSetupDone, handleTap, refillTaps, currentSeason, updatePlayerProfile } = useGame();
+  const { playerProfile, isLoading, isInitialSetupDone, handleTap, refillTaps, currentSeason, updatePlayerProfile } = useGame();
   const { toast } = useToast();
-  type NewUserIntroPhase = 'pre' | 'setup';
-  const [newUserIntroPhase, setNewUserIntroPhase] = useState<NewUserIntroPhase>('pre');
   const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number | null>(null);
   const [isCommanderSwitchOpen, setCommanderSwitchOpen] = useState(false);
   
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   
   useEffect(() => {
-    if (!isInitialSetupDone || !playerProfile) return;
+    if (!playerProfile) return;
   
     const calculateInitialTime = () => {
         const remaining = (playerProfile.tapsAvailableAt || 0) - Date.now();
@@ -98,22 +97,20 @@ export default function HomePage() {
     }, 1000);
 
     return () => clearInterval(timerId);
-  }, [playerProfile, isInitialSetupDone]);
+  }, [playerProfile]);
 
 
   // --- Render logic based on setup/loading state ---
-  if (!isInitialSetupDone) {
-    if (newUserIntroPhase === 'pre') {
-      return <PreIntroScreen onCompletion={() => setNewUserIntroPhase('setup')} />;
-    }
-    if (newUserIntroPhase === 'setup') {
-      return <PlayerSetup />;
-    }
+  if (isLoading) {
+    return <IntroScreen />;
   }
 
+  if (!isInitialSetupDone) {
+    return <PlayerSetup />;
+  }
+  
   if (!playerProfile) {
-    // This state should be handled by AppLayout now, but as a fallback.
-    return null; 
+    return <IntroScreen />;
   }
   
   const handleInviteClick = async () => {

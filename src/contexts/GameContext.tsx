@@ -141,6 +141,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // It's responsible for loading all data from localStorage and setting the initial game state.
   useEffect(() => {
     let savedProfile: string | null = null;
+    let loadedProfile: PlayerProfile | null = null;
+    
     try {
         savedProfile = localStorage.getItem('playerProfile');
     } catch (e) {
@@ -187,8 +189,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             currentTierColor: getTierColorByLevel(parsedProfile.level),
         };
         
-        setPlayerProfile(hydratedProfile);
-        setActiveCommanderOrder(hydratedProfile.activeCommanderOrder);
+        loadedProfile = hydratedProfile;
         
         const season = SEASONS_DATA.find(s => s.id === hydratedProfile.currentSeasonId) || SEASONS_DATA[0];
         setCurrentSeason(season);
@@ -209,9 +210,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             currentSeasonId: SEASONS_DATA[0].id,
             lastLoginTimestamp: Date.now(),
         };
-        setPlayerProfile(tempProfile);
+        loadedProfile = tempProfile;
         setIsInitialSetupDone(false);
     }
+
+    setPlayerProfile(loadedProfile);
+    setActiveCommanderOrder(loadedProfile.activeCommanderOrder);
     setIsLoading(false);
   }, []);
 
@@ -899,25 +903,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [rewardedAdCooldown, isWatchingAd, addCoreMessage]);
 
   const updatePlayerProfile = useCallback((name: string, avatarUrl: string, commanderSex: 'male' | 'female') => {
-      setPlayerProfile(prev => {
-          if (!prev) return null;
-          const updatedProfile = { ...prev, name, avatarUrl, commanderSex };
-          
-          // Asynchronously sync with Firestore after the state is updated
-          const profileForFirestore = {
-            ...updatedProfile,
-            activeDailyQuests: updatedProfile.activeDailyQuests.map(({ icon, ...rest }) => rest), // Remove icon for Firestore
-          };
-          syncPlayerProfileInFirestore(profileForFirestore).catch(error => {
-              console.error("Failed to sync profile after update:", error);
-              toast({ title: 'Sync Failed', description: 'Could not save profile to server.', variant: 'destructive' });
-          });
-          
-          addCoreMessage({ type: 'system_alert', content: 'Player profile updated.' });
-          toast({ title: 'Profile Updated', description: 'Your callsign and avatar have been updated.' });
-          
-          return updatedProfile;
-      });
+    setPlayerProfile(prev => {
+        if (!prev) return null;
+        return { ...prev, name, avatarUrl, commanderSex };
+    });
+    addCoreMessage({ type: 'system_alert', content: 'Player profile updated.' });
+    toast({ title: 'Profile Updated', description: 'Your callsign and avatar have been updated.' });
   }, [addCoreMessage, toast]);
   
   const getArkUpgradeById = useCallback((upgradeId: string) => {
