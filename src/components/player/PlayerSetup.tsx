@@ -24,6 +24,7 @@ const PlayerSetup: React.FC = () => {
   const [country, setCountry] = useState('');
   const [referredBy, setReferredBy] = useState('');
   const [isCountryPopoverOpen, setCountryPopoverOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const isFormValid = name.trim() !== '' && country !== '' && selectedAvatar.url !== '';
 
@@ -39,6 +40,9 @@ const PlayerSetup: React.FC = () => {
   }
   
   const selectedCountryName = countries.find(c => c.code === country)?.name || 'Select your home nation...';
+  const filteredCountries = searchTerm === ""
+    ? countries
+    : countries.filter(c => c.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4">
@@ -105,10 +109,8 @@ const PlayerSetup: React.FC = () => {
                       <Command>
                         <CommandInput placeholder="Search nation..." />
                         <CommandEmpty>No nation found.</CommandEmpty>
-                         {/* Render the list only when the popover is open */}
-                        {isCountryPopoverOpen && (
-                          <ScrollArea className="h-64">
-                            <CommandGroup>
+                        <CommandGroup>
+                            <ScrollArea className="h-64">
                               {countries.map((c) => (
                                 <CommandItem
                                   key={c.code}
@@ -127,9 +129,8 @@ const PlayerSetup: React.FC = () => {
                                   {c.name}
                                 </CommandItem>
                               ))}
-                            </CommandGroup>
-                          </ScrollArea>
-                        )}
+                            </ScrollArea>
+                        </CommandGroup>
                       </Command>
                     </PopoverContent>
                   </Popover>
