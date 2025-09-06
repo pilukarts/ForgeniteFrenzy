@@ -536,97 +536,64 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const comboMultiplierValue = 1 + (comboBonusUpgradeLevel * 0.02) + (comboCount * 0.01);
 
   const handleTap = useCallback(() => {
-    let isCritical = false;
-
     setPlayerProfile(prev => {
-        if (!prev) return null;
-        
-        let updatedProfile = {...prev};
-        const now = Date.now();
+      if (!prev) return null;
+      
+      const now = Date.now();
+      let updatedProfile = { ...prev };
 
-        if (updatedProfile.currentTaps === 0 && now >= updatedProfile.tapsAvailableAt) {
-            updatedProfile.currentTaps = updatedProfile.maxTaps;
-            updatedProfile.tapsAvailableAt = now;
-            addCoreMessage({ type: 'system_alert', content: "Tap energy recharged." });
-        }
+      // Regenerate taps if needed
+      if (updatedProfile.currentTaps <= 0 && now >= updatedProfile.tapsAvailableAt) {
+          updatedProfile.currentTaps = updatedProfile.maxTaps;
+          updatedProfile.tapsAvailableAt = now;
+          addCoreMessage({ type: 'system_alert', content: "Tap energy recharged." });
+      }
 
-        if (updatedProfile.currentTaps <= 0) {
-            const timeLeft = Math.ceil((prev.tapsAvailableAt - Date.now()) / 1000);
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            addCoreMessage({ type: 'system_alert', content: `Out of Taps! Regeneration in ${minutes}m ${seconds}s.` });
-            return updatedProfile;
-        }
-        
-        updatedProfile.currentTaps--;
-        if (updatedProfile.currentTaps === 0) {
-            updatedProfile.tapsAvailableAt = now + TAP_REGEN_COOLDOWN_MILLISECONDS;
-        }
+      // Check if out of taps
+      if (updatedProfile.currentTaps <= 0) {
+          return updatedProfile; // No more taps, do nothing
+      }
 
-        let basePointsForTap = pointsPerTapValue;
-        isCritical = Math.random() < criticalTapChance;
+      // Consume a tap
+      updatedProfile.currentTaps--;
+      if (updatedProfile.currentTaps === 0) {
+          updatedProfile.tapsAvailableAt = now + TAP_REGEN_COOLDOWN_MILLISECONDS;
+      }
+      
+      // Calculate points from this tap (will be added to profile later)
+      let isCritical = Math.random() < criticalTapChance;
+      let basePointsForTap = pointsPerTapValue;
+      if (isCritical) {
+          basePointsForTap *= criticalTapMultiplier;
+      }
+      basePointsForTap *= comboMultiplierValue;
+      const finalAmount = Math.round(basePointsForTap);
 
-        if (isCritical) {
-            basePointsForTap *= criticalTapMultiplier;
-        }
+      // Update quests and commander order progress
+      updatedProfile = updateQuestProgress(updatedProfile, 'taps', 1);
+      
+      // Add points and update all derived stats
+      addPoints(finalAmount, true);
 
-        basePointsForTap *= comboMultiplierValue;
-        
-        const finalAmount = Math.round(basePointsForTap);
-        
-        // This is a consolidated update.
-        // We'll update points, xp, levels, league, and quests all at once.
-        updatedProfile.points += finalAmount;
-        updatedProfile.seasonProgress[currentSeason.id] = (updatedProfile.seasonProgress[currentSeason.id] || 0) + finalAmount;
-
-        let newXp = updatedProfile.xp + finalAmount;
-        let levelChanged = false;
-        while (newXp >= updatedProfile.xpToNextLevel) {
-            newXp -= updatedProfile.xpToNextLevel;
-            updatedProfile.level++;
-            levelChanged = true;
-            updatedProfile.xpToNextLevel = Math.floor(updatedProfile.xpToNextLevel * XP_LEVEL_MULTIPLIER);
-            updatedProfile.rankTitle = getRankTitle(updatedProfile.level);
-        }
-        updatedProfile.xp = newXp;
-        if (levelChanged) {
-            updatedProfile.currentTierColor = getTierColorByLevel(updatedProfile.level);
-            toast({ title: 'Level Up!', description: `Congrats Commander! You passed to level ${updatedProfile.level}.` });
-        }
-
-        const previousLeague = updatedProfile.league;
-        const newLeague = getLeagueByPoints(updatedProfile.points);
-        if (newLeague !== previousLeague) {
-            updatedProfile.league = newLeague;
-            addCoreMessage({ type: 'system_alert', content: `Promotion! You've reached the ${newLeague} league.` }, true);
-        }
-
-        let newBattlePassXp = updatedProfile.battlePassXp + finalAmount;
-        let bpLevelledUp = false;
-        while(newBattlePassXp >= updatedProfile.xpToNextBattlePassLevel) {
-            newBattlePassXp -= updatedProfile.xpToNextBattlePassLevel;
-            updatedProfile.battlePassLevel++;
-            bpLevelledUp = true;
-        }
-        updatedProfile.battlePassXp = newBattlePassXp;
-        if (bpLevelledUp) {
-            addCoreMessage({ type: 'system_alert', content: `Battle Pass Level Up! Reached Level ${updatedProfile.battlePassLevel}.` }, true);
-        }
-
-        let profileAfterTapQuests = updateQuestProgress(updatedProfile, 'taps', 1);
-        let finalProfile = updateQuestProgress(profileAfterTapQuests, 'points_earned', finalAmount);
-
-        if (isCritical) {
-            addCoreMessage({ type: 'system_alert', content: `Critical Tap! Power amplified.` });
-        }
-        
-        return finalProfile;
+      if (isCritical) {
+          addCoreMessage({ type: 'system_alert', content: `Critical Tap! Power amplified.` });
+      }
+      
+      return updatedProfile;
     });
 
     setComboCount(prevCount => prevCount + 1);
     setTimeout(() => setComboCount(0), 3000);
-
-  }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, addCoreMessage, updateQuestProgress, toast, currentSeason.id, setPlayerProfile, setComboCount]);
+  }, [
+    pointsPerTapValue, 
+    criticalTapChance, 
+    criticalTapMultiplier, 
+    comboMultiplierValue, 
+    addPoints,
+    updateQuestProgress,
+    addCoreMessage, 
+    setComboCount
+  ]);
 
 
   const claimQuestReward = useCallback((questId: string) => {
@@ -904,10 +871,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setPlayerProfile(prev => {
         if (!prev) return null;
         const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
+        // Find the corresponding avatar for the new sex
         const newAvatar = ALL_AVATARS.find(avatar => avatar.sex === newSex);
         if (!newAvatar) return prev; // Should not happen
 
         toast({ title: 'Commander Switched', description: `Now playing as the ${newSex} commander.` });
+        
+        // IMPORTANT: Update both sex and avatarUrl to prevent mismatch
         return { ...prev, commanderSex: newSex, avatarUrl: newAvatar.url };
     });
   }, [toast]);
