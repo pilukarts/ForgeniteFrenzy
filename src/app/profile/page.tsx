@@ -10,16 +10,18 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check, UserCircle, Users } from 'lucide-react';
+import { Check, UserCircle, Users, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { ALL_AVATARS } from '@/lib/gameData';
+import { useToast } from '@/hooks/use-toast';
 
 
 const ProfilePage: React.FC = () => {
   const { playerProfile, isLoading, isInitialSetupDone, updatePlayerProfile } = useGame();
   const [name, setName] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState('');
+  const { toast } = useToast();
 
   useEffect(() => {
     if (playerProfile) {
@@ -35,6 +37,13 @@ const ProfilePage: React.FC = () => {
       updatePlayerProfile(name, selectedAvatar, avatarData.sex);
     }
   };
+
+  const handleUploadClick = () => {
+    toast({
+        title: "Feature Not Available",
+        description: "Custom avatar uploads will be enabled in a future update.",
+    });
+  }
 
   if (isLoading) {
     return <IntroScreen />;
@@ -85,17 +94,28 @@ const ProfilePage: React.FC = () => {
             <CardContent>
               <div className="grid grid-cols-4 gap-2 sm:gap-4">
                   {ALL_AVATARS.map((avatar) => (
-                  <button
-                      key={avatar.url}
-                      onClick={() => setSelectedAvatar(avatar.url)}
-                      className={cn(
-                      "rounded-lg overflow-hidden border-2 transition-all",
-                      selectedAvatar === avatar.url ? 'border-primary ring-2 ring-primary/50' : 'border-transparent hover:border-primary/50'
-                      )}
-                  >
-                      <Image src={avatar.url} alt="Avatar" width={100} height={100} className="object-cover w-full h-auto aspect-square" data-ai-hint={avatar.hint}/>
-                  </button>
+                    <button
+                        key={avatar.url}
+                        onClick={() => setSelectedAvatar(avatar.url)}
+                        className={cn(
+                        "rounded-lg overflow-hidden border-2 transition-all",
+                        selectedAvatar === avatar.url ? 'border-primary ring-2 ring-primary/50' : 'border-transparent hover:border-primary/50'
+                        )}
+                    >
+                        <Image src={avatar.url} alt="Avatar" width={100} height={100} className="object-cover w-full h-auto aspect-square" data-ai-hint={avatar.hint}/>
+                    </button>
                   ))}
+                   <button
+                    onClick={handleUploadClick}
+                    className={cn(
+                        "rounded-lg overflow-hidden border-2 transition-all bg-muted/30 hover:bg-muted/50 border-dashed border-muted-foreground/50",
+                        "flex flex-col items-center justify-center aspect-square text-muted-foreground"
+                        )}
+                    aria-label="Upload custom avatar"
+                    >
+                    <Upload className="h-6 w-6 sm:h-8 sm:w-8" />
+                    <span className="text-xs mt-1">Upload</span>
+                  </button>
               </div>
             </CardContent>
           </Card>
