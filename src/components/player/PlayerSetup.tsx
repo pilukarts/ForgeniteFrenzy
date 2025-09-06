@@ -24,7 +24,7 @@ const PlayerSetup: React.FC = () => {
   const [country, setCountry] = useState('');
   const [referredBy, setReferredBy] = useState('');
   const [isCountryPopoverOpen, setCountryPopoverOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
 
   const isFormValid = name.trim() !== '' && country !== '' && selectedAvatar.url !== '';
 
@@ -107,11 +107,15 @@ const PlayerSetup: React.FC = () => {
                     </PopoverTrigger>
                     <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
                       <Command>
-                        <CommandInput placeholder="Search nation..." />
+                        <CommandInput 
+                          placeholder="Search nation..." 
+                          value={searchTerm}
+                          onValueChange={setSearchTerm}
+                        />
                         <CommandEmpty>No nation found.</CommandEmpty>
                         <CommandGroup>
                             <ScrollArea className="h-64">
-                              {countries.map((c) => (
+                              {filteredCountries.map((c) => (
                                 <CommandItem
                                   key={c.code}
                                   value={c.name}
