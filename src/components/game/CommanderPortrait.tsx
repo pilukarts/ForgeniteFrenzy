@@ -29,10 +29,10 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
 
   const getCommanderImage = () => {
     const equippedCount = equippedUniformPieces?.length || 0;
-    const sex = commanderSex;
     let imageInfo = { src: "", hint: "" };
 
-    if (sex === 'male') {
+    // This logic directly checks the 'commanderSex' from the profile.
+    if (commanderSex === 'male') {
         imageInfo = { src: "https://i.imgur.com/iuRJVBZ.png", hint: "fullbody male commander" }; // Default
         if (equippedCount >= 1) imageInfo = { src: "https://i.imgur.com/83pL36g.png", hint: "male commander gloves boots" };
         if (equippedCount >= 3) imageInfo = { src: "https://i.imgur.com/tQ4zJ2a.png", hint: "male commander armor" };
