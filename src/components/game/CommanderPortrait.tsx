@@ -17,7 +17,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
   const [isTapped, setIsTapped] = useState(false);
   
   if (!playerProfile) {
-    // Render a skeleton while the profile is loading to prevent server errors
+    // Render a skeleton while the profile is loading to prevent server errors and incorrect renders.
     return (
         <div className="relative w-64 h-80 sm:w-72 sm:h-96 flex items-center justify-center">
             <Skeleton className="w-full h-full" />
@@ -28,16 +28,13 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
   const { commanderSex, currentTierColor } = playerProfile;
 
   // --- Simplified and Corrected Logic ---
+  // This function now directly and simply checks the 'commanderSex' from the profile.
   const getCommanderImage = () => {
-    let imageInfo = { src: "", hint: "" };
-    
-    // This logic directly and simply checks the 'commanderSex' from the profile.
     if (commanderSex === 'male') {
-        imageInfo = { src: "https://i.imgur.com/iuRJVBZ.png", hint: "fullbody male commander" };
+        return { src: "https://i.imgur.com/iuRJVBZ.png", hint: "fullbody male commander" };
     } else { // 'female'
-        imageInfo = { src: "https://i.imgur.com/BQHeVWp.png", hint: "fullbody female commander" };
+        return { src: "https://i.imgur.com/BQHeVWp.png", hint: "fullbody female commander" };
     }
-    return imageInfo;
   };
 
   const { src: imageUrl, hint: dataAiHint } = getCommanderImage();
