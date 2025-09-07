@@ -51,8 +51,8 @@ To run the project locally, follow these steps:
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/your-repository-name.git
-    cd your-repository-name
+    git clone https://github.com/allianceforge/forgeitefrenzy.git
+    cd forgeitefrenzy
     ```
 
 2.  **Install dependencies:**
@@ -84,3 +84,5 @@ The deployment process is automated via GitHub Actions:
 1.  Push your code changes to the `main` branch of your GitHub repository.
 2.  Firebase App Hosting automatically detects the push, builds the Next.js application, and deploys it.
 3.  The live URL will be available in your Firebase project's App Hosting dashboard, which is `https://nextn.web.app`.
+
+```
