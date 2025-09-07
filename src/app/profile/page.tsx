@@ -15,33 +15,30 @@ import Image from 'next/image';
 import { ALL_AVATARS } from '@/lib/gameData';
 import { useToast } from '@/hooks/use-toast';
 
+// Find the default avatars for male and female
+const defaultFemaleAvatar = ALL_AVATARS.find(a => a.sex === 'female' && a.url.includes('Wq9PqxG'));
+const defaultMaleAvatar = ALL_AVATARS.find(a => a.sex === 'male' && a.url.includes('BOKoTIM'));
+const defaultAvatar = defaultFemaleAvatar || ALL_AVATARS[0];
 
 const ProfilePage: React.FC = () => {
   const { playerProfile, isLoading, isInitialSetupDone, updatePlayerProfile } = useGame();
   const [name, setName] = useState('');
-  const [selectedAvatar, setSelectedAvatar] = useState('');
+  const [selectedAvatar, setSelectedAvatar] = useState(defaultAvatar);
   const { toast } = useToast();
 
   useEffect(() => {
     if (playerProfile) {
       setName(playerProfile.name);
-      setSelectedAvatar(playerProfile.avatarUrl || ALL_AVATARS.find(a => a.url.includes('Wq9PqxG') || a.url.includes('BOKoTIM'))!.url);
+      // Find the full avatar object from the saved URL
+      const currentAvatar = ALL_AVATARS.find(a => a.url === playerProfile.avatarUrl);
+      setSelectedAvatar(currentAvatar || defaultAvatar);
     }
   }, [playerProfile]);
 
   const handleSave = () => {
     if (playerProfile && name.trim()) {
-      // Find the selected avatar object to determine the sex
-      const avatarData = ALL_AVATARS.find(a => a.url === selectedAvatar);
-      if (avatarData) {
-        updatePlayerProfile(name.trim(), selectedAvatar, avatarData.sex);
-      } else {
-         toast({
-            title: "Avatar Error",
-            description: "Could not find selected avatar data. Please try again.",
-            variant: "destructive",
-        });
-      }
+      // The selectedAvatar state now holds the full object, including the sex.
+      updatePlayerProfile(name.trim(), selectedAvatar.url, selectedAvatar.sex);
     } else {
         toast({
             title: "Invalid Name",
@@ -68,6 +65,7 @@ const ProfilePage: React.FC = () => {
 
   if (!playerProfile) return <IntroScreen />;
 
+  // These are the avatars available for selection.
   const displayAvatars = ALL_AVATARS.filter(a => a.url.includes('Wq9PqxG') || a.url.includes('BOKoTIM'));
 
 
@@ -112,10 +110,10 @@ const ProfilePage: React.FC = () => {
                   {displayAvatars.map((avatar) => (
                     <button
                         key={avatar.url}
-                        onClick={() => setSelectedAvatar(avatar.url)}
+                        onClick={() => setSelectedAvatar(avatar)}
                         className={cn(
                         "rounded-lg overflow-hidden border-2 transition-all",
-                        selectedAvatar === avatar.url ? 'border-primary ring-2 ring-primary/50' : 'border-transparent hover:border-primary/50'
+                        selectedAvatar.url === avatar.url ? 'border-primary ring-2 ring-primary/50' : 'border-transparent hover:border-primary/50'
                         )}
                     >
                         <Image src={avatar.url} alt="Avatar" width={100} height={100} className="object-cover w-full h-auto aspect-square" data-ai-hint={avatar.hint}/>
