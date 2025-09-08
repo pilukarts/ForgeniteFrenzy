@@ -134,6 +134,7 @@ export interface LeaderboardEntry {
   score: number;
   playerLeague: LeagueName; // Added for league display
   avatarUrl?: string;
+  lastSeen?: Date | null;
 }
 
 export interface CoreMessage {
