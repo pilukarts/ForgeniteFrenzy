@@ -920,7 +920,14 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const updatePlayerProfile = useCallback((name: string, avatarUrl: string, commanderSex: 'male' | 'female') => {
     setPlayerProfile(prev => {
         if (!prev) return null;
-        const updatedProfile = { ...prev, name, avatarUrl, commanderSex };
+        // This is the CRITICAL fix: ensure all properties are updated.
+        const updatedProfile = { 
+            ...prev, 
+            name, 
+            avatarUrl, 
+            commanderSex 
+        };
+        // The useEffect hook will automatically save this to localStorage.
         return updatedProfile;
     });
     addCoreMessage({ type: 'system_alert', content: 'Player profile updated.' });
