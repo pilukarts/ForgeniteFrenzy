@@ -916,7 +916,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const updatePlayerProfile = useCallback((name: string, avatarUrl: string, commanderSex: 'male' | 'female') => {
     setPlayerProfile(prev => {
         if (!prev) return null;
-        // **LÓGICA CORREGIDA:** Asegura que `commanderSex` se actualice junto con el avatar.
         return { ...prev, name, avatarUrl, commanderSex };
     });
     addCoreMessage({ type: 'system_alert', content: 'Player profile updated.' });
@@ -928,10 +927,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (!prev) return null;
         const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
         
-        // **LÓGICA CORREGIDA:** Al cambiar, actualiza tanto `commanderSex` como `avatarUrl`.
         const newAvatar = ALL_AVATARS.find(avatar => avatar.sex === newSex);
             
-        if (!newAvatar) return prev; // Fallback por si no se encuentra el avatar
+        if (!newAvatar) return prev; // Fallback
 
         toast({ title: 'Commander Switched', description: `Now playing as the ${newSex} commander.` });
         return { ...prev, commanderSex: newSex, avatarUrl: newAvatar.url };
@@ -984,7 +982,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         hideCommanderOrder,
         watchRewardedAd,
         rewardedAdCooldown,
-        isWatchingAd,
+isWatchingAd,
         updatePlayerProfile,
         toggleCommander,
     }}>
