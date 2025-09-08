@@ -21,18 +21,18 @@ import { ALL_AVATARS } from '@/lib/gameData';
 const PlayerSetup: React.FC = () => {
   const { playerProfile, completeInitialSetup } = useGame();
   const [name, setName] = useState('');
-  const [selectedAvatar, setSelectedAvatar] = useState(ALL_AVATARS[0]);
+  const [selectedAvatarSex, setSelectedAvatarSex] = useState<'male' | 'female'>('male');
   const [country, setCountry] = useState('');
   const [referredBy, setReferredBy] = useState('');
   const [isCountryPopoverOpen, setCountryPopoverOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const isFormValid = name.trim() !== '' && country !== '' && selectedAvatar.url !== '';
+  const isFormValid = name.trim() !== '' && country !== '';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isFormValid) {
-      completeInitialSetup(name.trim(), selectedAvatar.sex, selectedAvatar.url, country, referredBy.trim());
+      completeInitialSetup(name.trim(), selectedAvatarSex, country, referredBy.trim());
     }
   };
   
@@ -67,9 +67,9 @@ const PlayerSetup: React.FC = () => {
                       key={avatar.url}
                       className={cn(
                         "rounded-lg p-1 border-2 cursor-pointer transition-all duration-300",
-                        selectedAvatar.url === avatar.url ? 'border-primary bg-primary/10 shadow-lg scale-105' : 'border-transparent opacity-70 hover:opacity-100 hover:border-primary/50'
+                        selectedAvatarSex === avatar.sex ? 'border-primary bg-primary/10 shadow-lg scale-105' : 'border-transparent opacity-70 hover:opacity-100 hover:border-primary/50'
                       )}
-                      onClick={() => setSelectedAvatar(avatar)}
+                      onClick={() => setSelectedAvatarSex(avatar.sex)}
                     >
                       <Image src={avatar.url} alt="Commander Avatar" width={100} height={100} className="rounded-md object-cover w-full h-auto aspect-square" data-ai-hint={avatar.hint}/>
                     </div>

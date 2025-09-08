@@ -31,7 +31,7 @@ interface GameContextType {
   addPoints: (amount: number, isFromTap?: boolean) => void;
   isLoading: boolean;
   isInitialSetupDone: boolean;
-  completeInitialSetup: (name: string, sex: 'male' | 'female', avatarUrl: string, country: string, referredByCode?: string) => void;
+  completeInitialSetup: (name: string, sex: 'male' | 'female', country: string, referredByCode?: string) => void;
   coreMessages: CoreMessage[];
   addCoreMessage: (message: Omit<CoreMessage, 'timestamp'>, isHighPriority?: boolean) => void;
   isCoreUnlocked: boolean;
@@ -178,11 +178,14 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         
         // --- PROFILE HYDRATION & DEFAULTS ---
         // Ensure avatarUrl is set, falling back if it's missing from old profiles
-        const selectedAvatar = ALL_AVATARS.find(a => a.sex === parsedProfile.commanderSex) || ALL_AVATARS[0];
+        const fallbackAvatarUrl = parsedProfile.commanderSex === 'female' 
+            ? "https://i.imgur.com/BQHeVWp.png" // Female with AF logo
+            : "https://i.imgur.com/iuRJVBZ.png"; // Male with AF logo
+
         const hydratedProfile: PlayerProfile = {
             ...defaultPlayerProfile,
             ...parsedProfile,
-            avatarUrl: parsedProfile.avatarUrl || selectedAvatar.url, // CRITICAL FIX
+            avatarUrl: parsedProfile.avatarUrl || fallbackAvatarUrl,
             lastLoginTimestamp: now,
             muleDrones: parsedProfile.upgrades?.['muleDrone'] || 0,
             activeDailyQuests: (parsedProfile.activeDailyQuests ?? []).map(q => {
@@ -209,7 +212,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             id: 'temp-new-player',
             name: '',
             commanderSex: 'male',
-            avatarUrl: ALL_AVATARS[0].url,
+            avatarUrl: '', // Intentionally blank, setup will provide it
             country: '',
             currentSeasonId: SEASONS_DATA[0].id,
             lastLoginTimestamp: Date.now(),
@@ -750,14 +753,20 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   }, [addCoreMessage]);
 
-  const completeInitialSetup = useCallback((name: string, sex: 'male' | 'female', avatarUrl: string, country: string, referredByCode?: string) => {
+  const completeInitialSetup = useCallback((name: string, sex: 'male' | 'female', country: string, referredByCode?: string) => {
     const now = Date.now();
+    
+    // ROOT CAUSE FIX: Determine the correct full-body URL with logo based on sex
+    const finalAvatarUrl = sex === 'female' 
+        ? "https://i.imgur.com/BQHeVWp.png" // Female with AF logo
+        : "https://i.imgur.com/iuRJVBZ.png"; // Male with AF logo
+
     const newProfileData: PlayerProfile = {
       ...defaultPlayerProfile,
       id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
       name,
       commanderSex: sex,
-      avatarUrl: avatarUrl, // CRITICAL FIX: Save the specific avatar URL
+      avatarUrl: finalAvatarUrl, // Save the correct full-body URL
       country,
       currentSeasonId: SEASONS_DATA[0].id,
       lastLoginTimestamp: now,
@@ -945,13 +954,17 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const updatePlayerProfile = useCallback((name: string, avatarUrl: string, commanderSex: 'male' | 'female') => {
     setPlayerProfile(prev => {
         if (!prev) return null;
+        
+        const finalAvatarUrl = commanderSex === 'female' 
+            ? "https://i.imgur.com/BQHeVWp.png" // Female with AF logo
+            : "https://i.imgur.com/iuRJVBZ.png"; // Male with AF logo
+
         const updatedProfile = { 
             ...prev, 
             name, 
-            avatarUrl, // CRITICAL FIX: Save the specific avatar URL
+            avatarUrl: finalAvatarUrl,
             commanderSex
         };
-        // The useEffect hook will automatically save this to localStorage.
         return updatedProfile;
     });
     addCoreMessage({ type: 'system_alert', content: 'Player profile updated.' });
@@ -963,13 +976,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (!prev) return null;
         const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
         
-        // Find the corresponding full-body avatar for the new sex
-        const newAvatarData = ALL_AVATARS.find(avatar => avatar.sex === newSex) || ALL_AVATARS[0];
+        const newAvatarUrl = newSex === 'female' 
+            ? "https://i.imgur.com/BQHeVWp.png" // Female with AF logo
+            : "https://i.imgur.com/iuRJVBZ.png"; // Male with AF logo
             
         toast({ title: 'Commander Switched', description: `Now playing as the ${newSex} commander.` });
         
-        // Update both sex and the associated avatar URL
-        return { ...prev, commanderSex: newSex, avatarUrl: newAvatarData.url };
+        return { ...prev, commanderSex: newSex, avatarUrl: newAvatarUrl };
     });
   }, [toast]);
   
