@@ -746,8 +746,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       ...defaultPlayerProfile,
       id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
       name,
-      commanderSex: sex, // Correctly save the selected sex
-      avatarUrl: avatarUrl, // Correctly save the selected avatar
+      commanderSex: sex,
+      avatarUrl: avatarUrl,
       country,
       currentSeasonId: SEASONS_DATA[0].id,
       lastLoginTimestamp: now,
@@ -933,7 +933,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             ...prev, 
             name, 
             avatarUrl, 
-            commanderSex // Ensure commanderSex is updated
+            commanderSex
         };
         // The useEffect hook will automatically save this to localStorage.
         return updatedProfile;
@@ -1019,3 +1019,5 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
+
+    

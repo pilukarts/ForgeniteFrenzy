@@ -39,7 +39,7 @@ const ProfilePage: React.FC = () => {
   }, [playerProfile]);
 
   const handleSave = () => {
-    if (playerProfile) {
+    if (playerProfile && name.trim()) {
       // Find the selected avatar object to determine the sex
       const avatarData = ALL_AVATARS.find(a => a.url === selectedAvatar) || ALL_AVATARS[0];
       updatePlayerProfile(name, selectedAvatar, avatarData.sex);
@@ -158,3 +158,5 @@ const ProfilePage: React.FC = () => {
 };
 
 export default ProfilePage;
+
+    
