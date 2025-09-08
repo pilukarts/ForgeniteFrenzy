@@ -24,6 +24,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
     );
   }
 
+  // --- Using the correct image URLs with the AF logo ---
   const imageUrl = playerProfile.commanderSex === 'female' 
     ? "https://i.imgur.com/BQHeVWp.png" // Female commander with AF logo
     : "https://i.imgur.com/iuRJVBZ.png"; // Male commander with AF logo
@@ -47,7 +48,6 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
 
   // These values are percentages of the parent container's width and height.
   // They define the position and size of the invisible logo tap area.
-  // (top, left, width, height)
   const logoHitbox = playerProfile.commanderSex === 'female'
     ? { top: '38%', left: '41%', width: '18%', height: '10%' }
     : { top: '37%', left: '42.5%', width: '15%', height: '9%' };
