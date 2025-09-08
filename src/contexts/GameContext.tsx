@@ -2,7 +2,7 @@
 "use client";
 
 import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, CommanderOrder } from '@/lib/types';
-import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES, UNIFORM_PIECES_ORDER, TAPS_PER_UNIFORM_PIECE, ALL_AVATARS } from '@/lib/gameData';
+import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES, UNIFORM_PIECES_ORDER, TAPS_PER_UNIFORM_PIECE, ALL_AVATARS, AF_LOGO_TAP_BONUS_MULTIPLIER } from '@/lib/gameData';
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getCoreBriefing } from '@/ai/flows/core-briefings';
@@ -37,7 +37,7 @@ interface GameContextType {
   isCoreUnlocked: boolean;
   coreLastInteractionTime: number;
   connectWallet: () => void;
-  handleTap: () => void;
+  handleTap: (isLogoTap?: boolean) => void;
   criticalTapChance: number;
   criticalTapMultiplier: number;
   comboMultiplier: number;
@@ -545,7 +545,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const comboBonusUpgradeLevel = getUpgradeLevel('comboBonus');
   const comboMultiplierValue = 1 + (comboBonusUpgradeLevel * 0.02) + (comboCount * 0.01);
 
-  const handleTap = useCallback(() => {
+  const handleTap = useCallback((isLogoTap: boolean = false) => {
     let isCritical = false;
     
     setPlayerProfile(prev => {
@@ -574,6 +574,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
 
         let basePointsForTap = pointsPerTapValue;
+
+        // Apply AF Logo Bonus
+        if (isLogoTap) {
+            basePointsForTap *= AF_LOGO_TAP_BONUS_MULTIPLIER;
+        }
+
         isCritical = Math.random() < criticalTapChance;
 
         if (isCritical) {
@@ -582,11 +588,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         basePointsForTap *= comboMultiplierValue;
         
-        const finalAmount = Math.round(basePointsForTap);
-        
         let profileAfterPoints = { ...updatedProfile };
 
-        // Apply active tap bonuses
+        // Apply active item bonuses
         let expiredBonuses: ActiveTapBonus[] = [];
         if (profileAfterPoints.activeTapBonuses && profileAfterPoints.activeTapBonuses.length > 0) {
             let totalBonusMultiplierFactor = 1;
@@ -652,7 +656,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         let profileAfterTapQuests = updateQuestProgress(profileAfterPoints, 'taps', 1);
         profileAfterTapQuests = updateQuestProgress(profileAfterTapQuests, 'points_earned', pointsWithBonus);
 
-        if (isCritical) {
+        if (isLogoTap) {
+             addCoreMessage({ type: 'system_alert', content: `Precision Strike! Bonus points awarded.` });
+        }
+        else if (isCritical) {
             addCoreMessage({ type: 'system_alert', content: `Critical Tap! Power amplified.` });
         }
 
@@ -1019,5 +1026,3 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
-
-    

@@ -227,7 +227,10 @@ export default function HomePage() {
                     transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
                     className="flex-grow flex flex-col items-center justify-center"
                   >
-                      <CommanderPortrait onTap={handleTap} />
+                      <CommanderPortrait 
+                        onTap={() => handleTap(false)}
+                        onLogoTap={() => handleTap(true)}
+                      />
 
                       {isOutOfTaps && (
                           <motion.div

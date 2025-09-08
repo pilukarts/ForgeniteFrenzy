@@ -183,6 +183,7 @@ export function getRankTitle(level: number): string {
 }
 
 export const POINTS_PER_TAP = 1;
+export const AF_LOGO_TAP_BONUS_MULTIPLIER = 2.5; // Tapping the logo gives 2.5x points
 export const AURON_PER_WALLET_CONNECT = 100;
 
 export const INITIAL_MAX_TAPS = 100;
@@ -359,5 +360,3 @@ export const ALL_AVATARS = [
     { url: "https://i.imgur.com/Wq9PqxG.png", sex: 'male', hint: 'male commander portrait' },
     { url: "https://i.imgur.com/BOKoTIM.png", sex: 'female', hint: 'female commander portrait' },
 ];
-
-    
