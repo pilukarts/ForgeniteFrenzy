@@ -771,7 +771,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
     addCoreMessage({ type: 'briefing', content: welcomeMessage});
     setCoreLastInteractionTime(now);
-    refreshDailyQuestsIfNeeded();
 
     const profileForFirestore = {
         ...newProfileData,
@@ -781,7 +780,14 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         console.error("Failed to sync profile on initial setup:", error);
         toast({ title: 'Sync Failed', description: 'Could not save initial profile to server.', variant: 'destructive' });
     });
-  }, [addCoreMessage, refreshDailyQuestsIfNeeded, toast]);
+  }, [addCoreMessage, toast]);
+
+  // FIX: Run quest refresh in an effect after setup is complete to avoid "setState in render" error.
+  useEffect(() => {
+    if (isInitialSetupDone) {
+      refreshDailyQuestsIfNeeded();
+    }
+  }, [isInitialSetupDone, refreshDailyQuestsIfNeeded]);
 
   const refillTaps = useCallback(() => {
     setPlayerProfile(prev => {
