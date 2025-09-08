@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, CommanderOrder } from '@/lib/types';
@@ -734,13 +735,16 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
       name,
       commanderSex: sex,
-      avatarUrl,
+      avatarUrl: avatarUrl,
       country,
       currentSeasonId: SEASONS_DATA[0].id,
       lastLoginTimestamp: now,
       referralCode: generateReferralCode(name),
       referredByCode: referredByCode?.trim() || undefined,
     };
+    
+    // Immediately save to local storage to prevent loss on refresh
+    localStorage.setItem('playerProfile', JSON.stringify(newProfileData));
     
     setPlayerProfile(newProfileData);
     setIsInitialSetupDone(true);
@@ -916,8 +920,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const updatePlayerProfile = useCallback((name: string, avatarUrl: string, commanderSex: 'male' | 'female') => {
     setPlayerProfile(prev => {
         if (!prev) return null;
-        // Correctly updates both the avatar URL and the sex for full consistency.
-        return { ...prev, name, avatarUrl, commanderSex };
+        const updatedProfile = { ...prev, name, avatarUrl, commanderSex };
+        localStorage.setItem('playerProfile', JSON.stringify(updatedProfile));
+        return updatedProfile;
     });
     addCoreMessage({ type: 'system_alert', content: 'Player profile updated.' });
     toast({ title: 'Profile Updated', description: 'Your callsign and avatar have been updated.' });
@@ -928,14 +933,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (!prev) return null;
         const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
         
-        // This finds the *headshot* avatar corresponding to the new sex for the profile page/header.
         const newAvatarData = ALL_AVATARS.find(avatar => avatar.sex === newSex) || ALL_AVATARS[0];
             
         toast({ title: 'Commander Switched', description: `Now playing as the ${newSex} commander.` });
         
-        // This correctly updates both properties. The game portrait will use `commanderSex` to show the full body,
-        // and the header/profile will use `avatarUrl` to show the headshot.
-        return { ...prev, commanderSex: newSex, avatarUrl: newAvatarData.url };
+        const updatedProfile = { ...prev, commanderSex: newSex, avatarUrl: newAvatarData.url };
+        localStorage.setItem('playerProfile', JSON.stringify(updatedProfile));
+        return updatedProfile;
     });
   }, [toast]);
   

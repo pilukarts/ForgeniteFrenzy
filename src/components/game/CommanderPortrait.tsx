@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -23,8 +24,8 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
   }
 
   // --- LÓGICA CORREGIDA Y DEFINITIVA ---
-  // Se usan las imágenes de cuerpo completo con el logo "AF" directamente.
-  // La selección se basa en la propiedad 'commanderSex' del perfil.
+  // La selección se basa únicamente en 'commanderSex' del perfil.
+  // Las URLs apuntan a las imágenes de cuerpo completo con el logo "AF".
   const imageUrl = playerProfile.commanderSex === 'female' 
     ? "https://i.imgur.com/BQHeVWp.png" // Comandante femenina con logo AF
     : "https://i.imgur.com/iuRJVBZ.png"; // Comandante masculino con logo AF
