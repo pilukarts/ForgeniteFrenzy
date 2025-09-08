@@ -179,8 +179,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // --- PROFILE HYDRATION & DEFAULTS ---
         // Ensure avatarUrl is set, falling back if it's missing from old profiles
         const fallbackAvatarUrl = parsedProfile.commanderSex === 'female' 
-            ? "https://i.imgur.com/gB3i4OQ.png"
-            : "https://i.imgur.com/iuRJVBZ.png";
+            ? "https://i.imgur.com/BQHeVWp.png" // Female with AF logo
+            : "https://i.imgur.com/iuRJVBZ.png"; // Male with AF logo
 
         const hydratedProfile: PlayerProfile = {
             ...defaultPlayerProfile,
@@ -757,8 +757,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const now = Date.now();
     
     const finalAvatarUrl = sex === 'female' 
-        ? "https://i.imgur.com/BQHeVWp.png"
-        : "https://i.imgur.com/iuRJVBZ.png";
+        ? "https://i.imgur.com/BQHeVWp.png" // Female with AF logo
+        : "https://i.imgur.com/iuRJVBZ.png"; // Male with AF logo
 
     const newProfileData: PlayerProfile = {
       ...defaultPlayerProfile,
@@ -954,8 +954,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (!prev) return null;
         
         const finalAvatarUrl = commanderSex === 'female' 
-            ? "https://i.imgur.com/BQHeVWp.png"
-            : "https://i.imgur.com/iuRJVBZ.png";
+            ? "https://i.imgur.com/BQHeVWp.png" // Female with AF logo
+            : "https://i.imgur.com/iuRJVBZ.png"; // Male with AF logo
 
         const updatedProfile = { 
             ...prev, 

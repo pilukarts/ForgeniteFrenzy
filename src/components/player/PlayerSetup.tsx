@@ -61,17 +61,17 @@ const PlayerSetup: React.FC = () => {
               {/* Avatar Selection */}
               <div className="space-y-3">
                 <Label className="text-foreground/80 text-lg font-semibold block text-center">Select Your Commander</Label>
-                <div className="grid grid-cols-4 gap-2">
+                <div className="flex justify-center gap-4">
                   {ALL_AVATARS.map((avatar) => (
                     <div 
                       key={avatar.url}
                       className={cn(
-                        "rounded-lg p-1 border-2 cursor-pointer transition-all duration-300",
+                        "rounded-lg p-1 border-2 cursor-pointer transition-all duration-300 w-32 h-32 sm:w-40 sm:h-40",
                         selectedAvatarSex === avatar.sex ? 'border-primary bg-primary/10 shadow-lg scale-105' : 'border-transparent opacity-70 hover:opacity-100 hover:border-primary/50'
                       )}
                       onClick={() => setSelectedAvatarSex(avatar.sex)}
                     >
-                      <Image src={avatar.url} alt="Commander Avatar" width={100} height={100} className="rounded-md object-cover w-full h-auto aspect-square" data-ai-hint={avatar.hint}/>
+                      <Image src={avatar.url} alt="Commander Avatar" width={150} height={150} className="rounded-md object-cover w-full h-full" data-ai-hint={avatar.hint}/>
                     </div>
                   ))}
                 </div>
