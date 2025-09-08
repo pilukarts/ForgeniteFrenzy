@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -22,11 +23,10 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
     );
   }
 
-  // Use the main avatarUrl from the profile for the large portrait.
-  // This is the URL that is set during profile setup/editing.
-  const imageUrl = playerProfile.avatarUrl || "https://i.imgur.com/Wq9PqxG.png"; // Fallback to female commander
+  // Se fuerza la imagen de la comandante femenina de cuerpo completo.
+  const imageUrl = "https://i.imgur.com/Wq9PqxG.png"; 
   const altText = `Commander ${playerProfile.name}`;
-  const dataAiHint = "commander portrait";
+  const dataAiHint = "female commander portrait";
 
   const handleInteraction = () => {
     onTap();
@@ -56,7 +56,6 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
         }}
         className="w-full h-full relative group"
       >
-        {/* Use a standard Image component. The logic is now much simpler. */}
         <Image
           src={imageUrl}
           alt={altText}
@@ -67,7 +66,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
             isTapped ? "animate-tapped-aura" : "animate-pulse-neon-dynamic active:scale-95"
           )}
           priority
-          key={imageUrl} // Force re-render if the avatar URL changes
+          key={imageUrl} 
         />
       </button>
     </div>
