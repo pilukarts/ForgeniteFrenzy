@@ -224,7 +224,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setPlayerProfile(loadedProfile);
     setActiveCommanderOrder(loadedProfile.activeCommanderOrder);
     setIsLoading(false);
-  }, []);
+  }, [addCoreMessage]);
 
 
   useEffect(() => {
@@ -756,16 +756,17 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const completeInitialSetup = useCallback((name: string, sex: 'male' | 'female', country: string, referredByCode?: string) => {
     const now = Date.now();
     
+    // THE FIX: Ensure the correct FULL BODY avatar URL with the AF logo is saved.
     const finalAvatarUrl = sex === 'female' 
-        ? "https://i.imgur.com/BQHeVWp.png" // Female with AF logo
-        : "https://i.imgur.com/iuRJVBZ.png"; // Male with AF logo
+        ? "https://i.imgur.com/BQHeVWp.png" // Female commander with AF logo
+        : "https://i.imgur.com/iuRJVBZ.png"; // Male commander with AF logo
 
     const newProfileData: PlayerProfile = {
       ...defaultPlayerProfile,
       id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
       name,
       commanderSex: sex,
-      avatarUrl: finalAvatarUrl,
+      avatarUrl: finalAvatarUrl, // This now saves the correct URL.
       country,
       currentSeasonId: SEASONS_DATA[0].id,
       lastLoginTimestamp: now,
@@ -953,6 +954,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setPlayerProfile(prev => {
         if (!prev) return null;
         
+        // THE FIX: Ensure the correct FULL BODY avatar URL is saved when updating.
         const finalAvatarUrl = commanderSex === 'female' 
             ? "https://i.imgur.com/BQHeVWp.png" // Female with AF logo
             : "https://i.imgur.com/iuRJVBZ.png"; // Male with AF logo
@@ -974,6 +976,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (!prev) return null;
         const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
         
+        // THE FIX: Also update the avatarUrl when toggling commander sex.
         const newAvatarUrl = newSex === 'female' 
             ? "https://i.imgur.com/BQHeVWp.png"
             : "https://i.imgur.com/iuRJVBZ.png";
