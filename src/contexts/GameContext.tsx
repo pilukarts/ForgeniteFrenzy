@@ -944,6 +944,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             
         toast({ title: 'Commander Switched', description: `Now playing as the ${newSex} commander.` });
         
+        // Update both sex and the associated avatar URL
         return { ...prev, commanderSex: newSex, avatarUrl: newAvatarData.url };
     });
   }, [toast]);

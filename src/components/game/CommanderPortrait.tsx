@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -22,12 +21,10 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
     );
   }
 
-  // --- LÓGICA CORREGIDA Y DEFINITIVA ---
-  // La selección se basa únicamente en 'commanderSex' del perfil.
-  // Las URLs apuntan a las imágenes de cuerpo completo con el logo "AF".
+  // Use the correct images with the AF logo.
   const imageUrl = playerProfile.commanderSex === 'female' 
-    ? "https://i.imgur.com/BQHeVWp.png" // Comandante femenina con logo AF
-    : "https://i.imgur.com/iuRJVBZ.png"; // Comandante masculino con logo AF
+    ? "https://i.imgur.com/BQHeVWp.png" // Female commander with AF logo
+    : "https://i.imgur.com/iuRJVBZ.png"; // Male commander with AF logo
 
   const altText = `Commander ${playerProfile.name}`;
   const dataAiHint = playerProfile.commanderSex === 'male' ? "male commander full body" : "female commander full body";
@@ -70,7 +67,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
             isTapped ? "animate-tapped-aura" : "animate-pulse-neon-dynamic active:scale-95"
           )}
           priority
-          key={imageUrl} // key prop para forzar la recarga de la imagen si cambia
+          key={imageUrl} // Add key to force re-render on image URL change
         />
       </button>
     </div>
