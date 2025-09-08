@@ -18,8 +18,8 @@ const PlayerProfileHeader: React.FC<PlayerProfileHeaderProps> = ({ profile }) =>
   const { isInitialSetupDone } = useGame();
   const xpPercentage = profile.xpToNextLevel > 0 ? (profile.xp / profile.xpToNextLevel) * 100 : 0;
   
-  // Use the profile's avatar if set, otherwise fallback to the sex-based one
-  const avatarSrc = profile.avatarUrl || (profile.commanderSex === 'male' ? "https://i.imgur.com/gB3i4OQ.png" : "https://i.imgur.com/J3tG1e4.png");
+  // Use the profile's avatar if set.
+  const avatarSrc = profile.avatarUrl;
   const dataAiHint = "commander portrait";
 
   const leagueName = profile.league || DEFAULT_LEAGUE;

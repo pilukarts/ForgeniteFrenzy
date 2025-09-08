@@ -1,3 +1,4 @@
+
 import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate, LeagueName, LeagueTier, BattlePass, LevelStage } from './types';
 import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle, Shield, ShieldCheck, Award, Star, Crown, LucideIcon, Swords, Shirt, Replace } from 'lucide-react';
 
@@ -355,7 +356,9 @@ export const LEVEL_STAGES: LevelStage[] = [
 export const TAPS_PER_UNIFORM_PIECE = 2000;
 export const UNIFORM_PIECES_ORDER = ["Tactical Gloves", "Combat Boots", "Utility Belt", "Chest Rig", "Stealth Helmet"];
 
-// These are the HEADSHOT portraits for profile selection.
+// These are the headshot portraits for profile selection.
+// CRITICAL: The `url` property should point to the headshot image for selection UI.
+// The `fullBodyUrl` points to the image used in the main game screen.
 export const ALL_AVATARS = [
     { url: "https://i.imgur.com/Wq9PqxG.png", sex: 'male', hint: 'male commander portrait' },
     { url: "https://i.imgur.com/BOKoTIM.png", sex: 'female', hint: 'female commander portrait' },

@@ -177,9 +177,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setCoreMessages(currentMessages);
         
         // --- PROFILE HYDRATION & DEFAULTS ---
+        // Ensure avatarUrl is set, falling back if it's missing from old profiles
+        const selectedAvatar = ALL_AVATARS.find(a => a.sex === parsedProfile.commanderSex) || ALL_AVATARS[0];
         const hydratedProfile: PlayerProfile = {
             ...defaultPlayerProfile,
             ...parsedProfile,
+            avatarUrl: parsedProfile.avatarUrl || selectedAvatar.url, // CRITICAL FIX
             lastLoginTimestamp: now,
             muleDrones: parsedProfile.upgrades?.['muleDrone'] || 0,
             activeDailyQuests: (parsedProfile.activeDailyQuests ?? []).map(q => {
@@ -754,7 +757,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
       name,
       commanderSex: sex,
-      avatarUrl: avatarUrl,
+      avatarUrl: avatarUrl, // CRITICAL FIX: Save the specific avatar URL
       country,
       currentSeasonId: SEASONS_DATA[0].id,
       lastLoginTimestamp: now,
@@ -945,7 +948,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const updatedProfile = { 
             ...prev, 
             name, 
-            avatarUrl, 
+            avatarUrl, // CRITICAL FIX: Save the specific avatar URL
             commanderSex
         };
         // The useEffect hook will automatically save this to localStorage.
@@ -960,7 +963,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (!prev) return null;
         const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
         
-        // Find the corresponding headshot avatar for the new sex
+        // Find the corresponding full-body avatar for the new sex
         const newAvatarData = ALL_AVATARS.find(avatar => avatar.sex === newSex) || ALL_AVATARS[0];
             
         toast({ title: 'Commander Switched', description: `Now playing as the ${newSex} commander.` });

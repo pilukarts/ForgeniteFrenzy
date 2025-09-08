@@ -23,7 +23,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
     );
   }
 
-  // --- Using the correct image URLs with the AF logo ---
+  // --- Use the correct full-body image URL with the AF logo ---
   const imageUrl = playerProfile.commanderSex === 'female' 
     ? "https://i.imgur.com/BQHeVWp.png" // Female commander with AF logo
     : "https://i.imgur.com/iuRJVBZ.png"; // Male commander with AF logo
