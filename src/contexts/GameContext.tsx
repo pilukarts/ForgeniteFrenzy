@@ -534,8 +534,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const handleTap = useCallback(() => {
     let isCritical = false;
-    let newPiece = '';
-
+    
     setPlayerProfile(prev => {
         if (!prev) return null;
         
@@ -572,10 +571,38 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         
         const finalAmount = Math.round(basePointsForTap);
         
-        let profileAfterPoints = { ...updatedProfile, points: updatedProfile.points + finalAmount };
-        profileAfterPoints.seasonProgress[currentSeason.id] = (profileAfterPoints.seasonProgress[currentSeason.id] || 0) + finalAmount;
+        let profileAfterPoints = { ...updatedProfile };
 
-        let newXp = profileAfterPoints.xp + finalAmount;
+        // Apply active tap bonuses
+        let expiredBonuses: ActiveTapBonus[] = [];
+        if (profileAfterPoints.activeTapBonuses && profileAfterPoints.activeTapBonuses.length > 0) {
+            let totalBonusMultiplierFactor = 1;
+            let stillActiveBonuses = profileAfterPoints.activeTapBonuses.map(bonus => {
+                totalBonusMultiplierFactor *= bonus.bonusMultiplier;
+                return { ...bonus, remainingTaps: bonus.remainingTaps - 1 };
+            }).filter(bonus => bonus.remainingTaps > 0);
+
+            basePointsForTap *= totalBonusMultiplierFactor;
+            
+            profileAfterPoints.activeTapBonuses.forEach(oldBonus => {
+                if (!stillActiveBonuses.find(b => b.id === oldBonus.id)) {
+                    expiredBonuses.push(oldBonus);
+                }
+            });
+            profileAfterPoints.activeTapBonuses = stillActiveBonuses;
+        }
+        if (expiredBonuses.length > 0) {
+            expiredBonuses.forEach(b => {
+                addCoreMessage({ type: 'system_alert', content: `Power boost from ${b.name} has expired.` });
+            });
+        }
+        
+        const pointsWithBonus = Math.round(basePointsForTap);
+
+        profileAfterPoints.points += pointsWithBonus;
+        profileAfterPoints.seasonProgress[currentSeason.id] = (profileAfterPoints.seasonProgress[currentSeason.id] || 0) + pointsWithBonus;
+
+        let newXp = profileAfterPoints.xp + pointsWithBonus;
         let levelChanged = false;
         while (newXp >= profileAfterPoints.xpToNextLevel) {
             newXp -= profileAfterPoints.xpToNextLevel;
@@ -597,7 +624,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             addCoreMessage({ type: 'system_alert', content: `Promotion! You've reached the ${newLeague} league.` }, true);
         }
 
-        let newBattlePassXp = profileAfterPoints.battlePassXp + finalAmount;
+        let newBattlePassXp = profileAfterPoints.battlePassXp + pointsWithBonus;
         let bpLevelledUp = false;
         while(newBattlePassXp >= profileAfterPoints.xpToNextBattlePassLevel) {
             newBattlePassXp -= profileAfterPoints.xpToNextBattlePassLevel;
@@ -609,27 +636,11 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             addCoreMessage({ type: 'system_alert', content: `Battle Pass Level Up! Reached Level ${profileAfterPoints.battlePassLevel}.` }, true);
         }
 
-        profileAfterPoints.totalTapsForUniform = (profileAfterPoints.totalTapsForUniform || 0) + 1;
-        let newEquippedUniformPieces = [...(profileAfterPoints.equippedUniformPieces || [])];
-        const currentlyEquippedCount = newEquippedUniformPieces.length;
-        const targetEquippedCount = Math.floor(profileAfterPoints.totalTapsForUniform / TAPS_PER_UNIFORM_PIECE);
-
-        if (targetEquippedCount > currentlyEquippedCount && currentlyEquippedCount < UNIFORM_PIECES_ORDER.length) {
-            const piece = UNIFORM_PIECES_ORDER[currentlyEquippedCount];
-            newEquippedUniformPieces.push(piece);
-            newPiece = piece;
-        }
-        profileAfterPoints.equippedUniformPieces = newEquippedUniformPieces;
-        
         let profileAfterTapQuests = updateQuestProgress(profileAfterPoints, 'taps', 1);
-        profileAfterTapQuests = updateQuestProgress(profileAfterTapQuests, 'points_earned', finalAmount);
-
+        profileAfterTapQuests = updateQuestProgress(profileAfterTapQuests, 'points_earned', pointsWithBonus);
 
         if (isCritical) {
             addCoreMessage({ type: 'system_alert', content: `Critical Tap! Power amplified.` });
-        }
-        if(newPiece) {
-            addCoreMessage({ type: 'system_alert', content: `New gear acquired: ${newPiece}.` }, true);
         }
 
         return profileAfterTapQuests;
