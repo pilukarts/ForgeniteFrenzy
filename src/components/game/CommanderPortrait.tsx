@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -21,7 +22,8 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
     );
   }
 
-  // Use the correct images with the AF logo.
+  // --- CORRECTED LOGIC ---
+  // Use the correct images with the AF logo. This logic is now definitive.
   const imageUrl = playerProfile.commanderSex === 'female' 
     ? "https://i.imgur.com/BQHeVWp.png" // Female commander with AF logo
     : "https://i.imgur.com/iuRJVBZ.png"; // Male commander with AF logo

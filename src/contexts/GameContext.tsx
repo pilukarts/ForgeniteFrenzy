@@ -224,14 +224,26 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     // This effect handles saving the player profile to localStorage whenever it changes.
     if (playerProfile && isInitialSetupDone) {
-      localStorage.setItem('playerProfile', JSON.stringify(playerProfile));
+      try {
+        const profileToSave = {
+            ...playerProfile,
+            activeDailyQuests: playerProfile.activeDailyQuests.map(({ icon, ...rest }) => rest), // Remove icon before saving
+        };
+        localStorage.setItem('playerProfile', JSON.stringify(profileToSave));
+      } catch (e) {
+          console.error("Failed to save player profile to localStorage:", e);
+      }
     }
   }, [playerProfile, isInitialSetupDone]);
 
   useEffect(() => {
     // This effect handles saving core messages to localStorage.
     if (isInitialSetupDone) {
-      localStorage.setItem('coreMessages', JSON.stringify(coreMessages));
+       try {
+        localStorage.setItem('coreMessages', JSON.stringify(coreMessages));
+       } catch (e) {
+           console.error("Failed to save core messages to localStorage:", e);
+       }
     }
   }, [coreMessages, isInitialSetupDone]);
 
@@ -734,17 +746,14 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       ...defaultPlayerProfile,
       id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
       name,
-      commanderSex: sex,
-      avatarUrl: avatarUrl,
+      commanderSex: sex, // Correctly save the selected sex
+      avatarUrl: avatarUrl, // Correctly save the selected avatar
       country,
       currentSeasonId: SEASONS_DATA[0].id,
       lastLoginTimestamp: now,
       referralCode: generateReferralCode(name),
       referredByCode: referredByCode?.trim() || undefined,
     };
-    
-    // Immediately save to local storage to prevent loss on refresh
-    localStorage.setItem('playerProfile', JSON.stringify(newProfileData));
     
     setPlayerProfile(newProfileData);
     setIsInitialSetupDone(true);
@@ -924,7 +933,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             ...prev, 
             name, 
             avatarUrl, 
-            commanderSex 
+            commanderSex // Ensure commanderSex is updated
         };
         // The useEffect hook will automatically save this to localStorage.
         return updatedProfile;

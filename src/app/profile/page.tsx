@@ -1,5 +1,4 @@
 
-
 "use client";
 import React, { useState, useEffect } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -48,9 +47,14 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleResetProfile = () => {
-    localStorage.removeItem('playerProfile');
-    localStorage.removeItem('coreMessages');
-    window.location.reload();
+    try {
+      localStorage.removeItem('playerProfile');
+      localStorage.removeItem('coreMessages');
+      window.location.href = '/'; // Navigate to home to re-trigger setup
+    } catch (e) {
+      console.error("Error clearing localStorage:", e);
+      alert("Could not reset profile. Please clear your browser's site data for this page manually.");
+    }
   };
 
   if (isLoading) {
@@ -125,7 +129,7 @@ const ProfilePage: React.FC = () => {
            <Card className="border-destructive">
             <CardHeader>
               <CardTitle className="text-destructive flex items-center"><AlertTriangle className="mr-2"/> Danger Zone</CardTitle>
-              <CardDescription>This will erase all your local progress and restart the game.</CardDescription>
+              <CardDescription>This will erase all your local progress and restart the game from the initial setup.</CardDescription>
             </CardHeader>
             <CardFooter>
               <AlertDialog>
@@ -136,12 +140,12 @@ const ProfilePage: React.FC = () => {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      This action cannot be undone. All your points, upgrades, and progress will be permanently deleted from this device.
+                      This action cannot be undone. All your points, upgrades, and progress will be permanently deleted from this device. You will be taken back to the initial profile setup.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleResetProfile}>Yes, Reset Profile</AlertDialogAction>
+                    <AlertDialogAction onClick={handleResetProfile}>Yes, Reset My Profile</AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
