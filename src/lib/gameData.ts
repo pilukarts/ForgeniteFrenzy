@@ -354,6 +354,7 @@ export const LEVEL_STAGES: LevelStage[] = [
 export const TAPS_PER_UNIFORM_PIECE = 2000;
 export const UNIFORM_PIECES_ORDER = ["Tactical Gloves", "Combat Boots", "Utility Belt", "Chest Rig", "Stealth Helmet"];
 
+// These are the HEADSHOT portraits for profile selection.
 export const ALL_AVATARS = [
     { url: "https://i.imgur.com/gB3i4OQ.png", sex: 'male', hint: 'male commander portrait' },
     { url: "https://i.imgur.com/J3tG1e4.png", sex: 'female', hint: 'female commander portrait' },

@@ -916,6 +916,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const updatePlayerProfile = useCallback((name: string, avatarUrl: string, commanderSex: 'male' | 'female') => {
     setPlayerProfile(prev => {
         if (!prev) return null;
+        // Correctly updates both the avatar URL and the sex for full consistency.
         return { ...prev, name, avatarUrl, commanderSex };
     });
     addCoreMessage({ type: 'system_alert', content: 'Player profile updated.' });
@@ -927,12 +928,14 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (!prev) return null;
         const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
         
-        const newAvatar = ALL_AVATARS.find(avatar => avatar.sex === newSex);
+        // This finds the *headshot* avatar corresponding to the new sex for the profile page/header.
+        const newAvatarData = ALL_AVATARS.find(avatar => avatar.sex === newSex) || ALL_AVATARS[0];
             
-        if (!newAvatar) return prev; // Fallback
-
         toast({ title: 'Commander Switched', description: `Now playing as the ${newSex} commander.` });
-        return { ...prev, commanderSex: newSex, avatarUrl: newAvatar.url };
+        
+        // This correctly updates both properties. The game portrait will use `commanderSex` to show the full body,
+        // and the header/profile will use `avatarUrl` to show the headshot.
+        return { ...prev, commanderSex: newSex, avatarUrl: newAvatarData.url };
     });
   }, [toast]);
   
@@ -982,7 +985,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         hideCommanderOrder,
         watchRewardedAd,
         rewardedAdCooldown,
-isWatchingAd,
+        isWatchingAd,
         updatePlayerProfile,
         toggleCommander,
     }}>

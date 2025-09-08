@@ -22,7 +22,9 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
     );
   }
 
-  // Lógica corregida y simplificada para usar las imágenes de cuerpo completo con el logo "AF"
+  // --- LÓGICA CORREGIDA Y DEFINITIVA ---
+  // Se usan las imágenes de cuerpo completo con el logo "AF" directamente.
+  // La selección se basa en la propiedad 'commanderSex' del perfil.
   const imageUrl = playerProfile.commanderSex === 'female' 
     ? "https://i.imgur.com/BQHeVWp.png" // Comandante femenina con logo AF
     : "https://i.imgur.com/iuRJVBZ.png"; // Comandante masculino con logo AF
@@ -68,7 +70,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
             isTapped ? "animate-tapped-aura" : "animate-pulse-neon-dynamic active:scale-95"
           )}
           priority
-          key={imageUrl} 
+          key={imageUrl} // key prop para forzar la recarga de la imagen si cambia
         />
       </button>
     </div>
