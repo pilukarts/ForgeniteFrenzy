@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -25,7 +24,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
 
   // Use the main avatarUrl from the profile for the large portrait.
   // This is the URL that is set during profile setup/editing.
-  const imageUrl = playerProfile.avatarUrl || "https://i.imgur.com/BOKoTIM.png"; // Fallback to a default if URL is missing
+  const imageUrl = playerProfile.avatarUrl || "https://i.imgur.com/Wq9PqxG.png"; // Fallback to female commander
   const altText = `Commander ${playerProfile.name}`;
   const dataAiHint = "commander portrait";
 
