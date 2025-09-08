@@ -10,10 +10,21 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check, UserCircle, Users } from 'lucide-react';
+import { Check, UserCircle, Users, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { ALL_AVATARS } from '@/lib/gameData';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 
 const ProfilePage: React.FC = () => {
@@ -34,6 +45,12 @@ const ProfilePage: React.FC = () => {
       const avatarData = ALL_AVATARS.find(a => a.url === selectedAvatar) || ALL_AVATARS[0];
       updatePlayerProfile(name, selectedAvatar, avatarData.sex);
     }
+  };
+
+  const handleResetProfile = () => {
+    localStorage.removeItem('playerProfile');
+    localStorage.removeItem('coreMessages');
+    window.location.reload();
   };
 
   if (isLoading) {
@@ -105,6 +122,31 @@ const ProfilePage: React.FC = () => {
               Save All Changes
           </Button>
 
+           <Card className="border-destructive">
+            <CardHeader>
+              <CardTitle className="text-destructive flex items-center"><AlertTriangle className="mr-2"/> Danger Zone</CardTitle>
+              <CardDescription>This will erase all your local progress and restart the game.</CardDescription>
+            </CardHeader>
+            <CardFooter>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" className="w-full">Reset Profile</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. All your points, upgrades, and progress will be permanently deleted from this device.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleResetProfile}>Yes, Reset Profile</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </CardFooter>
+          </Card>
         </div>
       </div>
     </AppLayout>

@@ -15,7 +15,6 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
   const [isTapped, setIsTapped] = useState(false);
 
   if (!playerProfile) {
-    // Render a skeleton while the profile is loading to prevent errors.
     return (
       <div className="relative w-64 h-80 sm:w-72 sm:h-96 flex items-center justify-center">
         <Skeleton className="w-full h-full" />
