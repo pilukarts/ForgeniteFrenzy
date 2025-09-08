@@ -25,8 +25,8 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
 
   // Determine the correct full-body image URL based on the player's profile
   const imageUrl = playerProfile.commanderSex === 'male' 
-    ? "https://i.imgur.com/BOKoTIM.png" // Full-body male
-    : "https://i.imgur.com/Wq9PqxG.png"; // Full-body female
+    ? "https://i.imgur.com/iuRJVBZ.png" // Full-body male
+    : "https://i.imgur.com/BQHeVWp.png"; // Full-body female
 
   const altText = `Commander ${playerProfile.name}`;
   const dataAiHint = playerProfile.commanderSex === 'male' ? "male commander full body" : "female commander full body";
