@@ -3,10 +3,8 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { useGame } from '@/contexts/GameContext'; // Import useGame
-import { Hexagon } from 'lucide-react';
+import { useGame } from '@/contexts/GameContext';
 import { Skeleton } from '@/components/ui/skeleton';
-
 
 interface CommanderPortraitProps {
   onTap: () => void;
@@ -15,39 +13,21 @@ interface CommanderPortraitProps {
 const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
   const { playerProfile } = useGame();
   const [isTapped, setIsTapped] = useState(false);
-  
+
   if (!playerProfile) {
-    // Render a skeleton or nothing while the profile is loading to prevent server errors
+    // Render a skeleton while the profile is loading to prevent errors.
     return (
-        <div className="relative w-64 h-80 sm:w-72 sm:h-96 flex items-center justify-center">
-            <Skeleton className="w-full h-full" />
-        </div>
+      <div className="relative w-64 h-80 sm:w-72 sm:h-96 flex items-center justify-center">
+        <Skeleton className="w-full h-full" />
+      </div>
     );
   }
-  
-  const { commanderSex, currentTierColor, equippedUniformPieces } = playerProfile;
 
-  const getCommanderImage = () => {
-    const equippedCount = equippedUniformPieces?.length || 0;
-    const sex = commanderSex;
-    let imageInfo = { src: "", hint: "" };
-
-    if (sex === 'male') {
-        imageInfo = { src: "https://i.imgur.com/iuRJVBZ.png", hint: "fullbody male commander" }; // Default
-        if (equippedCount >= 1) imageInfo = { src: "https://i.imgur.com/83pL36g.png", hint: "male commander gloves boots" };
-        if (equippedCount >= 3) imageInfo = { src: "https://i.imgur.com/tQ4zJ2a.png", hint: "male commander armor" };
-        if (equippedCount >= 5) imageInfo = { src: "https://i.imgur.com/iR322b2.png", hint: "male commander full armor helmet" };
-    } else { // female
-        imageInfo = { src: "https://i.imgur.com/BQHeVWp.png", hint: "fullbody female commander" }; // Default
-        if (equippedCount >= 1) imageInfo = { src: "https://i.imgur.com/7L48yPE.png", hint: "female commander gloves boots" };
-        if (equippedCount >= 3) imageInfo = { src: "https://i.imgur.com/26Xn9A8.png", hint: "female commander armor" };
-        if (equippedCount >= 5) imageInfo = { src: "https://i.imgur.com/K3tB9gH.png", hint: "female commander full armor helmet" };
-    }
-    return imageInfo;
-  };
-
-  const { src: imageUrl, hint: dataAiHint } = getCommanderImage();
-  const altText = commanderSex === 'male' ? "Male Commander" : "Female Commander";
+  // Use the main avatarUrl from the profile for the large portrait.
+  // This is the URL that is set during profile setup/editing.
+  const imageUrl = playerProfile.avatarUrl || "https://i.imgur.com/BOKoTIM.png"; // Fallback to a default if URL is missing
+  const altText = `Commander ${playerProfile.name}`;
+  const dataAiHint = "commander portrait";
 
   const handleInteraction = () => {
     onTap();
@@ -55,10 +35,8 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
     setTimeout(() => setIsTapped(false), 200);
   };
 
-  const hexagonClipPath = 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)';
-
   const dynamicStyles = {
-    '--dynamic-commander-glow': currentTierColor || '45 100% 50%'
+    '--dynamic-commander-glow': playerProfile.currentTierColor || '45 100% 50%'
   } as React.CSSProperties;
 
   return (
@@ -66,7 +44,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
       style={dynamicStyles}
       className={cn(
         "relative focus:outline-none transition-transform duration-100",
-        "w-64 h-80 sm:w-72 sm:h-96",
+        "w-64 h-80 sm:w-72 sm:h-96", // Default size for the portrait area
         "flex items-center justify-center"
       )}
       aria-label="Tap Commander"
@@ -79,33 +57,19 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
         }}
         className="w-full h-full relative group"
       >
+        {/* Use a standard Image component. The logic is now much simpler. */}
         <Image
           src={imageUrl}
           alt={altText}
           data-ai-hint={dataAiHint}
-          width={288}
-          height={384}
+          fill
           className={cn(
-            "object-contain w-full h-full transition-all duration-200",
+            "object-contain transition-all duration-200", // Use object-contain to fit the image within the button area
             isTapped ? "animate-tapped-aura" : "animate-pulse-neon-dynamic active:scale-95"
           )}
           priority
-          key={imageUrl} // Add key to force re-render on image change
+          key={imageUrl} // Force re-render if the avatar URL changes
         />
-        
-        <div className={cn(
-          "absolute flex items-center justify-center",
-          "w-[34px] h-[38px]",
-          "left-1/2 -translate-x-1/2 -translate-y-1/2",
-          commanderSex === 'male' ? 'top-[31%]' : 'top-[32%]',
-          "bg-[hsl(var(--dynamic-commander-glow))] text-primary-foreground",
-          "font-headline font-bold text-sm tracking-wider",
-           "pointer-events-none"
-        )}
-        style={{ clipPath: hexagonClipPath }}
-        >
-            AF
-        </div>
       </button>
     </div>
   );
