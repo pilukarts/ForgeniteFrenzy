@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -23,10 +22,10 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
     );
   }
 
-  // Determine the correct full-body image URL based on the player's profile
+  // Use the correct full-body image URL based on the player's profile sex
   const imageUrl = playerProfile.commanderSex === 'male' 
-    ? "https://i.imgur.com/iuRJVBZ.png" // Full-body male
-    : "https://i.imgur.com/BQHeVWp.png"; // Full-body female
+    ? "https://i.imgur.com/iuRJVBZ.png" // Male full-body
+    : "https://i.imgur.com/BQHeVWp.png"; // Female full-body
 
   const altText = `Commander ${playerProfile.name}`;
   const dataAiHint = playerProfile.commanderSex === 'male' ? "male commander full body" : "female commander full body";
