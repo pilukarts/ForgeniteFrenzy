@@ -1,5 +1,3 @@
-
-
 import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate, LeagueName, LeagueTier, BattlePass, LevelStage } from './types';
 import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle, Shield, ShieldCheck, Award, Star, Crown, LucideIcon, Swords, Shirt, Replace } from 'lucide-react';
 
@@ -357,8 +355,6 @@ export const TAPS_PER_UNIFORM_PIECE = 2000;
 export const UNIFORM_PIECES_ORDER = ["Tactical Gloves", "Combat Boots", "Utility Belt", "Chest Rig", "Stealth Helmet"];
 
 export const ALL_AVATARS = [
-    { url: "https://i.imgur.com/BOKoTIM.png", sex: 'male', hint: 'male commander full body' },
-    { url: "https://i.imgur.com/Wq9PqxG.png", sex: 'female', hint: 'female commander full body' },
     { url: "https://i.imgur.com/gB3i4OQ.png", sex: 'male', hint: 'male commander portrait' },
     { url: "https://i.imgur.com/J3tG1e4.png", sex: 'female', hint: 'female commander portrait' },
 ];

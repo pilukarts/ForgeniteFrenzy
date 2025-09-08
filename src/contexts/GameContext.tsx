@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, CommanderOrder } from '@/lib/types';
@@ -907,6 +905,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const updatePlayerProfile = useCallback((name: string, avatarUrl: string, commanderSex: 'male' | 'female') => {
     setPlayerProfile(prev => {
         if (!prev) return null;
+        // **LÓGICA CORREGIDA:** Asegura que `commanderSex` se actualice junto con el avatar.
         return { ...prev, name, avatarUrl, commanderSex };
     });
     addCoreMessage({ type: 'system_alert', content: 'Player profile updated.' });
@@ -918,12 +917,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (!prev) return null;
         const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
         
-        // Find a suitable full-body avatar for the new sex
-        const newAvatar = newSex === 'male' 
-            ? ALL_AVATARS.find(avatar => avatar.sex === 'male' && avatar.url.includes('BOKoTIM')) // Male full body
-            : ALL_AVATARS.find(avatar => avatar.sex === 'female' && avatar.url.includes('Wq9PqxG')); // Female full body
+        // **LÓGICA CORREGIDA:** Al cambiar, actualiza tanto `commanderSex` como `avatarUrl`.
+        const newAvatar = ALL_AVATARS.find(avatar => avatar.sex === newSex);
             
-        if (!newAvatar) return prev; // Should not happen if data is correct
+        if (!newAvatar) return prev; // Fallback por si no se encuentra el avatar
 
         toast({ title: 'Commander Switched', description: `Now playing as the ${newSex} commander.` });
         return { ...prev, commanderSex: newSex, avatarUrl: newAvatar.url };
