@@ -917,8 +917,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setPlayerProfile(prev => {
         if (!prev) return null;
         const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
-        const newAvatar = ALL_AVATARS.find(avatar => avatar.sex === newSex);
-        if (!newAvatar) return prev; // Should not happen
+        
+        // Find a suitable full-body avatar for the new sex
+        const newAvatar = newSex === 'male' 
+            ? ALL_AVATARS.find(avatar => avatar.sex === 'male' && avatar.url.includes('BOKoTIM')) // Male full body
+            : ALL_AVATARS.find(avatar => avatar.sex === 'female' && avatar.url.includes('Wq9PqxG')); // Female full body
+            
+        if (!newAvatar) return prev; // Should not happen if data is correct
 
         toast({ title: 'Commander Switched', description: `Now playing as the ${newSex} commander.` });
         return { ...prev, commanderSex: newSex, avatarUrl: newAvatar.url };

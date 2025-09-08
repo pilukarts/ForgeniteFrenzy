@@ -23,10 +23,13 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
     );
   }
 
-  // Se fuerza la imagen de la comandante femenina de cuerpo completo.
-  const imageUrl = "https://i.imgur.com/Wq9PqxG.png"; 
+  // Determine the correct full-body image URL based on the player's profile
+  const imageUrl = playerProfile.commanderSex === 'male' 
+    ? "https://i.imgur.com/BOKoTIM.png" // Full-body male
+    : "https://i.imgur.com/Wq9PqxG.png"; // Full-body female
+
   const altText = `Commander ${playerProfile.name}`;
-  const dataAiHint = "female commander portrait";
+  const dataAiHint = playerProfile.commanderSex === 'male' ? "male commander full body" : "female commander full body";
 
   const handleInteraction = () => {
     onTap();
