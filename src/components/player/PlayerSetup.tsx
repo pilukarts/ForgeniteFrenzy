@@ -45,6 +45,12 @@ const PlayerSetup: React.FC = () => {
     ? countries
     : countries.filter(c => c.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
+  // Get only one avatar per sex for selection screen (the portrait version)
+  const maleAvatar = ALL_AVATARS.find(a => a.sex === 'male' && a.type === 'portrait');
+  const femaleAvatar = ALL_AVATARS.find(a => a.sex === 'female' && a.type === 'portrait');
+  const selectableAvatars = [maleAvatar, femaleAvatar].filter(Boolean) as typeof ALL_AVATARS;
+
+
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4">
       <Card className="w-full max-w-lg bg-card text-card-foreground shadow-2xl flex flex-col h-full sm:h-auto sm:max-h-[90vh]">
@@ -62,7 +68,7 @@ const PlayerSetup: React.FC = () => {
               <div className="space-y-3">
                 <Label className="text-foreground/80 text-lg font-semibold block text-center">Select Your Commander</Label>
                 <div className="flex justify-center gap-4">
-                  {ALL_AVATARS.map((avatar) => (
+                  {selectableAvatars.map((avatar) => (
                     <div 
                       key={avatar.url}
                       className={cn(

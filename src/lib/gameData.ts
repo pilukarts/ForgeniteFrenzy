@@ -356,8 +356,13 @@ export const LEVEL_STAGES: LevelStage[] = [
 export const TAPS_PER_UNIFORM_PIECE = 2000;
 export const UNIFORM_PIECES_ORDER = ["Tactical Gloves", "Combat Boots", "Utility Belt", "Chest Rig", "Stealth Helmet"];
 
-// These are the headshot portraits for profile selection.
-export const ALL_AVATARS = [
-    { url: "https://i.imgur.com/Wq9PqxG.png", sex: 'male', hint: 'male commander portrait' },
-    { url: "https://i.imgur.com/BOKoTIM.png", sex: 'female', hint: 'female commander portrait' },
+// This list now differentiates between the selection portrait and the full body image used in-game.
+export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; hint: string; type: 'portrait' | 'full' }[] = [
+    // --- Portraits for Selection ---
+    { url: "https://i.imgur.com/Wq9PqxG.png", sex: 'male', hint: 'male commander portrait', type: 'portrait' },
+    { url: "https://i.imgur.com/BOKoTIM.png", sex: 'female', hint: 'female commander portrait', type: 'portrait' },
+    
+    // --- Full Body for Gameplay ---
+    { url: "https://i.imgur.com/iuRJVBZ.png", sex: 'male', hint: 'male commander full body', type: 'full' },
+    { url: "https://i.imgur.com/BQHeVWp.png", sex: 'female', hint: 'female commander full body', type: 'full' },
 ];
