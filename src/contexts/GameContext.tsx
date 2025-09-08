@@ -179,8 +179,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // --- PROFILE HYDRATION & DEFAULTS ---
         // Ensure avatarUrl is set, falling back if it's missing from old profiles
         const fallbackAvatarUrl = parsedProfile.commanderSex === 'female' 
-            ? "https://i.imgur.com/BQHeVWp.png" // Female with AF logo
-            : "https://i.imgur.com/iuRJVBZ.png"; // Male with AF logo
+            ? "https://i.imgur.com/gB3i4OQ.png"
+            : "https://i.imgur.com/iuRJVBZ.png";
 
         const hydratedProfile: PlayerProfile = {
             ...defaultPlayerProfile,
@@ -756,17 +756,16 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const completeInitialSetup = useCallback((name: string, sex: 'male' | 'female', country: string, referredByCode?: string) => {
     const now = Date.now();
     
-    // ROOT CAUSE FIX: Determine the correct full-body URL with logo based on sex
     const finalAvatarUrl = sex === 'female' 
-        ? "https://i.imgur.com/BQHeVWp.png" // Female with AF logo
-        : "https://i.imgur.com/iuRJVBZ.png"; // Male with AF logo
+        ? "https://i.imgur.com/BQHeVWp.png"
+        : "https://i.imgur.com/iuRJVBZ.png";
 
     const newProfileData: PlayerProfile = {
       ...defaultPlayerProfile,
       id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
       name,
       commanderSex: sex,
-      avatarUrl: finalAvatarUrl, // Save the correct full-body URL
+      avatarUrl: finalAvatarUrl,
       country,
       currentSeasonId: SEASONS_DATA[0].id,
       lastLoginTimestamp: now,
@@ -793,13 +792,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         toast({ title: 'Sync Failed', description: 'Could not save initial profile to server.', variant: 'destructive' });
     });
   }, [addCoreMessage, toast]);
-
-  // FIX: Run quest refresh in an effect after setup is complete to avoid "setState in render" error.
+  
   useEffect(() => {
-    if (isInitialSetupDone) {
+    if (isInitialSetupDone && playerProfile) {
       refreshDailyQuestsIfNeeded();
     }
-  }, [isInitialSetupDone, refreshDailyQuestsIfNeeded]);
+  }, [isInitialSetupDone, playerProfile, refreshDailyQuestsIfNeeded]);
 
   const refillTaps = useCallback(() => {
     setPlayerProfile(prev => {
@@ -956,8 +954,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (!prev) return null;
         
         const finalAvatarUrl = commanderSex === 'female' 
-            ? "https://i.imgur.com/BQHeVWp.png" // Female with AF logo
-            : "https://i.imgur.com/iuRJVBZ.png"; // Male with AF logo
+            ? "https://i.imgur.com/BQHeVWp.png"
+            : "https://i.imgur.com/iuRJVBZ.png";
 
         const updatedProfile = { 
             ...prev, 
@@ -977,8 +975,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
         
         const newAvatarUrl = newSex === 'female' 
-            ? "https://i.imgur.com/BQHeVWp.png" // Female with AF logo
-            : "https://i.imgur.com/iuRJVBZ.png"; // Male with AF logo
+            ? "https://i.imgur.com/BQHeVWp.png"
+            : "https://i.imgur.com/iuRJVBZ.png";
             
         toast({ title: 'Commander Switched', description: `Now playing as the ${newSex} commander.` });
         
