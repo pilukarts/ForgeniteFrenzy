@@ -920,7 +920,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const updatePlayerProfile = useCallback((name: string, avatarUrl: string, commanderSex: 'male' | 'female') => {
     setPlayerProfile(prev => {
         if (!prev) return null;
-        // This is the CRITICAL fix: ensure all properties are updated.
         const updatedProfile = { 
             ...prev, 
             name, 
