@@ -753,7 +753,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const completeInitialSetup = useCallback(async (name: string, sex: 'male' | 'female', country: string, referredByCode?: string) => {
     const now = Date.now();
     
-    // Find the full body URL based on the selected sex.
+    // Find the correct full body URL with the logo based on the selected sex.
     const finalAvatarUrl = ALL_AVATARS.find(a => a.sex === sex)?.url || ALL_AVATARS[0].url;
 
     const newProfileData: PlayerProfile = {
@@ -952,7 +952,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setPlayerProfile(prev => {
         if (!prev) return null;
         
-        // Find the correct avatar URL based on the selected sex.
+        // Find the correct full-body URL with the logo based on the provided sex.
         const finalAvatarUrl = ALL_AVATARS.find(a => a.sex === commanderSex)?.url || ALL_AVATARS[0].url;
 
         const updatedProfile = { 
@@ -972,6 +972,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (!prev) return null;
         const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
         
+        // Ensure the correct full-body image with logo is used when toggling.
         const newAvatarUrl = ALL_AVATARS.find(a => a.sex === newSex)?.url || ALL_AVATARS[0].url;
             
         toast({ title: 'Commander Switched', description: `Now playing as the ${newSex} commander.` });

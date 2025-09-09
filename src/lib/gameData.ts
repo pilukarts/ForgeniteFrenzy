@@ -371,7 +371,8 @@ export const SELECTABLE_AVATARS: { url: string; sex: 'male' | 'female'; hint: st
     },
 ];
 
-// This list is now just for referencing the full-body images. The logic will use SELECTABLE_AVATARS.
+// This list contains the FULL BODY images with the LOGO.
+// The game logic will now directly use these.
 export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; hint: string; }[] = [
     { url: "https://i.imgur.com/iuRJVBZ.png", sex: 'male', hint: 'male commander with AF logo' },
     { url: "https://i.imgur.com/BQHeVWp.png", sex: 'female', hint: 'female commander with AF logo' },
