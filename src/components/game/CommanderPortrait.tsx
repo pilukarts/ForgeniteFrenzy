@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -14,8 +15,8 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
   const { playerProfile } = useGame();
   const [isTapped, setIsTapped] = useState(false);
 
-  // Use the full body URL for the main game view
-  const imageUrl = playerProfile?.avatarUrl;
+  // The portraitUrl is now used for the main game view tap area.
+  const imageUrl = playerProfile?.portraitUrl;
 
   if (!playerProfile || !imageUrl) {
     return (
@@ -26,7 +27,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
   }
   
   const altText = `Commander ${playerProfile.name}`;
-  const dataAiHint = playerProfile.commanderSex === 'male' ? "male commander full body" : "female commander full body";
+  const dataAiHint = playerProfile.commanderSex === 'male' ? "male commander portrait" : "female commander portrait";
 
   const handleInteraction = (isLogoTap: boolean) => {
     if (isLogoTap) {
@@ -37,14 +38,9 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
     setIsTapped(true);
     setTimeout(() => setIsTapped(false), 200);
   };
-
-  const dynamicStyles = {
-    '--dynamic-commander-glow': playerProfile.currentTierColor || '45 100% 50%'
-  } as React.CSSProperties;
-
+  
   // These values are percentages of the parent container's width and height.
   // They define the position and size of the invisible logo tap area.
-  // Updated for new images with the AF Hexagon logo.
   const logoHitbox = playerProfile.commanderSex === 'female'
     ? { top: '38%', left: '41%', width: '18%', height: '10%' }
     : { top: '37%', left: '42.5%', width: '15%', height: '9%' };
@@ -52,11 +48,11 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
 
   return (
     <div 
-      style={dynamicStyles}
       className={cn(
         "relative focus:outline-none transition-transform duration-100",
         "w-64 h-80 sm:w-72 sm:h-96", // Default size for the portrait area
-        "flex items-center justify-center"
+        "flex items-center justify-center",
+        isTapped && (playerProfile.commanderSex === 'female' ? "scale-105" : "scale-105") // Simplified tap effect
       )}
       aria-label="Tap Commander"
     >
