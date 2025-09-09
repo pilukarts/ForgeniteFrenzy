@@ -43,7 +43,8 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
   // They define the position and size of the invisible logo tap area.
   const logoHitbox = playerProfile.commanderSex === 'female'
     ? { top: '38%', left: '41%', width: '18%', height: '10%' }
-    : { top: '37%', left: '42.5%', width: '15%', height: '9%' };
+    // Using the same hitbox for the mirrored male commander
+    : { top: '38%', left: '41%', width: '18%', height: '10%' }; 
     
   const dynamicGlowStyle = {
     '--dynamic-commander-glow': playerProfile.currentTierColor,
@@ -78,7 +79,10 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
             alt={altText}
             data-ai-hint={dataAiHint}
             fill
-            className="object-contain transition-all duration-200 pointer-events-none drop-shadow-2xl"
+            className={cn(
+              "object-contain transition-all duration-200 pointer-events-none drop-shadow-2xl",
+              playerProfile.commanderSex === 'male' && 'transform -scale-x-100' // Flip horizontally for male commander
+            )}
             priority
             key={imageUrl} // Add key to force re-render on image URL change
             />
@@ -99,7 +103,8 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
             className="absolute z-20 rounded-full"
             style={{
             top: logoHitbox.top,
-            left: logoHitbox.left,
+            // Adjust left position for the flipped male commander
+            left: playerProfile.commanderSex === 'male' ? `calc(100% - ${logoHitbox.left} - ${logoHitbox.width})` : logoHitbox.left,
             width: logoHitbox.width,
             height: logoHitbox.height,
             }}
