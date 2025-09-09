@@ -15,7 +15,7 @@ import { Check, Search, ChevronsUpDown } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import IntroScreen from '../intro/IntroScreen';
-import { ALL_AVATARS } from '@/lib/gameData';
+import { SELECTABLE_AVATARS } from '@/lib/gameData';
 
 
 const PlayerSetup: React.FC = () => {
@@ -45,8 +45,8 @@ const PlayerSetup: React.FC = () => {
     ? countries
     : countries.filter(c => c.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
-  // Use the new simplified ALL_AVATARS list
-  const selectableAvatars = ALL_AVATARS;
+  // Use the new SELECTABLE_AVATARS list for the selection UI
+  const selectableAvatars = SELECTABLE_AVATARS;
 
 
   return (

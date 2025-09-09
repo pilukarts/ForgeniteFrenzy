@@ -2,7 +2,7 @@
 "use client";
 
 import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, CommanderOrder } from '@/lib/types';
-import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES, UNIFORM_PIECES_ORDER, TAPS_PER_UNIFORM_PIECE, ALL_AVATARS, AF_LOGO_TAP_BONUS_MULTIPLIER } from '@/lib/gameData';
+import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES, UNIFORM_PIECES_ORDER, TAPS_PER_UNIFORM_PIECE, ALL_AVATARS, SELECTABLE_AVATARS, AF_LOGO_TAP_BONUS_MULTIPLIER } from '@/lib/gameData';
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getCoreBriefing } from '@/ai/flows/core-briefings';
@@ -753,8 +753,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const completeInitialSetup = useCallback((name: string, sex: 'male' | 'female', country: string, referredByCode?: string) => {
     const now = Date.now();
     
-    // Find the avatar URL for the selected sex.
-    const finalAvatarUrl = ALL_AVATARS.find(a => a.sex === sex)?.url || ALL_AVATARS[0].url;
+    // Find the full body URL based on the selected sex.
+    const finalAvatarUrl = SELECTABLE_AVATARS.find(a => a.sex === sex)?.fullBodyUrl || ALL_AVATARS[0].url;
 
     const newProfileData: PlayerProfile = {
       ...defaultPlayerProfile,
@@ -790,10 +790,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [addCoreMessage, toast]);
   
   useEffect(() => {
-    if (!isInitialSetupDone || !playerProfile) return;
-
-    const hasQuests = playerProfile.activeDailyQuests && playerProfile.activeDailyQuests.length > 0;
-    if (!hasQuests) {
+    if (isInitialSetupDone && playerProfile && !playerProfile.activeDailyQuests?.length) {
         refreshDailyQuestsIfNeeded();
     }
   }, [isInitialSetupDone, playerProfile, refreshDailyQuestsIfNeeded]);
@@ -954,7 +951,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (!prev) return null;
         
         // Find the correct avatar URL based on the selected sex.
-        const finalAvatarUrl = ALL_AVATARS.find(a => a.sex === commanderSex)?.url || ALL_AVATARS[0].url;
+        const finalAvatarUrl = ALL_AVATARS.find(a => a.sex === commanderSex)?.url || ALL_AVatARS[0].url;
 
         const updatedProfile = { 
             ...prev, 

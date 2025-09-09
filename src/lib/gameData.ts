@@ -1,4 +1,3 @@
-
 import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate, LeagueName, LeagueTier, BattlePass, LevelStage } from './types';
 import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle, Shield, ShieldCheck, Award, Star, Crown, LucideIcon, Swords, Shirt, Replace } from 'lucide-react';
 
@@ -356,9 +355,24 @@ export const LEVEL_STAGES: LevelStage[] = [
 export const TAPS_PER_UNIFORM_PIECE = 2000;
 export const UNIFORM_PIECES_ORDER = ["Tactical Gloves", "Combat Boots", "Utility Belt", "Chest Rig", "Stealth Helmet"];
 
-// This list provides the single, definitive image for each commander.
-// This image is used for both selection and gameplay.
+// Defines the PORTRAIT images for the selection screen
+export const SELECTABLE_AVATARS: { url: string; sex: 'male' | 'female'; hint: string; fullBodyUrl: string; }[] = [
+    { 
+      url: "https://i.imgur.com/Wq9PqxG.png", 
+      sex: 'male', 
+      hint: 'male commander headshot',
+      fullBodyUrl: "https://i.imgur.com/iuRJVBZ.png"
+    },
+    { 
+      url: "https://i.imgur.com/BOKoTIM.png", 
+      sex: 'female', 
+      hint: 'female commander headshot',
+      fullBodyUrl: "https://i.imgur.com/BQHeVWp.png"
+    },
+];
+
+// This list is now just for referencing the full-body images. The logic will use SELECTABLE_AVATARS.
 export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; hint: string; }[] = [
-    { url: "https://i.imgur.com/T0bC0L7.png", sex: 'male', hint: 'male commander with AF logo' },
-    { url: "https://i.imgur.com/G56yv5g.png", sex: 'female', hint: 'female commander with AF logo' },
+    { url: "https://i.imgur.com/iuRJVBZ.png", sex: 'male', hint: 'male commander with AF logo' },
+    { url: "https://i.imgur.com/BQHeVWp.png", sex: 'female', hint: 'female commander with AF logo' },
 ];
