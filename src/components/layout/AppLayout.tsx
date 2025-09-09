@@ -11,7 +11,6 @@ import { Wallet, CreditCard, Loader2 } from 'lucide-react';
 import CoreDisplay from '@/components/core/CoreDisplay';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import CommanderOrder from '@/components/game/CommanderOrder';
 import IntroScreen from '../intro/IntroScreen';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import Image from 'next/image';
@@ -95,11 +94,10 @@ interface AppLayoutProps {
 }
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
-  const { playerProfile, connectWallet, activeCommanderOrder, claimCommanderOrderReward, hideCommanderOrder, currentSeason, isLoading, isInitialSetupDone } = useGame();
+  const { playerProfile, connectWallet, currentSeason, isLoading, isInitialSetupDone } = useGame();
   const [isWalletDialogOpen, setWalletDialogOpen] = useState(false);
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
 
-  const showCommanderOrder = !!activeCommanderOrder;
 
   const seasonProgress = playerProfile?.seasonProgress?.[currentSeason.id] ?? 0;
   
@@ -160,8 +158,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           
           <CoreDisplay />
           
-          {showCommanderOrder && activeCommanderOrder && <CommanderOrder order={activeCommanderOrder} onClaim={claimCommanderOrderReward} onHide={hideCommanderOrder} />}
-
           <BottomNavBar />
         </div>
       </div>

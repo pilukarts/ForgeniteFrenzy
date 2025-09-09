@@ -1,7 +1,7 @@
 
 "use client";
 
-import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, CommanderOrder, SelectableAvatar } from '@/lib/types';
+import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, SelectableAvatar } from '@/lib/types';
 import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES, UNIFORM_PIECES_ORDER, TAPS_PER_UNIFORM_PIECE, SELECTABLE_AVATARS, AF_LOGO_TAP_BONUS_MULTIPLIER } from '@/lib/gameData';
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
@@ -12,7 +12,6 @@ import { syncPlayerProfileInFirestore } from '@/lib/firestore';
 
 const NUMBER_OF_DAILY_QUESTS = 3;
 const TAP_REGEN_COOLDOWN_MILLISECONDS = TAP_REGEN_COOLDOWN_MINUTES * 60 * 1000;
-const COMMANDER_ORDER_COOLDOWN_HOURS = 1;
 const REWARDED_AD_COOLDOWN_MILLISECONDS = REWARDED_AD_COOLDOWN_MINUTES * 60 * 1000;
 
 
@@ -52,10 +51,6 @@ interface GameContextType {
   battlePassData: BattlePass;
   purchasePremiumPass: () => void;
   claimBattlePassReward: (level: number, track: 'free' | 'premium') => void;
-  // Commander Order
-  activeCommanderOrder: CommanderOrder | null;
-  claimCommanderOrderReward: () => void;
-  hideCommanderOrder: () => void;
   // Rewarded Ad
   watchRewardedAd: () => void;
   rewardedAdCooldown: number;
@@ -99,9 +94,6 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
   xpToNextBattlePassLevel: BATTLE_PASS_XP_PER_LEVEL,
   hasPremiumPass: false,
   claimedBattlePassRewards: {},
-  // Commander Order
-  activeCommanderOrder: null,
-  lastCommanderOrderTimestamp: 0,
   // Rewarded Ad
   lastRewardedAdTimestamp: 0,
 };
@@ -123,7 +115,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [coreLastInteractionTime, setCoreLastInteractionTime] = useState<number>(0);
   const [comboCount, setComboCount] = useState(0);
   const [isAICallInProgress, setIsAICallInProgress] = useState(false);
-  const [activeCommanderOrder, setActiveCommanderOrder] = useState<CommanderOrder | null>(null);
   const [rewardedAdCooldown, setRewardedAdCooldown] = useState(0);
   const [isWatchingAd, setIsWatchingAd] = useState(false);
 
@@ -220,9 +211,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
 
     setPlayerProfile(loadedProfile);
-    if (loadedProfile?.activeCommanderOrder) {
-      setActiveCommanderOrder(loadedProfile.activeCommanderOrder);
-    }
     setIsLoading(false);
   }, []);
 
@@ -234,14 +222,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const profileToSave: PlayerProfile = {
             ...playerProfile,
             activeDailyQuests: playerProfile.activeDailyQuests.map(({ icon, ...rest }) => rest), // Remove icon before saving
-            activeCommanderOrder: activeCommanderOrder, // Ensure the external state is saved
         };
         localStorage.setItem('playerProfile', JSON.stringify(profileToSave));
       } catch (e) {
           console.error("Failed to save player profile to localStorage:", e);
       }
     }
-  }, [playerProfile, isInitialSetupDone, activeCommanderOrder]);
+  }, [playerProfile, isInitialSetupDone]);
 
   useEffect(() => {
     // This effect handles saving core messages to localStorage.
@@ -271,42 +258,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return () => clearInterval(interval);
   }, [playerProfile]);
   
-
-  // Handle Commander Order logic
-  // useEffect(() => {
-  //   if (!playerProfile || !isInitialSetupDone) return;
-
-  //   const now = Date.now();
-
-  //   // Check if current order is expired
-  //   if (activeCommanderOrder && now > activeCommanderOrder.endTime) {
-  //       addCoreMessage({ type: 'system_alert', content: "Commander, you've run out of time to complete the special order." }, true);
-  //       setActiveCommanderOrder(null);
-  //       setPlayerProfile(p => p ? { ...p, lastCommanderOrderTimestamp: now, activeCommanderOrder: null } : null);
-  //       return;
-  //   }
-    
-  //   const lastOrderTimestamp = playerProfile.lastCommanderOrderTimestamp || 0;
-  //   const cooldown = COMMANDER_ORDER_COOLDOWN_HOURS * 60 * 60 * 1000;
-    
-  //   // Check if it's time for a new order
-  //   if (!activeCommanderOrder && now - lastOrderTimestamp > cooldown) {
-  //     const newOrder: CommanderOrder = {
-  //       id: `order-${now}`,
-  //       objectiveType: 'points',
-  //       target: 3000 * playerProfile.level,
-  //       reward: { auron: 20 + Math.floor(playerProfile.level / 5) },
-  //       startTime: now,
-  //       endTime: now + (2 * 24 * 60 * 60 * 1000),
-  //       progress: 0,
-  //       isCompleted: false,
-  //     };
-  //     setActiveCommanderOrder(newOrder);
-  //     addCoreMessage({ type: 'briefing', content: `New special order received! Acquire ${newOrder.target.toLocaleString()} points.`}, true);
-  //   }
-  // }, [isInitialSetupDone, playerProfile, activeCommanderOrder, addCoreMessage]);
-  
-
   const updateQuestProgress = useCallback((profile: PlayerProfile, type: QuestType, value: number): PlayerProfile => {
     if (!profile.activeDailyQuests) return profile;
 
@@ -322,18 +273,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return quest;
     });
 
-    if (activeCommanderOrder && !activeCommanderOrder.isCompleted && type === activeCommanderOrder.objectiveType) {
-        const newProgress = activeCommanderOrder.progress + value;
-        const isCompleted = newProgress >= activeCommanderOrder.target;
-        if (isCompleted) {
-            addCoreMessage({ type: 'system_alert', content: "Special Order Objective Met! Report back to claim your reward, Commander."});
-        }
-        setActiveCommanderOrder({ ...activeCommanderOrder, progress: newProgress, isCompleted });
-    }
-
-
     return { ...profile, activeDailyQuests: updatedQuests };
-  }, [addCoreMessage, activeCommanderOrder]);
+  }, [addCoreMessage]);
 
   const addPoints = useCallback((amount: number, isFromTap: boolean = false) => {
     setPlayerProfile(prev => {
@@ -849,32 +790,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       };
     });
   }, [addCoreMessage]);
-  
-  const claimCommanderOrderReward = useCallback(() => {
-    // if (!activeCommanderOrder || !activeCommanderOrder.isCompleted) return;
-    
-    // const order = activeCommanderOrder;
-    
-    // addCoreMessage({
-    //   type: 'system_alert',
-    //   content: `Excellent work, Commander. You've earned a reward of ${order.reward.auron} Auron.`
-    // }, true);
-
-    // setPlayerProfile(prev => {
-    //   if (!prev) return null;
-    //   return {
-    //     ...prev,
-    //     auron: prev.auron + (order.reward.auron || 0),
-    //     points: prev.points + (order.reward.points || 0),
-    //     lastCommanderOrderTimestamp: Date.now(),
-    //   };
-    // });
-    // setActiveCommanderOrder(null);
-  }, []);
-
-  const hideCommanderOrder = useCallback(() => {
-    // setActiveCommanderOrder(null);
-  }, []);
 
   const purchasePremiumPass = useCallback(() => {
     setPlayerProfile(prev => {
@@ -1042,9 +957,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         battlePassData: BATTLE_PASS_DATA,
         purchasePremiumPass,
         claimBattlePassReward,
-        activeCommanderOrder,
-        claimCommanderOrderReward,
-        hideCommanderOrder,
         watchRewardedAd,
         rewardedAdCooldown,
         isWatchingAd,
@@ -1063,5 +975,3 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
-
-    
