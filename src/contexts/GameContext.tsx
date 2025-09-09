@@ -774,6 +774,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       referredByCode: referredByCode?.trim() || undefined,
     };
     
+    // First, save the new profile to local state to update the UI immediately
     setPlayerProfile(newProfileData);
     setIsInitialSetupDone(true);
     setCurrentSeason(SEASONS_DATA[0]);
@@ -784,11 +785,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     addCoreMessage({ type: 'briefing', content: welcomeMessage});
     setCoreLastInteractionTime(now);
 
-    const profileForFirestore = {
-        ...newProfileData,
-        activeDailyQuests: newProfileData.activeDailyQuests.map(({ icon, ...rest }) => rest), // Remove icon for Firestore
-    };
+    // Then, attempt to sync with Firestore in the background
     try {
+        const profileForFirestore = {
+            ...newProfileData,
+            activeDailyQuests: newProfileData.activeDailyQuests.map(({ icon, ...rest }) => rest), // Remove icon for Firestore
+        };
         await syncPlayerProfileInFirestore(profileForFirestore);
     } catch (error) {
         console.error("Failed to sync profile on initial setup:", error);

@@ -1,5 +1,4 @@
 
-'use server';
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import type { PlayerProfile } from './types';
@@ -14,7 +13,7 @@ const getDb = () => {
 
 /**
  * Creates or updates a player's entire profile in Firestore.
- * This is a server action and should only be called from server components or other server actions.
+ * This is designed to be called from the client-side, typically within the GameContext.
  * @param playerProfile The full player profile object.
  */
 export const syncPlayerProfileInFirestore = async (playerProfile: PlayerProfile): Promise<void> => {
