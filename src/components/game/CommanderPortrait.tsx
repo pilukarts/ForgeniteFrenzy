@@ -15,19 +15,16 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
   const { playerProfile } = useGame();
   const [isTapped, setIsTapped] = useState(false);
 
-  if (!playerProfile) {
+  if (!playerProfile || !playerProfile.avatarUrl) {
     return (
       <div className="relative w-64 h-80 sm:w-72 sm:h-96 flex items-center justify-center">
         <Skeleton className="w-full h-full" />
       </div>
     );
   }
-
-  // --- Use the correct full-body image URL with the AF logo ---
-  const imageUrl = playerProfile.commanderSex === 'female' 
-    ? "https://i.imgur.com/BQHeVWp.png" // Female commander with AF logo
-    : "https://i.imgur.com/iuRJVBZ.png"; // Male commander with AF logo
-
+  
+  // The avatarUrl is now guaranteed to be the correct one with the logo from the player profile
+  const imageUrl = playerProfile.avatarUrl;
   const altText = `Commander ${playerProfile.name}`;
   const dataAiHint = playerProfile.commanderSex === 'male' ? "male commander full body" : "female commander full body";
 
@@ -47,6 +44,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
 
   // These values are percentages of the parent container's width and height.
   // They define the position and size of the invisible logo tap area.
+  // Updated for new images
   const logoHitbox = playerProfile.commanderSex === 'female'
     ? { top: '38%', left: '41%', width: '18%', height: '10%' }
     : { top: '37%', left: '42.5%', width: '15%', height: '9%' };

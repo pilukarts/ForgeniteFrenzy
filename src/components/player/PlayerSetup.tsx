@@ -45,10 +45,8 @@ const PlayerSetup: React.FC = () => {
     ? countries
     : countries.filter(c => c.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
-  // Get only one avatar per sex for selection screen (the portrait version)
-  const maleAvatar = ALL_AVATARS.find(a => a.sex === 'male' && a.type === 'portrait');
-  const femaleAvatar = ALL_AVATARS.find(a => a.sex === 'female' && a.type === 'portrait');
-  const selectableAvatars = [maleAvatar, femaleAvatar].filter(Boolean) as typeof ALL_AVATARS;
+  // Use the new simplified ALL_AVATARS list
+  const selectableAvatars = ALL_AVATARS;
 
 
   return (
