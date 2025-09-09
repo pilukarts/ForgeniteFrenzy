@@ -31,7 +31,7 @@ interface GameContextType {
   addPoints: (amount: number, isFromTap?: boolean) => void;
   isLoading: boolean;
   isInitialSetupDone: boolean;
-  completeInitialSetup: (name: string, sex: 'male' | 'female', country: string, referredByCode?: string) => void;
+  completeInitialSetup: (name: string, selectedAvatarUrl: string, country: string, referredByCode?: string) => void;
   coreMessages: CoreMessage[];
   addCoreMessage: (message: Omit<CoreMessage, 'timestamp'>, isHighPriority?: boolean) => void;
   isCoreUnlocked: boolean;
@@ -750,18 +750,23 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   }, [addCoreMessage]);
 
-  const completeInitialSetup = useCallback(async (name: string, sex: 'male' | 'female', country: string, referredByCode?: string) => {
+  const completeInitialSetup = useCallback(async (name: string, selectedPortraitUrl: string, country: string, referredByCode?: string) => {
     const now = Date.now();
     
-    // Find the correct full body URL with the logo based on the selected sex.
-    const finalAvatarUrl = ALL_AVATARS.find(a => a.sex === sex)?.url || ALL_AVATARS[0].url;
-
+    // Find the selected avatar object from the definitive list
+    const selectedAvatarData = SELECTABLE_AVATARS.find(a => a.portraitUrl === selectedPortraitUrl);
+    if (!selectedAvatarData) {
+        console.error("Selected avatar not found in SELECTABLE_AVATARS. Defaulting...");
+        toast({ title: 'Error', description: 'Could not set your selected avatar. Please try again.', variant: 'destructive'});
+        return;
+    }
+    
     const newProfileData: PlayerProfile = {
       ...defaultPlayerProfile,
       id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
       name,
-      commanderSex: sex,
-      avatarUrl: finalAvatarUrl,
+      commanderSex: selectedAvatarData.sex,
+      avatarUrl: selectedAvatarData.fullBodyUrl, // Use the definitive full body URL with the logo
       country,
       currentSeasonId: SEASONS_DATA[0].id,
       lastLoginTimestamp: now,
@@ -787,7 +792,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         await syncPlayerProfileInFirestore(profileForFirestore);
     } catch (error) {
         console.error("Failed to sync profile on initial setup:", error);
-        toast({ title: 'Sincronizacion fallo', description: 'Could not save initial profile to server.', variant: 'destructive' });
+        toast({ title: 'Sincronizacion fallo', description: `Could not save profile to server: ${error instanceof Error ? error.message : 'Unknown error'}`, variant: 'destructive' });
     }
   }, [addCoreMessage, toast]);
   

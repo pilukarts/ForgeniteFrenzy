@@ -21,7 +21,7 @@ import { SELECTABLE_AVATARS } from '@/lib/gameData';
 const PlayerSetup: React.FC = () => {
   const { playerProfile, completeInitialSetup } = useGame();
   const [name, setName] = useState('');
-  const [selectedAvatarSex, setSelectedAvatarSex] = useState<'male' | 'female'>('male');
+  const [selectedAvatarUrl, setSelectedAvatarUrl] = useState(SELECTABLE_AVATARS[0].portraitUrl);
   const [country, setCountry] = useState('');
   const [referredBy, setReferredBy] = useState('');
   const [isCountryPopoverOpen, setCountryPopoverOpen] = useState(false);
@@ -32,7 +32,7 @@ const PlayerSetup: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isFormValid) {
-      completeInitialSetup(name.trim(), selectedAvatarSex, country, referredBy.trim());
+      completeInitialSetup(name.trim(), selectedAvatarUrl, country, referredBy.trim());
     }
   };
   
@@ -44,9 +44,6 @@ const PlayerSetup: React.FC = () => {
   const filteredCountries = searchTerm === ""
     ? countries
     : countries.filter(c => c.name.toLowerCase().includes(searchTerm.toLowerCase()));
-
-  // Use the new SELECTABLE_AVATARS list for the selection UI
-  const selectableAvatars = SELECTABLE_AVATARS;
 
 
   return (
@@ -66,16 +63,16 @@ const PlayerSetup: React.FC = () => {
               <div className="space-y-3">
                 <Label className="text-foreground/80 text-lg font-semibold block text-center">Select Your Commander</Label>
                 <div className="flex justify-center gap-4">
-                  {selectableAvatars.map((avatar) => (
+                  {SELECTABLE_AVATARS.map((avatar) => (
                     <div 
-                      key={avatar.url}
+                      key={avatar.portraitUrl}
                       className={cn(
                         "rounded-lg p-1 border-2 cursor-pointer transition-all duration-300 w-32 h-32 sm:w-40 sm:h-40",
-                        selectedAvatarSex === avatar.sex ? 'border-primary bg-primary/10 shadow-lg scale-105' : 'border-transparent opacity-70 hover:opacity-100 hover:border-primary/50'
+                        selectedAvatarUrl === avatar.portraitUrl ? 'border-primary bg-primary/10 shadow-lg scale-105' : 'border-transparent opacity-70 hover:opacity-100 hover:border-primary/50'
                       )}
-                      onClick={() => setSelectedAvatarSex(avatar.sex)}
+                      onClick={() => setSelectedAvatarUrl(avatar.portraitUrl)}
                     >
-                      <Image src={avatar.url} alt="Commander Avatar" width={150} height={150} className="rounded-md object-cover w-full h-full" data-ai-hint={avatar.hint}/>
+                      <Image src={avatar.portraitUrl} alt="Commander Avatar" width={150} height={150} className="rounded-md object-cover w-full h-full" data-ai-hint={avatar.hint}/>
                     </div>
                   ))}
                 </div>

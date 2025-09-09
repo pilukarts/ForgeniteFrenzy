@@ -355,24 +355,24 @@ export const LEVEL_STAGES: LevelStage[] = [
 export const TAPS_PER_UNIFORM_PIECE = 2000;
 export const UNIFORM_PIECES_ORDER = ["Tactical Gloves", "Combat Boots", "Utility Belt", "Chest Rig", "Stealth Helmet"];
 
-// Defines the PORTRAIT images for the selection screen
-export const SELECTABLE_AVATARS: { url: string; sex: 'male' | 'female'; hint: string; fullBodyUrl: string; }[] = [
+// This is the definitive list for avatar selection.
+// It directly links the selectable portrait to the full-body image that will be displayed.
+export const SELECTABLE_AVATARS: { portraitUrl: string; fullBodyUrl: string; sex: 'male' | 'female'; hint: string; }[] = [
     { 
-      url: "https://i.imgur.com/Wq9PqxG.png", 
+      portraitUrl: "https://i.imgur.com/Wq9PqxG.png", // Face/Portrait
+      fullBodyUrl: "https://i.imgur.com/iuRJVBZ.png", // Full body with AF logo
       sex: 'male', 
       hint: 'male commander headshot',
-      fullBodyUrl: "https://i.imgur.com/iuRJVBZ.png"
     },
     { 
-      url: "https://i.imgur.com/BOKoTIM.png", 
+      portraitUrl: "https://i.imgur.com/BOKoTIM.png", // Face/Portrait
+      fullBodyUrl: "https://i.imgur.com/BQHeVWp.png", // Full body with AF logo
       sex: 'female', 
       hint: 'female commander headshot',
-      fullBodyUrl: "https://i.imgur.com/BQHeVWp.png"
     },
 ];
 
-// This list contains the FULL BODY images with the LOGO.
-// The game logic will now directly use these.
+// This list is used for fallback and toggling. It contains ONLY the full body images.
 export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; hint: string; }[] = [
     { url: "https://i.imgur.com/iuRJVBZ.png", sex: 'male', hint: 'male commander with AF logo' },
     { url: "https://i.imgur.com/BQHeVWp.png", sex: 'female', hint: 'female commander with AF logo' },
