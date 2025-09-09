@@ -320,8 +320,8 @@ export const SELECTABLE_AVATARS: SelectableAvatar[] = [
       hint: 'male commander headshot',
     },
     {
-      portraitUrl: "https://i.imgur.com/BOKoTIM.png",
-      fullBodyUrl: "https://i.imgur.com/OdEL2qN.png",
+      portraitUrl: "https://i.imgur.com/adTVhhi.png",
+      fullBodyUrl: "https://i.imgur.com/adTVhhi.png",
       sex: 'female',
       hint: 'female commander headshot',
     },
