@@ -177,15 +177,15 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setCoreMessages(currentMessages);
         
         // --- PROFILE HYDRATION & DEFAULTS ---
-        // Ensure avatarUrl is set, falling back if it's missing from old profiles
-        const fallbackAvatarUrl = parsedProfile.commanderSex === 'female' 
-            ? "https://i.imgur.com/BQHeVWp.png" // Female with AF logo
-            : "https://i.imgur.com/iuRJVBZ.png"; // Male with AF logo
+        // Correctly sets the avatarUrl to the full-body image with AF logo.
+        const finalAvatarUrl = parsedProfile.commanderSex === 'female' 
+            ? (ALL_AVATARS.find(a => a.sex === 'female' && a.type === 'full')?.url || '')
+            : (ALL_AVATARS.find(a => a.sex === 'male' && a.type === 'full')?.url || '');
 
         const hydratedProfile: PlayerProfile = {
             ...defaultPlayerProfile,
             ...parsedProfile,
-            avatarUrl: parsedProfile.avatarUrl || fallbackAvatarUrl,
+            avatarUrl: parsedProfile.avatarUrl || finalAvatarUrl,
             lastLoginTimestamp: now,
             muleDrones: parsedProfile.upgrades?.['muleDrone'] || 0,
             activeDailyQuests: (parsedProfile.activeDailyQuests ?? []).map(q => {
@@ -224,7 +224,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setPlayerProfile(loadedProfile);
     setActiveCommanderOrder(loadedProfile.activeCommanderOrder);
     setIsLoading(false);
-  }, [addCoreMessage]);
+  }, []); // Removed addCoreMessage dependency as it's stable
 
 
   useEffect(() => {
@@ -756,10 +756,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const completeInitialSetup = useCallback((name: string, sex: 'male' | 'female', country: string, referredByCode?: string) => {
     const now = Date.now();
     
-    // THE FIX: Ensure the correct FULL BODY avatar URL with the AF logo is saved.
+    // THE FIX: Assign the correct full-body avatar URL with the AF logo based on the selected sex.
     const finalAvatarUrl = sex === 'female' 
-        ? "https://i.imgur.com/BQHeVWp.png" // Female commander with AF logo
-        : "https://i.imgur.com/iuRJVBZ.png"; // Male commander with AF logo
+        ? (ALL_AVATARS.find(a => a.sex === 'female' && a.type === 'full')?.url || '')
+        : (ALL_AVATARS.find(a => a.sex === 'male' && a.type === 'full')?.url || '');
 
     const newProfileData: PlayerProfile = {
       ...defaultPlayerProfile,
@@ -954,10 +954,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setPlayerProfile(prev => {
         if (!prev) return null;
         
-        // THE FIX: Ensure the correct FULL BODY avatar URL is saved when updating.
+        // THE FIX: Ensure the correct FULL BODY avatar URL with the AF logo is saved when updating.
         const finalAvatarUrl = commanderSex === 'female' 
-            ? "https://i.imgur.com/BQHeVWp.png" // Female with AF logo
-            : "https://i.imgur.com/iuRJVBZ.png"; // Male with AF logo
+            ? (ALL_AVATARS.find(a => a.sex === 'female' && a.type === 'full')?.url || '')
+            : (ALL_AVATARS.find(a => a.sex === 'male' && a.type === 'full')?.url || '');
 
         const updatedProfile = { 
             ...prev, 
@@ -976,10 +976,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (!prev) return null;
         const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
         
-        // THE FIX: Also update the avatarUrl when toggling commander sex.
+        // THE FIX: Also update the avatarUrl when toggling commander sex to the correct full-body image.
         const newAvatarUrl = newSex === 'female' 
-            ? "https://i.imgur.com/BQHeVWp.png"
-            : "https://i.imgur.com/iuRJVBZ.png";
+            ? (ALL_AVATARS.find(a => a.sex === 'female' && a.type === 'full')?.url || '')
+            : (ALL_AVATARS.find(a => a.sex === 'male' && a.type === 'full')?.url || '');
             
         toast({ title: 'Commander Switched', description: `Now playing as the ${newSex} commander.` });
         
