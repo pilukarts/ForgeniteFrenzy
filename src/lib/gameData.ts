@@ -318,13 +318,13 @@ export const LEVEL_STAGES: LevelStage[] = [
 export const SELECTABLE_AVATARS: SelectableAvatar[] = [
     {
       portraitUrl: "https://i.imgur.com/Wq9PqxG.png", // Male Face
-      fullBodyUrl: "https://i.imgur.com/vJANNj2.png", // Male Full body with transparent BG
+      fullBodyUrl: "https://i.imgur.com/iuRJVBZ.png", // Male Full body with transparent BG and AF logo
       sex: 'male',
       hint: 'male commander headshot',
     },
     {
       portraitUrl: "https://i.imgur.com/BOKoTIM.png", // Female Face
-      fullBodyUrl: "https://i.imgur.com/nJgaY6T.png", // Female Full body with transparent BG
+      fullBodyUrl: "https://i.imgur.com/wxGRAeg.png", // Female Full body with transparent BG and AF logo
       sex: 'female',
       hint: 'female commander headshot',
     },
