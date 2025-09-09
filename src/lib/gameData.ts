@@ -1,4 +1,4 @@
-import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate, LeagueName, LeagueTier, BattlePass, LevelStage } from './types';
+import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate, LeagueName, LeagueTier, BattlePass, LevelStage, SelectableAvatar } from './types';
 import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle, Shield, ShieldCheck, Award, Star, Crown, LucideIcon, Swords, Shirt, Replace } from 'lucide-react';
 
 export const SEASONS_DATA: Season[] = [
@@ -357,23 +357,23 @@ export const UNIFORM_PIECES_ORDER = ["Tactical Gloves", "Combat Boots", "Utility
 
 // This is the definitive list for avatar selection.
 // It directly links the selectable portrait to the full-body image that will be displayed.
-export const SELECTABLE_AVATARS: { portraitUrl: string; fullBodyUrl: string; sex: 'male' | 'female'; hint: string; }[] = [
+export const SELECTABLE_AVATARS: SelectableAvatar[] = [
     { 
-      portraitUrl: "https://i.imgur.com/Wq9PqxG.png", // Face/Portrait
-      fullBodyUrl: "https://i.imgur.com/iuRJVBZ.png", // Full body with AF logo
+      portraitUrl: "https://i.imgur.com/Wq9PqxG.png", // Male Face
+      fullBodyUrl: "https://i.imgur.com/iuRJVBZ.png", // Male Full body with AF logo
       sex: 'male', 
       hint: 'male commander headshot',
     },
     { 
-      portraitUrl: "https://i.imgur.com/BOKoTIM.png", // Face/Portrait
-      fullBodyUrl: "https://i.imgur.com/BQHeVWp.png", // Full body with AF logo
+      portraitUrl: "https://i.imgur.com/BOKoTIM.png", // Female Face
+      fullBodyUrl: "https://i.imgur.com/BQHeVWp.png", // Female Full body with AF logo
       sex: 'female', 
       hint: 'female commander headshot',
     },
 ];
 
-// This list is used for fallback and toggling. It contains ONLY the full body images.
-export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; hint: string; }[] = [
-    { url: "https://i.imgur.com/iuRJVBZ.png", sex: 'male', hint: 'male commander with AF logo' },
-    { url: "https://i.imgur.com/BQHeVWp.png", sex: 'female', hint: 'female commander with AF logo' },
+// This list is used for fallback and toggling. It contains ONLY the full body images with the logo.
+export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; }[] = [
+    { url: "https://i.imgur.com/iuRJVBZ.png", sex: 'male' },
+    { url: "https://i.imgur.com/BQHeVWp.png", sex: 'female' },
 ];

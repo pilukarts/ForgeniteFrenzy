@@ -21,7 +21,7 @@ import { SELECTABLE_AVATARS } from '@/lib/gameData';
 const PlayerSetup: React.FC = () => {
   const { playerProfile, completeInitialSetup } = useGame();
   const [name, setName] = useState('');
-  const [selectedAvatarUrl, setSelectedAvatarUrl] = useState(SELECTABLE_AVATARS[0].portraitUrl);
+  const [selectedPortraitUrl, setSelectedPortraitUrl] = useState(SELECTABLE_AVATARS[0].portraitUrl);
   const [country, setCountry] = useState('');
   const [referredBy, setReferredBy] = useState('');
   const [isCountryPopoverOpen, setCountryPopoverOpen] = useState(false);
@@ -32,7 +32,7 @@ const PlayerSetup: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isFormValid) {
-      completeInitialSetup(name.trim(), selectedAvatarUrl, country, referredBy.trim());
+      completeInitialSetup(name.trim(), selectedPortraitUrl, country, referredBy.trim());
     }
   };
   
@@ -68,9 +68,9 @@ const PlayerSetup: React.FC = () => {
                       key={avatar.portraitUrl}
                       className={cn(
                         "rounded-lg p-1 border-2 cursor-pointer transition-all duration-300 w-32 h-32 sm:w-40 sm:h-40",
-                        selectedAvatarUrl === avatar.portraitUrl ? 'border-primary bg-primary/10 shadow-lg scale-105' : 'border-transparent opacity-70 hover:opacity-100 hover:border-primary/50'
+                        selectedPortraitUrl === avatar.portraitUrl ? 'border-primary bg-primary/10 shadow-lg scale-105' : 'border-transparent opacity-70 hover:opacity-100 hover:border-primary/50'
                       )}
-                      onClick={() => setSelectedAvatarUrl(avatar.portraitUrl)}
+                      onClick={() => setSelectedPortraitUrl(avatar.portraitUrl)}
                     >
                       <Image src={avatar.portraitUrl} alt="Commander Avatar" width={150} height={150} className="rounded-md object-cover w-full h-full" data-ai-hint={avatar.hint}/>
                     </div>

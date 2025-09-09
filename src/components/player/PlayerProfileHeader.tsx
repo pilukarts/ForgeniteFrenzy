@@ -20,7 +20,7 @@ const PlayerProfileHeader: React.FC<PlayerProfileHeaderProps> = ({ profile }) =>
   
   // Use the profile's avatar if set.
   const avatarSrc = profile.avatarUrl;
-  const dataAiHint = "commander portrait";
+  const dataAiHint = profile.commanderSex === 'male' ? "male commander full body" : "female commander full body";
 
   const leagueName = profile.league || DEFAULT_LEAGUE;
   const { Icon: LeagueIcon, colorClass: leagueColorClass } = getLeagueIconAndColor(leagueName);

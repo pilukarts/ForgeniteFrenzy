@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Check, UserCircle, Users, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import { ALL_AVATARS } from '@/lib/gameData';
+import { SELECTABLE_AVATARS } from '@/lib/gameData';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,20 +29,20 @@ import {
 const ProfilePage: React.FC = () => {
   const { playerProfile, isLoading, isInitialSetupDone, updatePlayerProfile } = useGame();
   const [name, setName] = useState('');
-  const [selectedAvatar, setSelectedAvatar] = useState('');
+  const [selectedPortraitUrl, setSelectedPortraitUrl] = useState('');
 
   useEffect(() => {
     if (playerProfile) {
       setName(playerProfile.name);
-      setSelectedAvatar(playerProfile.avatarUrl || ALL_AVATARS[0].url);
+      // Find the portrait URL corresponding to the player's current sex
+      const currentAvatarData = SELECTABLE_AVATARS.find(a => a.sex === playerProfile.commanderSex) || SELECTABLE_AVATARS[0];
+      setSelectedPortraitUrl(currentAvatarData.portraitUrl);
     }
   }, [playerProfile]);
 
   const handleSave = () => {
     if (playerProfile && name.trim()) {
-      // Find the selected avatar object to determine the sex
-      const avatarData = ALL_AVATARS.find(a => a.url === selectedAvatar) || ALL_AVATARS[0];
-      updatePlayerProfile(name, selectedAvatar, avatarData.sex);
+      updatePlayerProfile(name, selectedPortraitUrl);
     }
   };
 
@@ -104,17 +104,17 @@ const ProfilePage: React.FC = () => {
                 <CardDescription>Choose an avatar that matches your style.</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-4 gap-2 sm:gap-4">
-                  {ALL_AVATARS.map((avatar) => (
+              <div className="grid grid-cols-2 gap-2 sm:gap-4 justify-items-center">
+                  {SELECTABLE_AVATARS.map((avatar) => (
                   <button
-                      key={avatar.url}
-                      onClick={() => setSelectedAvatar(avatar.url)}
+                      key={avatar.portraitUrl}
+                      onClick={() => setSelectedPortraitUrl(avatar.portraitUrl)}
                       className={cn(
-                      "rounded-lg overflow-hidden border-2 transition-all",
-                      selectedAvatar === avatar.url ? 'border-primary ring-2 ring-primary/50' : 'border-transparent hover:border-primary/50'
+                      "rounded-lg overflow-hidden border-2 transition-all w-32 h-32 sm:w-40 sm:h-40",
+                      selectedPortraitUrl === avatar.portraitUrl ? 'border-primary ring-2 ring-primary/50' : 'border-transparent hover:border-primary/50'
                       )}
                   >
-                      <Image src={avatar.url} alt="Avatar" width={100} height={100} className="object-cover w-full h-auto aspect-square" data-ai-hint={avatar.hint}/>
+                      <Image src={avatar.portraitUrl} alt="Avatar" width={160} height={160} className="object-cover w-full h-auto aspect-square" data-ai-hint={avatar.hint}/>
                   </button>
                   ))}
               </div>
@@ -158,5 +158,3 @@ const ProfilePage: React.FC = () => {
 };
 
 export default ProfilePage;
-
-    

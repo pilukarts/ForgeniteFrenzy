@@ -1,7 +1,7 @@
 
 "use client";
 
-import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, CommanderOrder } from '@/lib/types';
+import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, CommanderOrder, SelectableAvatar } from '@/lib/types';
 import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES, UNIFORM_PIECES_ORDER, TAPS_PER_UNIFORM_PIECE, ALL_AVATARS, SELECTABLE_AVATARS, AF_LOGO_TAP_BONUS_MULTIPLIER } from '@/lib/gameData';
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
@@ -31,7 +31,7 @@ interface GameContextType {
   addPoints: (amount: number, isFromTap?: boolean) => void;
   isLoading: boolean;
   isInitialSetupDone: boolean;
-  completeInitialSetup: (name: string, selectedAvatarUrl: string, country: string, referredByCode?: string) => void;
+  completeInitialSetup: (name: string, selectedPortraitUrl: string, country: string, referredByCode?: string) => void;
   coreMessages: CoreMessage[];
   addCoreMessage: (message: Omit<CoreMessage, 'timestamp'>, isHighPriority?: boolean) => void;
   isCoreUnlocked: boolean;
@@ -61,7 +61,7 @@ interface GameContextType {
   rewardedAdCooldown: number;
   isWatchingAd: boolean;
   // Profile editing
-  updatePlayerProfile: (name: string, avatarUrl: string, commanderSex: 'male' | 'female') => void;
+  updatePlayerProfile: (name: string, selectedPortraitUrl: string) => void;
   toggleCommander: () => void;
 }
 
@@ -177,12 +177,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setCoreMessages(currentMessages);
         
         // --- PROFILE HYDRATION & DEFAULTS ---
-        const finalAvatarUrl = ALL_AVATARS.find(a => a.sex === parsedProfile.commanderSex)?.url || ALL_AVATARS[0].url;
+        const finalAvatarData = SELECTABLE_AVATARS.find(a => a.sex === parsedProfile.commanderSex) || SELECTABLE_AVATARS[0];
 
         const hydratedProfile: PlayerProfile = {
             ...defaultPlayerProfile,
             ...parsedProfile,
-            avatarUrl: parsedProfile.avatarUrl || finalAvatarUrl,
+            avatarUrl: finalAvatarData.fullBodyUrl, // Ensure correct full body url is loaded
             lastLoginTimestamp: now,
             muleDrones: parsedProfile.upgrades?.['muleDrone'] || 0,
             activeDailyQuests: (parsedProfile.activeDailyQuests ?? []).map(q => {
@@ -953,18 +953,22 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, 3000);
   }, [rewardedAdCooldown, isWatchingAd, addCoreMessage]);
 
-  const updatePlayerProfile = useCallback((name: string, avatarUrl: string, commanderSex: 'male' | 'female') => {
+  const updatePlayerProfile = useCallback((name: string, selectedPortraitUrl: string) => {
     setPlayerProfile(prev => {
         if (!prev) return null;
         
-        // Find the correct full-body URL with the logo based on the provided sex.
-        const finalAvatarUrl = ALL_AVATARS.find(a => a.sex === commanderSex)?.url || ALL_AVATARS[0].url;
+        const selectedAvatarData = SELECTABLE_AVATARS.find(a => a.portraitUrl === selectedPortraitUrl);
+        if (!selectedAvatarData) {
+            console.error("Selected avatar for update not found. No changes made.");
+            toast({ title: 'Error', description: 'Could not find the selected avatar data.', variant: 'destructive' });
+            return prev;
+        }
 
         const updatedProfile = { 
             ...prev, 
             name, 
-            avatarUrl: finalAvatarUrl,
-            commanderSex
+            avatarUrl: selectedAvatarData.fullBodyUrl,
+            commanderSex: selectedAvatarData.sex
         };
         return updatedProfile;
     });
@@ -977,12 +981,11 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (!prev) return null;
         const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
         
-        // Ensure the correct full-body image with logo is used when toggling.
-        const newAvatarUrl = ALL_AVATARS.find(a => a.sex === newSex)?.url || ALL_AVATARS[0].url;
+        const newAvatarData = SELECTABLE_AVATARS.find(a => a.sex === newSex) || SELECTABLE_AVATARS[0];
             
         toast({ title: 'Commander Switched', description: `Now playing as the ${newSex} commander.` });
         
-        return { ...prev, commanderSex: newSex, avatarUrl: newAvatarUrl };
+        return { ...prev, commanderSex: newSex, avatarUrl: newAvatarData.fullBodyUrl };
     });
   }, [toast]);
   

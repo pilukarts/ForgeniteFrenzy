@@ -229,3 +229,10 @@ export interface LevelStage {
     backgroundImageUrl: string;
     aiHint: string;
 }
+
+export interface SelectableAvatar {
+  portraitUrl: string;
+  fullBodyUrl: string;
+  sex: 'male' | 'female';
+  hint: string;
+}
