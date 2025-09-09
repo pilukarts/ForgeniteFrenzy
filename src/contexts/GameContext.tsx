@@ -273,38 +273,38 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   
 
   // Handle Commander Order logic
-  useEffect(() => {
-    if (!playerProfile || !isInitialSetupDone) return;
+  // useEffect(() => {
+  //   if (!playerProfile || !isInitialSetupDone) return;
 
-    const now = Date.now();
+  //   const now = Date.now();
 
-    // Check if current order is expired
-    if (activeCommanderOrder && now > activeCommanderOrder.endTime) {
-        addCoreMessage({ type: 'system_alert', content: "Commander, you've run out of time to complete the special order." }, true);
-        setActiveCommanderOrder(null);
-        setPlayerProfile(p => p ? { ...p, lastCommanderOrderTimestamp: now, activeCommanderOrder: null } : null);
-        return;
-    }
+  //   // Check if current order is expired
+  //   if (activeCommanderOrder && now > activeCommanderOrder.endTime) {
+  //       addCoreMessage({ type: 'system_alert', content: "Commander, you've run out of time to complete the special order." }, true);
+  //       setActiveCommanderOrder(null);
+  //       setPlayerProfile(p => p ? { ...p, lastCommanderOrderTimestamp: now, activeCommanderOrder: null } : null);
+  //       return;
+  //   }
     
-    const lastOrderTimestamp = playerProfile.lastCommanderOrderTimestamp || 0;
-    const cooldown = COMMANDER_ORDER_COOLDOWN_HOURS * 60 * 60 * 1000;
+  //   const lastOrderTimestamp = playerProfile.lastCommanderOrderTimestamp || 0;
+  //   const cooldown = COMMANDER_ORDER_COOLDOWN_HOURS * 60 * 60 * 1000;
     
-    // Check if it's time for a new order
-    if (!activeCommanderOrder && now - lastOrderTimestamp > cooldown) {
-      const newOrder: CommanderOrder = {
-        id: `order-${now}`,
-        objectiveType: 'points',
-        target: 3000 * playerProfile.level,
-        reward: { auron: 20 + Math.floor(playerProfile.level / 5) },
-        startTime: now,
-        endTime: now + (2 * 24 * 60 * 60 * 1000),
-        progress: 0,
-        isCompleted: false,
-      };
-      setActiveCommanderOrder(newOrder);
-      addCoreMessage({ type: 'briefing', content: `New special order received! Acquire ${newOrder.target.toLocaleString()} points.`}, true);
-    }
-  }, [isInitialSetupDone, playerProfile, activeCommanderOrder, addCoreMessage]);
+  //   // Check if it's time for a new order
+  //   if (!activeCommanderOrder && now - lastOrderTimestamp > cooldown) {
+  //     const newOrder: CommanderOrder = {
+  //       id: `order-${now}`,
+  //       objectiveType: 'points',
+  //       target: 3000 * playerProfile.level,
+  //       reward: { auron: 20 + Math.floor(playerProfile.level / 5) },
+  //       startTime: now,
+  //       endTime: now + (2 * 24 * 60 * 60 * 1000),
+  //       progress: 0,
+  //       isCompleted: false,
+  //     };
+  //     setActiveCommanderOrder(newOrder);
+  //     addCoreMessage({ type: 'briefing', content: `New special order received! Acquire ${newOrder.target.toLocaleString()} points.`}, true);
+  //   }
+  // }, [isInitialSetupDone, playerProfile, activeCommanderOrder, addCoreMessage]);
   
 
   const updateQuestProgress = useCallback((profile: PlayerProfile, type: QuestType, value: number): PlayerProfile => {
@@ -851,29 +851,29 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [addCoreMessage]);
   
   const claimCommanderOrderReward = useCallback(() => {
-    if (!activeCommanderOrder || !activeCommanderOrder.isCompleted) return;
+    // if (!activeCommanderOrder || !activeCommanderOrder.isCompleted) return;
     
-    const order = activeCommanderOrder;
+    // const order = activeCommanderOrder;
     
-    addCoreMessage({
-      type: 'system_alert',
-      content: `Excellent work, Commander. You've earned a reward of ${order.reward.auron} Auron.`
-    }, true);
+    // addCoreMessage({
+    //   type: 'system_alert',
+    //   content: `Excellent work, Commander. You've earned a reward of ${order.reward.auron} Auron.`
+    // }, true);
 
-    setPlayerProfile(prev => {
-      if (!prev) return null;
-      return {
-        ...prev,
-        auron: prev.auron + (order.reward.auron || 0),
-        points: prev.points + (order.reward.points || 0),
-        lastCommanderOrderTimestamp: Date.now(),
-      };
-    });
-    setActiveCommanderOrder(null);
-  }, [addCoreMessage, activeCommanderOrder]);
+    // setPlayerProfile(prev => {
+    //   if (!prev) return null;
+    //   return {
+    //     ...prev,
+    //     auron: prev.auron + (order.reward.auron || 0),
+    //     points: prev.points + (order.reward.points || 0),
+    //     lastCommanderOrderTimestamp: Date.now(),
+    //   };
+    // });
+    // setActiveCommanderOrder(null);
+  }, []);
 
   const hideCommanderOrder = useCallback(() => {
-    setActiveCommanderOrder(null);
+    // setActiveCommanderOrder(null);
   }, []);
 
   const purchasePremiumPass = useCallback(() => {
