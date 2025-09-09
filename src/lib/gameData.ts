@@ -358,16 +358,16 @@ export const UNIFORM_PIECES_ORDER = ["Tactical Gloves", "Combat Boots", "Utility
 // This is the definitive list for avatar selection.
 // It directly links the selectable portrait to the full-body image that will be displayed.
 export const SELECTABLE_AVATARS: SelectableAvatar[] = [
-    { 
+    {
       portraitUrl: "https://i.imgur.com/Wq9PqxG.png", // Male Face
       fullBodyUrl: "https://i.imgur.com/iuRJVBZ.png", // Male Full body with AF logo
-      sex: 'male', 
+      sex: 'male',
       hint: 'male commander headshot',
     },
-    { 
+    {
       portraitUrl: "https://i.imgur.com/BOKoTIM.png", // Female Face
       fullBodyUrl: "https://i.imgur.com/BQHeVWp.png", // Female Full body with AF logo
-      sex: 'female', 
+      sex: 'female',
       hint: 'female commander headshot',
     },
 ];
@@ -377,3 +377,5 @@ export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; }[] = [
     { url: "https://i.imgur.com/iuRJVBZ.png", sex: 'male' },
     { url: "https://i.imgur.com/BQHeVWp.png", sex: 'female' },
 ];
+
+    

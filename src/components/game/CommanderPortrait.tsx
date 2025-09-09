@@ -108,3 +108,5 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
 };
 
 export default CommanderPortrait;
+
+    
