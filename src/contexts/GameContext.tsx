@@ -30,7 +30,7 @@ interface GameContextType {
   addPoints: (amount: number, isFromTap?: boolean) => void;
   isLoading: boolean;
   isInitialSetupDone: boolean;
-  completeInitialSetup: (name: string, selectedPortraitUrl: string, country: string, referredByCode?: string) => void;
+  completeInitialSetup: (name: string, commanderSex: 'male' | 'female', country: string, referredByCode?: string) => void;
   coreMessages: CoreMessage[];
   addCoreMessage: (message: Omit<CoreMessage, 'timestamp'>) => void;
   isCoreUnlocked: boolean;
@@ -161,8 +161,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setCoreMessages(currentMessages);
         
         // --- PROFILE HYDRATION & DEFAULTS ---
-        // This is the simplified and corrected loading logic.
-        // It trusts the saved avatarUrl and avoids re-calculating it.
+        const selectedAvatarData = SELECTABLE_AVATARS.find(a => a.sex === parsedProfile.commanderSex) ?? SELECTABLE_AVATARS[0];
+        
         const hydratedProfile: PlayerProfile = {
             ...defaultPlayerProfile,
             ...parsedProfile,
@@ -174,6 +174,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             }),
             league: getLeagueByPoints(parsedProfile.points),
             currentTierColor: getTierColorByLevel(parsedProfile.level),
+            avatarUrl: selectedAvatarData.fullBodyUrl, // This ensures the correct avatar is always loaded.
         };
         
         loadedProfile = hydratedProfile;
@@ -685,31 +686,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [isInitialSetupDone, playerProfile, refreshDailyQuestsIfNeeded]);
 
-  const completeInitialSetup = useCallback(async (name: string, selectedPortraitUrl: string, country: string, referredByCode?: string) => {
+  const completeInitialSetup = useCallback(async (name: string, commanderSex: 'male' | 'female', country: string, referredByCode?: string) => {
     const now = Date.now();
     
-    // This is the corrected, definitive logic for setting the avatar.
-    // It finds the full avatar data based on the selected portrait.
-    const selectedAvatarData = SELECTABLE_AVATARS.find(a => a.portraitUrl === selectedPortraitUrl);
+    const selectedAvatarData = SELECTABLE_AVATARS.find(a => a.sex === commanderSex);
     if (!selectedAvatarData) {
-        console.error("Selected avatar data not found. This should not happen.");
+        console.error("Selected avatar data not found during setup. This should not happen.");
         toast({ title: 'Avatar Error', description: 'Could not set selected avatar.', variant: 'destructive'});
-        // A fallback is still good practice, but the UI logic should prevent this.
-        const fallbackAvatar = SELECTABLE_AVATARS[0];
-        const newProfileData: PlayerProfile = {
-          ...defaultPlayerProfile,
-          id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
-          name,
-          commanderSex: fallbackAvatar.sex,
-          avatarUrl: fallbackAvatar.fullBodyUrl, // Use the verified full body URL
-          country,
-          currentSeasonId: SEASONS_DATA[0].id,
-          lastLoginTimestamp: now,
-          referralCode: generateReferralCode(name),
-          referredByCode: referredByCode?.trim() || '',
-        };
-        setPlayerProfile(newProfileData);
-        setIsInitialSetupDone(true);
         return; 
     }
     

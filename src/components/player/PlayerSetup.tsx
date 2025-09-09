@@ -21,7 +21,7 @@ import { SELECTABLE_AVATARS } from '@/lib/gameData';
 const PlayerSetup: React.FC = () => {
   const { playerProfile, completeInitialSetup } = useGame();
   const [name, setName] = useState('');
-  const [selectedPortraitUrl, setSelectedPortraitUrl] = useState(SELECTABLE_AVATARS[0].portraitUrl);
+  const [selectedCommanderSex, setSelectedCommanderSex] = useState<'male' | 'female'>(SELECTABLE_AVATARS[0].sex);
   const [country, setCountry] = useState('');
   const [referredBy, setReferredBy] = useState('');
   const [isCountryPopoverOpen, setCountryPopoverOpen] = useState(false);
@@ -32,7 +32,7 @@ const PlayerSetup: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isFormValid) {
-      completeInitialSetup(name.trim(), selectedPortraitUrl, country, referredBy.trim());
+      completeInitialSetup(name.trim(), selectedCommanderSex, country, referredBy.trim());
     }
   };
   
@@ -65,12 +65,12 @@ const PlayerSetup: React.FC = () => {
                 <div className="flex justify-center gap-4">
                   {SELECTABLE_AVATARS.map((avatar) => (
                     <div 
-                      key={avatar.portraitUrl}
+                      key={avatar.sex}
                       className={cn(
                         "rounded-lg p-1 border-2 cursor-pointer transition-all duration-300 w-32 h-32 sm:w-40 sm:h-40",
-                        selectedPortraitUrl === avatar.portraitUrl ? 'border-primary bg-primary/10 shadow-lg scale-105' : 'border-transparent opacity-70 hover:opacity-100 hover:border-primary/50'
+                        selectedCommanderSex === avatar.sex ? 'border-primary bg-primary/10 shadow-lg scale-105' : 'border-transparent opacity-70 hover:opacity-100 hover:border-primary/50'
                       )}
-                      onClick={() => setSelectedPortraitUrl(avatar.portraitUrl)}
+                      onClick={() => setSelectedCommanderSex(avatar.sex)}
                     >
                       <Image src={avatar.portraitUrl} alt="Commander Avatar" width={150} height={150} className="rounded-md object-cover w-full h-full" data-ai-hint={avatar.hint}/>
                     </div>
