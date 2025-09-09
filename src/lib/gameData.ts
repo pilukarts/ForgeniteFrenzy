@@ -372,10 +372,8 @@ export const SELECTABLE_AVATARS: SelectableAvatar[] = [
     },
 ];
 
-// This list is used for fallback and toggling. It contains ONLY the full body images with the logo.
+// THIS IS DEPRECATED AND SHOULD NOT BE USED. It's kept here to show the change.
 export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; }[] = [
-    { url: "https://i.imgur.com/iuRJVBZ.png", sex: 'male' },
-    { url: "https://i.imgur.com/BQHeVWp.png", sex: 'female' },
+    { url: "https://i.imgur.com/iuRJVBZ.png", sex: 'male' }, // WITH LOGO
+    { url: "https://i.imgur.com/BQHeVWp.png", sex: 'female' }, // WITH LOGO
 ];
-
-    

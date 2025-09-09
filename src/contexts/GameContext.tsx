@@ -177,12 +177,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setCoreMessages(currentMessages);
         
         // --- PROFILE HYDRATION & DEFAULTS ---
-        const finalAvatarData = SELECTABLE_AVATARS.find(a => a.sex === parsedProfile.commanderSex) || SELECTABLE_AVATARS[0];
+        // Find the full avatar data based on sex, fallback to male if not found
+        const selectedAvatarData = SELECTABLE_AVATARS.find(a => a.sex === parsedProfile.commanderSex) || SELECTABLE_AVATARS[0];
 
         const hydratedProfile: PlayerProfile = {
             ...defaultPlayerProfile,
             ...parsedProfile,
-            avatarUrl: finalAvatarData.fullBodyUrl, // Ensure correct full body url is loaded
+            avatarUrl: selectedAvatarData.fullBodyUrl, // Ensure correct full body url with logo is loaded
             lastLoginTimestamp: now,
             muleDrones: parsedProfile.upgrades?.['muleDrone'] || 0,
             activeDailyQuests: (parsedProfile.activeDailyQuests ?? []).map(q => {
@@ -275,44 +276,45 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (!playerProfile || !isInitialSetupDone) return;
 
     const now = Date.now();
-    
+    let profileNeedsUpdate = false;
+    let updatedProfile = {...playerProfile};
+
     // Check if current order is expired
-    if (playerProfile.activeCommanderOrder && now > playerProfile.activeCommanderOrder.endTime) {
+    if (updatedProfile.activeCommanderOrder && now > updatedProfile.activeCommanderOrder.endTime) {
         addCoreMessage({ type: 'system_alert', content: "Commander, you've run out of time to complete the special order." }, true);
-        setPlayerProfile(prev => {
-            if (!prev) return null;
-            const newProfile = { ...prev, activeCommanderOrder: null, lastCommanderOrderTimestamp: now };
-            setActiveCommanderOrder(null);
-            return newProfile;
-        });
-        return; // Exit after state update
+        updatedProfile.activeCommanderOrder = null;
+        updatedProfile.lastCommanderOrderTimestamp = now;
+        profileNeedsUpdate = true;
     }
     
-    const lastOrderTimestamp = playerProfile.activeCommanderOrder?.startTime ?? playerProfile.lastCommanderOrderTimestamp;
+    const lastOrderTimestamp = updatedProfile.activeCommanderOrder?.startTime ?? updatedProfile.lastCommanderOrderTimestamp;
     const cooldown = COMMANDER_ORDER_COOLDOWN_HOURS * 60 * 60 * 1000;
     
     // Check if it's time for a new order
-    if (!playerProfile.activeCommanderOrder && now - lastOrderTimestamp > cooldown) {
+    if (!updatedProfile.activeCommanderOrder && now - lastOrderTimestamp > cooldown) {
       const newOrder: CommanderOrder = {
         id: `order-${now}`,
         objectiveType: 'points',
-        target: 3000 * playerProfile.level, // Scale with player level
-        reward: { auron: 20 + Math.floor(playerProfile.level / 5) }, // Scale with player level
+        target: 3000 * updatedProfile.level, // Scale with player level
+        reward: { auron: 20 + Math.floor(updatedProfile.level / 5) }, // Scale with player level
         startTime: now,
         endTime: now + (2 * 24 * 60 * 60 * 1000), // 2 days from now
         progress: 0,
         isCompleted: false,
       };
-      setPlayerProfile(prev => prev ? { ...prev, activeCommanderOrder: newOrder } : null);
-      setActiveCommanderOrder(newOrder);
+      updatedProfile.activeCommanderOrder = newOrder;
+      profileNeedsUpdate = true;
       addCoreMessage({ type: 'briefing', content: `New special order received! Acquire ${newOrder.target.toLocaleString()} points.`}, true);
-    } else {
-        // Sync state if it's different
-        if (playerProfile.activeCommanderOrder !== activeCommanderOrder) {
-            setActiveCommanderOrder(playerProfile.activeCommanderOrder);
-        }
     }
-  }, [playerProfile, isInitialSetupDone, addCoreMessage]);
+    
+    if (profileNeedsUpdate) {
+        setPlayerProfile(updatedProfile);
+    }
+    // Sync activeCommanderOrder state if it's different from profile
+    if (activeCommanderOrder !== updatedProfile.activeCommanderOrder) {
+        setActiveCommanderOrder(updatedProfile.activeCommanderOrder);
+    }
+  }, [playerProfile, isInitialSetupDone, addCoreMessage, activeCommanderOrder]);
   
 
   const updateQuestProgress = useCallback((profile: PlayerProfile, type: QuestType, value: number): PlayerProfile => {
@@ -765,19 +767,38 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const completeInitialSetup = useCallback(async (name: string, selectedPortraitUrl: string, country: string, referredByCode?: string) => {
     const now = Date.now();
     
+    // Find the full avatar data based on the selected portrait URL. This is the crucial fix.
     const selectedAvatarData = SELECTABLE_AVATARS.find(a => a.portraitUrl === selectedPortraitUrl);
     if (!selectedAvatarData) {
-        console.error("Selected avatar not found in SELECTABLE_AVATARS. Defaulting...");
-        toast({ title: 'Error', description: 'Could not set your selected avatar. Please try again.', variant: 'destructive'});
-        return;
+        console.error("Selected avatar data not found in SELECTABLE_AVATARS. This should not happen.");
+        toast({ title: 'Avatar Error', description: 'Could not set your selected avatar. Defaulting to standard commander.', variant: 'destructive'});
+        // Fallback to the first selectable avatar to prevent total failure
+        const fallbackAvatar = SELECTABLE_AVATARS[0];
+        const newProfileData: PlayerProfile = {
+          ...defaultPlayerProfile,
+          id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
+          name,
+          commanderSex: fallbackAvatar.sex,
+          avatarUrl: fallbackAvatar.fullBodyUrl, // Use the full body URL with the logo
+          country,
+          currentSeasonId: SEASONS_DATA[0].id,
+          lastLoginTimestamp: now,
+          referralCode: generateReferralCode(name),
+          referredByCode: referredByCode?.trim() || undefined,
+        };
+        setPlayerProfile(newProfileData);
+        setIsInitialSetupDone(true);
+        // continue with setup
     }
+
+    const finalAvatarData = selectedAvatarData || SELECTABLE_AVATARS[0];
     
     const newProfileData: PlayerProfile = {
       ...defaultPlayerProfile,
       id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
       name,
-      commanderSex: selectedAvatarData.sex,
-      avatarUrl: selectedAvatarData.fullBodyUrl,
+      commanderSex: finalAvatarData.sex,
+      avatarUrl: finalAvatarData.fullBodyUrl, // GUARANTEED to be the image with the logo
       country,
       currentSeasonId: SEASONS_DATA[0].id,
       lastLoginTimestamp: now,
@@ -866,7 +887,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const hideCommanderOrder = useCallback(() => {
     setPlayerProfile(prev => {
         if (!prev) return null;
-        return { ...prev, activeCommanderOrder: null, lastCommanderOrderTimestamp: Date.now() };
+        return { ...prev, activeCommanderOrder: null };
     });
   }, []);
 
