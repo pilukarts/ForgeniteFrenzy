@@ -334,4 +334,3 @@ export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; }[] = [
     { url: "https://i.imgur.com/iuRJVBZ.png", sex: 'male' }, // WITH LOGO
     { url: "https://i.imgur.com/wxGRAeg.png", sex: 'female' }, // WITH LOGO
 ];
-
