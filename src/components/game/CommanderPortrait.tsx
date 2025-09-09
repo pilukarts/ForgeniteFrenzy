@@ -27,7 +27,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
   }
   
   const altText = `Commander ${playerProfile.name}`;
-  const dataAiHint = playerProfile.commanderSex === 'male' ? "male commander portrait" : "female commander portrait";
+  const dataAiHint = playerProfile.commanderSex === 'male' ? "male commander full body" : "female commander full body";
 
   const handleInteraction = (isLogoTap: boolean) => {
     if (isLogoTap) {
@@ -44,6 +44,10 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
   const logoHitbox = playerProfile.commanderSex === 'female'
     ? { top: '38%', left: '41%', width: '18%', height: '10%' }
     : { top: '37%', left: '42.5%', width: '15%', height: '9%' };
+    
+  const dynamicGlowStyle = {
+    '--dynamic-commander-glow': playerProfile.currentTierColor,
+  } as React.CSSProperties;
 
 
   return (
@@ -52,52 +56,54 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
         "relative focus:outline-none transition-transform duration-100",
         "w-64 h-80 sm:w-72 sm:h-96", // Default size for the portrait area
         "flex items-center justify-center",
-        isTapped && "scale-105" // Simplified tap effect
+        isTapped && "scale-105"
       )}
       aria-label="Tap Commander"
+      style={dynamicGlowStyle}
     >
-      {/* Main button for the whole commander */}
-      <button 
-        onClick={() => handleInteraction(false)} 
-        onTouchStart={(e) => {
-          e.preventDefault();
-          handleInteraction(false);
-        }}
-        className="w-full h-full relative group"
-      >
-        <Image
-          src={imageUrl}
-          alt={altText}
-          data-ai-hint={dataAiHint}
-          fill
-          className={cn(
-            "object-contain transition-all duration-200 pointer-events-none" // pointer-events-none so it doesn't block the logo button
-          )}
-          priority
-          key={imageUrl} // Add key to force re-render on image URL change
-        />
-      </button>
+        {/* Dynamic Aura */}
+        <div className="absolute inset-0 commander-aura-glow z-0" />
 
-      {/* Invisible button for the AF logo hotspot - LOGIC REMAINS BUT IS INEFFECTIVE WITHOUT LOGO IMAGES */}
-      <button
-        onClick={(e) => {
-            e.stopPropagation(); // Prevents the main button click from firing
+        {/* Main button for the whole commander */}
+        <button 
+            onClick={() => handleInteraction(false)} 
+            onTouchStart={(e) => {
+            e.preventDefault();
+            handleInteraction(false);
+            }}
+            className="w-full h-full relative group z-10"
+        >
+            <Image
+            src={imageUrl}
+            alt={altText}
+            data-ai-hint={dataAiHint}
+            fill
+            className="object-contain transition-all duration-200 pointer-events-none drop-shadow-2xl"
+            priority
+            key={imageUrl} // Add key to force re-render on image URL change
+            />
+        </button>
+
+        {/* Invisible button for the AF logo hotspot */}
+        <button
+            onClick={(e) => {
+                e.stopPropagation(); // Prevents the main button click from firing
+                handleInteraction(true);
+            }}
+            onTouchStart={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
             handleInteraction(true);
-        }}
-        onTouchStart={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          handleInteraction(true);
-        }}
-        aria-label="Tap AF Logo for Bonus"
-        className="absolute z-10 rounded-full"
-        style={{
-          top: logoHitbox.top,
-          left: logoHitbox.left,
-          width: logoHitbox.width,
-          height: logoHitbox.height,
-        }}
-      />
+            }}
+            aria-label="Tap AF Logo for Bonus"
+            className="absolute z-20 rounded-full"
+            style={{
+            top: logoHitbox.top,
+            left: logoHitbox.left,
+            width: logoHitbox.width,
+            height: logoHitbox.height,
+            }}
+        />
     </div>
   );
 };
