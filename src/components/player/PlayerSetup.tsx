@@ -116,7 +116,6 @@ const PlayerSetup: React.FC = () => {
                       <Command>
                         <CommandInput 
                           placeholder="Search nation..." 
-                          value={searchTerm}
                           onValueChange={setSearchTerm}
                         />
                         <CommandEmpty>No nation found.</CommandEmpty>
