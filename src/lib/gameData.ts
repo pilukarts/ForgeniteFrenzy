@@ -317,14 +317,14 @@ export const LEVEL_STAGES: LevelStage[] = [
 // It directly links the selectable portrait to the full-body image that will be displayed.
 export const SELECTABLE_AVATARS: SelectableAvatar[] = [
     {
-      portraitUrl: "https://i.imgur.com/Wq9PqxG.png", // Male Face
-      fullBodyUrl: "https://i.imgur.com/iuRJVBZ.png", // Male Full body with transparent BG and AF logo
+      portraitUrl: "https://i.imgur.com/eSZKM6I.png", // Male Face
+      fullBodyUrl: "https://i.imgur.com/eSZKM6I.png", // Male Full body with transparent BG and AF logo
       sex: 'male',
       hint: 'male commander headshot',
     },
     {
-      portraitUrl: "https://i.imgur.com/BOKoTIM.png", // Female Face
-      fullBodyUrl: "https://i.imgur.com/wxGRAeg.png", // Female Full body with transparent BG and AF logo
+      portraitUrl: "https://i.imgur.com/vaYsXMx.png", // Female Face
+      fullBodyUrl: "https://i.imgur.com/vaYsXMx.png", // Female Full body with transparent BG and AF logo
       sex: 'female',
       hint: 'female commander headshot',
     },
