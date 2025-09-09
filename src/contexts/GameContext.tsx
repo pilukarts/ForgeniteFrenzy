@@ -788,7 +788,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         };
         setPlayerProfile(newProfileData);
         setIsInitialSetupDone(true);
-        // continue with setup
+        return; // Exit after handling the error
     }
 
     const finalAvatarData = selectedAvatarData || SELECTABLE_AVATARS[0];
@@ -1078,3 +1078,5 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
+
+    

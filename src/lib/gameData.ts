@@ -372,8 +372,10 @@ export const SELECTABLE_AVATARS: SelectableAvatar[] = [
     },
 ];
 
-// THIS IS DEPRECATED AND SHOULD NOT BE USED. It's kept here to show the change.
+// This list is only kept for backwards compatibility or reference, but is not actively used in the setup logic.
 export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; }[] = [
     { url: "https://i.imgur.com/iuRJVBZ.png", sex: 'male' }, // WITH LOGO
     { url: "https://i.imgur.com/BQHeVWp.png", sex: 'female' }, // WITH LOGO
 ];
+
+    
