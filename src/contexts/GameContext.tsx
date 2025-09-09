@@ -2,7 +2,7 @@
 "use client";
 
 import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, SelectableAvatar } from '@/lib/types';
-import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES, UNIFORM_PIECES_ORDER, TAPS_PER_UNIFORM_PIECE, SELECTABLE_AVATARS, AF_LOGO_TAP_BONUS_MULTIPLIER } from '@/lib/gameData';
+import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES, SELECTABLE_AVATARS, AF_LOGO_TAP_BONUS_MULTIPLIER } from '@/lib/gameData';
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getCoreBriefing } from '@/ai/flows/core-briefings';
@@ -32,7 +32,7 @@ interface GameContextType {
   isInitialSetupDone: boolean;
   completeInitialSetup: (name: string, selectedPortraitUrl: string, country: string, referredByCode?: string) => void;
   coreMessages: CoreMessage[];
-  addCoreMessage: (message: Omit<CoreMessage, 'timestamp'>) => void;
+  addCoreMessage: (message: Omit<CoreMessage, 'timestamp'>, showToast?: boolean) => void;
   isCoreUnlocked: boolean;
   coreLastInteractionTime: number;
   connectWallet: () => void;
@@ -77,12 +77,10 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
   arkHangarFullyUpgraded: false,
   lastLoginTimestamp: Date.now(),
   activeTapBonuses: [],
-  totalTapsForUniform: 0,
-  equippedUniformPieces: [],
   activeDailyQuests: [],
   lastDailyQuestRefresh: 0,
-  referralCode: undefined,
-  referredByCode: undefined,
+  referralCode: '',
+  referredByCode: '',
   currentTaps: INITIAL_MAX_TAPS,
   maxTaps: INITIAL_MAX_TAPS,
   tapsAvailableAt: Date.now(),
@@ -94,7 +92,6 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
   xpToNextBattlePassLevel: BATTLE_PASS_XP_PER_LEVEL,
   hasPremiumPass: false,
   claimedBattlePassRewards: {},
-  // Rewarded Ad
   lastRewardedAdTimestamp: 0,
 };
 
@@ -153,8 +150,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 parsedProfile.points += offlineEarnings;
             }
         }
-        parsedProfile.lastLoginTimestamp = now;
-
+        
         // ---- MESSAGES ----
         const savedMessages = localStorage.getItem('coreMessages');
         let currentMessages = savedMessages ? JSON.parse(savedMessages) : [];
@@ -694,7 +690,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const completeInitialSetup = useCallback(async (name: string, selectedPortraitUrl: string, country: string, referredByCode?: string) => {
     const now = Date.now();
     
-    // Find the full avatar data based on the selected portrait URL. This is the crucial fix.
     const selectedAvatarData = SELECTABLE_AVATARS.find(a => a.portraitUrl === selectedPortraitUrl);
     if (!selectedAvatarData) {
         console.error("Selected avatar data not found. This should not happen.");
@@ -706,31 +701,29 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
           name,
           commanderSex: fallbackAvatar.sex,
-          avatarUrl: fallbackAvatar.fullBodyUrl, // Use the full body URL with the logo
+          avatarUrl: fallbackAvatar.fullBodyUrl,
           country,
           currentSeasonId: SEASONS_DATA[0].id,
           lastLoginTimestamp: now,
           referralCode: generateReferralCode(name),
-          referredByCode: referredByCode?.trim() || undefined,
+          referredByCode: referredByCode?.trim() || '',
         };
         setPlayerProfile(newProfileData);
         setIsInitialSetupDone(true);
         return; 
     }
-
-    const finalAvatarData = selectedAvatarData;
     
     const newProfileData: PlayerProfile = {
       ...defaultPlayerProfile,
       id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
       name,
-      commanderSex: finalAvatarData.sex,
-      avatarUrl: finalAvatarData.fullBodyUrl, // GUARANTEED to be the image with the logo
+      commanderSex: selectedAvatarData.sex,
+      avatarUrl: selectedAvatarData.fullBodyUrl,
       country,
       currentSeasonId: SEASONS_DATA[0].id,
       lastLoginTimestamp: now,
       referralCode: generateReferralCode(name),
-      referredByCode: referredByCode?.trim() || undefined,
+      referredByCode: referredByCode?.trim() || '',
     };
     
     setPlayerProfile(newProfileData);
@@ -836,15 +829,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       switch (reward.type) {
         case 'points': updatedProfile.points += reward.amount || 0; break;
         case 'auron': updatedProfile.auron += reward.amount || 0; break;
-        case 'uniform_piece':
-           if (reward.name && !updatedProfile.equippedUniformPieces.includes(reward.name)) {
-             updatedProfile.equippedUniformPieces.push(reward.name);
-           }
-          break;
-        case 'title':
-          updatedProfile.rankTitle = reward.name || updatedProfile.rankTitle;
-          break;
       }
+      
+      // Handle non-currency rewards like titles if needed in the future
 
       const claimedForLevel = updatedProfile.claimedBattlePassRewards[level] || [];
       updatedProfile.claimedBattlePassRewards = {

@@ -1,6 +1,6 @@
 
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getFirestore, doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import type { PlayerProfile } from './types';
 import { firebaseConfig } from "./firebaseConfig";
 
@@ -26,7 +26,7 @@ export const syncPlayerProfileInFirestore = async (playerProfile: PlayerProfile)
   try {
     const playerDocRef = doc(db, 'players', playerProfile.id);
     // Using setDoc with { merge: true } will create the doc if it doesn't exist,
-    // or update it if it does. This is safer than just setDoc.
+    // or update it if it does. This is safer than a simple setDoc overwrite and helps prevent data loss.
     await setDoc(playerDocRef, playerProfile, { merge: true });
   } catch (error) {
     console.error("Error syncing player profile to Firestore: ", error);
