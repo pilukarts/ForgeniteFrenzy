@@ -58,7 +58,7 @@ const CommanderOrderBanner: React.FC<CommanderOrderProps> = ({ order, onClaim, o
         animate={{ y: 0 }}
         exit={{ y: '100%' }}
         transition={{ type: 'spring', stiffness: 100, damping: 20 }}
-        className="fixed bottom-0 left-0 right-0 w-full z-[50] p-1 sm:p-2 pointer-events-none"
+        className="fixed bottom-[56px] left-0 right-0 w-full z-[50] p-1 sm:p-2 pointer-events-none"
       >
         <div className="relative pt-8 max-w-md mx-auto pointer-events-auto">
             <motion.div 
