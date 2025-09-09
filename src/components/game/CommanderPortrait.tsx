@@ -23,10 +23,10 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
     );
   }
   
-  // The avatarUrl is now GUARANTEED to be the correct one with the logo from the player profile
-  const imageUrl = playerProfile.avatarUrl;
+  // This now correctly uses the portraitUrl for display.
+  const imageUrl = playerProfile.portraitUrl;
   const altText = `Commander ${playerProfile.name}`;
-  const dataAiHint = playerProfile.commanderSex === 'male' ? "male commander full body" : "female commander full body";
+  const dataAiHint = playerProfile.commanderSex === 'male' ? "male commander headshot" : "female commander headshot";
 
   const handleInteraction = (isLogoTap: boolean) => {
     if (isLogoTap) {
@@ -108,5 +108,3 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
 };
 
 export default CommanderPortrait;
-
-    

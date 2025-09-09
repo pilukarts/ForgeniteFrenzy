@@ -1,4 +1,3 @@
-
 import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate, LeagueName, LeagueTier, BattlePass, LevelStage, SelectableAvatar } from './types';
 import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle, Shield, ShieldCheck, Award, Star, Crown, LucideIcon, Swords, Shirt, Replace } from 'lucide-react';
 
@@ -313,8 +312,6 @@ export const LEVEL_STAGES: LevelStage[] = [
     { name: 'GALACTIC CORE', startLevel: 25001, endLevel: 50000, colors: { primary: '60 100% 50%', fill: '60 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/Z7o5p6Y.jpeg', aiHint: 'bright galaxy core' },
 ];
 
-// This is the definitive list for avatar selection.
-// It directly links the selectable portrait to the full-body image that will be displayed.
 export const SELECTABLE_AVATARS: SelectableAvatar[] = [
     {
       portraitUrl: "https://i.imgur.com/eSZKM6I.png", // Male Face
@@ -335,5 +332,3 @@ export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; }[] = [
     { url: "https://i.imgur.com/HWzFPP2.png", sex: 'male' }, // WITH LOGO
     { url: "https://i.imgur.com/Anv0mBW.png", sex: 'female' }, // WITH LOGO
 ];
-
-    

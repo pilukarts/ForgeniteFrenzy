@@ -62,7 +62,7 @@ interface GameContextType {
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
-const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' | 'avatarUrl' | 'country' | 'currentSeasonId'> = {
+const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' | 'avatarUrl' | 'portraitUrl' | 'country' | 'currentSeasonId'> = {
   points: 0,
   auron: 0,
   level: 1,
@@ -191,6 +191,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             name: '',
             commanderSex: 'male',
             avatarUrl: '', // Intentionally blank, setup will provide it
+            portraitUrl: '',
             country: '',
             currentSeasonId: SEASONS_DATA[0].id,
             lastLoginTimestamp: Date.now(),
@@ -698,7 +699,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
       name,
       commanderSex: selectedAvatarData.sex,
-      avatarUrl: selectedAvatarData.fullBodyUrl, // CORRECTLY use fullBodyUrl
+      avatarUrl: selectedAvatarData.fullBodyUrl,
+      portraitUrl: selectedAvatarData.portraitUrl,
       country,
       currentSeasonId: SEASONS_DATA[0].id,
       lastLoginTimestamp: now,
@@ -859,6 +861,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             ...prev, 
             name, 
             avatarUrl: selectedAvatarData.fullBodyUrl,
+            portraitUrl: selectedAvatarData.portraitUrl,
             commanderSex: selectedAvatarData.sex
         };
         return updatedProfile;
@@ -881,7 +884,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             
         toast({ title: 'Commander Switched', description: `Now playing as the ${newSex} commander.` });
         
-        return { ...prev, commanderSex: newSex, avatarUrl: newAvatarData.fullBodyUrl };
+        return { 
+            ...prev, 
+            commanderSex: newSex, 
+            avatarUrl: newAvatarData.fullBodyUrl,
+            portraitUrl: newAvatarData.portraitUrl 
+        };
     });
   }, [toast]);
   
@@ -944,9 +952,3 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
-
-
-    
-
-
-

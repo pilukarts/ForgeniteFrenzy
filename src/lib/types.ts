@@ -31,7 +31,8 @@ export interface PlayerProfile {
   name: string;
   commanderSex: 'male' | 'female';
   country?: string;
-  avatarUrl: string; // URL for the selected profile picture. MUST be the full-body image.
+  avatarUrl: string; // URL for the full-body image.
+  portraitUrl: string; // URL for the portrait/face image.
   points: number;
   auron: number;
   level: number;
