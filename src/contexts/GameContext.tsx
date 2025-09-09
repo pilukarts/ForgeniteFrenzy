@@ -224,7 +224,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setActiveCommanderOrder(loadedProfile.activeCommanderOrder);
     }
     setIsLoading(false);
-  }, []); // Removed addCoreMessage dependency as it's stable
+  }, []);
 
 
   useEffect(() => {
@@ -275,9 +275,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     if (!playerProfile || !isInitialSetupDone) return;
 
-    const now = Date.now();
     let profileNeedsUpdate = false;
     let updatedProfile = {...playerProfile};
+
+    const now = Date.now();
 
     // Check if current order is expired
     if (updatedProfile.activeCommanderOrder && now > updatedProfile.activeCommanderOrder.endTime) {
@@ -287,7 +288,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         profileNeedsUpdate = true;
     }
     
-    const lastOrderTimestamp = updatedProfile.activeCommanderOrder?.startTime ?? updatedProfile.lastCommanderOrderTimestamp;
+    const lastOrderTimestamp = updatedProfile.lastCommanderOrderTimestamp || 0;
     const cooldown = COMMANDER_ORDER_COOLDOWN_HOURS * 60 * 60 * 1000;
     
     // Check if it's time for a new order
@@ -295,10 +296,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const newOrder: CommanderOrder = {
         id: `order-${now}`,
         objectiveType: 'points',
-        target: 3000 * updatedProfile.level, // Scale with player level
-        reward: { auron: 20 + Math.floor(updatedProfile.level / 5) }, // Scale with player level
+        target: 3000 * updatedProfile.level,
+        reward: { auron: 20 + Math.floor(updatedProfile.level / 5) },
         startTime: now,
-        endTime: now + (2 * 24 * 60 * 60 * 1000), // 2 days from now
+        endTime: now + (2 * 24 * 60 * 60 * 1000),
         progress: 0,
         isCompleted: false,
       };
@@ -310,11 +311,11 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (profileNeedsUpdate) {
         setPlayerProfile(updatedProfile);
     }
-    // Sync activeCommanderOrder state if it's different from profile
+    
     if (activeCommanderOrder !== updatedProfile.activeCommanderOrder) {
         setActiveCommanderOrder(updatedProfile.activeCommanderOrder);
     }
-  }, [playerProfile, isInitialSetupDone, addCoreMessage, activeCommanderOrder]);
+  }, [isInitialSetupDone, playerProfile?.level]); // Depend on level to potentially re-trigger new orders
   
 
   const updateQuestProgress = useCallback((profile: PlayerProfile, type: QuestType, value: number): PlayerProfile => {
@@ -887,6 +888,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const hideCommanderOrder = useCallback(() => {
     setPlayerProfile(prev => {
         if (!prev) return null;
+        if (!prev.activeCommanderOrder) return prev; // No need to update if it's already null
         return { ...prev, activeCommanderOrder: null };
     });
   }, []);
@@ -1078,5 +1080,3 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
-
-    
