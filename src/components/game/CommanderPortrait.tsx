@@ -15,8 +15,8 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
   const { playerProfile } = useGame();
   const [isTapped, setIsTapped] = useState(false);
 
-  // The portraitUrl is now used for the main game view tap area.
-  const imageUrl = playerProfile?.portraitUrl;
+  // The full-body image is now used for the main game view tap area.
+  const imageUrl = playerProfile?.avatarUrl;
 
   if (!playerProfile || !imageUrl) {
     return (
@@ -52,7 +52,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
         "relative focus:outline-none transition-transform duration-100",
         "w-64 h-80 sm:w-72 sm:h-96", // Default size for the portrait area
         "flex items-center justify-center",
-        isTapped && (playerProfile.commanderSex === 'female' ? "scale-105" : "scale-105") // Simplified tap effect
+        isTapped && "scale-105" // Simplified tap effect
       )}
       aria-label="Tap Commander"
     >
