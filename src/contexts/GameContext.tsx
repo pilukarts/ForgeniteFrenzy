@@ -161,13 +161,11 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setCoreMessages(currentMessages);
         
         // --- PROFILE HYDRATION & DEFAULTS ---
-        const correctAvatarData = SELECTABLE_AVATARS.find(a => a.sex === parsedProfile.commanderSex) || SELECTABLE_AVATARS[0];
-
+        // This is the simplified and corrected loading logic.
+        // It trusts the saved avatarUrl and avoids re-calculating it.
         const hydratedProfile: PlayerProfile = {
             ...defaultPlayerProfile,
             ...parsedProfile,
-            // THIS IS THE KEY FIX: Directly use the saved avatarUrl. Do not recalculate it.
-            avatarUrl: parsedProfile.avatarUrl || correctAvatarData.fullBodyUrl, 
             lastLoginTimestamp: now,
             muleDrones: parsedProfile.upgrades?.['muleDrone'] || 0,
             activeDailyQuests: (parsedProfile.activeDailyQuests ?? []).map(q => {
@@ -690,18 +688,20 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const completeInitialSetup = useCallback(async (name: string, selectedPortraitUrl: string, country: string, referredByCode?: string) => {
     const now = Date.now();
     
+    // This is the corrected, definitive logic for setting the avatar.
+    // It finds the full avatar data based on the selected portrait.
     const selectedAvatarData = SELECTABLE_AVATARS.find(a => a.portraitUrl === selectedPortraitUrl);
     if (!selectedAvatarData) {
         console.error("Selected avatar data not found. This should not happen.");
         toast({ title: 'Avatar Error', description: 'Could not set selected avatar.', variant: 'destructive'});
-        // Fallback to prevent crash
+        // A fallback is still good practice, but the UI logic should prevent this.
         const fallbackAvatar = SELECTABLE_AVATARS[0];
         const newProfileData: PlayerProfile = {
           ...defaultPlayerProfile,
           id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
           name,
           commanderSex: fallbackAvatar.sex,
-          avatarUrl: fallbackAvatar.fullBodyUrl,
+          avatarUrl: fallbackAvatar.fullBodyUrl, // Use the verified full body URL
           country,
           currentSeasonId: SEASONS_DATA[0].id,
           lastLoginTimestamp: now,
@@ -718,7 +718,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
       name,
       commanderSex: selectedAvatarData.sex,
-      avatarUrl: selectedAvatarData.fullBodyUrl, // Correctly use fullBodyUrl
+      avatarUrl: selectedAvatarData.fullBodyUrl, // CORRECTLY use fullBodyUrl
       country,
       currentSeasonId: SEASONS_DATA[0].id,
       lastLoginTimestamp: now,
@@ -868,6 +868,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setPlayerProfile(prev => {
         if (!prev) return null;
         
+        // This is the corrected logic, same as in setup.
         const selectedAvatarData = SELECTABLE_AVATARS.find(a => a.portraitUrl === selectedPortraitUrl);
         if (!selectedAvatarData) {
             console.error("Selected avatar for update not found. No changes made.");
@@ -878,7 +879,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const updatedProfile = { 
             ...prev, 
             name, 
-            avatarUrl: selectedAvatarData.fullBodyUrl,
+            avatarUrl: selectedAvatarData.fullBodyUrl, // Correctly assign the full body URL
             commanderSex: selectedAvatarData.sex
         };
         return updatedProfile;
@@ -892,6 +893,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (!prev) return null;
         const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
         
+        // Correctly find the full avatar data for the new sex.
         const newAvatarData = SELECTABLE_AVATARS.find(a => a.sex === newSex);
         if (!newAvatarData) {
             console.error(`Could not find avatar data for sex: ${newSex}. Defaulting.`);
@@ -901,6 +903,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             
         toast({ title: 'Commander Switched', description: `Now playing as the ${newSex} commander.` });
         
+        // Assign the correct full body URL.
         return { ...prev, commanderSex: newSex, avatarUrl: newAvatarData.fullBodyUrl };
     });
   }, [toast]);
@@ -964,3 +967,6 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
+
+
+    
