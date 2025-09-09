@@ -161,8 +161,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setCoreMessages(currentMessages);
         
         // --- PROFILE HYDRATION & DEFAULTS ---
-        const selectedAvatarData = SELECTABLE_AVATARS.find(a => a.sex === parsedProfile.commanderSex) ?? SELECTABLE_AVATARS[0];
-        
         const hydratedProfile: PlayerProfile = {
             ...defaultPlayerProfile,
             ...parsedProfile,
@@ -174,7 +172,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             }),
             league: getLeagueByPoints(parsedProfile.points),
             currentTierColor: getTierColorByLevel(parsedProfile.level),
-            avatarUrl: selectedAvatarData.fullBodyUrl, // This ensures the correct avatar is always loaded.
+            // The avatarUrl is now trusted from what was saved. No more overwrites.
         };
         
         loadedProfile = hydratedProfile;
@@ -953,3 +951,4 @@ export const useGame = (): GameContextType => {
 
 
     
+
