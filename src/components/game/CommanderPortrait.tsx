@@ -74,15 +74,14 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
           data-ai-hint={dataAiHint}
           fill
           className={cn(
-            "object-contain transition-all duration-200 pointer-events-none", // pointer-events-none so it doesn't block the logo button
-            isTapped ? "animate-tapped-aura" : "animate-pulse-neon-dynamic"
+            "object-contain transition-all duration-200 pointer-events-none" // pointer-events-none so it doesn't block the logo button
           )}
           priority
           key={imageUrl} // Add key to force re-render on image URL change
         />
       </button>
 
-      {/* Invisible button for the AF logo hotspot */}
+      {/* Invisible button for the AF logo hotspot - LOGIC REMAINS BUT IS INEFFECTIVE WITHOUT LOGO IMAGES */}
       <button
         onClick={(e) => {
             e.stopPropagation(); // Prevents the main button click from firing
