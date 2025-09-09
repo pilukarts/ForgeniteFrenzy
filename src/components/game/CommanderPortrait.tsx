@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -15,7 +14,8 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
   const { playerProfile } = useGame();
   const [isTapped, setIsTapped] = useState(false);
 
-  if (!playerProfile || !playerProfile.avatarUrl) {
+  // Updated check: Ensure portraitUrl exists and is not an empty string.
+  if (!playerProfile || !playerProfile.portraitUrl) {
     return (
       <div className="relative w-64 h-80 sm:w-72 sm:h-96 flex items-center justify-center">
         <Skeleton className="w-full h-full" />
@@ -23,7 +23,6 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
     );
   }
   
-  // This now correctly uses the portraitUrl for display.
   const imageUrl = playerProfile.portraitUrl;
   const altText = `Commander ${playerProfile.name}`;
   const dataAiHint = playerProfile.commanderSex === 'male' ? "male commander headshot" : "female commander headshot";
