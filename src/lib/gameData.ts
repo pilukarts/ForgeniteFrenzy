@@ -314,14 +314,14 @@ export const LEVEL_STAGES: LevelStage[] = [
 
 export const SELECTABLE_AVATARS: SelectableAvatar[] = [
     {
-      portraitUrl: "https://i.imgur.com/eSZKM6I.png",
-      fullBodyUrl: "https://i.imgur.com/vJANNj2.png", // No background
+      portraitUrl: "https://i.imgur.com/Wq9PqxG.png",
+      fullBodyUrl: "https://i.imgur.com/Wq9PqxG.png",
       sex: 'male',
       hint: 'male commander headshot',
     },
     {
       portraitUrl: "https://i.imgur.com/BOKoTIM.png",
-      fullBodyUrl: "https://i.imgur.com/nJgaY6T.png", // No background
+      fullBodyUrl: "https://i.imgur.com/OdEL2qN.png",
       sex: 'female',
       hint: 'female commander headshot',
     },
@@ -332,3 +332,5 @@ export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; }[] = [
     { url: "https://i.imgur.com/HWzFPP2.png", sex: 'male' }, // WITH LOGO
     { url: "https://i.imgur.com/Anv0mBW.png", sex: 'female' }, // WITH LOGO
 ];
+
+    
