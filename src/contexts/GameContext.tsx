@@ -172,7 +172,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             }),
             league: getLeagueByPoints(parsedProfile.points),
             currentTierColor: getTierColorByLevel(parsedProfile.level),
-            // The avatarUrl is now trusted from what was saved. No more overwrites.
         };
         
         loadedProfile = hydratedProfile;
@@ -849,7 +848,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setPlayerProfile(prev => {
         if (!prev) return null;
         
-        // This is the corrected logic, same as in setup.
         const selectedAvatarData = SELECTABLE_AVATARS.find(a => a.portraitUrl === selectedPortraitUrl);
         if (!selectedAvatarData) {
             console.error("Selected avatar for update not found. No changes made.");
@@ -860,7 +858,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const updatedProfile = { 
             ...prev, 
             name, 
-            avatarUrl: selectedAvatarData.fullBodyUrl, // Correctly assign the full body URL
+            avatarUrl: selectedAvatarData.fullBodyUrl,
             commanderSex: selectedAvatarData.sex
         };
         return updatedProfile;
@@ -874,7 +872,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (!prev) return null;
         const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
         
-        // Correctly find the full avatar data for the new sex.
         const newAvatarData = SELECTABLE_AVATARS.find(a => a.sex === newSex);
         if (!newAvatarData) {
             console.error(`Could not find avatar data for sex: ${newSex}. Defaulting.`);
@@ -884,7 +881,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             
         toast({ title: 'Commander Switched', description: `Now playing as the ${newSex} commander.` });
         
-        // Assign the correct full body URL.
         return { ...prev, commanderSex: newSex, avatarUrl: newAvatarData.fullBodyUrl };
     });
   }, [toast]);
@@ -951,4 +947,5 @@ export const useGame = (): GameContextType => {
 
 
     
+
 
