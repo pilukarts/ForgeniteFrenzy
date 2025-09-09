@@ -1,4 +1,5 @@
 
+
 import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate, LeagueName, LeagueTier, BattlePass, LevelStage, SelectableAvatar } from './types';
 import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle, Shield, ShieldCheck, Award, Star, Crown, LucideIcon, Swords, Shirt, Replace } from 'lucide-react';
 
@@ -315,14 +316,14 @@ export const LEVEL_STAGES: LevelStage[] = [
 
 export const SELECTABLE_AVATARS: SelectableAvatar[] = [
     {
-      portraitUrl: "https://i.imgur.com/Wq9PqxG.png", // Face/selection
-      fullBodyUrl: "https://i.imgur.com/2JAVhtf.png", // Tap area
+      portraitUrl: "https://i.imgur.com/Wq9PqxG.png",
+      fullBodyUrl: "https://i.imgur.com/2JAVhtf.png",
       sex: 'male',
       hint: 'male commander headshot',
     },
     {
-      portraitUrl: "https://i.imgur.com/adTVhhi.png", // Face/selection
-      fullBodyUrl: "https://i.imgur.com/5PkLY8Q.png", // Tap area
+      portraitUrl: "https://i.imgur.com/BOKoTIM.png",
+      fullBodyUrl: "https://i.imgur.com/5PkLY8Q.png",
       sex: 'female',
       hint: 'female commander headshot',
     },
