@@ -14,8 +14,10 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
   const { playerProfile } = useGame();
   const [isTapped, setIsTapped] = useState(false);
 
-  // Updated check: Ensure portraitUrl exists and is not an empty string.
-  if (!playerProfile || !playerProfile.portraitUrl) {
+  // Use the full body URL for the main game view
+  const imageUrl = playerProfile?.avatarUrl;
+
+  if (!playerProfile || !imageUrl) {
     return (
       <div className="relative w-64 h-80 sm:w-72 sm:h-96 flex items-center justify-center">
         <Skeleton className="w-full h-full" />
@@ -23,9 +25,8 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
     );
   }
   
-  const imageUrl = playerProfile.portraitUrl;
   const altText = `Commander ${playerProfile.name}`;
-  const dataAiHint = playerProfile.commanderSex === 'male' ? "male commander headshot" : "female commander headshot";
+  const dataAiHint = playerProfile.commanderSex === 'male' ? "male commander full body" : "female commander full body";
 
   const handleInteraction = (isLogoTap: boolean) => {
     if (isLogoTap) {
