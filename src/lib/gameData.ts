@@ -323,7 +323,7 @@ export const SELECTABLE_AVATARS: SelectableAvatar[] = [
     },
     {
       portraitUrl: "https://i.imgur.com/BOKoTIM.png", // Female Face
-      fullBodyUrl: "https://i.imgur.com/BQHeVWp.png", // Female Full body with AF logo
+      fullBodyUrl: "https://i.imgur.com/wxGRAeg.png", // Female Full body with AF logo
       sex: 'female',
       hint: 'female commander headshot',
     },
@@ -332,5 +332,5 @@ export const SELECTABLE_AVATARS: SelectableAvatar[] = [
 // This list is only kept for backwards compatibility or reference, but is not actively used in the setup logic.
 export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; }[] = [
     { url: "https://i.imgur.com/iuRJVBZ.png", sex: 'male' }, // WITH LOGO
-    { url: "https://i.imgur.com/BQHeVWp.png", sex: 'female' }, // WITH LOGO
+    { url: "https://i.imgur.com/wxGRAeg.png", sex: 'female' }, // WITH LOGO
 ];
