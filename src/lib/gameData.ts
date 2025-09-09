@@ -1,3 +1,4 @@
+
 import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate, LeagueName, LeagueTier, BattlePass, LevelStage, SelectableAvatar } from './types';
 import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle, Shield, ShieldCheck, Award, Star, Crown, LucideIcon, Swords, Shirt, Replace } from 'lucide-react';
 
@@ -323,7 +324,7 @@ export const SELECTABLE_AVATARS: SelectableAvatar[] = [
     },
     {
       portraitUrl: "https://i.imgur.com/BOKoTIM.png", // Female Face
-      fullBodyUrl: "https://i.imgur.com/wxGRAeg.png", // Female Full body with AF logo
+      fullBodyUrl: "https://i.imgur.com/BQHeVWp.png", // Female Full body with AF logo
       sex: 'female',
       hint: 'female commander headshot',
     },
@@ -332,5 +333,5 @@ export const SELECTABLE_AVATARS: SelectableAvatar[] = [
 // This list is only kept for backwards compatibility or reference, but is not actively used in the setup logic.
 export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; }[] = [
     { url: "https://i.imgur.com/iuRJVBZ.png", sex: 'male' }, // WITH LOGO
-    { url: "https://i.imgur.com/wxGRAeg.png", sex: 'female' }, // WITH LOGO
+    { url: "https://i.imgur.com/BQHeVWp.png", sex: 'female' }, // WITH LOGO
 ];
