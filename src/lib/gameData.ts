@@ -322,7 +322,7 @@ export const SELECTABLE_AVATARS: SelectableAvatar[] = [
     },
     {
       portraitUrl: "https://i.imgur.com/adTVhhi.png", // Face/selection
-      fullBodyUrl: "https://i.imgur.com/adTVhhi.png", // Tap area
+      fullBodyUrl: "https://i.imgur.com/5PkLY8Q.png", // Tap area
       sex: 'female',
       hint: 'female commander headshot',
     },
