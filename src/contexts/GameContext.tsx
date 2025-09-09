@@ -697,9 +697,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Find the full avatar data based on the selected portrait URL. This is the crucial fix.
     const selectedAvatarData = SELECTABLE_AVATARS.find(a => a.portraitUrl === selectedPortraitUrl);
     if (!selectedAvatarData) {
-        console.error("Selected avatar data not found in SELECTABLE_AVATARS. This should not happen.");
-        toast({ title: 'Avatar Error', description: 'Could not set your selected avatar. Defaulting to standard commander.', variant: 'destructive'});
-        // Fallback to the first selectable avatar to prevent total failure
+        console.error("Selected avatar data not found. This should not happen.");
+        toast({ title: 'Avatar Error', description: 'Could not set selected avatar.', variant: 'destructive'});
+        // Fallback to prevent crash
         const fallbackAvatar = SELECTABLE_AVATARS[0];
         const newProfileData: PlayerProfile = {
           ...defaultPlayerProfile,
@@ -715,10 +715,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         };
         setPlayerProfile(newProfileData);
         setIsInitialSetupDone(true);
-        return; // Exit after handling the error
+        return; 
     }
 
-    const finalAvatarData = selectedAvatarData || SELECTABLE_AVATARS[0];
+    const finalAvatarData = selectedAvatarData;
     
     const newProfileData: PlayerProfile = {
       ...defaultPlayerProfile,
