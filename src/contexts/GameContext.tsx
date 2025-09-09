@@ -32,7 +32,7 @@ interface GameContextType {
   isInitialSetupDone: boolean;
   completeInitialSetup: (name: string, selectedPortraitUrl: string, country: string, referredByCode?: string) => void;
   coreMessages: CoreMessage[];
-  addCoreMessage: (message: Omit<CoreMessage, 'timestamp'>, isHighPriority?: boolean) => void;
+  addCoreMessage: (message: Omit<CoreMessage, 'timestamp'>) => void;
   isCoreUnlocked: boolean;
   coreLastInteractionTime: number;
   connectWallet: () => void;
@@ -121,13 +121,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const { toast } = useToast();
 
-  const addCoreMessage = useCallback((message: Omit<CoreMessage, 'timestamp'>, isHighPriority: boolean = false) => {
+  const addCoreMessage = useCallback((message: Omit<CoreMessage, 'timestamp'>) => {
     const newMessage = { ...message, timestamp: Date.now() };
     setCoreMessages(prev => [newMessage, ...prev.slice(0, 49)]); // Keep a log of last 50 messages
-    if(isHighPriority) {
-        toast({ title: message.type.replace('_', ' ').toUpperCase(), description: message.content});
-    }
-  }, [toast]);
+  }, []);
   
   // This effect runs once on component mount on the client side.
   // It's responsible for loading all data from localStorage and setting the initial game state.
@@ -338,7 +335,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const newLeague = getLeagueByPoints(updatedProfile.points);
       if (newLeague !== previousLeague) {
         updatedProfile.league = newLeague;
-        addCoreMessage({ type: 'system_alert', content: `Promotion! You've reached the ${newLeague} league.` }, true);
+        addCoreMessage({ type: 'system_alert', content: `Promotion! You've reached the ${newLeague} league.` });
       }
 
       updatedProfile = updateQuestProgress(updatedProfile, 'points_earned', finalAmount);
@@ -353,7 +350,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
       updatedProfile.battlePassXp = newBattlePassXp;
       if (bpLevelledUp) {
-          addCoreMessage({ type: 'system_alert', content: `Battle Pass Level Up! Reached Level ${updatedProfile.battlePassLevel}.` }, true);
+          addCoreMessage({ type: 'system_alert', content: `Battle Pass Level Up! Reached Level ${updatedProfile.battlePassLevel}.` });
       }
 
       return updatedProfile;
@@ -579,7 +576,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const newLeague = getLeagueByPoints(profileAfterPoints.points);
         if (newLeague !== previousLeague) {
             profileAfterPoints.league = newLeague;
-            addCoreMessage({ type: 'system_alert', content: `Promotion! You've reached the ${newLeague} league.` }, true);
+            addCoreMessage({ type: 'system_alert', content: `Promotion! You've reached the ${newLeague} league.` });
         }
 
         let newBattlePassXp = profileAfterPoints.battlePassXp + pointsWithBonus;
@@ -591,7 +588,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
         profileAfterPoints.battlePassXp = newBattlePassXp;
         if (bpLevelledUp) {
-            addCoreMessage({ type: 'system_alert', content: `Battle Pass Level Up! Reached Level ${updatedProfile.battlePassLevel}.` }, true);
+            addCoreMessage({ type: 'system_alert', content: `Battle Pass Level Up! Reached Level ${updatedProfile.battlePassLevel}.` });
         }
 
         let profileAfterTapQuests = updateQuestProgress(profileAfterPoints, 'taps', 1);
@@ -628,7 +625,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             const newLeague = getLeagueByPoints(updatedProfile.points);
             if (newLeague !== previousLeague) {
               updatedProfile.league = newLeague;
-              addCoreMessage({ type: 'system_alert', content: `Promotion! You've reached the ${newLeague} league.` }, true);
+              addCoreMessage({ type: 'system_alert', content: `Promotion! You've reached the ${newLeague} league.` });
             }
         }
         if (quest.reward.auron) {
@@ -683,7 +680,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 usedTemplateIds.add(template.templateId);
             }
         }
-        addCoreMessage({ type: 'system_alert', content: 'Daily Quest objectives refreshed. New challenges await.'}, true);
+        addCoreMessage({ type: 'system_alert', content: 'Daily Quest objectives refreshed. New challenges await.'});
         return { ...prev, activeDailyQuests: newQuests, lastDailyQuestRefresh: now.getTime() };
     });
   }, [addCoreMessage]);
@@ -782,7 +779,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const connectWallet = useCallback(() => {
     setPlayerProfile(prev => {
       if (!prev || prev.isWalletConnected) return prev;
-      addCoreMessage({ type: 'system_alert', content: `Wallet Connected! Received ${AURON_PER_WALLET_CONNECT} Auron bonus and unlocked the Ark Hangar.` }, true);
+      addCoreMessage({ type: 'system_alert', content: `Wallet Connected! Received ${AURON_PER_WALLET_CONNECT} Auron bonus and unlocked the Ark Hangar.` });
       return {
         ...prev,
         isWalletConnected: true,
@@ -802,7 +799,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             toast({ title: 'Insufficient Auron', description: `You need ${BATTLE_PASS_DATA.premiumCostInAuron} Auron to unlock the premium pass.`, variant: 'destructive' });
             return prev;
         }
-        addCoreMessage({ type: 'system_alert', content: 'Premium Battle Pass unlocked! Access to premium rewards granted.' }, true);
+        addCoreMessage({ type: 'system_alert', content: 'Premium Battle Pass unlocked! Access to premium rewards granted.' });
         return {
             ...prev,
             auron: prev.auron - BATTLE_PASS_DATA.premiumCostInAuron,
@@ -868,7 +865,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setPlayerProfile(prev => {
         if (!prev) return null;
         
-        addCoreMessage({ type: 'system_alert', content: `Broadcast complete. You received ${REWARDED_AD_AURON_REWARD} Auron.` }, true);
+        addCoreMessage({ type: 'system_alert', content: `Broadcast complete. You received ${REWARDED_AD_AURON_REWARD} Auron.` });
 
         return {
           ...prev,
