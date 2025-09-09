@@ -750,11 +750,11 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   }, [addCoreMessage]);
 
-  const completeInitialSetup = useCallback((name: string, sex: 'male' | 'female', country: string, referredByCode?: string) => {
+  const completeInitialSetup = useCallback(async (name: string, sex: 'male' | 'female', country: string, referredByCode?: string) => {
     const now = Date.now();
     
     // Find the full body URL based on the selected sex.
-    const finalAvatarUrl = SELECTABLE_AVATARS.find(a => a.sex === sex)?.fullBodyUrl || ALL_AVATARS[0].url;
+    const finalAvatarUrl = ALL_AVATARS.find(a => a.sex === sex)?.url || ALL_AVATARS[0].url;
 
     const newProfileData: PlayerProfile = {
       ...defaultPlayerProfile,
@@ -783,14 +783,16 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         ...newProfileData,
         activeDailyQuests: newProfileData.activeDailyQuests.map(({ icon, ...rest }) => rest), // Remove icon for Firestore
     };
-    syncPlayerProfileInFirestore(profileForFirestore).catch(error => {
+    try {
+        await syncPlayerProfileInFirestore(profileForFirestore);
+    } catch (error) {
         console.error("Failed to sync profile on initial setup:", error);
-        toast({ title: 'Sync Failed', description: 'Could not save initial profile to server.', variant: 'destructive' });
-    });
+        toast({ title: 'Sincronizacion fallo', description: 'Could not save initial profile to server.', variant: 'destructive' });
+    }
   }, [addCoreMessage, toast]);
   
   useEffect(() => {
-    if (isInitialSetupDone && playerProfile && !playerProfile.activeDailyQuests?.length) {
+    if (isInitialSetupDone && playerProfile) {
         refreshDailyQuestsIfNeeded();
     }
   }, [isInitialSetupDone, playerProfile, refreshDailyQuestsIfNeeded]);
@@ -951,7 +953,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (!prev) return null;
         
         // Find the correct avatar URL based on the selected sex.
-        const finalAvatarUrl = ALL_AVATARS.find(a => a.sex === commanderSex)?.url || ALL_AVatARS[0].url;
+        const finalAvatarUrl = ALL_AVATARS.find(a => a.sex === commanderSex)?.url || ALL_AVATARS[0].url;
 
         const updatedProfile = { 
             ...prev, 
