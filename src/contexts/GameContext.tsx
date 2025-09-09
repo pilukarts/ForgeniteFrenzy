@@ -32,7 +32,7 @@ interface GameContextType {
   isInitialSetupDone: boolean;
   completeInitialSetup: (name: string, selectedPortraitUrl: string, country: string, referredByCode?: string) => void;
   coreMessages: CoreMessage[];
-  addCoreMessage: (message: Omit<CoreMessage, 'timestamp'>, showToast?: boolean) => void;
+  addCoreMessage: (message: Omit<CoreMessage, 'timestamp'>) => void;
   isCoreUnlocked: boolean;
   coreLastInteractionTime: number;
   connectWallet: () => void;
