@@ -161,13 +161,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setCoreMessages(currentMessages);
         
         // --- PROFILE HYDRATION & DEFAULTS ---
-        // This is the critical fix: Ensure the loaded profile has the correct full body URL
         const correctAvatarData = SELECTABLE_AVATARS.find(a => a.sex === parsedProfile.commanderSex) || SELECTABLE_AVATARS[0];
 
         const hydratedProfile: PlayerProfile = {
             ...defaultPlayerProfile,
             ...parsedProfile,
-            avatarUrl: correctAvatarData.fullBodyUrl, // This ensures the correct image with the logo is always loaded.
+            // THIS IS THE KEY FIX: Directly use the saved avatarUrl. Do not recalculate it.
+            avatarUrl: parsedProfile.avatarUrl || correctAvatarData.fullBodyUrl, 
             lastLoginTimestamp: now,
             muleDrones: parsedProfile.upgrades?.['muleDrone'] || 0,
             activeDailyQuests: (parsedProfile.activeDailyQuests ?? []).map(q => {
