@@ -161,13 +161,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setCoreMessages(currentMessages);
         
         // --- PROFILE HYDRATION & DEFAULTS ---
-        // Find the full avatar data based on sex, fallback to male if not found
-        const selectedAvatarData = SELECTABLE_AVATARS.find(a => a.sex === parsedProfile.commanderSex) || SELECTABLE_AVATARS[0];
-
+        // Ensure the correct avatar with logo is used on load
+        const correctAvatar = SELECTABLE_AVATARS.find(a => a.sex === parsedProfile.commanderSex) || SELECTABLE_AVATARS[0];
+        
         const hydratedProfile: PlayerProfile = {
             ...defaultPlayerProfile,
             ...parsedProfile,
-            avatarUrl: selectedAvatarData.fullBodyUrl, // Ensure correct full body url with logo is loaded
+            avatarUrl: correctAvatar.fullBodyUrl, // This is the fix
             lastLoginTimestamp: now,
             muleDrones: parsedProfile.upgrades?.['muleDrone'] || 0,
             activeDailyQuests: (parsedProfile.activeDailyQuests ?? []).map(q => {
@@ -701,7 +701,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
           name,
           commanderSex: fallbackAvatar.sex,
-          avatarUrl: fallbackAvatar.fullBodyUrl,
+          avatarUrl: fallbackAvatar.fullBodyUrl, // Correctly use fullBodyUrl
           country,
           currentSeasonId: SEASONS_DATA[0].id,
           lastLoginTimestamp: now,
@@ -718,7 +718,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
       name,
       commanderSex: selectedAvatarData.sex,
-      avatarUrl: selectedAvatarData.fullBodyUrl,
+      avatarUrl: selectedAvatarData.fullBodyUrl, // Correctly use fullBodyUrl
       country,
       currentSeasonId: SEASONS_DATA[0].id,
       lastLoginTimestamp: now,
@@ -878,7 +878,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const updatedProfile = { 
             ...prev, 
             name, 
-            avatarUrl: selectedAvatarData.fullBodyUrl,
+            avatarUrl: selectedAvatarData.fullBodyUrl, // This is the fix
             commanderSex: selectedAvatarData.sex
         };
         return updatedProfile;
@@ -901,7 +901,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             
         toast({ title: 'Commander Switched', description: `Now playing as the ${newSex} commander.` });
         
-        return { ...prev, commanderSex: newSex, avatarUrl: newAvatarData.fullBodyUrl };
+        return { ...prev, commanderSex: newSex, avatarUrl: newAvatarData.fullBodyUrl }; // This is the fix
     });
   }, [toast]);
   
@@ -964,6 +964,3 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
-
-
-    
