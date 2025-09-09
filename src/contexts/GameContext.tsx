@@ -2,7 +2,7 @@
 "use client";
 
 import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, CommanderOrder, SelectableAvatar } from '@/lib/types';
-import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES, UNIFORM_PIECES_ORDER, TAPS_PER_UNIFORM_PIECE, ALL_AVATARS, SELECTABLE_AVATARS, AF_LOGO_TAP_BONUS_MULTIPLIER } from '@/lib/gameData';
+import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES, UNIFORM_PIECES_ORDER, TAPS_PER_UNIFORM_PIECE, SELECTABLE_AVATARS, AF_LOGO_TAP_BONUS_MULTIPLIER } from '@/lib/gameData';
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getCoreBriefing } from '@/ai/flows/core-briefings';
@@ -219,7 +219,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
 
     setPlayerProfile(loadedProfile);
-    setActiveCommanderOrder(loadedProfile.activeCommanderOrder);
+    if (loadedProfile?.activeCommanderOrder) {
+      setActiveCommanderOrder(loadedProfile.activeCommanderOrder);
+    }
     setIsLoading(false);
   }, []); // Removed addCoreMessage dependency as it's stable
 
@@ -273,20 +275,24 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (!playerProfile || !isInitialSetupDone) return;
 
     const now = Date.now();
-    const lastOrderTimestamp = playerProfile.activeCommanderOrder?.startTime ?? playerProfile.lastCommanderOrderTimestamp;
-    const cooldown = COMMANDER_ORDER_COOLDOWN_HOURS * 60 * 60 * 1000;
-
+    
     // Check if current order is expired
     if (playerProfile.activeCommanderOrder && now > playerProfile.activeCommanderOrder.endTime) {
-      addCoreMessage({ type: 'system_alert', content: "Commander, you've run out of time to complete the special order." }, true);
-      setPlayerProfile(prev => {
-        if (!prev) return null;
-        return { ...prev, activeCommanderOrder: null, lastCommanderOrderTimestamp: now };
-      });
-      setActiveCommanderOrder(null);
+        addCoreMessage({ type: 'system_alert', content: "Commander, you've run out of time to complete the special order." }, true);
+        setPlayerProfile(prev => {
+            if (!prev) return null;
+            const newProfile = { ...prev, activeCommanderOrder: null, lastCommanderOrderTimestamp: now };
+            setActiveCommanderOrder(null);
+            return newProfile;
+        });
+        return; // Exit after state update
     }
+    
+    const lastOrderTimestamp = playerProfile.activeCommanderOrder?.startTime ?? playerProfile.lastCommanderOrderTimestamp;
+    const cooldown = COMMANDER_ORDER_COOLDOWN_HOURS * 60 * 60 * 1000;
+    
     // Check if it's time for a new order
-    else if (!playerProfile.activeCommanderOrder && now - lastOrderTimestamp > cooldown) {
+    if (!playerProfile.activeCommanderOrder && now - lastOrderTimestamp > cooldown) {
       const newOrder: CommanderOrder = {
         id: `order-${now}`,
         objectiveType: 'points',
@@ -306,7 +312,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             setActiveCommanderOrder(playerProfile.activeCommanderOrder);
         }
     }
-  }, [playerProfile, isInitialSetupDone, addCoreMessage, activeCommanderOrder]);
+  }, [playerProfile, isInitialSetupDone, addCoreMessage]);
   
 
   const updateQuestProgress = useCallback((profile: PlayerProfile, type: QuestType, value: number): PlayerProfile => {
@@ -750,10 +756,15 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   }, [addCoreMessage]);
 
+  useEffect(() => {
+    if (isInitialSetupDone && playerProfile) {
+        refreshDailyQuestsIfNeeded();
+    }
+  }, [isInitialSetupDone, playerProfile, refreshDailyQuestsIfNeeded]);
+
   const completeInitialSetup = useCallback(async (name: string, selectedPortraitUrl: string, country: string, referredByCode?: string) => {
     const now = Date.now();
     
-    // Find the selected avatar object from the definitive list
     const selectedAvatarData = SELECTABLE_AVATARS.find(a => a.portraitUrl === selectedPortraitUrl);
     if (!selectedAvatarData) {
         console.error("Selected avatar not found in SELECTABLE_AVATARS. Defaulting...");
@@ -766,7 +777,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
       name,
       commanderSex: selectedAvatarData.sex,
-      avatarUrl: selectedAvatarData.fullBodyUrl, // Use the definitive full body URL with the logo
+      avatarUrl: selectedAvatarData.fullBodyUrl,
       country,
       currentSeasonId: SEASONS_DATA[0].id,
       lastLoginTimestamp: now,
@@ -774,10 +785,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       referredByCode: referredByCode?.trim() || undefined,
     };
     
-    // First, save the new profile to local state to update the UI immediately
     setPlayerProfile(newProfileData);
     setIsInitialSetupDone(true);
     setCurrentSeason(SEASONS_DATA[0]);
+    
     let welcomeMessage = `Welcome, Commander ${name}! Your mission begins now. Your unique referral code is ${newProfileData.referralCode}. Share it with allies!`;
     if (referredByCode) {
         welcomeMessage += ` We acknowledge Commander ${referredByCode} for recruiting you.`
@@ -785,11 +796,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     addCoreMessage({ type: 'briefing', content: welcomeMessage});
     setCoreLastInteractionTime(now);
 
-    // Then, attempt to sync with Firestore in the background
     try {
         const profileForFirestore = {
             ...newProfileData,
-            activeDailyQuests: newProfileData.activeDailyQuests.map(({ icon, ...rest }) => rest), // Remove icon for Firestore
+            activeDailyQuests: newProfileData.activeDailyQuests.map(({ icon, ...rest }) => rest),
         };
         await syncPlayerProfileInFirestore(profileForFirestore);
     } catch (error) {
@@ -798,12 +808,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [addCoreMessage, toast]);
   
-  useEffect(() => {
-    if (isInitialSetupDone && playerProfile) {
-        refreshDailyQuestsIfNeeded();
-    }
-  }, [isInitialSetupDone, playerProfile, refreshDailyQuestsIfNeeded]);
-
 
   const refillTaps = useCallback(() => {
     setPlayerProfile(prev => {
@@ -1053,4 +1057,3 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
-

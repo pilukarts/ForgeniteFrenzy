@@ -4,12 +4,12 @@ import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import type { PlayerProfile } from './types';
 import { firebaseConfig } from "./firebaseConfig";
 
-const PLAYERS_COLLECTION = 'players';
+// This file is intended for client-side use.
+// It initializes Firebase and provides a function to sync the player profile.
 
-const getDb = () => {
-    // This function ensures that we initialize Firebase only once.
-    return getFirestore(getApps().length === 0 ? initializeApp(firebaseConfig) : getApp());
-}
+// Initialize Firebase for client-side usage, ensuring it's only done once.
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+const db = getFirestore(app);
 
 /**
  * Creates or updates a player's entire profile in Firestore.
@@ -17,9 +17,13 @@ const getDb = () => {
  * @param playerProfile The full player profile object.
  */
 export const syncPlayerProfileInFirestore = async (playerProfile: PlayerProfile): Promise<void> => {
+  if (!playerProfile || !playerProfile.id) {
+    console.error("Invalid player profile or missing ID. Sync aborted.");
+    throw new Error("Invalid player profile provided for sync.");
+  }
+  
   try {
-    const db = getDb();
-    const playerDocRef = doc(db, PLAYERS_COLLECTION, playerProfile.id);
+    const playerDocRef = doc(db, 'players', playerProfile.id);
     await setDoc(playerDocRef, playerProfile, { merge: true });
   } catch (error) {
     console.error("Error syncing player profile to Firestore: ", error);
