@@ -892,7 +892,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (!prev) return null;
         const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
         
-        const newAvatarData = SELECTABLE_AVATARS.find(a => a.sex === newSex) || SELECTABLE_AVATARS[0];
+        const newAvatarData = SELECTABLE_AVATARS.find(a => a.sex === newSex);
+        if (!newAvatarData) {
+            console.error(`Could not find avatar data for sex: ${newSex}. Defaulting.`);
+            toast({ title: 'Avatar Error', description: 'Could not switch commander.', variant: 'destructive'});
+            return prev;
+        }
             
         toast({ title: 'Commander Switched', description: `Now playing as the ${newSex} commander.` });
         
@@ -959,3 +964,6 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
+
+
+    
