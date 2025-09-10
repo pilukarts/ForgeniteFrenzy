@@ -3,7 +3,7 @@
 
 import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, SelectableAvatar } from '@/lib/types';
 import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES, SELECTABLE_AVATARS, AF_LOGO_TAP_BONUS_MULTIPLIER } from '@/lib/gameData';
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getCoreBriefing } from '@/ai/flows/core-briefings';
 import { getCoreLoreSnippet } from '@/ai/flows/core-lore-snippets';
@@ -58,6 +58,9 @@ interface GameContextType {
   // Profile editing
   updatePlayerProfile: (name: string, selectedPortraitUrl: string) => void;
   toggleCommander: () => void;
+  // Audio
+  toggleMusic: () => void;
+  isMusicPlaying: boolean;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -114,6 +117,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isAICallInProgress, setIsAICallInProgress] = useState(false);
   const [rewardedAdCooldown, setRewardedAdCooldown] = useState(0);
   const [isWatchingAd, setIsWatchingAd] = useState(false);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+  const musicRef = useRef<HTMLAudioElement | null>(null);
+  const tapSoundUrl = '/sounds/tap-sound.mp3';
+  const backgroundMusicUrl = '/sounds/galactic-music.mp3';
 
 
   const { toast } = useToast();
@@ -123,8 +130,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setCoreMessages(prev => [newMessage, ...prev.slice(0, 49)]); // Keep a log of last 50 messages
   }, []);
   
-  // This effect runs once on component mount on the client side.
-  // It's responsible for loading all data from localStorage and setting the initial game state.
   useEffect(() => {
     let savedProfile: string | null = null;
     let loadedProfile: PlayerProfile | null = null;
@@ -206,7 +211,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 
   useEffect(() => {
-    // This effect handles saving the player profile to localStorage whenever it changes.
     if (playerProfile && isInitialSetupDone) {
       try {
         const profileToSave: PlayerProfile = {
@@ -221,7 +225,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [playerProfile, isInitialSetupDone]);
 
   useEffect(() => {
-    // This effect handles saving core messages to localStorage.
     if (isInitialSetupDone) {
        try {
         localStorage.setItem('coreMessages', JSON.stringify(coreMessages));
@@ -231,7 +234,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [coreMessages, isInitialSetupDone]);
 
-  // Rewarded Ad Cooldown Timer
   useEffect(() => {
     if (!playerProfile) return;
 
@@ -247,6 +249,20 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const interval = setInterval(updateCooldown, 1000);
     return () => clearInterval(interval);
   }, [playerProfile]);
+
+  const toggleMusic = useCallback(() => {
+    if (!musicRef.current) {
+        musicRef.current = new Audio(backgroundMusicUrl);
+        musicRef.current.loop = true;
+    }
+    if (isMusicPlaying) {
+        musicRef.current.pause();
+    } else {
+        musicRef.current.play().catch(error => console.error("Error playing music:", error));
+    }
+    setIsMusicPlaying(!isMusicPlaying);
+  }, [isMusicPlaying, backgroundMusicUrl]);
+
   
   const updateQuestProgress = useCallback((profile: PlayerProfile, type: QuestType, value: number): PlayerProfile => {
     if (!profile.activeDailyQuests) return profile;
@@ -479,6 +495,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const handleTap = useCallback((isLogoTap: boolean = false) => {
     let isCritical = false;
     
+    // Play tap sound
+    const audio = new Audio(tapSoundUrl);
+    audio.play();
+
     setPlayerProfile(prev => {
         if (!prev) return null;
         
@@ -506,7 +526,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         let basePointsForTap = pointsPerTapValue;
 
-        // Apply AF Logo Bonus
         if (isLogoTap) {
             basePointsForTap *= AF_LOGO_TAP_BONUS_MULTIPLIER;
         }
@@ -521,7 +540,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         
         let profileAfterPoints = { ...updatedProfile };
 
-        // Apply active item bonuses
         let expiredBonuses: ActiveTapBonus[] = [];
         if (profileAfterPoints.activeTapBonuses && profileAfterPoints.activeTapBonuses.length > 0) {
             let totalBonusMultiplierFactor = 1;
@@ -600,7 +618,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setComboCount(prevCount => prevCount + 1);
     setTimeout(() => setComboCount(0), 3000);
 
-  }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, addCoreMessage, updateQuestProgress, toast, currentSeason.id, setPlayerProfile, setComboCount]);
+  }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, addCoreMessage, updateQuestProgress, toast, currentSeason.id, setPlayerProfile, setComboCount, tapSoundUrl]);
 
   const claimQuestReward = useCallback((questId: string) => {
     setPlayerProfile(prev => {
@@ -939,6 +957,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         isWatchingAd,
         updatePlayerProfile,
         toggleCommander,
+        toggleMusic,
+        isMusicPlaying,
     }}>
       {children}
     </GameContext.Provider>
@@ -952,3 +972,5 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
+
+    
