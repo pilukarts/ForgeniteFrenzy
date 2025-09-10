@@ -80,8 +80,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
             data-ai-hint={dataAiHint}
             fill
             className={cn(
-              "object-contain transition-all duration-200 pointer-events-none drop-shadow-2xl",
-              playerProfile.commanderSex === 'male' && 'transform -scale-x-100' // Flip horizontally for male commander
+              "object-contain transition-all duration-200 pointer-events-none drop-shadow-2xl"
             )}
             priority
             key={imageUrl} // Add key to force re-render on image URL change
@@ -104,7 +103,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
             style={{
             top: logoHitbox.top,
             // Adjust left position for the flipped male commander
-            left: playerProfile.commanderSex === 'male' ? `calc(100% - ${logoHitbox.left} - ${logoHitbox.width})` : logoHitbox.left,
+            left: logoHitbox.left,
             width: logoHitbox.width,
             height: logoHitbox.height,
             }}
