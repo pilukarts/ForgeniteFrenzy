@@ -119,8 +119,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isWatchingAd, setIsWatchingAd] = useState(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const musicRef = useRef<HTMLAudioElement | null>(null);
-  const tapSoundUrl = 'https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8b6a31980.mp3';
-  const backgroundMusicUrl = 'https://cdn.pixabay.com/download/audio/2022/11/17/audio_8218165f65.mp3';
+  const tapSoundUrl = 'https://firebasestorage.googleapis.com/v0/b/genkit-90196.appspot.com/o/sci-fi-blip.mp3?alt=media&token=c2323214-e598-4847-8147-3f36098c414d';
+  const backgroundMusicUrl = 'https://firebasestorage.googleapis.com/v0/b/genkit-90196.appspot.com/o/sci-fi-background-music.mp3?alt=media&token=e16f39e3-80ae-432e-9d22-48a5717651a9';
 
 
   const { toast } = useToast();
