@@ -252,16 +252,27 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const toggleMusic = useCallback(() => {
     if (!musicRef.current) {
-        musicRef.current = new Audio(backgroundMusicUrl);
-        musicRef.current.loop = true;
+        try {
+            musicRef.current = new Audio(backgroundMusicUrl);
+            musicRef.current.loop = true;
+        } catch (e) {
+            console.error("Could not create Audio element.", e);
+            return;
+        }
     }
     if (isMusicPlaying) {
         musicRef.current.pause();
     } else {
-        musicRef.current.play().catch(error => console.error("Error playing music:", error));
+        musicRef.current.play().catch(error => {
+            if (error.name === 'NotAllowedError') {
+                toast({ title: 'Autoplay Blocked', description: 'Click anywhere to enable music.'});
+            } else {
+                console.error("Error playing music:", error);
+            }
+        });
     }
     setIsMusicPlaying(!isMusicPlaying);
-  }, [isMusicPlaying, backgroundMusicUrl]);
+  }, [isMusicPlaying, backgroundMusicUrl, toast]);
 
   
   const updateQuestProgress = useCallback((profile: PlayerProfile, type: QuestType, value: number): PlayerProfile => {
@@ -496,8 +507,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     let isCritical = false;
     
     // Play tap sound
-    const audio = new Audio(tapSoundUrl);
-    audio.play();
+    try {
+        const audio = new Audio(tapSoundUrl);
+        audio.play();
+    } catch(e) {
+        console.error("Could not play tap sound.", e);
+    }
 
     setPlayerProfile(prev => {
         if (!prev) return null;
