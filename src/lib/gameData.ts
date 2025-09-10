@@ -317,7 +317,7 @@ export const LEVEL_STAGES: LevelStage[] = [
 export const SELECTABLE_AVATARS: SelectableAvatar[] = [
     {
       portraitUrl: "https://i.imgur.com/Wq9PqxG.png",
-      fullBodyUrl: "https://i.imgur.com/J84zU37.png",
+      fullBodyUrl: "https://i.imgur.com/45Ilwzk.png",
       sex: 'male',
       hint: 'male commander headshot',
     },
@@ -335,3 +335,6 @@ export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; }[] = [
     { url: "https://i.imgur.com/Anv0mBW.png", sex: 'female' }, // WITH LOGO
 ];
 
+
+
+    
