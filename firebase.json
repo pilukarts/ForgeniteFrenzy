@@ -1,7 +1,6 @@
 {
   "apphosting": {
     "backendId": "forgeite-frenzy",
-    "rootDir": "/",
     "ignore": [
       "node_modules",
       ".git",
