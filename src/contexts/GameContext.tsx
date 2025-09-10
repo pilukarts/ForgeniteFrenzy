@@ -119,8 +119,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isWatchingAd, setIsWatchingAd] = useState(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const musicRef = useRef<HTMLAudioElement | null>(null);
-  const tapSoundUrl = '/sounds/tap-sound.mp3';
-  const backgroundMusicUrl = '/sounds/galactic-music.mp3';
+  const tapSoundUrl = 'https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8b6a31980.mp3';
+  const backgroundMusicUrl = 'https://cdn.pixabay.com/download/audio/2022/11/17/audio_8218165f65.mp3';
 
 
   const { toast } = useToast();
@@ -989,3 +989,4 @@ export const useGame = (): GameContextType => {
 };
 
     
+
