@@ -7,6 +7,9 @@ runConfig:
   # cpu: 1
   # memoryMiB: 512
 
+# Explicitly set the root directory to avoid any ambiguity during build.
+rootDir: .
+
 # Environment variables and secrets.
 # env:
   # Configure environment variables.
