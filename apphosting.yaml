@@ -1,10 +1,11 @@
 # Settings to manage and configure a Firebase App Hosting backend.
 # https://firebase.google.com/docs/app-hosting/configure
 
+# This comment is added to force a redeployment.
 runConfig:
   # This setting controls how many instances of your application can run at once.
   # Firebase automatically scales the number of instances based on traffic.
   # Increasing this value allows Firebase to handle more concurrent players
   # during traffic spikes. For a production launch, you might increase this
   # to 100 or more, depending on your expected traffic.
-  maxInstances: 10
+  maxInstances: 12
