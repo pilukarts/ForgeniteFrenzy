@@ -153,13 +153,13 @@ export default function HomePage() {
                 )}
               </motion.div>
 
-              <div className="flex flex-grow w-full items-center p-2 sm:p-4">
+              <div className="flex flex-grow w-full items-center justify-between p-2 sm:p-4">
                   {/* Left Column Buttons */}
                   <motion.div 
                       initial={{ x: -100, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-                      className="flex flex-col gap-2 w-auto max-w-[150px] sm:max-w-[180px] items-start self-center"
+                      className="flex flex-col gap-2 w-[130px] sm:w-[180px] items-start self-center"
                   >
                       <Button onClick={toggleCommander} variant="outline" size="sm" className="w-full justify-start">
                         <Replace className="mr-2 h-4 w-4" />
@@ -176,14 +176,14 @@ export default function HomePage() {
                         )}
                         {isMusicPlaying ? 'Music Off' : 'Music On'}
                       </Button>
-                      <div className="flex items-center gap-2 p-2 rounded-md border border-input bg-background">
+                      <div className="flex items-center gap-2 p-2 rounded-md border border-input bg-background w-full">
                           <Ship className="h-5 w-5 text-primary shrink-0" />
                           <div>
                               <p className="text-xs font-bold text-muted-foreground">{currentSeason.objectiveResourceName}</p>
                               <p className="text-sm text-foreground font-mono">{(playerProfile.seasonProgress[currentSeason.id] || 0).toLocaleString()}</p>
                           </div>
                       </div>
-                       <div className="flex items-center gap-2 p-2 rounded-md border border-input bg-background">
+                       <div className="flex items-center gap-2 p-2 rounded-md border border-input bg-background w-full">
                           <Trophy className="h-5 w-5 text-primary shrink-0" />
                           <div className="text-left">
                               <p className="text-xs font-bold text-muted-foreground">League</p>
