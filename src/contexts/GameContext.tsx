@@ -9,7 +9,6 @@ import { getCoreBriefing } from '@/ai/flows/core-briefings';
 import { getCoreLoreSnippet } from '@/ai/flows/core-lore-snippets';
 import { getCoreProgressUpdate } from '@/ai/flows/core-progress-updates';
 import { syncPlayerProfileInFirestore } from '@/lib/firestore';
-import WebApp from '@twa-dev/sdk';
 
 const NUMBER_OF_DAILY_QUESTS = 3;
 const TAP_REGEN_COOLDOWN_MILLISECONDS = TAP_REGEN_COOLDOWN_MINUTES * 60 * 1000;
@@ -141,8 +140,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     let savedProfile: string | null = null;
     let loadedProfile: PlayerProfile | null = null;
     
-    // Check if running in Telegram
-    setIsTelegramEnv(WebApp.platform !== 'unknown');
+    // Check if running in Telegram - ONLY ON CLIENT
+    if (typeof window !== 'undefined') {
+        import('@twa-dev/sdk').then(WebApp => {
+            setIsTelegramEnv(WebApp.default.platform !== 'unknown');
+        });
+    }
     
     try {
         savedProfile = localStorage.getItem('playerProfile');
@@ -942,16 +945,18 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const connectTelegramWallet = useCallback(() => {
     if (!isTelegramEnv) return;
-    WebApp.requestWalletAccess((granted) => {
-      if (granted) {
-        setPlayerProfile(prev => {
-            if (!prev) return null;
-            toast({ title: 'Telegram Wallet Connected!', description: 'You can now purchase Auron with TON.' });
-            return { ...prev, isTelegramWalletConnected: true };
+    import('@twa-dev/sdk').then(WebApp => {
+        WebApp.default.requestWalletAccess((granted) => {
+            if (granted) {
+                setPlayerProfile(prev => {
+                    if (!prev) return null;
+                    toast({ title: 'Telegram Wallet Connected!', description: 'You can now purchase Auron with TON.' });
+                    return { ...prev, isTelegramWalletConnected: true };
+                });
+            } else {
+                toast({ title: 'Connection Denied', description: 'You denied wallet access.', variant: 'destructive' });
+            }
         });
-      } else {
-        toast({ title: 'Connection Denied', description: 'You denied wallet access.', variant: 'destructive' });
-      }
     });
   }, [isTelegramEnv, toast]);
 
@@ -960,19 +965,22 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       toast({ title: 'Wallet Not Connected', description: 'Please connect your Telegram Wallet first.', variant: 'destructive' });
       return;
     }
-    // This is a simplified example. A real implementation would generate a unique invoice
-    // on a backend server and pass the link to openInvoice.
-    // For this prototype, we'll use a simulated success.
-    WebApp.showConfirm(`Purchase ${pkg.amount} Auron for a simulated ${pkg.price} TON?`, (confirmed) => {
-        if (confirmed) {
-            setPlayerProfile(prev => {
-                if (!prev) return null;
-                toast({ title: 'Purchase Successful (Simulated)', description: `You received ${pkg.amount.toLocaleString()} Auron.` });
-                return { ...prev, auron: prev.auron + pkg.amount };
-            });
-        } else {
-            toast({ title: 'Purchase Canceled', description: 'The transaction was not completed.' });
-        }
+
+    import('@twa-dev/sdk').then(WebApp => {
+        // This is a simplified example. A real implementation would generate a unique invoice
+        // on a backend server and pass the link to openInvoice.
+        // For this prototype, we'll use a simulated success.
+        WebApp.default.showConfirm(`Purchase ${pkg.amount} Auron for a simulated ${pkg.price} TON?`, (confirmed) => {
+            if (confirmed) {
+                setPlayerProfile(prev => {
+                    if (!prev) return null;
+                    toast({ title: 'Purchase Successful (Simulated)', description: `You received ${pkg.amount.toLocaleString()} Auron.` });
+                    return { ...prev, auron: prev.auron + pkg.amount };
+                });
+            } else {
+                toast({ title: 'Purchase Canceled', description: 'The transaction was not completed.' });
+            }
+        });
     });
   }, [isTelegramEnv, playerProfile, toast]);
 

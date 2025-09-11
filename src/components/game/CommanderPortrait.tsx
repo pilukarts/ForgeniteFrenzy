@@ -53,8 +53,9 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
 
   return (
     <div 
+      onClick={() => handleInteraction(false)} 
       className={cn(
-        "relative focus:outline-none transition-transform duration-100",
+        "relative focus:outline-none transition-transform duration-100 cursor-pointer",
         "w-64 h-80 sm:w-72 sm:h-96", // Default size for the portrait area
         "flex items-center justify-center",
         isTapped && "scale-105"
@@ -65,14 +66,9 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
         {/* Dynamic Aura */}
         <div className="absolute inset-0 commander-aura-glow z-0" />
 
-        {/* Main button for the whole commander */}
-        <button 
-            onClick={() => handleInteraction(false)} 
-            onTouchStart={(e) => {
-            e.preventDefault();
-            handleInteraction(false);
-            }}
-            className="w-full h-full relative group z-10"
+        {/* Main visual element for the whole commander */}
+        <div
+            className="w-full h-full relative group z-10 pointer-events-none"
         >
             <Image
             src={imageUrl}
@@ -80,23 +76,23 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
             data-ai-hint={dataAiHint}
             fill
             className={cn(
-              "object-contain transition-all duration-200 pointer-events-none drop-shadow-2xl"
+              "object-contain transition-all duration-200 drop-shadow-2xl"
             )}
             priority
             key={imageUrl} // Add key to force re-render on image URL change
             />
-        </button>
+        </div>
 
         {/* Invisible button for the AF logo hotspot */}
         <button
             onClick={(e) => {
-                e.stopPropagation(); // Prevents the main button click from firing
+                e.stopPropagation(); // Prevents the main div click from firing
                 handleInteraction(true);
             }}
             onTouchStart={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            handleInteraction(true);
+                e.preventDefault();
+                e.stopPropagation();
+                handleInteraction(true);
             }}
             aria-label="Tap AF Logo for Bonus"
             className="absolute z-20 rounded-full"
