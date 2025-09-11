@@ -136,16 +136,19 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setCoreMessages(prev => [newMessage, ...prev.slice(0, 49)]); // Keep a log of last 50 messages
   }, []);
   
+  // This useEffect handles client-side detection of the Telegram environment.
   useEffect(() => {
-    let savedProfile: string | null = null;
-    let loadedProfile: PlayerProfile | null = null;
-    
-    // Check if running in Telegram - ONLY ON CLIENT
     if (typeof window !== 'undefined') {
         import('@twa-dev/sdk').then(WebApp => {
             setIsTelegramEnv(WebApp.default.platform !== 'unknown');
         });
     }
+  }, []);
+
+
+  useEffect(() => {
+    let savedProfile: string | null = null;
+    let loadedProfile: PlayerProfile | null = null;
     
     try {
         savedProfile = localStorage.getItem('playerProfile');
