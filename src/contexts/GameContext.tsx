@@ -9,6 +9,7 @@ import { getCoreBriefing } from '@/ai/flows/core-briefings';
 import { getCoreLoreSnippet } from '@/ai/flows/core-lore-snippets';
 import { getCoreProgressUpdate } from '@/ai/flows/core-progress-updates';
 import { syncPlayerProfileInFirestore } from '@/lib/firestore';
+import WebApp from '@twa-dev/sdk';
 
 const NUMBER_OF_DAILY_QUESTS = 3;
 const TAP_REGEN_COOLDOWN_MILLISECONDS = TAP_REGEN_COOLDOWN_MINUTES * 60 * 1000;
@@ -61,6 +62,10 @@ interface GameContextType {
   // Audio
   toggleMusic: () => void;
   isMusicPlaying: boolean;
+  // Telegram Integration
+  isTelegramEnv: boolean;
+  connectTelegramWallet: () => void;
+  purchaseWithTelegramWallet: (pkg: { amount: number; price: number }) => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -96,6 +101,7 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
   hasPremiumPass: false,
   claimedBattlePassRewards: {},
   lastRewardedAdTimestamp: 0,
+  isTelegramWalletConnected: false,
 };
 
 const generateReferralCode = (name: string): string => {
@@ -119,6 +125,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isWatchingAd, setIsWatchingAd] = useState(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const musicRef = useRef<HTMLAudioElement | null>(null);
+  const [isTelegramEnv, setIsTelegramEnv] = useState(false);
   const tapSoundUrl = 'https://firebasestorage.googleapis.com/v0/b/genkit-90196.appspot.com/o/sci-fi-blip.mp3?alt=media&token=c2323214-e598-4847-8147-3f36098c414d';
   const backgroundMusicUrl = 'https://firebasestorage.googleapis.com/v0/b/genkit-90196.appspot.com/o/sci-fi-background-music.mp3?alt=media&token=e16f39e3-80ae-432e-9d22-48a5717651a9';
 
@@ -133,6 +140,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     let savedProfile: string | null = null;
     let loadedProfile: PlayerProfile | null = null;
+    
+    // Check if running in Telegram
+    setIsTelegramEnv(WebApp.platform !== 'unknown');
     
     try {
         savedProfile = localStorage.getItem('playerProfile');
@@ -930,6 +940,42 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return ARK_UPGRADES_DATA.find(u => u.id === upgradeId);
   }, []);
 
+  const connectTelegramWallet = useCallback(() => {
+    if (!isTelegramEnv) return;
+    WebApp.requestWalletAccess((granted) => {
+      if (granted) {
+        setPlayerProfile(prev => {
+            if (!prev) return null;
+            toast({ title: 'Telegram Wallet Connected!', description: 'You can now purchase Auron with TON.' });
+            return { ...prev, isTelegramWalletConnected: true };
+        });
+      } else {
+        toast({ title: 'Connection Denied', description: 'You denied wallet access.', variant: 'destructive' });
+      }
+    });
+  }, [isTelegramEnv, toast]);
+
+  const purchaseWithTelegramWallet = useCallback((pkg: { amount: number; price: number }) => {
+    if (!isTelegramEnv || !playerProfile?.isTelegramWalletConnected) {
+      toast({ title: 'Wallet Not Connected', description: 'Please connect your Telegram Wallet first.', variant: 'destructive' });
+      return;
+    }
+    // This is a simplified example. A real implementation would generate a unique invoice
+    // on a backend server and pass the link to openInvoice.
+    // For this prototype, we'll use a simulated success.
+    WebApp.showConfirm(`Purchase ${pkg.amount} Auron for a simulated ${pkg.price} TON?`, (confirmed) => {
+        if (confirmed) {
+            setPlayerProfile(prev => {
+                if (!prev) return null;
+                toast({ title: 'Purchase Successful (Simulated)', description: `You received ${pkg.amount.toLocaleString()} Auron.` });
+                return { ...prev, auron: prev.auron + pkg.amount };
+            });
+        } else {
+            toast({ title: 'Purchase Canceled', description: 'The transaction was not completed.' });
+        }
+    });
+  }, [isTelegramEnv, playerProfile, toast]);
+
 
   return (
     <GameContext.Provider value={{
@@ -974,6 +1020,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         toggleCommander,
         toggleMusic,
         isMusicPlaying,
+        isTelegramEnv,
+        connectTelegramWallet,
+        purchaseWithTelegramWallet,
     }}>
       {children}
     </GameContext.Provider>
@@ -987,12 +1036,3 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
-
-    
-
-
-
-
-    
-
-    

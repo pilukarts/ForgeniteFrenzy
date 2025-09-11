@@ -74,6 +74,9 @@ export interface PlayerProfile {
 
   // Rewarded Ad
   lastRewardedAdTimestamp: number;
+  
+  // Telegram Integration
+  isTelegramWalletConnected: boolean;
 }
 
 export interface Season {

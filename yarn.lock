@@ -2332,6 +2332,18 @@
   resolved "https://registry.npmjs.org/@trpc/server/-/server-10.45.2.tgz"
   integrity sha512-wOrSThNNE4HUnuhJG6PfDRp4L2009KDVxsd+2VYH8ro6o/7/jwYZ8Uu5j+VaW+mOmc8EHerHzGcdbGNQSAUPgg==
 
+"@twa-dev/sdk@^7.0.0":
+  version "7.10.1"
+  resolved "https://registry.npmjs.org/@twa-dev/sdk/-/sdk-7.10.1.tgz"
+  integrity sha512-mY9JaBPspYfLdzoaARVmr0GKXUO3X4hi1vuP+04UUFWST2lB50xGSxExOFz5I3vBaxnrdLregBGiaitvvWaX6w==
+  dependencies:
+    "@twa-dev/types" "^7.10.0"
+
+"@twa-dev/types@^7.10.0":
+  version "7.10.0"
+  resolved "https://registry.npmjs.org/@twa-dev/types/-/types-7.10.0.tgz"
+  integrity sha512-BXHyNLXy+cPbOZ2qQq5ArPKcP4kUfuX3YBSFT0XUxtMNWAzvyMuYAiq59UTfQ8OnELXlfChrAoIT3c2pujBtcQ==
+
 "@types/aws-lambda@8.10.122":
   version "8.10.122"
   resolved "https://registry.npmjs.org/@types/aws-lambda/-/aws-lambda-8.10.122.tgz"
