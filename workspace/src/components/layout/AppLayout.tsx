@@ -1,18 +1,21 @@
 
 
 "use client";
-import React, { ReactNode, useState, useEffect } from 'react';
+import React, { ReactNode, useState, useRef, useEffect } from 'react';
 import BottomNavBar from '../navigation/BottomNavBar';
 import PlayerProfileHeader from '@/components/player/PlayerProfileHeader';
 import ResourceDisplay from '@/components/game/ResourceDisplay';
 import { Button } from '@/components/ui/button';
-import { useGame } from '@/contexts/GameContext';
+import { useGame, defaultPlayerProfile, NUMBER_OF_DAILY_QUESTS } from '@/contexts/GameContext';
 import { Wallet, CreditCard, Loader2 } from 'lucide-react'; 
 import CoreDisplay from '@/components/core/CoreDisplay';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import IntroScreen from '../intro/IntroScreen';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import Image from 'next/image';
+import type { PlayerProfile, DailyQuest, Season } from '@/lib/types';
+import { SEASONS_DATA, DAILY_QUESTS_POOL, getLeagueByPoints, getTierColorByLevel, REWARDED_AD_COOLDOWN_MILLISECONDS } from '@/lib/gameData';
 
 
 const WalletConnectDialog: React.FC<{
@@ -87,12 +90,121 @@ const WalletConnectDialog: React.FC<{
     );
 };
 
+
+const useGameInitialization = () => {
+    const { 
+        playerProfile,
+        setPlayerProfile, 
+        setIsLoading,
+        setIsInitialSetupDone,
+        addCoreMessage,
+        setIsCoreUnlocked,
+        setCoreLastInteractionTime,
+        setRewardedAdCooldown,
+        setIsTelegramEnv,
+    } = useGame();
+
+    useEffect(() => {
+        let savedProfile: string | null = null;
+        
+        try {
+            savedProfile = localStorage.getItem('playerProfile');
+        } catch (e) {
+            console.error("Could not access localStorage. Starting fresh.", e);
+        }
+
+        if (savedProfile) {
+            let parsedProfile = JSON.parse(savedProfile) as PlayerProfile;
+
+            const now = Date.now();
+            const lastLogin = parsedProfile.lastLoginTimestamp ?? now;
+            const timeAwayInMinutes = Math.floor((now - lastLogin) / 60000);
+            let offlineEarnings = 0;
+            
+            if (timeAwayInMinutes > 1 && parsedProfile.muleDrones > 0) {
+                const MULE_DRONE_BASE_RATE = 1;
+                offlineEarnings = Math.floor(parsedProfile.muleDrones * MULE_DRONE_BASE_RATE * timeAwayInMinutes);
+                if (offlineEarnings > 0) {
+                    parsedProfile.points += offlineEarnings;
+                }
+            }
+
+            if (offlineEarnings > 0) {
+                addCoreMessage({ type: 'system_alert', content: `Welcome back, Commander. Your M.U.L.E. Drones generated ${offlineEarnings.toLocaleString()} points while you were away.` });
+            }
+            
+            const hydratedProfile: PlayerProfile = {
+                ...defaultPlayerProfile,
+                ...parsedProfile,
+                lastLoginTimestamp: now,
+                league: getLeagueByPoints(parsedProfile.points),
+                currentTierColor: getTierColorByLevel(parsedProfile.level),
+            };
+
+            setPlayerProfile(hydratedProfile);
+            const season = SEASONS_DATA.find(s => s.id === hydratedProfile.currentSeasonId) || SEASONS_DATA[0];
+            const coreUnlocked = !!hydratedProfile.upgrades['coreUnlocked'] || SEASONS_DATA.slice(0, SEASONS_DATA.indexOf(season)).some(s => s.unlocksCore);
+            setIsCoreUnlocked(coreUnlocked);
+            setCoreLastInteractionTime(now);
+            setIsInitialSetupDone(true);
+        } else {
+            const tempProfile: PlayerProfile = {
+                ...defaultPlayerProfile,
+                id: 'temp-new-player', name: '', commanderSex: 'male', avatarUrl: '', portraitUrl: '', country: '',
+                currentSeasonId: SEASONS_DATA[0].id, lastLoginTimestamp: Date.now(),
+            };
+            setPlayerProfile(tempProfile);
+            setIsInitialSetupDone(false);
+        }
+
+        setIsLoading(false);
+
+        // Telegram Env check
+        import('@twa-dev/sdk').then(twa => {
+            if (twa.default.platform !== 'unknown') {
+                setIsTelegramEnv(true);
+            }
+        }).catch(err => console.log("Not in Telegram environment or SDK failed to load."));
+
+    }, [setPlayerProfile, setIsLoading, setIsInitialSetupDone, addCoreMessage, setIsCoreUnlocked, setCoreLastInteractionTime, setIsTelegramEnv]);
+
+    // Save profile to localStorage on change
+    useEffect(() => {
+      if (playerProfile && isInitialSetupDone) {
+        try {
+          const profileToSave: PlayerProfile = {
+              ...playerProfile,
+              activeDailyQuests: playerProfile.activeDailyQuests.map(({ icon, ...rest }) => rest), // Remove icon before saving
+          };
+          localStorage.setItem('playerProfile', JSON.stringify(profileToSave));
+        } catch (e) {
+            console.error("Failed to save player profile to localStorage:", e);
+        }
+      }
+    }, [playerProfile, isInitialSetupDone]);
+    
+     // Cooldown timer effect
+    useEffect(() => {
+        if (!playerProfile) return;
+        const interval = setInterval(() => {
+            const now = Date.now();
+            const lastAdTime = playerProfile.lastRewardedAdTimestamp || 0;
+            const timeSinceLastAd = now - lastAdTime;
+            const newCooldown = Math.max(0, REWARDED_AD_COOLDOWN_MILLISECONDS - timeSinceLastAd);
+            setRewardedAdCooldown(newCooldown);
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [playerProfile, setRewardedAdCooldown]);
+};
+
+
 interface AppLayoutProps {
   children: ReactNode;
 }
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const { playerProfile, connectWallet, currentSeason, isLoading, isInitialSetupDone } = useGame();
+  useGameInitialization();
   const [isWalletDialogOpen, setWalletDialogOpen] = useState(false);
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   
