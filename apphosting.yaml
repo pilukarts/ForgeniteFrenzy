@@ -2,6 +2,3 @@
 # See https://firebase.google.com/docs/app-hosting/configure#cloud-run
 runConfig:
   minInstances: 0
-
-# Explicitly set the root directory to avoid any ambiguity during build.
-rootDir: .
