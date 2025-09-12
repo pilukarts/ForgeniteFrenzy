@@ -99,12 +99,13 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
 
 
-  const seasonProgress = playerProfile?.seasonProgress?.[currentSeason.id] ?? 0;
   
   // This is the new, centralized loading logic.
   if (isLoading || !playerProfile) {
     return <IntroScreen />;
   }
+
+  const seasonProgress = playerProfile?.seasonProgress?.[currentSeason.id] ?? 0;
 
   return (
     <>

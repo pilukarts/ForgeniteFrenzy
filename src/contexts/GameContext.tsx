@@ -126,6 +126,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isWatchingAd, setIsWatchingAd] = useState(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const musicRef = useRef<HTMLAudioElement | null>(null);
+  const tapSoundRef = useRef<HTMLAudioElement | null>(null);
   const [isTelegramEnv, setIsTelegramEnv] = useState(false);
   const tapSoundUrl = 'https://firebasestorage.googleapis.com/v0/b/genkit-90196.appspot.com/o/sci-fi-blip.mp3?alt=media&token=c2323214-e598-4847-8147-3f36098c414d';
   const backgroundMusicUrl = 'https://firebasestorage.googleapis.com/v0/b/genkit-90196.appspot.com/o/sci-fi-background-music.mp3?alt=media&token=e16f39e3-80ae-432e-9d22-48a5717651a9';
@@ -272,6 +273,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [playerProfile]);
 
   const toggleMusic = useCallback(() => {
+    if (typeof window === 'undefined') return;
+
     if (!musicRef.current) {
         try {
             musicRef.current = new Audio(backgroundMusicUrl);
@@ -525,12 +528,18 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const comboMultiplierValue = 1 + (comboBonusUpgradeLevel * 0.02) + (comboCount * 0.01);
 
   const handleTap = useCallback((isLogoTap: boolean = false) => {
-    // Play tap sound
-    try {
-        const audio = new Audio(tapSoundUrl);
-        audio.play();
-    } catch(e) {
-        console.error("Could not play tap sound.", e);
+    if (typeof window === 'undefined') return;
+
+    if (!tapSoundRef.current) {
+      try {
+        tapSoundRef.current = new Audio(tapSoundUrl);
+      } catch (e) {
+        console.error("Could not create tap sound Audio element.", e);
+      }
+    }
+    
+    if (tapSoundRef.current) {
+        tapSoundRef.current.play().catch(e => console.error("Error playing tap sound:", e));
     }
     
     setPlayerProfile(prev => {
@@ -1064,3 +1073,4 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
+
