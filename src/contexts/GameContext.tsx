@@ -1,21 +1,20 @@
 
 "use client";
 
-import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, SelectableAvatar } from '@/lib/types';
-import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MINUTES, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES, SELECTABLE_AVATARS, AF_LOGO_TAP_BONUS_MULTIPLIER } from '@/lib/gameData';
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode, useRef } from 'react';
+import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, SelectableAvatar } from '@/lib/types';
+import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MILLISECONDS, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MILLISECONDS, SELECTABLE_AVATARS, AF_LOGO_TAP_BONUS_MULTIPLIER } from '@/lib/gameData';
 import { useToast } from '@/hooks/use-toast';
 import { getCoreBriefing } from '@/ai/flows/core-briefings';
 import { getCoreLoreSnippet } from '@/ai/flows/core-lore-snippets';
 import { getCoreProgressUpdate } from '@/ai/flows/core-progress-updates';
 import { syncPlayerProfileInFirestore } from '@/lib/firestore';
 
-const NUMBER_OF_DAILY_QUESTS = 3;
-const TAP_REGEN_COOLDOWN_MILLISECONDS = TAP_REGEN_COOLDOWN_MINUTES * 60 * 1000;
-const REWARDED_AD_COOLDOWN_MILLISECONDS = REWARDED_AD_COOLDOWN_MINUTES * 60 * 1000;
+// --- Constants ---
+export const NUMBER_OF_DAILY_QUESTS = 3;
 
-
-interface GameContextType {
+// --- Context Type Definition ---
+export interface GameContextType {
   playerProfile: PlayerProfile | null;
   setPlayerProfile: React.Dispatch<React.SetStateAction<PlayerProfile | null>>;
   currentSeason: Season;
@@ -29,12 +28,16 @@ interface GameContextType {
   getArkUpgradeById: (upgradeId: string) => ArkUpgrade | undefined;
   addPoints: (amount: number, isFromTap?: boolean) => void;
   isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   isInitialSetupDone: boolean;
+  setIsInitialSetupDone: React.Dispatch<React.SetStateAction<boolean>>;
   completeInitialSetup: (name: string, commanderSex: 'male' | 'female', country: string, referredByCode?: string) => void;
   coreMessages: CoreMessage[];
   addCoreMessage: (message: Omit<CoreMessage, 'timestamp'>) => void;
   isCoreUnlocked: boolean;
+  setIsCoreUnlocked: React.Dispatch<React.SetStateAction<boolean>>;
   coreLastInteractionTime: number;
+  setCoreLastInteractionTime: React.Dispatch<React.SetStateAction<number>>;
   connectWallet: () => void;
   handleTap: (isLogoTap?: boolean) => void;
   criticalTapChance: number;
@@ -47,30 +50,30 @@ interface GameContextType {
   claimQuestReward: (questId: string) => void;
   refreshDailyQuestsIfNeeded: () => void;
   refillTaps: () => void;
-  // Battle Pass
   battlePassData: BattlePass;
   purchasePremiumPass: () => void;
   claimBattlePassReward: (level: number, track: 'free' | 'premium') => void;
-  // Rewarded Ad
   watchRewardedAd: () => void;
   rewardedAdCooldown: number;
+  setRewardedAdCooldown: React.Dispatch<React.SetStateAction<number>>;
   isWatchingAd: boolean;
-  // Profile editing
   updatePlayerProfile: (name: string, selectedPortraitUrl: string) => void;
   toggleCommander: () => void;
   resetGame: () => void;
-  // Audio
   toggleMusic: () => void;
   isMusicPlaying: boolean;
-  // Telegram Integration
+  setIsMusicPlaying: React.Dispatch<React.SetStateAction<boolean>>;
   isTelegramEnv: boolean;
+  setIsTelegramEnv: React.Dispatch<React.SetStateAction<boolean>>;
   connectTelegramWallet: () => void;
   purchaseWithTelegramWallet: (pkg: { amount: number; price: number }) => void;
 }
 
-const GameContext = createContext<GameContextType | undefined>(undefined);
+// --- Context Creation ---
+export const GameContext = createContext<GameContextType | undefined>(undefined);
 
-const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' | 'avatarUrl' | 'portraitUrl' | 'country' | 'currentSeasonId'> = {
+// --- Default Profile ---
+export const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' | 'avatarUrl' | 'portraitUrl' | 'country' | 'currentSeasonId'> = {
   points: 0,
   auron: 0,
   level: 1,
@@ -94,7 +97,6 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
   tapsAvailableAt: Date.now(),
   currentTierColor: INITIAL_TIER_COLOR,
   league: DEFAULT_LEAGUE,
-  // Battle Pass
   battlePassLevel: 1,
   battlePassXp: 0,
   xpToNextBattlePassLevel: BATTLE_PASS_XP_PER_LEVEL,
@@ -104,13 +106,14 @@ const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' |
   isTelegramWalletConnected: false,
 };
 
-const generateReferralCode = (name: string): string => {
+// --- Helper Functions ---
+export const generateReferralCode = (name: string): string => {
   const namePart = name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 4).toUpperCase();
   const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();
   return `${namePart}${randomPart || 'ABCDE'}`;
 };
 
-
+// --- Provider Component ---
 export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -120,16 +123,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isCoreUnlocked, setIsCoreUnlocked] = useState(false);
   const [coreLastInteractionTime, setCoreLastInteractionTime] = useState<number>(0);
   const [comboCount, setComboCount] = useState(0);
-  const [isAICallInProgress, setIsAICallInProgress] = useState(false);
   const [rewardedAdCooldown, setRewardedAdCooldown] = useState(0);
   const [isWatchingAd, setIsWatchingAd] = useState(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+  const [isTelegramEnv, setIsTelegramEnv] = useState(false);
   const musicRef = useRef<HTMLAudioElement | null>(null);
   const tapSoundRef = useRef<HTMLAudioElement | null>(null);
-  const [isTelegramEnv, setIsTelegramEnv] = useState(false);
-  const tapSoundUrl = 'https://firebasestorage.googleapis.com/v0/b/genkit-90196.appspot.com/o/sci-fi-blip.mp3?alt=media&token=c2323214-e598-4847-8147-3f36098c414d';
-  const backgroundMusicUrl = 'https://firebasestorage.googleapis.com/v0/b/genkit-90196.appspot.com/o/sci-fi-background-music.mp3?alt=media&token=e16f39e3-80ae-432e-9d22-48a5717651a9';
-
 
   const { toast } = useToast();
 
@@ -138,143 +137,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setCoreMessages(prev => [newMessage, ...prev.slice(0, 49)]); // Keep a log of last 50 messages
   }, []);
   
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-        import('@twa-dev/sdk').then(twa => {
-            if (twa.default.platform !== 'unknown') {
-                setIsTelegramEnv(true);
-            }
-        });
-    }
-  }, []);
-
-
-  useEffect(() => {
-    // This entire effect now ONLY runs on the client-side.
-    let savedProfile: string | null = null;
-    let loadedProfile: PlayerProfile | null = null;
-    
-    try {
-        savedProfile = localStorage.getItem('playerProfile');
-    } catch (e) {
-        console.error("Could not access localStorage. Starting fresh.", e);
-    }
-  
-    if (savedProfile) {
-        let parsedProfile = JSON.parse(savedProfile) as PlayerProfile;
-        
-        // ---- OFFLINE PROGRESS ----
-        const now = Date.now();
-        const lastLogin = parsedProfile.lastLoginTimestamp ?? now;
-        const timeAwayInMinutes = Math.floor((now - lastLogin) / 60000);
-        let offlineEarnings = 0;
-        
-        if (timeAwayInMinutes > 1 && parsedProfile.muleDrones > 0) {
-            offlineEarnings = Math.floor(parsedProfile.muleDrones * MULE_DRONE_BASE_RATE * timeAwayInMinutes);
-            if (offlineEarnings > 0) {
-                parsedProfile.points += offlineEarnings;
-            }
-        }
-        
-        // ---- MESSAGES ----
-        const savedMessages = localStorage.getItem('coreMessages');
-        let currentMessages = savedMessages ? JSON.parse(savedMessages) : [];
-        if (offlineEarnings > 0) {
-            const offlineMessage: CoreMessage = { type: 'system_alert', content: `Welcome back, Commander. Your M.U.L.E. Drones generated ${offlineEarnings.toLocaleString()} points while you were away.`, timestamp: Date.now() };
-            currentMessages = [offlineMessage, ...currentMessages.slice(0, 49)];
-        }
-        setCoreMessages(currentMessages);
-        
-        // --- PROFILE HYDRATION & DEFAULTS ---
-        const hydratedProfile: PlayerProfile = {
-            ...defaultPlayerProfile,
-            ...parsedProfile,
-            lastLoginTimestamp: now,
-            muleDrones: parsedProfile.upgrades?.['muleDrone'] || 0,
-            activeDailyQuests: (parsedProfile.activeDailyQuests ?? []).map(q => {
-                const template = DAILY_QUESTS_POOL.find(t => t.templateId === q.templateId);
-                return { ...q, icon: template?.icon };
-            }),
-            league: getLeagueByPoints(parsedProfile.points),
-            currentTierColor: getTierColorByLevel(parsedProfile.level),
-        };
-        
-        loadedProfile = hydratedProfile;
-        
-        const season = SEASONS_DATA.find(s => s.id === hydratedProfile.currentSeasonId) || SEASONS_DATA[0];
-        setCurrentSeason(season);
-        
-        const coreUnlocked = !!hydratedProfile.upgrades['coreUnlocked'] || SEASONS_DATA.slice(0, SEASONS_DATA.indexOf(season)).some(s => s.unlocksCore);
-        setIsCoreUnlocked(coreUnlocked);
-        setCoreLastInteractionTime(now);
-        setIsInitialSetupDone(true);
-    } else {
-        // This is a new player. Create a placeholder profile so the app can render the setup screen.
-        const tempProfile: PlayerProfile = {
-            ...defaultPlayerProfile,
-            id: 'temp-new-player',
-            name: '',
-            commanderSex: 'male',
-            avatarUrl: '', // Intentionally blank, setup will provide it
-            portraitUrl: '',
-            country: '',
-            currentSeasonId: SEASONS_DATA[0].id,
-            lastLoginTimestamp: Date.now(),
-        };
-        loadedProfile = tempProfile;
-        setIsInitialSetupDone(false);
-    }
-
-    setPlayerProfile(loadedProfile);
-    setIsLoading(false);
-  }, []);
-
-
-  useEffect(() => {
-    if (playerProfile && isInitialSetupDone) {
-      try {
-        const profileToSave: PlayerProfile = {
-            ...playerProfile,
-            activeDailyQuests: playerProfile.activeDailyQuests.map(({ icon, ...rest }) => rest), // Remove icon before saving
-        };
-        localStorage.setItem('playerProfile', JSON.stringify(profileToSave));
-      } catch (e) {
-          console.error("Failed to save player profile to localStorage:", e);
-      }
-    }
-  }, [playerProfile, isInitialSetupDone]);
-
-  useEffect(() => {
-    if (isInitialSetupDone) {
-       try {
-        localStorage.setItem('coreMessages', JSON.stringify(coreMessages));
-       } catch (e) {
-           console.error("Failed to save core messages to localStorage:", e);
-       }
-    }
-  }, [coreMessages, isInitialSetupDone]);
-
-  useEffect(() => {
-    if (!playerProfile) return;
-
-    const updateCooldown = () => {
-      const now = Date.now();
-      const lastAdTime = playerProfile.lastRewardedAdTimestamp || 0;
-      const timeSinceLastAd = now - lastAdTime;
-      const newCooldown = Math.max(0, REWARDED_AD_COOLDOWN_MILLISECONDS - timeSinceLastAd);
-      setRewardedAdCooldown(newCooldown);
-    };
-
-    updateCooldown();
-    const interval = setInterval(updateCooldown, 1000);
-    return () => clearInterval(interval);
-  }, [playerProfile]);
-
   const toggleMusic = useCallback(() => {
     if (typeof window === 'undefined') return;
 
     if (!musicRef.current) {
         try {
+            const backgroundMusicUrl = 'https://firebasestorage.googleapis.com/v0/b/genkit-90196.appspot.com/o/sci-fi-background-music.mp3?alt=media&token=e16f39e3-80ae-432e-9d22-48a5717651a9';
             musicRef.current = new Audio(backgroundMusicUrl);
             musicRef.current.loop = true;
         } catch (e) {
@@ -294,7 +162,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         });
     }
     setIsMusicPlaying(!isMusicPlaying);
-  }, [isMusicPlaying, backgroundMusicUrl, toast]);
+  }, [isMusicPlaying, toast]);
 
   
   const updateQuestProgress = useCallback((profile: PlayerProfile, type: QuestType, value: number): PlayerProfile => {
@@ -529,11 +397,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (typeof window === 'undefined') return;
 
     if (!tapSoundRef.current) {
-      try {
-        tapSoundRef.current = new Audio(tapSoundUrl);
-      } catch (e) {
-        console.error("Could not create tap sound Audio element.", e);
-      }
+        try {
+            const tapSoundUrl = 'https://firebasestorage.googleapis.com/v0/b/genkit-90196.appspot.com/o/sci-fi-blip.mp3?alt=media&token=c2323214-e598-4847-8147-3f36098c414d';
+            tapSoundRef.current = new Audio(tapSoundUrl);
+        } catch (e) {
+            console.error("Could not create tap sound Audio element.", e);
+        }
     }
     
     if (tapSoundRef.current) {
@@ -657,7 +526,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     setComboCount(prevCount => prevCount + 1);
     setTimeout(() => setComboCount(0), 3000);
-  }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, addCoreMessage, updateQuestProgress, toast, currentSeason.id, tapSoundUrl]);
+  }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, addCoreMessage, updateQuestProgress, toast, currentSeason.id]);
 
 
   const claimQuestReward = useCallback((questId: string) => {
@@ -735,12 +604,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         return { ...prev, activeDailyQuests: newQuests, lastDailyQuestRefresh: now.getTime() };
     });
   }, [addCoreMessage]);
-
-  useEffect(() => {
-    if (isInitialSetupDone && playerProfile) {
-        refreshDailyQuestsIfNeeded();
-    }
-  }, [isInitialSetupDone, playerProfile, refreshDailyQuestsIfNeeded]);
 
   const completeInitialSetup = useCallback(async (name: string, commanderSex: 'male' | 'female', country: string, referredByCode?: string) => {
     const now = Date.now();
@@ -1012,58 +875,70 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [isTelegramEnv, playerProfile, toast]);
 
 
+  // --- Context Value ---
+  const contextValue = {
+    playerProfile,
+    setPlayerProfile,
+    currentSeason,
+    seasons: SEASONS_DATA,
+    getUpgradeLevel,
+    purchaseUpgrade,
+    getUpgradeCost,
+    upgrades: UPGRADES_DATA,
+    arkUpgrades: ARK_UPGRADES_DATA,
+    purchaseArkUpgrade,
+    getArkUpgradeById,
+    addPoints,
+    isLoading,
+    setIsLoading,
+    isInitialSetupDone,
+    setIsInitialSetupDone,
+    completeInitialSetup,
+    coreMessages,
+    addCoreMessage,
+    isCoreUnlocked,
+    setIsCoreUnlocked,
+    coreLastInteractionTime,
+    setCoreLastInteractionTime,
+    connectWallet,
+    handleTap,
+    criticalTapChance,
+    criticalTapMultiplier,
+    comboMultiplier: comboMultiplierValue,
+    comboCount,
+    setComboCount,
+    marketplaceItems: MARKETPLACE_ITEMS_DATA,
+    claimQuestReward,
+    refreshDailyQuestsIfNeeded,
+    refillTaps,
+    battlePassData: BATTLE_PASS_DATA,
+    purchasePremiumPass,
+    claimBattlePassReward,
+    watchRewardedAd,
+    rewardedAdCooldown,
+    setRewardedAdCooldown,
+    isWatchingAd,
+    updatePlayerProfile,
+    toggleCommander,
+    resetGame,
+    toggleMusic,
+    isMusicPlaying,
+    setIsMusicPlaying,
+    isTelegramEnv,
+    setIsTelegramEnv,
+    connectTelegramWallet,
+    purchaseWithTelegramWallet,
+    purchaseMarketplaceItem,
+  };
+
   return (
-    <GameContext.Provider value={{
-        playerProfile,
-        setPlayerProfile,
-        currentSeason,
-        seasons: SEASONS_DATA,
-        getUpgradeLevel,
-        purchaseUpgrade,
-        getUpgradeCost,
-        upgrades: UPGRADES_DATA,
-        arkUpgrades: ARK_UPGRADES_DATA,
-        purchaseArkUpgrade,
-        getArkUpgradeById,
-        addPoints,
-        isLoading,
-        isInitialSetupDone,
-        completeInitialSetup,
-        coreMessages,
-        addCoreMessage,
-        isCoreUnlocked,
-        coreLastInteractionTime,
-        connectWallet,
-        handleTap,
-        criticalTapChance,
-        criticalTapMultiplier,
-        comboMultiplier: comboMultiplierValue,
-        comboCount,
-        setComboCount,
-        marketplaceItems: MARKETPLACE_ITEMS_DATA,
-        claimQuestReward,
-        refreshDailyQuestsIfNeeded,
-        refillTaps,
-        battlePassData: BATTLE_PASS_DATA,
-        purchasePremiumPass,
-        claimBattlePassReward,
-        watchRewardedAd,
-        rewardedAdCooldown,
-        isWatchingAd,
-        updatePlayerProfile,
-        toggleCommander,
-        resetGame,
-        toggleMusic,
-        isMusicPlaying,
-        isTelegramEnv,
-        connectTelegramWallet,
-        purchaseWithTelegramWallet,
-    }}>
+    <GameContext.Provider value={contextValue}>
       {children}
     </GameContext.Provider>
   );
 };
 
+// --- Custom Hook ---
 export const useGame = (): GameContextType => {
   const context = useContext(GameContext);
   if (context === undefined) {
@@ -1071,6 +946,3 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
-
-
-    
