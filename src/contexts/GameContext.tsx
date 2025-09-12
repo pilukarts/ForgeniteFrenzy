@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, SelectableAvatar } from '@/lib/types';
@@ -139,11 +138,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setCoreMessages(prev => [newMessage, ...prev.slice(0, 49)]); // Keep a log of last 50 messages
   }, []);
   
-  // This useEffect handles client-side detection of the Telegram environment.
   useEffect(() => {
     if (typeof window !== 'undefined') {
-        import('@twa-dev/sdk').then(WebApp => {
-            if (WebApp.default.platform !== 'unknown') {
+        import('@twa-dev/sdk').then(twa => {
+            if (twa.default.platform !== 'unknown') {
                 setIsTelegramEnv(true);
             }
         });
@@ -974,8 +972,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const connectTelegramWallet = useCallback(() => {
     if (!isTelegramEnv) return;
-    import('@twa-dev/sdk').then(WebApp => {
-        WebApp.default.requestWalletAccess((granted) => {
+    import('@twa-dev/sdk').then(twa => {
+        twa.default.requestWalletAccess((granted) => {
             if (granted) {
                 setPlayerProfile(prev => {
                     if (!prev) return null;
@@ -995,11 +993,11 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return;
     }
 
-    import('@twa-dev/sdk').then(WebApp => {
+    import('@twa-dev/sdk').then(twa => {
         // This is a simplified example. A real implementation would generate a unique invoice
         // on a backend server and pass the link to openInvoice.
         // For this prototype, we'll use a simulated success.
-        WebApp.default.showConfirm(`Purchase ${pkg.amount} Auron for a simulated ${pkg.price} TON?`, (confirmed) => {
+        twa.default.showConfirm(`Purchase ${pkg.amount} Auron for a simulated ${pkg.price} TON?`, (confirmed) => {
             if (confirmed) {
                 setPlayerProfile(prev => {
                     if (!prev) return null;
@@ -1074,3 +1072,5 @@ export const useGame = (): GameContextType => {
   return context;
 };
 
+
+    
