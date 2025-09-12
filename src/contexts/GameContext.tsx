@@ -140,17 +140,18 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   
   // This useEffect handles client-side detection of the Telegram environment.
   useEffect(() => {
-    // This check ensures this code only runs on the client-side.
     if (typeof window !== 'undefined') {
-        // Dynamic import prevents the SDK from being loaded on the server.
         import('@twa-dev/sdk').then(WebApp => {
-            setIsTelegramEnv(WebApp.default.platform !== 'unknown');
+            if (WebApp.default.platform !== 'unknown') {
+                setIsTelegramEnv(true);
+            }
         });
     }
   }, []);
 
 
   useEffect(() => {
+    // This entire effect now ONLY runs on the client-side.
     let savedProfile: string | null = null;
     let loadedProfile: PlayerProfile | null = null;
     
@@ -1033,7 +1034,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         comboCount,
         setComboCount,
         marketplaceItems: MARKETPLACE_ITEMS_DATA,
-        purchaseMarketplaceItem,
         claimQuestReward,
         refreshDailyQuestsIfNeeded,
         refillTaps,
