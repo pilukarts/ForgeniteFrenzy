@@ -24,4 +24,9 @@ async def main():
     #     print(f"File not found: {file_to_send}")
 
 if __name__ == "__main__":
+    # This check is necessary because the default asyncio event loop policy
+    # may differ on various systems, especially in CI/CD environments.
+    if os.name == 'nt':
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        
     asyncio.run(main())
