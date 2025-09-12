@@ -14,6 +14,7 @@ import IntroScreen from '../intro/IntroScreen';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import Image from 'next/image';
 
+
 const WalletConnectDialog: React.FC<{
   isOpen: boolean;
   onClose: () => void;
@@ -86,13 +87,12 @@ const WalletConnectDialog: React.FC<{
     );
 };
 
-
 interface AppLayoutProps {
   children: ReactNode;
 }
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
-  const { playerProfile, connectWallet, currentSeason, isLoading } = useGame();
+  const { playerProfile, connectWallet, currentSeason, isLoading, isInitialSetupDone } = useGame();
   const [isWalletDialogOpen, setWalletDialogOpen] = useState(false);
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   

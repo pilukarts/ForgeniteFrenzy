@@ -1,12 +1,10 @@
+
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode, useRef } from 'react';
-import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, SelectableAvatar } from '@/lib/types';
-import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MILLISECONDS, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES, SELECTABLE_AVATARS, AF_LOGO_TAP_BONUS_MULTIPLIER } from '@/lib/gameData';
+import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, SelectableAvatar } from '@/lib/types';
+import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MILLISECONDS, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MILLISECONDS, SELECTABLE_AVATARS, AF_LOGO_TAP_BONUS_MULTIPLIER } from '@/lib/gameData';
 import { useToast } from '@/hooks/use-toast';
-import { getCoreBriefing } from '@/ai/flows/core-briefings';
-import { getCoreLoreSnippet } from '@/ai/flows/core-lore-snippets';
-import { getCoreProgressUpdate } from '@/ai/flows/core-progress-updates';
 import { syncPlayerProfileInFirestore } from '@/lib/firestore';
 
 // --- Constants ---
@@ -135,18 +133,19 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const newMessage = { ...message, timestamp: Date.now() };
     setCoreMessages(prev => [newMessage, ...prev.slice(0, 49)]); // Keep a log of last 50 messages
   }, []);
-
-  // --- Start of Initialization Logic ---
+  
+  // --- Game Initialization ---
   useEffect(() => {
-    let savedProfile: string | null = null;
-    
-    try {
+    // This effect runs only on the client
+    if (typeof window !== 'undefined') {
+      let savedProfile: string | null = null;
+      try {
         savedProfile = localStorage.getItem('playerProfile');
-    } catch (e) {
+      } catch (e) {
         console.error("Could not access localStorage. Starting fresh.", e);
-    }
+      }
 
-    if (savedProfile) {
+      if (savedProfile) {
         let parsedProfile = JSON.parse(savedProfile) as PlayerProfile;
 
         const now = Date.now();
@@ -160,10 +159,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 parsedProfile.points += offlineEarnings;
             }
         }
-
-        if (offlineEarnings > 0) {
-            addCoreMessage({ type: 'system_alert', content: `Welcome back, Commander. Your M.U.L.E. Drones generated ${offlineEarnings.toLocaleString()} points while you were away.` });
-        }
         
         const hydratedProfile: PlayerProfile = {
             ...defaultPlayerProfile,
@@ -173,13 +168,17 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             currentTierColor: getTierColorByLevel(parsedProfile.level),
         };
 
+        if (offlineEarnings > 0) {
+            addCoreMessage({ type: 'system_alert', content: `Welcome back, Commander. Your M.U.L.E. Drones generated ${offlineEarnings.toLocaleString()} points while you were away.` });
+        }
+        
         setPlayerProfile(hydratedProfile);
         const season = SEASONS_DATA.find(s => s.id === hydratedProfile.currentSeasonId) || SEASONS_DATA[0];
         const coreUnlocked = !!hydratedProfile.upgrades['coreUnlocked'] || SEASONS_DATA.slice(0, SEASONS_DATA.indexOf(season)).some(s => s.unlocksCore);
         setIsCoreUnlocked(coreUnlocked);
         setCoreLastInteractionTime(now);
         setIsInitialSetupDone(true);
-    } else {
+      } else {
         const tempProfile: PlayerProfile = {
             ...defaultPlayerProfile,
             id: 'temp-new-player', name: '', commanderSex: 'male', avatarUrl: '', portraitUrl: '', country: '',
@@ -187,18 +186,19 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         };
         setPlayerProfile(tempProfile);
         setIsInitialSetupDone(false);
+      }
+      
+      // Telegram Env check
+      import('@twa-dev/sdk').then(twa => {
+          if (twa.default.platform !== 'unknown') {
+              setIsTelegramEnv(true);
+          }
+      }).catch(err => console.log("Not in Telegram environment or SDK failed to load."));
+
+      setIsLoading(false);
     }
+  }, [addCoreMessage]);
 
-    setIsLoading(false);
-
-    // Telegram Env check
-    import('@twa-dev/sdk').then(twa => {
-        if (twa.default.platform !== 'unknown') {
-            setIsTelegramEnv(true);
-        }
-    }).catch(err => console.log("Not in Telegram environment or SDK failed to load."));
-
-  }, [setPlayerProfile, setIsLoading, setIsInitialSetupDone, addCoreMessage, setIsCoreUnlocked, setCoreLastInteractionTime, setIsTelegramEnv]);
 
   // Save profile to localStorage on change
   useEffect(() => {
@@ -215,21 +215,18 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [playerProfile, isInitialSetupDone]);
   
-   // Cooldown timer effect
+  // Cooldown timer effect
   useEffect(() => {
-      if (!playerProfile) return;
-      const REWARDED_AD_COOLDOWN_MILLISECONDS = REWARDED_AD_COOLDOWN_MINUTES * 60 * 1000;
-      const interval = setInterval(() => {
-          const now = Date.now();
-          const lastAdTime = playerProfile.lastRewardedAdTimestamp || 0;
-          const timeSinceLastAd = now - lastAdTime;
-          const newCooldown = Math.max(0, REWARDED_AD_COOLDOWN_MILLISECONDS - timeSinceLastAd);
-          setRewardedAdCooldown(newCooldown);
-      }, 1000);
-      return () => clearInterval(interval);
+    if (!playerProfile) return;
+    const interval = setInterval(() => {
+        const now = Date.now();
+        const lastAdTime = playerProfile.lastRewardedAdTimestamp || 0;
+        const timeSinceLastAd = now - lastAdTime;
+        const newCooldown = Math.max(0, REWARDED_AD_COOLDOWN_MILLISECONDS - timeSinceLastAd);
+        setRewardedAdCooldown(newCooldown);
+    }, 1000);
+    return () => clearInterval(interval);
   }, [playerProfile, setRewardedAdCooldown]);
-  // --- End of Initialization Logic ---
-
   
   const toggleMusic = useCallback(() => {
     if (typeof window === 'undefined') return;
@@ -843,7 +840,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const watchRewardedAd = useCallback(() => {
     if (rewardedAdCooldown > 0 || isWatchingAd) return;
-    const REWARDED_AD_COOLDOWN_MILLISECONDS = REWARDED_AD_COOLDOWN_MINUTES * 60 * 1000;
 
     setIsWatchingAd(true);
     setTimeout(() => {
