@@ -13,6 +13,7 @@ import type { MarketplaceItem } from '@/lib/types';
 import IntroScreen from '@/components/intro/IntroScreen';
 import { useToast } from '@/hooks/use-toast';
 import { REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES } from '@/lib/gameData';
+import Image from 'next/image';
 
 const auronPackages = [
   { id: 'auron_pack_1', amount: 100, price: 0.99, bestValue: false, icon: Gem },
@@ -34,6 +35,9 @@ const MarketplacePage: React.FC = () => {
     watchRewardedAd,
     rewardedAdCooldown,
     isWatchingAd,
+    isTelegramEnv,
+    connectTelegramWallet,
+    purchaseWithTelegramWallet,
   } = useGame();
   const { toast } = useToast();
   
@@ -51,13 +55,18 @@ const MarketplacePage: React.FC = () => {
   }, [rewardedAdCooldown]);
 
 
-  const handleAuronPurchase = (amount: number) => {
+  const handleAuronPurchase = (pkg: { amount: number; price: number; }) => {
     if (!playerProfile) return;
-    setPlayerProfile(prev => prev ? { ...prev, auron: prev.auron + amount } : null);
-    toast({
-      title: 'Purchase Successful (Simulated)',
-      description: `You've received ${amount.toLocaleString()} Auron.`,
-    });
+
+    if (isTelegramEnv && playerProfile.isTelegramWalletConnected) {
+        purchaseWithTelegramWallet(pkg);
+    } else {
+        setPlayerProfile(prev => prev ? { ...prev, auron: prev.auron + pkg.amount } : null);
+        toast({
+          title: 'Purchase Successful (Simulated)',
+          description: `You've received ${pkg.amount.toLocaleString()} Auron.`,
+        });
+    }
   };
 
   if (isLoading) {
@@ -84,6 +93,28 @@ const MarketplacePage: React.FC = () => {
         
         <ScrollArea className="h-[calc(100vh-var(--app-header-h,60px)-var(--page-header-h,80px)-var(--bottom-nav-h,56px))] px-2 sm:px-4">
           
+          {isTelegramEnv && !playerProfile.isTelegramWalletConnected && (
+            <section className="mb-6 sm:mb-8">
+                 <Card className="bg-blue-500/10 border-blue-400/50 text-card-foreground shadow-lg flex flex-col items-center p-4">
+                    <CardHeader className="items-center text-center p-2">
+                         <Image src="https://i.imgur.com/uNEP2fT.png" alt="Telegram Wallet" width={48} height={48} data-ai-hint="telegram wallet" />
+                        <CardTitle className="text-lg sm:text-xl font-semibold text-blue-300 mt-2">Connect Telegram Wallet</CardTitle>
+                        <CardDescription className="text-base text-muted-foreground mt-1">
+                            Connect your wallet to purchase Auron with Toncoin (TON).
+                        </CardDescription>
+                    </CardHeader>
+                    <CardFooter className="w-full">
+                        <Button 
+                            onClick={connectTelegramWallet}
+                            className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+                        >
+                           Connect Wallet
+                        </Button>
+                    </CardFooter>
+                 </Card>
+            </section>
+          )}
+
           {/* Rewarded Ad Section */}
           <section className="mb-6 sm:mb-8">
             <h2 className="text-xl sm:text-2xl font-headline text-accent mb-3 sm:mb-4">Broadcast Center</h2>
@@ -131,8 +162,8 @@ const MarketplacePage: React.FC = () => {
                       <CardTitle className="text-lg sm:text-xl font-semibold text-bright-gold mt-1">{pkg.amount.toLocaleString()} Auron</CardTitle>
                     </CardHeader>
                     <CardFooter className="mt-auto p-3 sm:p-4 pt-0">
-                      <Button onClick={() => handleAuronPurchase(pkg.amount)} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-base">
-                        ${pkg.price}
+                      <Button onClick={() => handleAuronPurchase(pkg)} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-base">
+                        {isTelegramEnv ? `~${pkg.price} TON` : `$${pkg.price}`}
                       </Button>
                     </CardFooter>
                   </Card>

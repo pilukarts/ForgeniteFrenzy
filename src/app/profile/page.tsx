@@ -1,4 +1,5 @@
 
+
 "use client";
 import React, { useState, useEffect } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -9,44 +10,50 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check, UserCircle, Upload } from 'lucide-react';
+import { Check, UserCircle, Upload, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import { ALL_AVATARS } from '@/lib/gameData';
+import { SELECTABLE_AVATARS } from '@/lib/gameData';
 import { useToast } from '@/hooks/use-toast';
-
-// Find the default avatars for male and female
-const defaultFemaleAvatar = ALL_AVATARS.find(a => a.sex === 'female' && a.url.includes('Wq9PqxG'));
-const defaultMaleAvatar = ALL_AVATARS.find(a => a.sex === 'male' && a.url.includes('BOKoTIM'));
-const defaultAvatar = defaultFemaleAvatar || ALL_AVATARS[0];
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 const ProfilePage: React.FC = () => {
-  const { playerProfile, isLoading, isInitialSetupDone, updatePlayerProfile } = useGame();
+  const { playerProfile, isLoading, isInitialSetupDone, updatePlayerProfile, resetGame } = useGame();
   const [name, setName] = useState('');
-  const [selectedAvatar, setSelectedAvatar] = useState(defaultAvatar);
+  const [selectedPortraitUrl, setSelectedPortraitUrl] = useState('');
   const { toast } = useToast();
 
   useEffect(() => {
     if (playerProfile) {
       setName(playerProfile.name);
-      // Find the full avatar object from the saved URL
-      const currentAvatar = ALL_AVATARS.find(a => a.url === playerProfile.avatarUrl);
-      setSelectedAvatar(currentAvatar || defaultAvatar);
+      // Ensure the selectedPortraitUrl is initialized correctly.
+      // It should match the player's current portrait URL.
+      setSelectedPortraitUrl(playerProfile.portraitUrl || SELECTABLE_AVATARS[0].portraitUrl);
     }
   }, [playerProfile]);
 
   const handleSave = () => {
-    if (playerProfile && name.trim()) {
-      // The selectedAvatar state now holds the full object, including the sex.
-      updatePlayerProfile(name.trim(), selectedAvatar.url, selectedAvatar.sex);
-    } else {
-        toast({
-            title: "Invalid Name",
-            description: "Please enter a valid callsign.",
+    if (!playerProfile || !name.trim() || !selectedPortraitUrl) {
+       toast({
+            title: "Invalid Data",
+            description: "Please ensure you have a valid callsign and selected an avatar.",
             variant: "destructive",
         });
+      return;
     }
+    updatePlayerProfile(name.trim(), selectedPortraitUrl);
   };
+
 
   const handleUploadClick = () => {
     toast({
@@ -64,9 +71,6 @@ const ProfilePage: React.FC = () => {
   }
 
   if (!playerProfile) return <IntroScreen />;
-
-  // These are the avatars available for selection.
-  const displayAvatars = ALL_AVATARS.filter(a => a.url.includes('Wq9PqxG') || a.url.includes('BOKoTIM'));
 
 
   return (
@@ -106,23 +110,23 @@ const ProfilePage: React.FC = () => {
                 <CardDescription>Choose an avatar that matches your style.</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-4 gap-2 sm:gap-4">
-                  {displayAvatars.map((avatar) => (
-                    <button
-                        key={avatar.url}
-                        onClick={() => setSelectedAvatar(avatar)}
-                        className={cn(
-                        "rounded-lg overflow-hidden border-2 transition-all",
-                        selectedAvatar.url === avatar.url ? 'border-primary ring-2 ring-primary/50' : 'border-transparent hover:border-primary/50'
-                        )}
-                    >
-                        <Image src={avatar.url} alt="Avatar" width={100} height={100} className="object-cover w-full h-auto aspect-square" data-ai-hint={avatar.hint}/>
-                    </button>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4 justify-items-center">
+                  {SELECTABLE_AVATARS.map((avatar) => (
+                  <button
+                      key={avatar.portraitUrl}
+                      onClick={() => setSelectedPortraitUrl(avatar.portraitUrl)}
+                      className={cn(
+                      "rounded-lg overflow-hidden border-2 transition-all w-32 h-32 sm:w-40 sm:h-40",
+                      selectedPortraitUrl === avatar.portraitUrl ? 'border-primary ring-2 ring-primary/50' : 'border-transparent hover:border-primary/50'
+                      )}
+                  >
+                      <Image src={avatar.portraitUrl} alt="Avatar" width={160} height={160} className="object-cover w-full h-auto aspect-square" data-ai-hint={avatar.hint}/>
+                  </button>
                   ))}
                    <button
                     onClick={handleUploadClick}
                     className={cn(
-                        "rounded-lg overflow-hidden border-2 transition-all bg-muted/30 hover:bg-muted/50 border-dashed border-muted-foreground/50",
+                        "rounded-lg overflow-hidden border-2 transition-all bg-muted/30 hover:bg-muted/50 border-dashed border-muted-foreground/50 w-32 h-32 sm:w-40 sm:h-40",
                         "flex flex-col items-center justify-center aspect-square text-muted-foreground"
                         )}
                     aria-label="Upload custom avatar"
@@ -139,6 +143,31 @@ const ProfilePage: React.FC = () => {
               Save All Changes
           </Button>
 
+           <Card className="border-destructive">
+            <CardHeader>
+              <CardTitle className="text-destructive flex items-center"><AlertTriangle className="mr-2"/> Danger Zone</CardTitle>
+              <CardDescription>This will erase all your local progress and restart the game from the initial setup.</CardDescription>
+            </CardHeader>
+            <CardFooter>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" className="w-full">Reset Profile</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. All your points, upgrades, and progress will be permanently deleted from this device. You will be taken back to the initial profile setup.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={resetGame}>Yes, Reset My Profile</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </CardFooter>
+          </Card>
         </div>
       </div>
     </AppLayout>

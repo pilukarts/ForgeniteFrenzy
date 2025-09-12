@@ -1,103 +1,110 @@
 
+
 "use client";
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { useGame } from '@/contexts/GameContext'; // Import useGame
-import { Hexagon } from 'lucide-react';
+import { useGame } from '@/contexts/GameContext';
 import { Skeleton } from '@/components/ui/skeleton';
-
 
 interface CommanderPortraitProps {
   onTap: () => void;
+  onLogoTap: () => void;
 }
 
-const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap }) => {
+const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap }) => {
   const { playerProfile } = useGame();
   const [isTapped, setIsTapped] = useState(false);
-  
-  if (!playerProfile) {
-    // Render a skeleton while the profile is loading to prevent server errors and incorrect renders.
+
+  // The full-body image is now used for the main game view tap area.
+  const imageUrl = playerProfile?.avatarUrl;
+
+  if (!playerProfile || !imageUrl) {
     return (
-        <div className="relative w-64 h-80 sm:w-72 sm:h-96 flex items-center justify-center">
-            <Skeleton className="w-full h-full" />
-        </div>
+      <div className="relative w-64 h-80 sm:w-72 sm:h-96 flex items-center justify-center">
+        <Skeleton className="w-full h-full" />
+      </div>
     );
   }
   
-  const { commanderSex, currentTierColor } = playerProfile;
+  const altText = `Commander ${playerProfile.name}`;
+  const dataAiHint = playerProfile.commanderSex === 'male' ? "male commander full body" : "female commander full body";
 
-  // --- Simplified and Corrected Logic ---
-  // This function now directly and simply checks the 'commanderSex' from the profile.
-  const getCommanderImage = () => {
-    if (commanderSex === 'male') {
-        return { src: "https://i.imgur.com/iuRJVBZ.png", hint: "fullbody male commander" };
-    } else { // 'female'
-        return { src: "https://i.imgur.com/BQHeVWp.png", hint: "fullbody female commander" };
+  const handleInteraction = (isLogoTap: boolean) => {
+    if (isLogoTap) {
+      onLogoTap();
+    } else {
+      onTap();
     }
-  };
-
-  const { src: imageUrl, hint: dataAiHint } = getCommanderImage();
-  const altText = commanderSex === 'male' ? "Male Commander" : "Female Commander";
-
-  const handleInteraction = () => {
-    onTap();
     setIsTapped(true);
     setTimeout(() => setIsTapped(false), 200);
   };
-
-  const hexagonClipPath = 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)';
-
-  const dynamicStyles = {
-    '--dynamic-commander-glow': currentTierColor || '45 100% 50%'
+  
+  // These values are percentages of the parent container's width and height.
+  // They define the position and size of the invisible logo tap area.
+  const logoHitbox = playerProfile.commanderSex === 'female'
+    ? { top: '38%', left: '41%', width: '18%', height: '10%' }
+    // Using the same hitbox for the mirrored male commander
+    : { top: '38%', left: '41%', width: '18%', height: '10%' }; 
+    
+  const dynamicGlowStyle = {
+    '--dynamic-commander-glow': playerProfile.currentTierColor,
   } as React.CSSProperties;
+
 
   return (
     <div 
-      style={dynamicStyles}
+      onClick={() => handleInteraction(false)} 
       className={cn(
-        "relative focus:outline-none transition-transform duration-100",
-        "w-64 h-80 sm:w-72 sm:h-96",
-        "flex items-center justify-center"
+        "relative focus:outline-none transition-transform duration-100 cursor-pointer",
+        "w-64 h-80 sm:w-72 sm:h-96", // Default size for the portrait area
+        "flex items-center justify-center",
+        isTapped && "scale-105"
       )}
       aria-label="Tap Commander"
+      style={dynamicGlowStyle}
     >
-      <button 
-        onClick={handleInteraction} 
-        onTouchStart={(e) => {
-          e.preventDefault();
-          handleInteraction();
-        }}
-        className="w-full h-full relative group"
-      >
-        <Image
-          src={imageUrl}
-          alt={altText}
-          data-ai-hint={dataAiHint}
-          width={288}
-          height={384}
-          className={cn(
-            "object-contain w-full h-full transition-all duration-200",
-            isTapped ? "animate-tapped-aura" : "animate-pulse-neon-dynamic active:scale-95"
-          )}
-          priority
-          key={imageUrl} // Add key to force re-render on image change
-        />
-        
-        <div className={cn(
-          "absolute flex items-center justify-center",
-          "w-[34px] h-[38px]",
-          "left-1/2 -translate-x-1/2 -translate-y-1/2",
-          commanderSex === 'male' ? 'top-[31%]' : 'top-[32%]',
-          "bg-[hsl(var(--dynamic-commander-glow))] text-primary-foreground",
-          "font-headline font-bold text-sm tracking-wider",
-           "pointer-events-none"
-        )}
-        style={{ clipPath: hexagonClipPath }}
+        {/* Dynamic Aura */}
+        <div className="absolute inset-0 commander-aura-glow z-0" />
+
+        {/* Main visual element for the whole commander */}
+        <div
+            className="w-full h-full relative group z-10 pointer-events-none"
         >
-            AF
+            <Image
+            src={imageUrl}
+            alt={altText}
+            data-ai-hint={dataAiHint}
+            fill
+            className={cn(
+              "object-contain transition-all duration-200 drop-shadow-2xl"
+            )}
+            priority
+            key={imageUrl} // Add key to force re-render on image URL change
+            />
         </div>
-      </button>
+
+        {/* Invisible button for the AF logo hotspot */}
+        <button
+            onClick={(e) => {
+                e.stopPropagation(); // Prevents the main div click from firing
+                handleInteraction(true);
+            }}
+            onTouchStart={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleInteraction(true);
+            }}
+            aria-label="Tap AF Logo for Bonus"
+            className="absolute z-20 rounded-full"
+            style={{
+            top: logoHitbox.top,
+            // Adjust left position for the flipped male commander
+            left: logoHitbox.left,
+            width: logoHitbox.width,
+            height: logoHitbox.height,
+            }}
+        />
     </div>
   );
 };

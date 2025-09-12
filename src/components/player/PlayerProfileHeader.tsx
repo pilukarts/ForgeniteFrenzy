@@ -1,4 +1,5 @@
 
+
 "use client";
 import React from 'react';
 import type { PlayerProfile } from '@/lib/types';
@@ -18,8 +19,8 @@ const PlayerProfileHeader: React.FC<PlayerProfileHeaderProps> = ({ profile }) =>
   const { isInitialSetupDone } = useGame();
   const xpPercentage = profile.xpToNextLevel > 0 ? (profile.xp / profile.xpToNextLevel) * 100 : 0;
   
-  // Use the profile's avatar. This is the only source of truth.
-  const avatarSrc = profile.avatarUrl;
+  // Use the profile's PORTRAIT url for the header.
+  const avatarSrc = profile.portraitUrl;
   const dataAiHint = "commander portrait";
 
   const leagueName = profile.league || DEFAULT_LEAGUE;

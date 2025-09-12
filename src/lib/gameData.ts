@@ -1,6 +1,6 @@
 
 
-import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate, LeagueName, LeagueTier, BattlePass, LevelStage } from './types';
+import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate, LeagueName, LeagueTier, BattlePass, LevelStage, SelectableAvatar } from './types';
 import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle, Shield, ShieldCheck, Award, Star, Crown, LucideIcon, Swords, Shirt, Replace } from 'lucide-react';
 
 export const SEASONS_DATA: Season[] = [
@@ -42,46 +42,6 @@ export const SEASONS_DATA: Season[] = [
     objectiveResourceName: 'Forgeite',
     objectiveResourceIcon: Landmark,
     coreBriefingObjective: "gather Forgeite to begin building a new home on Sanctaris",
-    unlocksCore: false,
-  },
-  {
-    id: 'chapter5',
-    chapter: 5,
-    title: 'Asteroid Belt Expedition',
-    description: "Generate 'Ancient Relic Fragments' by exploring a mysterious Asteroid Belt.",
-    objectiveResourceName: 'Ancient Relic Fragments',
-    objectiveResourceIcon: Gem,
-    coreBriefingObjective: "explore the asteroid belt and recover ancient relic fragments",
-    unlocksCore: false,
-  },
-  {
-    id: 'chapter6',
-    chapter: 6,
-    title: 'The Aetheris Rush',
-    description: "Gather 'Aetherian Crystals' from the volatile planet Aetheris.",
-    objectiveResourceName: 'Aetherian Crystals',
-    objectiveResourceIcon: Atom,
-    coreBriefingObjective: "brave Aetheris to mine valuable Aetherian Crystals for advanced crafting",
-    unlocksCore: false,
-  },
-  {
-    id: 'chapter7',
-    chapter: 7,
-    title: 'The Plutonium Crisis',
-    description: "Gather Plutonium, the rare resource for Legendary and Core units.",
-    objectiveResourceName: 'Plutonium',
-    objectiveResourceIcon: HelpCircle,
-    coreBriefingObjective: "secure Plutonium, vital for advanced military units",
-    unlocksCore: false,
-  },
-  {
-    id: 'finalChapter',
-    chapter: 8,
-    title: 'Token Unleashed',
-    description: "Generate 'Token Fragments' to solidify your Founder's Score for the airdrop.",
-    objectiveResourceName: 'Token Fragments',
-    objectiveResourceIcon: Sparkles,
-    coreBriefingObjective: "collect Token Fragments to forge into Alliance Forge tokens and secure your airdrop",
     unlocksCore: false,
   },
 ];
@@ -185,6 +145,7 @@ export function getRankTitle(level: number): string {
 }
 
 export const POINTS_PER_TAP = 1;
+export const AF_LOGO_TAP_BONUS_MULTIPLIER = 2.5; // Tapping the logo gives 2.5x points
 export const AURON_PER_WALLET_CONNECT = 100;
 
 export const INITIAL_MAX_TAPS = 100;
@@ -324,12 +285,12 @@ export const BATTLE_PASS_DATA: BattlePass = {
   premiumCostInAuron: 500,
   levels: [
     { level: 1, freeReward: { type: 'points', amount: 500, icon: Coins }, premiumReward: { type: 'auron', amount: 50, icon: Sparkles } },
-    { level: 2, freeReward: null, premiumReward: { type: 'uniform_piece', name: 'Premium Gloves', icon: Shirt } },
+    { level: 2, freeReward: null, premiumReward: { type: 'points', amount: 2500, icon: Coins } },
     { level: 3, freeReward: { type: 'points', amount: 1000, icon: Coins }, premiumReward: { type: 'points', amount: 5000, icon: Coins } },
     { level: 4, freeReward: null, premiumReward: { type: 'auron', amount: 100, icon: Sparkles } },
     { level: 5, freeReward: { type: 'auron', amount: 25, icon: Sparkles }, premiumReward: { type: 'title', name: 'Seasoned', icon: Crown } },
     { level: 6, freeReward: { type: 'points', amount: 2500, icon: Coins }, premiumReward: { type: 'points', amount: 10000, icon: Coins } },
-    { level: 7, freeReward: null, premiumReward: { type: 'uniform_piece', name: 'Premium Boots', icon: Shirt } },
+    { level: 7, freeReward: null, premiumReward: { type: 'points', amount: 15000, icon: Coins } },
     { level: 8, freeReward: { type: 'points', amount: 5000, icon: Coins }, premiumReward: { type: 'auron', amount: 150, icon: Sparkles } },
     { level: 9, freeReward: null, premiumReward: { type: 'points', amount: 20000, icon: Coins } },
     { level: 10, freeReward: { type: 'auron', amount: 50, icon: Sparkles }, premiumReward: { type: 'title', name: 'Vanguard', icon: Swords } },
@@ -353,15 +314,27 @@ export const LEVEL_STAGES: LevelStage[] = [
     { name: 'GALACTIC CORE', startLevel: 25001, endLevel: 50000, colors: { primary: '60 100% 50%', fill: '60 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/Z7o5p6Y.jpeg', aiHint: 'bright galaxy core' },
 ];
 
-export const TAPS_PER_UNIFORM_PIECE = 2000;
-export const UNIFORM_PIECES_ORDER = ["Tactical Gloves", "Combat Boots", "Utility Belt", "Chest Rig", "Stealth Helmet"];
-
-export const ALL_AVATARS = [
-    // Female Avatars
-    { url: "https://i.imgur.com/Wq9PqxG.png", sex: 'female', hint: 'female commander portrait' },
-    { url: "https://i.imgur.com/BQHeVWp.png", sex: 'female', hint: 'fullbody female commander' },
-
-    // Male Avatars
-    { url: "https://i.imgur.com/BOKoTIM.png", sex: 'male', hint: 'male commander portrait' },
-    { url: "https://i.imgur.com/iuRJVBZ.png", sex: 'male', hint: 'fullbody male commander' },
+export const SELECTABLE_AVATARS: SelectableAvatar[] = [
+    {
+      portraitUrl: "https://i.imgur.com/Wq9PqxG.png",
+      fullBodyUrl: "https://i.imgur.com/CDaaV86.png",
+      sex: 'male',
+      hint: 'male commander headshot',
+    },
+    {
+      portraitUrl: "https://i.imgur.com/BOKoTIM.png",
+      fullBodyUrl: "https://i.imgur.com/5PkLY8Q.png",
+      sex: 'female',
+      hint: 'female commander headshot',
+    },
 ];
+
+// This list is only kept for backwards compatibility or reference, but is not actively used in the setup logic.
+export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; }[] = [
+    { url: "https://i.imgur.com/HWzFPP2.png", sex: 'male' }, // WITH LOGO
+    { url: "https://i.imgur.com/Anv0mBW.png", sex: 'female' }, // WITH LOGO
+];
+
+
+
+    

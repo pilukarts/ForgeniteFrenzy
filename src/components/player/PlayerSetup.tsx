@@ -15,24 +15,24 @@ import { Check, Search, ChevronsUpDown } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import IntroScreen from '../intro/IntroScreen';
-import { ALL_AVATARS } from '@/lib/gameData';
+import { SELECTABLE_AVATARS } from '@/lib/gameData';
 
 
 const PlayerSetup: React.FC = () => {
   const { playerProfile, completeInitialSetup } = useGame();
   const [name, setName] = useState('');
-  const [selectedAvatar, setSelectedAvatar] = useState(ALL_AVATARS[0]);
+  const [selectedCommanderSex, setSelectedCommanderSex] = useState<'male' | 'female'>(SELECTABLE_AVATARS[0].sex);
   const [country, setCountry] = useState('');
   const [referredBy, setReferredBy] = useState('');
   const [isCountryPopoverOpen, setCountryPopoverOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const isFormValid = name.trim() !== '' && country !== '' && selectedAvatar.url !== '';
+  const isFormValid = name.trim() !== '' && country !== '';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isFormValid) {
-      completeInitialSetup(name.trim(), selectedAvatar.sex, selectedAvatar.url, country, referredBy.trim());
+      completeInitialSetup(name.trim(), selectedCommanderSex, country, referredBy.trim());
     }
   };
   
@@ -44,6 +44,7 @@ const PlayerSetup: React.FC = () => {
   const filteredCountries = searchTerm === ""
     ? countries
     : countries.filter(c => c.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4">
@@ -61,17 +62,17 @@ const PlayerSetup: React.FC = () => {
               {/* Avatar Selection */}
               <div className="space-y-3">
                 <Label className="text-foreground/80 text-lg font-semibold block text-center">Select Your Commander</Label>
-                <div className="grid grid-cols-4 gap-2">
-                  {ALL_AVATARS.map((avatar) => (
+                <div className="flex justify-center gap-4">
+                  {SELECTABLE_AVATARS.map((avatar) => (
                     <div 
-                      key={avatar.url}
+                      key={avatar.sex}
                       className={cn(
-                        "rounded-lg p-1 border-2 cursor-pointer transition-all duration-300",
-                        selectedAvatar.url === avatar.url ? 'border-primary bg-primary/10 shadow-lg scale-105' : 'border-transparent opacity-70 hover:opacity-100 hover:border-primary/50'
+                        "rounded-lg p-1 border-2 cursor-pointer transition-all duration-300 w-32 h-32 sm:w-40 sm:h-40",
+                        selectedCommanderSex === avatar.sex ? 'border-primary bg-primary/10 shadow-lg scale-105' : 'border-transparent opacity-70 hover:opacity-100 hover:border-primary/50'
                       )}
-                      onClick={() => setSelectedAvatar(avatar)}
+                      onClick={() => setSelectedCommanderSex(avatar.sex)}
                     >
-                      <Image src={avatar.url} alt="Commander Avatar" width={100} height={100} className="rounded-md object-cover w-full h-auto aspect-square" data-ai-hint={avatar.hint}/>
+                      <Image src={avatar.portraitUrl} alt="Commander Avatar" width={150} height={150} className="rounded-md object-cover w-full h-full" data-ai-hint={avatar.hint}/>
                     </div>
                   ))}
                 </div>
@@ -106,11 +107,10 @@ const PlayerSetup: React.FC = () => {
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0 z-[200]">
                       <Command>
                         <CommandInput 
                           placeholder="Search nation..." 
-                          value={searchTerm}
                           onValueChange={setSearchTerm}
                         />
                         <CommandEmpty>No nation found.</CommandEmpty>
@@ -173,6 +173,3 @@ const PlayerSetup: React.FC = () => {
 };
 
 export default PlayerSetup;
-
-
-    

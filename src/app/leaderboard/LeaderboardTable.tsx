@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PlayerSetup from '@/components/player/PlayerSetup';
-import { Trophy, Globe, Loader2 } from 'lucide-react';
+import { Trophy, Globe, Loader2, SignalHigh, SignalLow, SignalMedium } from 'lucide-react';
 import IntroScreen from '@/components/intro/IntroScreen';
 import { getLeagueIconAndColor } from '@/lib/gameData';
 import { cn } from '@/lib/utils';
@@ -15,10 +15,43 @@ import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { UserCircle } from 'lucide-react';
 import { countries } from '@/lib/countries';
+import { formatDistanceToNow, parseISO } from 'date-fns';
 
 interface LeaderboardTableProps {
     initialLeaderboardData: LeaderboardEntry[];
 }
+
+const LastSeen: React.FC<{ lastSeen: Date | null | undefined }> = ({ lastSeen }) => {
+    if (!lastSeen) {
+        return null;
+    }
+    
+    // Ensure lastSeen is a Date object
+    const lastSeenDate = typeof lastSeen === 'string' ? parseISO(lastSeen) : lastSeen;
+    
+    const now = new Date();
+    const diffHours = (now.getTime() - lastSeenDate.getTime()) / (1000 * 60 * 60);
+
+    let Icon = SignalHigh;
+    let color = 'text-green-500';
+    if (diffHours > 24) {
+      Icon = SignalLow;
+      color = 'text-red-500';
+    } else if (diffHours > 4) {
+      Icon = SignalMedium;
+      color = 'text-yellow-500';
+    }
+    
+    return (
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Icon className={cn("h-3.5 w-3.5", color)} />
+            <span>
+                {formatDistanceToNow(lastSeenDate, { addSuffix: true })}
+            </span>
+        </div>
+    );
+};
+
 
 const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ initialLeaderboardData }) => {
   const { playerProfile, isLoading: isGameLoading, isInitialSetupDone } = useGame();
@@ -81,12 +114,15 @@ const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ initialLeaderboardD
                                           <span className="font-semibold">{entry.playerName}</span>
                                           {entry.playerId === playerProfile.id && <span className="ml-1 sm:ml-2 text-primary text-xs">(You)</span>}
                                         </div>
-                                        {entry.country && (
-                                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                                                <Image src={flagSrc} alt={entry.country} width={16} height={12} className="rounded-sm" data-ai-hint="country flag" />
-                                                <span>{countries.find(c => c.code === entry.country)?.name || entry.country}</span>
-                                            </div>
-                                        )}
+                                         <div className="flex items-center gap-2">
+                                            {entry.country && (
+                                                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                                    <Image src={flagSrc} alt={entry.country} width={16} height={12} className="rounded-sm" data-ai-hint="country flag" />
+                                                    <span>{countries.find(c => c.code === entry.country)?.name || entry.country}</span>
+                                                </div>
+                                            )}
+                                            <LastSeen lastSeen={entry.lastSeen} />
+                                        </div>
                                     </div>
                                 </div>
                             </TableCell>

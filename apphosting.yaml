@@ -1,10 +1,7 @@
-# Settings to manage and configure a Firebase App Hosting backend.
-# https://firebase.google.com/docs/app-hosting/configure
-
+# Settings for Backend (on Cloud Run).
+# See https://firebase.google.com/docs/app-hosting/configure#cloud-run
 runConfig:
-  # This setting controls how many instances of your application can run at once.
-  # Firebase automatically scales the number of instances based on traffic.
-  # Increasing this value allows Firebase to handle more concurrent players
-  # during traffic spikes. For a production launch, you might increase this
-  # to 100 or more, depending on your expected traffic.
-  maxInstances: 10
+  minInstances: 0
+
+# Explicitly set the root directory to avoid any ambiguity during build.
+rootDir: .

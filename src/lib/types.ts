@@ -5,12 +5,12 @@ import type { LucideIcon } from 'lucide-react';
 export type LeagueName = 'Bronze' | 'Silver' | 'Gold' | 'Platinum' | 'Diamond' | 'Master' | 'Grandmaster';
 
 // Battle Pass Types
-export type RewardType = 'points' | 'auron' | 'uniform_piece' | 'title';
+export type RewardType = 'points' | 'auron' | 'title';
 
 export interface BattlePassReward {
   type: RewardType;
   amount?: number; // for points and auron
-  name?: string; // for uniform_piece and title
+  name?: string; // for title
   icon: LucideIcon;
 }
 
@@ -26,26 +26,13 @@ export interface BattlePass {
   levels: BattlePassLevel[];
 }
 
-export interface CommanderOrder {
-    id: string;
-    objectiveType: 'points' | 'taps'; // Example objective types
-    target: number;
-    reward: {
-        points?: number;
-        auron?: number;
-    };
-    startTime: number;
-    endTime: number;
-    progress: number;
-    isCompleted: boolean;
-}
-
 export interface PlayerProfile {
   id: string;
   name: string;
   commanderSex: 'male' | 'female';
   country?: string;
-  avatarUrl?: string; // URL for the selected profile picture
+  avatarUrl: string; // URL for the full-body image.
+  portraitUrl: string; // URL for the portrait/face image.
   points: number;
   auron: number;
   level: number;
@@ -62,12 +49,10 @@ export interface PlayerProfile {
   arkHangarFullyUpgraded: boolean;
   lastLoginTimestamp: number | null;
   activeTapBonuses: ActiveTapBonus[];
-  totalTapsForUniform: number;
-  equippedUniformPieces: string[];
   activeDailyQuests: DailyQuest[];
   lastDailyQuestRefresh: number; // Timestamp of the last daily quest refresh
-  referralCode?: string;
-  referredByCode?: string; // Stores the code of the player who referred this user
+  referralCode: string;
+  referredByCode: string; // Stores the code of the player who referred this user
 
   // Tap Limit System
   currentTaps: number;
@@ -86,13 +71,12 @@ export interface PlayerProfile {
   xpToNextBattlePassLevel: number;
   hasPremiumPass: boolean;
   claimedBattlePassRewards: { [level: number]: ('free' | 'premium')[] };
-  
-  // Commander Order
-  activeCommanderOrder: CommanderOrder | null;
-  lastCommanderOrderTimestamp: number;
 
   // Rewarded Ad
   lastRewardedAdTimestamp: number;
+  
+  // Telegram Integration
+  isTelegramWalletConnected: boolean;
 }
 
 export interface Season {
@@ -134,6 +118,7 @@ export interface LeaderboardEntry {
   score: number;
   playerLeague: LeagueName; // Added for league display
   avatarUrl?: string;
+  lastSeen?: Date | null;
 }
 
 export interface CoreMessage {
@@ -227,4 +212,11 @@ export interface LevelStage {
     };
     backgroundImageUrl: string;
     aiHint: string;
+}
+
+export interface SelectableAvatar {
+  portraitUrl: string;
+  fullBodyUrl: string;
+  sex: 'male' | 'female';
+  hint: string;
 }
