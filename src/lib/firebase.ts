@@ -9,14 +9,18 @@ const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 // Initialize App Check on the client-side
 if (typeof window !== 'undefined') {
-  initializeAppCheck(app, {
-    provider: new ReCaptchaV3Provider(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!),
-    // Optional: set to true if you want to allow failed requests for debugging
-    // while in development.
-    isTokenAutoRefreshEnabled: true
-  });
+  // Ensure you have NEXT_PUBLIC_RECAPTCHA_SITE_KEY in your environment variables
+  if (process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) {
+    initializeAppCheck(app, {
+      provider: new ReCaptchaV3Provider(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY),
+      // Optional: set to true if you want to allow failed requests for debugging
+      // while in development.
+      isTokenAutoRefreshEnabled: true
+    });
+  } else {
+    console.warn("Firebase App Check: NEXT_PUBLIC_RECAPTCHA_SITE_KEY is not set. App Check is not initialized.");
+  }
 }
-
 
 // Pass the app instance explicitly to getFirestore to ensure the correct one is used.
 const db = getFirestore(app);
