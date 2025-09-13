@@ -1,3 +1,4 @@
+
 {
   "name": "forgeite-frenzy",
   "version": "0.1.0",
@@ -61,7 +62,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@types/node": "^20.19.13",
+    "@types/node": "^20.14.9",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "genkit-cli": "1.19.2",
