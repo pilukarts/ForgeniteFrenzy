@@ -1,22 +1,48 @@
+
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from 'firebase/firestore';
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import { firebaseConfig } from "./firebaseConfig";
 
-// Initialize Firebase for SSR
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+// Function to initialize Firebase
+const initializeFirebaseApp = () => {
+  const apps = getApps();
+  if (apps.length) {
+    return getApp();
+  }
+  
+  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+
+  if (!apiKey) {
+    console.error("Firebase API Key is not set in environment variables. App will not function correctly.");
+    // In a real production app, you might want to throw an error here.
+    // For this prototype, we'll allow it to proceed but with a clear warning.
+  }
+
+  const config = {
+    ...firebaseConfig,
+    apiKey: apiKey || "YOUR_API_KEY", // Fallback to avoid crashing, but will fail auth
+  };
+
+  return initializeApp(config);
+}
+
+// Initialize Firebase for SSR/client
+const app = initializeFirebaseApp();
 
 // Initialize App Check on the client-side
 if (typeof window !== 'undefined') {
-  // Ensure you have NEXT_PUBLIC_RECAPTCHA_SITE_KEY in your environment variables
-  if (process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) {
-    initializeAppCheck(app, {
-      provider: new ReCaptchaV3Provider(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY),
-      // Optional: set to true if you want to allow failed requests for debugging
-      // while in development.
-      isTokenAutoRefreshEnabled: true
-    });
+  const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+  if (recaptchaSiteKey) {
+    try {
+      initializeAppCheck(app, {
+        provider: new ReCaptchaV3Provider(recaptchaSiteKey),
+        isTokenAutoRefreshEnabled: true
+      });
+    } catch (error) {
+      console.error("Failed to initialize Firebase App Check:", error);
+    }
   } else {
     console.warn("Firebase App Check: NEXT_PUBLIC_RECAPTCHA_SITE_KEY is not set. App Check is not initialized.");
   }

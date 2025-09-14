@@ -1,7 +1,7 @@
 
 // Your web app's Firebase configuration for project genkit-90196
+// The apiKey is now sourced directly in firebase.ts to ensure env vars are loaded.
 export const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "YOUR_API_KEY", // It's better to use env vars
   authDomain: "genkit-90196.firebaseapp.com",
   projectId: "genkit-90196",
   storageBucket: "genkit-90196.appspot.com",
