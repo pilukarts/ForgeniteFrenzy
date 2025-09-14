@@ -1,9 +1,8 @@
-
 'use client';
 
 import '@rainbow-me/rainbowkit/styles.css';
 import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { WagmiProvider } from 'wagmi';
+import { WagmiProvider, http } from 'wagmi';
 import { mainnet, polygon, optimism, arbitrum, base } from 'wagmi/chains';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
@@ -22,6 +21,13 @@ const config = getDefaultConfig({
   appName: 'Alliance Forge: Forgeite Frenzy',
   projectId: projectId,
   chains: [mainnet, polygon, optimism, arbitrum, base],
+  transports: {
+    [mainnet.id]: http(),
+    [polygon.id]: http(),
+    [optimism.id]: http(),
+    [arbitrum.id]: http(),
+    [base.id]: http(),
+  },
   ssr: true, 
 });
 
