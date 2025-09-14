@@ -15,14 +15,14 @@ const initializeFirebaseApp = () => {
   const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
 
   if (!apiKey) {
-    console.error("Firebase API Key is not set in environment variables. App will not function correctly.");
-    // In a real production app, you might want to throw an error here.
-    // For this prototype, we'll allow it to proceed but with a clear warning.
+    // This will cause the app to fail loudly if the API key is not set.
+    // It's better to fail than to have unexpected auth errors.
+    throw new Error("Firebase API Key is not set in environment variables.");
   }
 
   const config = {
     ...firebaseConfig,
-    apiKey: apiKey || "YOUR_API_KEY", // Fallback to avoid crashing, but will fail auth
+    apiKey: apiKey,
   };
 
   return initializeApp(config);
