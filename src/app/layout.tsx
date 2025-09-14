@@ -2,7 +2,7 @@
 import type { Metadata } from 'next';
 import { Toaster } from "@/components/ui/toaster"
 import { GameProvider } from '@/contexts/GameContext';
-import { Web3Provider } from '@/lib/web3';
+import { Web3Provider } from '@/lib/web3.tsx';
 import './globals.css';
 
 export const metadata: Metadata = {

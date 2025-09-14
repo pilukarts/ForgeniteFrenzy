@@ -133,7 +133,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const { toast } = useToast();
   
-  // Game Initialization Logic, moved here from AppLayout
+  // Game Initialization Logic
   useEffect(() => {
     // This effect should only run on the client
     if (typeof window === 'undefined') {
@@ -174,13 +174,9 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const season = SEASONS_DATA.find(s => s.id === hydratedProfile.currentSeasonId) || SEASONS_DATA[0];
         const coreUnlocked = !!hydratedProfile.upgrades['coreUnlocked'] || SEASONS_DATA.slice(0, SEASONS_DATA.indexOf(season)).some(s => s.unlocksCore);
         
-        setCoreMessages(prev => {
-            if (offlineEarnings > 0) {
-                const welcomeBackMessage = { type: 'system_alert', content: `Welcome back, Commander. Your M.U.L.E. Drones generated ${offlineEarnings.toLocaleString()} points while you were away.`, timestamp: Date.now() };
-                return [welcomeBackMessage, ...prev.slice(0, 49)];
-            }
-            return prev;
-        });
+        if (offlineEarnings > 0) {
+          addCoreMessage({ type: 'system_alert', content: `Welcome back, Commander. Your M.U.L.E. Drones generated ${offlineEarnings.toLocaleString()} points while you were away.` });
+        }
 
         setIsCoreUnlocked(coreUnlocked);
         setCoreLastInteractionTime(now);
@@ -189,7 +185,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setIsInitialSetupDone(false);
     }
 
-    // Crucially, set loading to false AFTER attempting to load or setting up for initial creation
     setIsLoading(false);
 
     // Telegram Env check

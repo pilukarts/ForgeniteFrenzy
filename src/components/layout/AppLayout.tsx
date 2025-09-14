@@ -68,10 +68,10 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                                 authenticationStatus === 'authenticated');
 
                             useEffect(() => {
-                                if (connected) {
+                                if (connected && account?.address) {
                                     connectWallet(account.address);
                                 }
-                            }, [connected, account?.address]);
+                            }, [connected, account?.address, connectWallet]);
 
                             return (
                               <div
