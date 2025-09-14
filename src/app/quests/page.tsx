@@ -1,7 +1,6 @@
 
 "use client";
 import React, { useEffect } from 'react';
-import AppLayout from '@/components/layout/AppLayout';
 import { useGame } from '@/contexts/GameContext';
 import type { DailyQuest } from '@/lib/types';
 import { Button } from '@/components/ui/button';
@@ -44,7 +43,7 @@ const DailyQuestsPage: React.FC = () => {
   };
 
   return (
-    <AppLayout>
+    <>
       {/* AppLayout handles global bottom padding */}
       <div className=""> 
         <div className="flex justify-between items-center px-2 sm:px-4 pt-2 sm:pt-4 mb-3 sm:mb-4"> {/* Adjusted padding and margin */}
@@ -137,7 +136,7 @@ const DailyQuestsPage: React.FC = () => {
           }
         `}</style>
       </div>
-    </AppLayout>
+    </>
   );
 };
 

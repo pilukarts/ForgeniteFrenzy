@@ -1,7 +1,6 @@
 
 "use client";
 import React from 'react';
-import AppLayout from '@/components/layout/AppLayout';
 import FeedbackForm from '@/components/community/FeedbackForm';
 import { Users } from 'lucide-react';
 import { useGame } from '@/contexts/GameContext';
@@ -22,7 +21,7 @@ const CommunityPage: React.FC = () => {
   }
 
   return (
-    <AppLayout>
+    <>
       <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
         <header className="mb-4 sm:mb-6 text-center">
           <h1 className="text-2xl sm:text-3xl font-headline text-primary flex items-center justify-center">
@@ -39,7 +38,7 @@ const CommunityPage: React.FC = () => {
           <NewsletterSignup />
         </div>
       </div>
-    </AppLayout>
+    </>
   );
 };
 

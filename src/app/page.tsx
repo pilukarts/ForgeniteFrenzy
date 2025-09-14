@@ -3,7 +3,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import AppLayout from '@/components/layout/AppLayout';
 import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
@@ -120,7 +119,6 @@ export default function HomePage() {
   
   return (
     <>
-      <AppLayout>
         <div className="relative flex flex-col h-full overflow-hidden">
           {/* Background Layers */}
           <div 
@@ -334,12 +332,9 @@ export default function HomePage() {
               }
           `}</style>
         </div>
-      </AppLayout>
     </>
   );
 }
     
 
     
-
-

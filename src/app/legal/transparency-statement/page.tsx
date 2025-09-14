@@ -1,7 +1,6 @@
 
 "use client";
 import React from 'react';
-import AppLayout from '@/components/layout/AppLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ShieldQuestion } from 'lucide-react';
@@ -9,7 +8,7 @@ import Link from 'next/link';
 
 const TransparencyStatementPage: React.FC = () => {
   return (
-    <AppLayout>
+    <>
       <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
         <header className="mb-6">
           <h1 className="text-3xl sm:text-4xl font-headline text-primary flex items-center">
@@ -209,7 +208,7 @@ const TransparencyStatementPage: React.FC = () => {
           }
         `}</style>
       </div>
-    </AppLayout>
+    </>
   );
 };
 

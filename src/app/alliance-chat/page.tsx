@@ -1,7 +1,6 @@
 
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
-import AppLayout from '@/components/layout/AppLayout';
 import { useGame } from '@/contexts/GameContext';
 import type { ChatMessage } from '@/lib/types';
 import { Input } from '@/components/ui/input';
@@ -101,7 +100,7 @@ const AllianceChatPage: React.FC = () => {
 
 
   return (
-    <AppLayout>
+    <>
       {/* Use h-full to take available space from AppLayout's main content area */}
       <div className="flex flex-col h-full"> 
         <header className="p-3 sm:p-4 border-b border-border">
@@ -162,7 +161,7 @@ const AllianceChatPage: React.FC = () => {
           </form>
         </footer>
       </div>
-    </AppLayout>
+    </>
   );
 };
 

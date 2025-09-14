@@ -1,7 +1,6 @@
 
 "use client";
 import React from 'react';
-import AppLayout from '@/components/layout/AppLayout';
 import LevelMap from '@/components/game/LevelMap';
 import { useGame } from '@/contexts/GameContext';
 import PlayerSetup from '@/components/player/PlayerSetup';
@@ -27,7 +26,7 @@ const LevelMapPage: React.FC = () => {
     const currentStage = getStageForLevel(playerProfile.level);
 
   return (
-    <AppLayout>
+    <>
       <div className="h-full w-full flex flex-col relative overflow-hidden">
         {/* Layer 1: Dynamic Backgrounds Container */}
         <div className="absolute inset-0 bg-black z-0">
@@ -127,7 +126,7 @@ const LevelMapPage: React.FC = () => {
             }
         }
       `}</style>
-    </AppLayout>
+    </>
   );
 };
 

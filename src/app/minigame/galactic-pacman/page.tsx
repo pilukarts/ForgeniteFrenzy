@@ -1,7 +1,6 @@
 
 "use client";
 import React from 'react';
-import AppLayout from '@/components/layout/AppLayout';
 import { useGame } from '@/contexts/GameContext';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import IntroScreen from '@/components/intro/IntroScreen';
@@ -24,7 +23,7 @@ const GalacticPacmanPage: React.FC = () => {
   }
 
   return (
-    <AppLayout>
+    <>
       <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 h-full flex flex-col">
         <header className="mb-2 text-center relative">
           <Link href="/arcade" className="absolute left-0 top-1/2 -translate-y-1/2">
@@ -44,7 +43,7 @@ const GalacticPacmanPage: React.FC = () => {
           <GalacticPacman />
         </div>
       </div>
-    </AppLayout>
+    </>
   );
 };
 

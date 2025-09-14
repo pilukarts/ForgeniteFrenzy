@@ -2,7 +2,6 @@
 
 "use client";
 import React, { useState, useEffect } from 'react';
-import AppLayout from '@/components/layout/AppLayout';
 import { useGame } from '@/contexts/GameContext';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import IntroScreen from '@/components/intro/IntroScreen';
@@ -74,7 +73,7 @@ const ProfilePage: React.FC = () => {
 
 
   return (
-    <AppLayout>
+    <>
       <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
         <header className="mb-4 sm:mb-6">
           <h1 className="text-2xl sm:text-3xl font-headline text-primary flex items-center">
@@ -170,7 +169,7 @@ const ProfilePage: React.FC = () => {
           </Card>
         </div>
       </div>
-    </AppLayout>
+    </>
   );
 };
 

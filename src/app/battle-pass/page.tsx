@@ -1,7 +1,6 @@
 
 "use client";
 import React from 'react';
-import AppLayout from '@/components/layout/AppLayout';
 import { useGame } from '@/contexts/GameContext';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import IntroScreen from '@/components/intro/IntroScreen';
@@ -65,7 +64,7 @@ const BattlePassPage: React.FC = () => {
   const bpProgress = playerProfile.battlePassXp / playerProfile.xpToNextBattlePassLevel * 100;
 
   return (
-    <AppLayout>
+    <>
       <div className="h-full flex flex-col p-2 sm:p-4">
         <Card className="mb-4 flex-shrink-0">
           <CardHeader>
@@ -126,7 +125,7 @@ const BattlePassPage: React.FC = () => {
           </div>
         </ScrollArea>
       </div>
-    </AppLayout>
+    </>
   );
 };
 

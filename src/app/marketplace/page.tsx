@@ -1,7 +1,6 @@
 
 "use client";
 import React, { useState, useEffect } from 'react';
-import AppLayout from '@/components/layout/AppLayout';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -80,7 +79,7 @@ const MarketplacePage: React.FC = () => {
   if (!playerProfile) return null;
 
   return (
-    <AppLayout>
+    <>
       <div className=""> 
         <div className="flex flex-col sm:flex-row justify-between items-center px-2 sm:px-4 pt-2 sm:pt-4 mb-4 sm:mb-6 gap-2">
             <h1 className="text-2xl sm:text-3xl font-headline text-primary">Auron & Item Shop</h1>
@@ -244,7 +243,7 @@ const MarketplacePage: React.FC = () => {
           }
         `}</style>
       </div>
-    </AppLayout>
+    </>
   );
 };
 

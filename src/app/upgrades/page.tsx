@@ -1,7 +1,6 @@
 
 "use client";
 import React from 'react';
-import AppLayout from '@/components/layout/AppLayout';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -27,7 +26,7 @@ const UpgradesPage: React.FC = () => {
   const regularUpgrades = upgrades.filter(u => !u.id.startsWith('ark_')); 
 
   return (
-    <AppLayout>
+    <>
       {/* AppLayout handles global bottom padding */}
       <div className=""> 
         <h1 className="text-2xl sm:text-3xl font-headline text-primary mb-4 sm:mb-6 px-2 sm:px-4 pt-2 sm:pt-4">Armory & Enhancements</h1> {/* Adjusted text size, margin, padding */}
@@ -126,7 +125,7 @@ const UpgradesPage: React.FC = () => {
           }
         `}</style>
       </div>
-    </AppLayout>
+    </>
   );
 };
 

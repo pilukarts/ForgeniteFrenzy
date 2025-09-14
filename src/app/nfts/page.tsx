@@ -1,7 +1,6 @@
 
 "use client";
 import React from 'react';
-import AppLayout from '@/components/layout/AppLayout';
 import { useGame } from '@/contexts/GameContext';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import IntroScreen from '@/components/intro/IntroScreen';
@@ -24,7 +23,7 @@ const NftsPage: React.FC = () => {
   }
 
   return (
-    <AppLayout>
+    <>
       <div className="h-full flex flex-col p-2 sm:p-4">
         <header className="mb-4 sm:mb-6">
           <h1 className="text-2xl sm:text-3xl font-headline text-primary flex items-center">
@@ -66,7 +65,7 @@ const NftsPage: React.FC = () => {
           </div>
         </ScrollArea>
       </div>
-    </AppLayout>
+    </>
   );
 };
 
