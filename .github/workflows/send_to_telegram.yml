@@ -1,5 +1,5 @@
 
-name: Send file to Telegram on push
+name: Run Telegram Bot on push
 
 on:
   push:
@@ -7,22 +7,24 @@ on:
       - main
 
 jobs:
-  send_telegram:
+  run_bot:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          python-version: '3.12'
+          node-version: '20'
 
-      - name: Install python-telegram-bot
-        run: pip install "python-telegram-bot>=20.0"
+      - name: Install dependencies
+        run: npm install
 
-      - name: Send notification to Telegram
+      - name: Build Telegram Bot
+        run: npm run build:bot
+
+      - name: Run Telegram Bot
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python send_to_telegram.py
+        run: npm run start:bot

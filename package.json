@@ -12,7 +12,9 @@
     "genkit:watch": "genkit start -- tsx --watch src/ai/dev.ts",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build:bot": "tsc bot.ts",
+    "start:bot": "node bot.js"
   },
   "dependencies": {
     "@genkit-ai/googleai": "1.19.2",
@@ -50,7 +52,7 @@
     "framer-motion": "^11.1.7",
     "genkit": "1.19.2",
     "lucide-react": "0.379.0",
-    "next": "^15.0.0",
+    "next": "^14.2.3",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
