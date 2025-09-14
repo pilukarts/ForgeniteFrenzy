@@ -38,7 +38,7 @@ export interface GameContextType {
   setIsCoreUnlocked: React.Dispatch<React.SetStateAction<boolean>>;
   coreLastInteractionTime: number;
   setCoreLastInteractionTime: React.Dispatch<React.SetStateAction<number>>;
-  connectWallet: () => void;
+  connectWallet: (address: string) => void;
   handleTap: (isLogoTap?: boolean) => void;
   criticalTapChance: number;
   criticalTapMultiplier: number;
@@ -85,6 +85,7 @@ export const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commande
   muleDrones: 0,
   coreVoiceProtocol: 'synthetic',
   isWalletConnected: false,
+  walletAddress: '',
   arkHangarFullyUpgraded: false,
   lastLoginTimestamp: Date.now(),
   activeTapBonuses: [],
@@ -131,6 +132,68 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const tapSoundRef = useRef<HTMLAudioElement | null>(null);
 
   const { toast } = useToast();
+  
+  // Game Initialization Logic
+  useEffect(() => {
+    // This effect should only run on the client
+    if (typeof window === 'undefined') {
+        return;
+    }
+
+    let savedProfile: string | null = null;
+    try {
+        savedProfile = localStorage.getItem('playerProfile');
+    } catch (e) {
+        console.error("Could not access localStorage. Starting fresh.", e);
+    }
+
+    if (savedProfile) {
+        let parsedProfile = JSON.parse(savedProfile) as PlayerProfile;
+
+        const now = Date.now();
+        const lastLogin = parsedProfile.lastLoginTimestamp ?? now;
+        const timeAwayInMinutes = Math.floor((now - lastLogin) / 60000);
+        let offlineEarnings = 0;
+        
+        if (timeAwayInMinutes > 1 && parsedProfile.muleDrones > 0) {
+            offlineEarnings = Math.floor(parsedProfile.muleDrones * MULE_DRONE_BASE_RATE * timeAwayInMinutes);
+            if (offlineEarnings > 0) {
+                parsedProfile.points += offlineEarnings;
+            }
+        }
+
+        const hydratedProfile: PlayerProfile = {
+            ...defaultPlayerProfile,
+            ...parsedProfile,
+            lastLoginTimestamp: now,
+            league: getLeagueByPoints(parsedProfile.points),
+            currentTierColor: getTierColorByLevel(parsedProfile.level),
+        };
+
+        setPlayerProfile(hydratedProfile);
+        const season = SEASONS_DATA.find(s => s.id === hydratedProfile.currentSeasonId) || SEASONS_DATA[0];
+        const coreUnlocked = !!hydratedProfile.upgrades['coreUnlocked'] || SEASONS_DATA.slice(0, SEASONS_DATA.indexOf(season)).some(s => s.unlocksCore);
+        
+        if (offlineEarnings > 0) {
+          addCoreMessage({ type: 'system_alert', content: `Welcome back, Commander. Your M.U.L.E. Drones generated ${offlineEarnings.toLocaleString()} points while you were away.` });
+        }
+
+        setIsCoreUnlocked(coreUnlocked);
+        setCoreLastInteractionTime(now);
+        setIsInitialSetupDone(true);
+    } else {
+        setIsInitialSetupDone(false);
+    }
+
+    setIsLoading(false);
+
+    // Telegram Env check
+    import('@twa-dev/sdk').then(twa => {
+        if (twa.default.platform !== 'unknown') {
+            setIsTelegramEnv(true);
+        }
+    }).catch(err => console.log("Not in Telegram environment or SDK failed to load."));
+  }, []); // Empty dependency array ensures this runs only once on mount
 
   const addCoreMessage = useCallback((message: Omit<CoreMessage, 'timestamp'>) => {
     const newMessage = { ...message, timestamp: Date.now() };
@@ -672,13 +735,14 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   }, [toast, updateQuestProgress, addCoreMessage]);
   
-  const connectWallet = useCallback(() => {
+  const connectWallet = useCallback((address: string) => {
     setPlayerProfile(prev => {
       if (!prev || prev.isWalletConnected) return prev;
       addCoreMessage({ type: 'system_alert', content: `Wallet Connected! Received ${AURON_PER_WALLET_CONNECT} Auron bonus and unlocked the Ark Hangar.` });
       return {
         ...prev,
         isWalletConnected: true,
+        walletAddress: address,
         auron: prev.auron + AURON_PER_WALLET_CONNECT,
       };
     });
@@ -836,17 +900,28 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const connectTelegramWallet = useCallback(() => {
     if (!isTelegramEnv) return;
     import('@twa-dev/sdk').then(twa => {
-        twa.default.requestWalletAccess((granted) => {
-            if (granted) {
-                setPlayerProfile(prev => {
-                    if (!prev) return null;
-                    toast({ title: 'Telegram Wallet Connected!', description: 'You can now purchase Auron with TON.' });
-                    return { ...prev, isTelegramWalletConnected: true };
-                });
+        const twaSDK = twa.default;
+        if (twaSDK.CloudStorage.isSupported) {
+          twaSDK.requestWriteAccess((isGranted) => {
+            if (isGranted) {
+               twaSDK.CloudStorage.setItem('wallet_connected', 'true', (err, stored) => {
+                  if(stored) {
+                    setPlayerProfile(prev => {
+                        if (!prev) return null;
+                        toast({ title: 'Telegram Wallet Connected!', description: 'You can now purchase Auron with TON.' });
+                        return { ...prev, isTelegramWalletConnected: true };
+                    });
+                  } else {
+                     toast({ title: 'Storage Error', description: `Could not save wallet state. ${err}`, variant: 'destructive' });
+                  }
+               });
             } else {
-                toast({ title: 'Connection Denied', description: 'You denied wallet access.', variant: 'destructive' });
+              toast({ title: 'Permission Denied', description: 'You denied storage access.', variant: 'destructive' });
             }
-        });
+          });
+        } else {
+             toast({ title: 'Feature Not Supported', description: 'Telegram Cloud Storage not supported on this device.', variant: 'destructive' });
+        }
     });
   }, [isTelegramEnv, toast]);
 
@@ -859,7 +934,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     import('@twa-dev/sdk').then(twa => {
         // This is a simplified example. A real implementation would generate a unique invoice
         // on a backend server and pass the link to openInvoice.
-        // For this prototype, we'll use a simulated success.
+        // For this prototype, we'll simulate the purchase.
         twa.default.showConfirm(`Purchase ${pkg.amount} Auron for a simulated ${pkg.price} TON?`, (confirmed) => {
             if (confirmed) {
                 setPlayerProfile(prev => {
@@ -873,6 +948,35 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         });
     });
   }, [isTelegramEnv, playerProfile, toast]);
+
+
+  // --- Save profile to localStorage on change ---
+  useEffect(() => {
+    if (playerProfile && isInitialSetupDone) {
+      try {
+        const profileToSave: PlayerProfile = {
+            ...playerProfile,
+            activeDailyQuests: playerProfile.activeDailyQuests.map(({ icon, ...rest }) => rest), // Remove icon before saving
+        };
+        localStorage.setItem('playerProfile', JSON.stringify(profileToSave));
+      } catch (e) {
+          console.error("Failed to save player profile to localStorage:", e);
+      }
+    }
+  }, [playerProfile, isInitialSetupDone]);
+  
+   // --- Cooldown timer effect ---
+  useEffect(() => {
+      if (!playerProfile) return;
+      const interval = setInterval(() => {
+          const now = Date.now();
+          const lastAdTime = playerProfile.lastRewardedAdTimestamp || 0;
+          const timeSinceLastAd = now - lastAdTime;
+          const newCooldown = Math.max(0, REWARDED_AD_COOLDOWN_MILLISECONDS - timeSinceLastAd);
+          setRewardedAdCooldown(newCooldown);
+      }, 1000);
+      return () => clearInterval(interval);
+  }, [playerProfile, setRewardedAdCooldown]);
 
 
   // --- Context Value ---

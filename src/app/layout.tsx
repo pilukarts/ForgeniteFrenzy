@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Toaster } from "@/components/ui/toaster"
 import { GameProvider } from '@/contexts/GameContext';
 import { Web3Provider } from '@/lib/web3.tsx';
+import AppLayout from '@/components/layout/AppLayout';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -28,7 +29,9 @@ export default function RootLayout({
       <body className="font-body antialiased bg-background text-foreground">
         <Web3Provider>
             <GameProvider>
-              {children}
+                <AppLayout>
+                  {children}
+                </AppLayout>
               <Toaster />
             </GameProvider>
         </Web3Provider>

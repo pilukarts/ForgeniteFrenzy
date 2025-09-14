@@ -14,14 +14,15 @@ const queryClient = new QueryClient();
 const projectId = "c8f0e54cbe5722049d569f104b68e983";
 
 if (!projectId) {
-  throw new Error("WalletConnect Project ID is not defined. Please check your .env.local file for NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID");
+  // This will prevent the app from building if the project ID is missing.
+  throw new Error("WalletConnect Project ID is not defined. Please check your environment variables for NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID");
 }
 
 const config = getDefaultConfig({
   appName: 'Alliance Forge: Forgeite Frenzy',
   projectId: projectId,
   chains: [mainnet, polygon, optimism, arbitrum, base],
-  ssr: true, // Required for Next.js App Router
+  ssr: true, 
 });
 
 export const Web3Provider = ({ children }: { children: ReactNode }) => {

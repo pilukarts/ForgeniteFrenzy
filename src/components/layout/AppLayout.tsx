@@ -1,28 +1,42 @@
 
 "use client";
-import React, { ReactNode, useState, useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import BottomNavBar from '../navigation/BottomNavBar';
 import PlayerProfileHeader from '@/components/player/PlayerProfileHeader';
 import ResourceDisplay from '@/components/game/ResourceDisplay';
 import { Button } from '@/components/ui/button';
 import { useGame } from '@/contexts/GameContext';
-import { Wallet, CreditCard, Loader2 } from 'lucide-react'; 
+import { Wallet, CreditCard } from 'lucide-react'; 
 import CoreDisplay from '@/components/core/CoreDisplay';
 import Link from 'next/link';
 import IntroScreen from '../intro/IntroScreen';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import PlayerSetup from '../player/PlayerSetup';
+import PreIntroScreen from '../intro/PreIntroScreen';
 
 interface AppLayoutProps {
   children: ReactNode;
 }
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
-  const { playerProfile, connectWallet, currentSeason, isLoading } = useGame();
+  const { playerProfile, connectWallet, currentSeason, isLoading, isInitialSetupDone, completeInitialSetup } = useGame();
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   
-  if (isLoading || !playerProfile) {
+  if (isLoading) {
     return <IntroScreen />;
   }
+
+  if (!isInitialSetupDone) {
+    // If setup is not done, show the PlayerSetup component, which is now self-contained.
+    return <PlayerSetup />;
+  }
+  
+  if (!playerProfile) {
+      // This case should theoretically not be hit if isLoading is false and setup is done,
+      // but it's a good safeguard.
+      return <IntroScreen />;
+  }
+
 
   const seasonProgress = playerProfile?.seasonProgress?.[currentSeason.id] ?? 0;
 
@@ -48,63 +62,84 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                   auronCount={playerProfile.auron ?? 0} 
                 />
                 <div className="flex flex-col items-start gap-1 ml-1 pl-1 border-l border-border">
-                    {!playerProfile.isWalletConnected && (
-                      <ConnectButton.Custom>
-                          {({
-                            account,
-                            chain,
-                            openAccountModal,
-                            openChainModal,
-                            openConnectModal,
-                            authenticationStatus,
-                            mounted,
-                          }) => {
-                            const ready = mounted && authenticationStatus !== 'loading';
-                            const connected =
-                              ready &&
-                              account &&
-                              chain &&
-                              (!authenticationStatus ||
-                                authenticationStatus === 'authenticated');
+                    <ConnectButton.Custom>
+                      {({
+                        account,
+                        chain,
+                        openAccountModal,
+                        openChainModal,
+                        openConnectModal,
+                        authenticationStatus,
+                        mounted,
+                      }) => {
+                        const ready = mounted && authenticationStatus !== 'loading';
+                        const connected =
+                          ready &&
+                          account &&
+                          chain &&
+                          (!authenticationStatus ||
+                            authenticationStatus === 'authenticated');
 
-                            useEffect(() => {
-                                if (connected && account?.address) {
-                                    connectWallet(account.address);
-                                }
-                            }, [connected, account?.address, connectWallet]);
+                        useEffect(() => {
+                            if (connected && account?.address && !playerProfile.isWalletConnected) {
+                                connectWallet(account.address);
+                            }
+                        }, [connected, account?.address]);
 
-                            return (
-                              <div
-                                {...(!ready && {
-                                  'aria-hidden': true,
-                                  'style': {
-                                    opacity: 0,
-                                    pointerEvents: 'none',
-                                    userSelect: 'none',
-                                  },
-                                })}
-                              >
-                                {(() => {
-                                  if (!connected) {
-                                    return (
-                                      <Button 
-                                        onClick={openConnectModal}
-                                        type="button"
-                                        variant="outline" 
-                                        size="sm" 
-                                        className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 whitespace-nowrap text-xs px-2 h-7 w-full justify-start"
-                                      >
-                                        <Wallet className="mr-1.5 h-3 w-3 text-bright-gold" /> Connect
-                                      </Button>
-                                    );
-                                  }
-                                  return null;
-                                })()}
-                              </div>
-                            );
-                          }}
-                        </ConnectButton.Custom>
-                    )}
+                        return (
+                          <div
+                            {...(!ready && {
+                              'aria-hidden': true,
+                              'style': {
+                                opacity: 0,
+                                pointerEvents: 'none',
+                                userSelect: 'none',
+                              },
+                            })}
+                          >
+                            {(() => {
+                              if (!connected) {
+                                return (
+                                  <Button 
+                                    onClick={openConnectModal}
+                                    type="button"
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 whitespace-nowrap text-xs px-2 h-7 w-full justify-start"
+                                  >
+                                    <Wallet className="mr-1.5 h-3 w-3 text-bright-gold" /> Connect
+                                  </Button>
+                                );
+                              }
+                              
+                              if (chain?.unsupported) {
+                                return (
+                                    <Button onClick={openChainModal} type="button" variant="destructive" size="sm" className="whitespace-nowrap text-xs px-2 h-7 w-full justify-start">
+                                      Wrong network
+                                    </Button>
+                                );
+                              }
+
+                              return (
+                                <div className="flex gap-x-1">
+                                    <Button onClick={openChainModal} type="button" size="sm" variant="outline" className="text-xs px-2 h-7">
+                                        {chain.hasIcon && (
+                                            <div style={{ background: chain.iconBackground, width: 12, height: 12, borderRadius: 999, overflow: 'hidden', marginRight: 4, }} >
+                                                {chain.iconUrl && ( <img alt={chain.name ?? 'Chain icon'} src={chain.iconUrl} style={{ width: 12, height: 12 }} /> )}
+                                            </div>
+                                        )}
+                                         {chain.name}
+                                    </Button>
+                                     <Button onClick={openAccountModal} type="button" size="sm" variant="outline" className="text-xs px-2 h-7">
+                                        {account.displayName}
+                                    </Button>
+                                </div>
+                              )
+                            })()}
+                          </div>
+                        );
+                      }}
+                    </ConnectButton.Custom>
                     <Button asChild
                         variant="outline" 
                         size="sm" 
