@@ -1,4 +1,3 @@
-
 name: Run Telegram Bot on push
 
 on:
