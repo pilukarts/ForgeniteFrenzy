@@ -1,5 +1,4 @@
 
-
 "use client";
 import React, { ReactNode, useState, useEffect } from 'react';
 import BottomNavBar from '../navigation/BottomNavBar';
@@ -11,92 +10,16 @@ import { Wallet, CreditCard, Loader2 } from 'lucide-react';
 import CoreDisplay from '@/components/core/CoreDisplay';
 import Link from 'next/link';
 import IntroScreen from '../intro/IntroScreen';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import Image from 'next/image';
-
-const WalletConnectDialog: React.FC<{
-  isOpen: boolean;
-  onClose: () => void;
-  onConnect: () => void;
-}> = ({ isOpen, onClose, onConnect }) => {
-    const [isConnecting, setIsConnecting] = useState(false);
-
-    const handleConnectClick = () => {
-        setIsConnecting(true);
-        // Simulate a delay for connecting to the wallet
-        setTimeout(() => {
-            onConnect();
-            setIsConnecting(false);
-            onClose();
-        }, 1500);
-    };
-
-    return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle className="text-2xl font-headline text-primary text-center">Connect Your Wallet</DialogTitle>
-                    <DialogDescription className="text-center text-base">
-                        Connect your wallet to unlock exclusive Ark Hangar upgrades and receive a one-time bonus of 100 Auron.
-                    </DialogDescription>
-                </DialogHeader>
-                <div className="py-4 space-y-3">
-                    <Button 
-                        className="w-full h-14 text-lg justify-start" 
-                        variant="outline" 
-                        onClick={handleConnectClick}
-                        disabled={isConnecting}
-                    >
-                        {isConnecting ? (
-                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                        ) : (
-                            <Image src="https://i.imgur.com/gZ2D7XG.png" alt="MetaMask" width={28} height={28} className="mr-3" data-ai-hint="metamask fox" />
-                        )}
-                        MetaMask (Simulated)
-                    </Button>
-                    <Button 
-                        className="w-full h-14 text-lg justify-start" 
-                        variant="outline" 
-                        onClick={handleConnectClick}
-                        disabled={isConnecting}
-                    >
-                         {isConnecting ? (
-                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                        ) : (
-                            <Image src="https://i.imgur.com/J3h23L2.png" alt="Coinbase" width={28} height={28} className="mr-3" data-ai-hint="coinbase logo" />
-                        )}
-                        Coinbase Wallet (Simulated)
-                    </Button>
-                    <Button 
-                        className="w-full h-14 text-lg justify-start" 
-                        variant="outline" 
-                        onClick={handleConnectClick}
-                        disabled={isConnecting}
-                    >
-                         {isConnecting ? (
-                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                        ) : (
-                            <Image src="https://i.imgur.com/3g7bZ7I.png" alt="Cronos" width={28} height={28} className="mr-3" data-ai-hint="cronos logo" />
-                        )}
-                        Cronos | Crypto.com (Simulated)
-                    </Button>
-                </div>
-            </DialogContent>
-        </Dialog>
-    );
-};
-
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 interface AppLayoutProps {
   children: ReactNode;
 }
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
-  const { playerProfile, connectWallet, currentSeason, isLoading, isInitialSetupDone } = useGame();
-  const [isWalletDialogOpen, setWalletDialogOpen] = useState(false);
+  const { playerProfile, connectWallet, currentSeason, isLoading } = useGame();
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   
-  // isLoading is now managed entirely within GameContext. AppLayout just consumes it.
   if (isLoading || !playerProfile) {
     return <IntroScreen />;
   }
@@ -126,14 +49,61 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                 />
                 <div className="flex flex-col items-start gap-1 ml-1 pl-1 border-l border-border">
                     {!playerProfile.isWalletConnected && (
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 whitespace-nowrap text-xs px-2 h-7 w-full justify-start"
-                          onClick={() => setWalletDialogOpen(true)}
-                        >
-                        <Wallet className="mr-1.5 h-3 w-3 text-bright-gold" /> Connect
-                      </Button>
+                      <ConnectButton.Custom>
+                          {({
+                            account,
+                            chain,
+                            openAccountModal,
+                            openChainModal,
+                            openConnectModal,
+                            authenticationStatus,
+                            mounted,
+                          }) => {
+                            const ready = mounted && authenticationStatus !== 'loading';
+                            const connected =
+                              ready &&
+                              account &&
+                              chain &&
+                              (!authenticationStatus ||
+                                authenticationStatus === 'authenticated');
+
+                            useEffect(() => {
+                                if (connected) {
+                                    connectWallet(account.address);
+                                }
+                            }, [connected, account?.address]);
+
+                            return (
+                              <div
+                                {...(!ready && {
+                                  'aria-hidden': true,
+                                  'style': {
+                                    opacity: 0,
+                                    pointerEvents: 'none',
+                                    userSelect: 'none',
+                                  },
+                                })}
+                              >
+                                {(() => {
+                                  if (!connected) {
+                                    return (
+                                      <Button 
+                                        onClick={openConnectModal}
+                                        type="button"
+                                        variant="outline" 
+                                        size="sm" 
+                                        className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 whitespace-nowrap text-xs px-2 h-7 w-full justify-start"
+                                      >
+                                        <Wallet className="mr-1.5 h-3 w-3 text-bright-gold" /> Connect
+                                      </Button>
+                                    );
+                                  }
+                                  return null;
+                                })()}
+                              </div>
+                            );
+                          }}
+                        </ConnectButton.Custom>
                     )}
                     <Button asChild
                         variant="outline" 
@@ -150,7 +120,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           </header>
           
           <main className="flex-grow overflow-y-auto pb-[56px] sm:pb-[60px]">
-            {/* isInitialSetupDone is handled inside HomePage and other pages now */}
             {children}
           </main>
           
@@ -159,11 +128,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           <BottomNavBar />
         </div>
       </div>
-       <WalletConnectDialog
-            isOpen={isWalletDialogOpen}
-            onClose={() => setWalletDialogOpen(false)}
-            onConnect={connectWallet}
-        />
       <style jsx global>{`
         @keyframes pan-background-global {
             0% { background-position: 0% 50%; }

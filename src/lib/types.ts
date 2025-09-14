@@ -46,6 +46,7 @@ export interface PlayerProfile {
   muleDrones: number;
   coreVoiceProtocol: 'male' | 'female' | 'synthetic';
   isWalletConnected: boolean;
+  walletAddress?: string;
   arkHangarFullyUpgraded: boolean;
   lastLoginTimestamp: number | null;
   activeTapBonuses: ActiveTapBonus[];

@@ -2,6 +2,7 @@
 import type { Metadata } from 'next';
 import { Toaster } from "@/components/ui/toaster"
 import { GameProvider } from '@/contexts/GameContext';
+import { Web3Provider } from '@/lib/web3';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -25,10 +26,12 @@ export default function RootLayout({
         <meta name="theme-color" content="#1a202c" />
       </head>
       <body className="font-body antialiased bg-background text-foreground">
-        <GameProvider>
-          {children}
-          <Toaster />
-        </GameProvider>
+        <Web3Provider>
+            <GameProvider>
+              {children}
+              <Toaster />
+            </GameProvider>
+        </Web3Provider>
       </body>
     </html>
   );

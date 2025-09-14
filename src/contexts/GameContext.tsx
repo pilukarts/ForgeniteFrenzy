@@ -38,7 +38,7 @@ export interface GameContextType {
   setIsCoreUnlocked: React.Dispatch<React.SetStateAction<boolean>>;
   coreLastInteractionTime: number;
   setCoreLastInteractionTime: React.Dispatch<React.SetStateAction<number>>;
-  connectWallet: () => void;
+  connectWallet: (address: string) => void;
   handleTap: (isLogoTap?: boolean) => void;
   criticalTapChance: number;
   criticalTapMultiplier: number;
@@ -85,6 +85,7 @@ export const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commande
   muleDrones: 0,
   coreVoiceProtocol: 'synthetic',
   isWalletConnected: false,
+  walletAddress: '',
   arkHangarFullyUpgraded: false,
   lastLoginTimestamp: Date.now(),
   activeTapBonuses: [],
@@ -739,13 +740,14 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   }, [toast, updateQuestProgress, addCoreMessage]);
   
-  const connectWallet = useCallback(() => {
+  const connectWallet = useCallback((address: string) => {
     setPlayerProfile(prev => {
       if (!prev || prev.isWalletConnected) return prev;
       addCoreMessage({ type: 'system_alert', content: `Wallet Connected! Received ${AURON_PER_WALLET_CONNECT} Auron bonus and unlocked the Ark Hangar.` });
       return {
         ...prev,
         isWalletConnected: true,
+        walletAddress: address,
         auron: prev.auron + AURON_PER_WALLET_CONNECT,
       };
     });
@@ -903,17 +905,28 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const connectTelegramWallet = useCallback(() => {
     if (!isTelegramEnv) return;
     import('@twa-dev/sdk').then(twa => {
-        twa.default.requestWalletAccess((granted) => {
-            if (granted) {
-                setPlayerProfile(prev => {
-                    if (!prev) return null;
-                    toast({ title: 'Telegram Wallet Connected!', description: 'You can now purchase Auron with TON.' });
-                    return { ...prev, isTelegramWalletConnected: true };
-                });
+        const twaSDK = twa.default;
+        if (twaSDK.CloudStorage.isSupported) {
+          twaSDK.requestWriteAccess((isGranted) => {
+            if (isGranted) {
+               twaSDK.CloudStorage.setItem('wallet_connected', 'true', (err, stored) => {
+                  if(stored) {
+                    setPlayerProfile(prev => {
+                        if (!prev) return null;
+                        toast({ title: 'Telegram Wallet Connected!', description: 'You can now purchase Auron with TON.' });
+                        return { ...prev, isTelegramWalletConnected: true };
+                    });
+                  } else {
+                     toast({ title: 'Storage Error', description: `Could not save wallet state. ${err}`, variant: 'destructive' });
+                  }
+               });
             } else {
-                toast({ title: 'Connection Denied', description: 'You denied wallet access.', variant: 'destructive' });
+              toast({ title: 'Permission Denied', description: 'You denied storage access.', variant: 'destructive' });
             }
-        });
+          });
+        } else {
+             toast({ title: 'Feature Not Supported', description: 'Telegram Cloud Storage not supported on this device.', variant: 'destructive' });
+        }
     });
   }, [isTelegramEnv, toast]);
 
@@ -926,7 +939,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     import('@twa-dev/sdk').then(twa => {
         // This is a simplified example. A real implementation would generate a unique invoice
         // on a backend server and pass the link to openInvoice.
-        // For this prototype, we'll use a simulated success.
+        // For this prototype, we'll simulate the purchase.
         twa.default.showConfirm(`Purchase ${pkg.amount} Auron for a simulated ${pkg.price} TON?`, (confirmed) => {
             if (confirmed) {
                 setPlayerProfile(prev => {
