@@ -42,13 +42,7 @@ const NftsPage: React.FC = () => {
               <Card key={nft.id} className="bg-card text-card-foreground shadow-lg flex flex-col">
                 <CardHeader>
                   <div className="aspect-video relative w-full rounded-t-lg overflow-hidden border-b border-primary/20">
-                    <Image
-                      src={nft.imageUrl}
-                      alt={nft.name}
-                      fill
-                      className="object-cover"
-                      data-ai-hint={nft.aiHint}
-                    />
+                    {/* Image removed as requested */}
                   </div>
                   <CardTitle className="pt-4 text-xl font-headline text-accent">{nft.name}</CardTitle>
                   <CardDescription className="text-sm">{nft.description}</CardDescription>
