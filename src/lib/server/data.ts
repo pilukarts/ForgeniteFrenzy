@@ -3,16 +3,15 @@ import 'server-only';
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore, collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import type { PlayerProfile, LeaderboardEntry } from '@/lib/types';
-import { firebaseConfig } from "@/lib/firebaseConfig";
+import { firebaseConfig } from "@/lib/firebaseConfig"; // Import the correct config
 import { parseISO } from 'date-fns';
 
-const getDb = () => {
-    return getFirestore(getApps().length === 0 ? initializeApp(firebaseConfig) : getApp());
-}
+// Ensure Firebase is initialized on the server, but only once.
+const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 export const fetchLeaderboardData = async (): Promise<LeaderboardEntry[]> => {
     try {
-        const db = getDb();
         const playersRef = collection(db, 'players');
         // Fetch players based on their points in descending order.
         const q = query(playersRef, orderBy('points', 'desc'), limit(50));

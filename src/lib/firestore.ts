@@ -1,14 +1,11 @@
 
-import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import type { PlayerProfile } from './types';
-import { firebaseConfig } from "./firebaseConfig";
+import { app } from './firebase'; // Import the initialized app
 
 // This file is intended for client-side use.
-// It initializes Firebase and provides a function to sync the player profile.
+// It reuses the initialized Firebase app and provides a function to sync the player profile.
 
-// Initialize Firebase for client-side usage, ensuring it's only done once.
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);
 
 /**
