@@ -1,6 +1,6 @@
 // Your web app's Firebase configuration for project ark-evac
 export const firebaseConfig = {
-  apiKey: "SECRET_API_KEY",
+  apiKey: "AIzaSyC5t2-a1b2c3d4e5f6g7h8i9j0k1l2m3",
   authDomain: "ark-evac.firebaseapp.com",
   projectId: "ark-evac",
   storageBucket: "ark-evac.appspot.com",
