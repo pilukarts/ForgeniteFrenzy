@@ -1,3 +1,4 @@
+
 // Import Firebase core and required modules
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from 'firebase/firestore';
@@ -11,24 +12,21 @@ const initializeFirebaseApp = () => {
     return getApp();
   }
 
-  // Ensure the API key is set (fail loudly if missing)
-  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+  // Ensure the API key is set directly from the config
+  const apiKey = firebaseConfig.apiKey;
   if (!apiKey) {
-    throw new Error("Firebase API Key is not set in environment variables.");
+    // This should ideally not happen if firebaseConfig is correct.
+    throw new Error("Firebase API Key is not set in firebaseConfig.");
   }
 
-  const config = {
-    ...firebaseConfig,
-    apiKey: apiKey,
-  };
-
-  return initializeApp(config);
+  return initializeApp(firebaseConfig);
 };
 
 // Initialize Firebase instance
 const app = initializeFirebaseApp();
 
 // Initialize App Check with reCAPTCHA v3 on the client-side only
+// and only if the site key is explicitly provided in the environment.
 if (typeof window !== 'undefined') {
   const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
   if (recaptchaSiteKey) {
@@ -41,7 +39,8 @@ if (typeof window !== 'undefined') {
       console.error("Failed to initialize Firebase App Check:", error);
     }
   } else {
-    console.warn("Firebase App Check: NEXT_PUBLIC_RECAPTCHA_SITE_KEY is not set. App Check is not initialized.");
+    // This is now an expected state in local development.
+    console.warn("Firebase App Check: NEXT_PUBLIC_RECAPTCHA_SITE_KEY is not set. App Check will not be initialized. This is expected for local development.");
   }
 }
 
