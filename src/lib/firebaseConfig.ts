@@ -8,3 +8,4 @@ export const firebaseConfig = {
   messagingSenderId: "928400685620", // This ID is often shared, assuming it's correct.
   appId: "1:928400685620:web:48c3b537a723825a9b6861" // Assuming this is the correct web app ID for the project.
 };
+
