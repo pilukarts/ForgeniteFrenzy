@@ -9,6 +9,7 @@
       "firebase-debug.*.log",
       "functions"
     ],
-    "alwaysDeployFromSource": false
+    "alwaysDeployFromSource": false,
+    "project": "ark-evac"
   }
 }
