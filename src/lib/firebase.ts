@@ -1,22 +1,19 @@
-
-// Import the functions you need from the SDKs you need
+// Import Firebase core and required modules
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from 'firebase/firestore';
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import { firebaseConfig } from "./firebaseConfig";
 
-// Function to initialize Firebase
+// Function to initialize Firebase app (handles SSR and client-side)
 const initializeFirebaseApp = () => {
   const apps = getApps();
   if (apps.length) {
     return getApp();
   }
-  
-  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
 
+  // Ensure the API key is set (fail loudly if missing)
+  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
   if (!apiKey) {
-    // This will cause the app to fail loudly if the API key is not set.
-    // It's better to fail than to have unexpected auth errors.
     throw new Error("Firebase API Key is not set in environment variables.");
   }
 
@@ -26,12 +23,12 @@ const initializeFirebaseApp = () => {
   };
 
   return initializeApp(config);
-}
+};
 
-// Initialize Firebase for SSR/client
+// Initialize Firebase instance
 const app = initializeFirebaseApp();
 
-// Initialize App Check on the client-side
+// Initialize App Check with reCAPTCHA v3 on the client-side only
 if (typeof window !== 'undefined') {
   const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
   if (recaptchaSiteKey) {
@@ -48,7 +45,7 @@ if (typeof window !== 'undefined') {
   }
 }
 
-// Pass the app instance explicitly to getFirestore to ensure the correct one is used.
+// Export Firestore instance for use in the app
 const db = getFirestore(app);
 
 export { app, db };
