@@ -14,7 +14,7 @@ const initializeFirebaseApp = () => {
 
   // Ensure the API key is set directly from the config
   const apiKey = firebaseConfig.apiKey;
-  if (!apiKey || apiKey === "YOUR_API_KEY_HERE") {
+  if (!apiKey || apiKey === "YOUR_API_KEY_HERE" || apiKey === "SECRET_API_KEY") {
     // This will now catch the placeholder value.
     // In a real production environment, this key should be managed securely.
     console.error("Firebase API Key is not valid in firebaseConfig.ts. Please replace placeholder.");
@@ -30,6 +30,7 @@ const app = initializeFirebaseApp();
 
 // Initialize App Check with reCAPTCHA v3 on the client-side only
 // and only if the site key is explicitly provided in the environment.
+/*
 if (typeof window !== 'undefined') {
   const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
   if (recaptchaSiteKey) {
@@ -46,6 +47,7 @@ if (typeof window !== 'undefined') {
     console.warn("Firebase App Check: NEXT_PUBLIC_RECAPTCHA_SITE_KEY is not set. App Check will not be initialized. This is expected for local development.");
   }
 }
+*/
 
 // Export Firestore instance for use in the app
 const db = getFirestore(app);
