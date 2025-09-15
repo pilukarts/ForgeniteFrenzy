@@ -1,4 +1,3 @@
-
 // Your web app's Firebase configuration for project ark-evac
 export const firebaseConfig = {
   apiKey: "SECRET_API_KEY",
