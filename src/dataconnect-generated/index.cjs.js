@@ -3,7 +3,8 @@ const { queryRef, executeQuery, mutationRef, executeMutation, validateArgs } = r
 const connectorConfig = {
   connector: 'example',
   service: 'studio',
-  location: 'us-east1'
+  location: 'us-east1',
+  projectId: 'ark-evac',
 };
 exports.connectorConfig = connectorConfig;
 

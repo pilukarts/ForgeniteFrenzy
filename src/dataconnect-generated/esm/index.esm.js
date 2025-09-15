@@ -3,7 +3,8 @@ import { queryRef, executeQuery, mutationRef, executeMutation, validateArgs } fr
 export const connectorConfig = {
   connector: 'example',
   service: 'studio',
-  location: 'us-east1'
+  location: 'us-east1',
+  projectId: 'ark-evac',
 };
 
 export const createMovieRef = (dcOrVars, vars) => {
@@ -104,4 +105,3 @@ searchMovieRef.operationName = 'SearchMovie';
 export function searchMovie(dcOrVars, vars) {
   return executeQuery(searchMovieRef(dcOrVars, vars));
 }
-

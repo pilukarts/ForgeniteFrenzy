@@ -1,6 +1,6 @@
 import { ConnectorConfig, DataConnect, QueryRef, QueryPromise, MutationRef, MutationPromise } from 'firebase/data-connect';
 
-export const connectorConfig: ConnectorConfig;
+export const connectorConfig: ConnectorConfig & { projectId: string };
 
 export type TimestampString = string;
 export type UUIDString = string;
@@ -247,4 +247,3 @@ export const searchMovieRef: SearchMovieRef;
 
 export function searchMovie(vars?: SearchMovieVariables): QueryPromise<SearchMovieData, SearchMovieVariables>;
 export function searchMovie(dc: DataConnect, vars?: SearchMovieVariables): QueryPromise<SearchMovieData, SearchMovieVariables>;
-
