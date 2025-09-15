@@ -13,12 +13,12 @@ const initializeFirebaseApp = () => {
 
   // Ensure the API key is set directly from the config
   const apiKey = firebaseConfig.apiKey;
-  if (!apiKey || apiKey === "YOUR_API_KEY_HERE" || apiKey.includes("SECRET")) {
-    // This will now catch the placeholder value.
+  if (!apiKey || apiKey.includes("AIzaSy") === false) {
+    // This will now catch placeholder or invalid values.
     // In a real production environment, this key should be managed securely.
-    console.error("Firebase API Key is not valid in firebaseConfig.ts. Please replace placeholder.");
+    console.warn("Firebase API Key may not be valid in firebaseConfig.ts.");
     // We don't throw an error to allow the app to run in a degraded mode,
-    // but we log a critical error.
+    // but we log a warning.
   }
 
   return initializeApp(firebaseConfig);
