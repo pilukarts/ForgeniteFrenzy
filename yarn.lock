@@ -1365,7 +1365,7 @@
     node-fetch "^3.3.2"
     winston "^3.12.0"
 
-"@genkit-ai/googleai@^1.0.0":
+"@genkit-ai/googleai@1.19.2":
   version "1.19.2"
   resolved "https://registry.npmjs.org/@genkit-ai/googleai/-/googleai-1.19.2.tgz"
   integrity sha512-0/gfJkn2dpe/7WnvoWNV1nXigchXViRMijjE9pS8RFPLqJ3FW4pG07S7NKmvx45gSYUpYsBdLLtS2Hp53npXvA==
@@ -2174,6 +2174,11 @@
   version "14.2.3"
   resolved "https://registry.npmjs.org/@next/swc-linux-x64-gnu/-/swc-linux-x64-gnu-14.2.3.tgz"
   integrity sha512-ENPiNnBNDInBLyUU5ii8PMQh+4XLr4pG51tOp6aJ9xqFQ2iRI6IH0Ds2yJkAzNV1CfyagcyzPfROMViS2wOZ9w==
+
+"@next/swc-linux-x64-musl@14.2.3":
+  version "14.2.3"
+  resolved "https://registry.npmjs.org/@next/swc-linux-x64-musl/-/swc-linux-x64-musl-14.2.3.tgz"
+  integrity sha512-BTAbq0LnCbF5MtoM7I/9UeUu/8ZBY0i8SFjUMCbPDOLv+un67e2JgyN4pmgfXBwy/I+RHu8q+k+MCkDN6P9ViQ==
 
 "@noble/curves@~1.2.0", "@noble/curves@1.2.0":
   version "1.2.0"
@@ -3633,7 +3638,7 @@
   resolved "https://registry.npmjs.org/@radix-ui/rect/-/rect-1.1.0.tgz"
   integrity sha512-A9+lCBZoaMJlVKcRBz2YByCG+Cp2t6nAnMnNba+XiWxnj6r4JUFqfsgwocMBZU9LPtdxC6wB56ySYpc7LQIoJg==
 
-"@rainbow-me/rainbowkit@2.0.5":
+"@rainbow-me/rainbowkit@^2.0.5":
   version "2.0.5"
   resolved "https://registry.npmjs.org/@rainbow-me/rainbowkit/-/rainbowkit-2.0.5.tgz"
   integrity sha512-JVBgl0J1EvYXrGxDJmqEVMFrjE3gGidHyacFilKu/zJdaHFGXogsmCG51DdaU3gsas0Aqbq9kqK13qk49VSfAg==
@@ -6858,7 +6863,7 @@ genkit-cli@1.19.2:
     ora "^5.4.1"
     semver "^7.7.2"
 
-genkit@^1.0.0, genkit@^1.19.2, genkit@1.19.2:
+genkit@^1.19.2, genkit@1.19.2:
   version "1.19.2"
   resolved "https://registry.npmjs.org/genkit/-/genkit-1.19.2.tgz"
   integrity sha512-GLTMqAzq8Dw7ECW9m1sqtcM4Y6lVLLQmu5UnZ7wkIR9Sj6iRmmjOV/IJcVluMDqnJ1BdiCTB7DmMxTxmO7ndrw==
@@ -8548,7 +8553,7 @@ neo-async@^2.6.2:
   resolved "https://registry.npmjs.org/neo-async/-/neo-async-2.6.2.tgz"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-next@^15.0.0, next@14.2.3:
+next@14.2.3:
   version "14.2.3"
   resolved "https://registry.npmjs.org/next/-/next-14.2.3.tgz"
   integrity sha512-dowFkFTR8v79NPJO4QsBUtxv0g9BrS/phluVpMAt2ku7H+cbcBJlopXjkWlwxrk/xGqMemr7JkGPGemPrLLX7A==
