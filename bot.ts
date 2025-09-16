@@ -1,7 +1,7 @@
 
 import { Telegraf, Context } from 'telegraf';
 
-const TOKEN = '8275463245:AAEG-X1D8Y-xtppY_7WVJobn488WMxkYLEw';
+const TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8275463245:AAEG-X1D8Y-xtppY_7WVJobn488WMxkYLEw';
 const GAME_URL = 'https://forgeitedrenzy.online';
 
 const bot = new Telegraf(TOKEN);
@@ -14,15 +14,11 @@ bot.start((ctx: Context) => {
 
 bot.help((ctx: Context) => {
   ctx.reply(
-    `Available commands:
-/play - Play a new game session
-/profile - View your profile and stats
-/inventory - View your items or rewards
-/missions - Check your daily missions or achievements
-/leaderboard - View the leaderboard
-/shop - Access the game shop
-/friends - Invite or manage friends
-/help - Show this help message`
+    `This bot is your gateway to Alliance Forge.
+
+Available commands:
+/play - Launches the Forgeite Frenzy game.
+/help - Shows this help message.`
   );
 });
 
