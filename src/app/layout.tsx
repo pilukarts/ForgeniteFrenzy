@@ -5,21 +5,8 @@ import { GameProvider } from '@/contexts/GameContext';
 import AppLayout from '@/components/layout/AppLayout';
 import './globals.css';
 import '@rainbow-me/rainbowkit/styles.css';
+import Web3Provider from '@/contexts/Web3Provider';
 
-import { RainbowKitProvider, getDefaultConfig } from '@rainbow-me/rainbowkit';
-import { WagmiProvider } from 'wagmi';
-import { mainnet, polygon, optimism, arbitrum, base } from 'wagmi/chains';
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
-
-
-const config = getDefaultConfig({
-  appName: 'Alliance Forge',
-  projectId: 'YOUR_PROJECT_ID',
-  chains: [mainnet, polygon, optimism, arbitrum, base],
-  ssr: true, // If your dApp uses server side rendering (SSR)
-});
-
-const queryClient = new QueryClient();
 
 export const metadata: Metadata = {
   title: 'Alliance Forge: Forgeite Frenzy',
@@ -42,18 +29,14 @@ export default function RootLayout({
         <meta name="theme-color" content="#1a202c" />
       </head>
       <body className="font-body antialiased bg-background text-foreground">
-        <WagmiProvider config={config}>
-          <QueryClientProvider client={queryClient}>
-            <RainbowKitProvider>
-              <GameProvider>
-                  <AppLayout>
-                    {children}
-                  </AppLayout>
-                <Toaster />
-              </GameProvider>
-            </RainbowKitProvider>
-          </QueryClientProvider>
-        </WagmiProvider>
+        <Web3Provider>
+          <GameProvider>
+              <AppLayout>
+                {children}
+              </AppLayout>
+            <Toaster />
+          </GameProvider>
+        </Web3Provider>
       </body>
     </html>
   );
