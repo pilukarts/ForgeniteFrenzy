@@ -6,11 +6,10 @@ import AppLayout from '@/components/layout/AppLayout';
 import './globals.css';
 import '@rainbow-me/rainbowkit/styles.css';
 
-import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { RainbowKitProvider, getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import { mainnet, polygon, optimism, arbitrum, base } from 'wagmi/chains';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
-import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 
 
 const config = getDefaultConfig({
