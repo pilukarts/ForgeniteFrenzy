@@ -130,12 +130,12 @@ export default function HomePage() {
                     initial={{ x: -100, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-                    className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 flex flex-col gap-1.5 z-40"
+                    className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-40"
                   >
                       {/* Left Action Bar */}
                       <Dialog>
                         <DialogTrigger asChild>
-                            <Button variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                            <Button variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
                                 <Replace className="h-4 w-4" /> <span className="hidden md:inline">Switch Commander</span><span className="md:hidden">Switch</span>
                             </Button>
                         </DialogTrigger>
@@ -160,47 +160,47 @@ export default function HomePage() {
                         </DialogContent>
                       </Dialog>
 
-                      <Button onClick={toggleMusic} variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                      <Button onClick={toggleMusic} variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
                         {isMusicPlaying ? <Music className="h-4 w-4" /> : <Music2 className="h-4 w-4" />} {isMusicPlaying ? "Music On" : "Music Off"}
                       </Button>
                       
-                      <Card className="bg-background/70 backdrop-blur-sm p-1.5 w-full text-left">
+                      <Card className="bg-background/70 backdrop-blur-sm p-2 w-full text-left">
                         <CardContent className="p-0">
                             <p className="text-xs text-muted-foreground flex items-center gap-1"><SeasonIcon className="h-3 w-3" /> {currentSeason.objectiveResourceName}</p>
-                            <p className="text-sm font-bold text-primary">{seasonProgress.toLocaleString()}</p>
+                            <p className="font-bold text-primary">{seasonProgress.toLocaleString()}</p>
                         </CardContent>
                       </Card>
                       
-                      <Card className="bg-background/70 backdrop-blur-sm p-1.5 w-full text-left">
+                      <Card className="bg-background/70 backdrop-blur-sm p-2 w-full text-left">
                         <CardContent className="p-0">
                             <p className="text-xs text-muted-foreground flex items-center gap-1"><Trophy className={cn("h-3 w-3", leagueColorClass)} /> League</p>
-                            <p className={cn("text-sm font-bold", leagueColorClass)}>{playerProfile.league}</p>
+                            <p className={cn("font-bold", leagueColorClass)}>{playerProfile.league}</p>
                         </CardContent>
                       </Card>
                       
-                      <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
+                      <Button asChild variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
                         <a href="https://allianceforge.online" target="_blank" rel="noopener noreferrer">
                           <Globe className="h-4 w-4" /> Website
                         </a>
                       </Button>
                       
-                      <Button onClick={handleInviteClick} variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
+                      <Button onClick={handleInviteClick} variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
                         <Share2 className="h-4 w-4" /> Invite
                       </Button>
 
-                      <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
+                      <Button asChild variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
                         <a href="https://t.me/AllianceForgeHQ" target="_blank" rel="noopener noreferrer">
                            <Send className="h-4 w-4" /> Comunidad
                         </a>
                       </Button>
                       
-                      <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
+                      <Button asChild variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
                         <a href="https://t.me/ForgeiteFrenzyGame_bot" target="_blank" rel="noopener noreferrer">
                            <Gamepad2 className="h-4 w-4" /> TG Mini Game
                         </a>
                       </Button>
 
-                       <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
+                       <Button asChild variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
                         <a href="https://x.com/AllianceForgeHQ" target="_blank" rel="noopener noreferrer">
                           <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 fill-current mr-1.5"><title>X</title><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" /></svg>
                           X (Twitter)
