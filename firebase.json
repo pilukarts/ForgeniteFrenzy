@@ -8,9 +8,9 @@
       "**/node_modules/**"
     ],
     "frameworksBackend": {
-      "id": "forgeite-frenzy",
-      "region": "us-central1",
-      "project": "ark-evac"
+      "project": "ark-evac",
+      "backend": "forgeite-frenzy",
+      "location": "us-central1"
     }
   },
   "emulators": {
