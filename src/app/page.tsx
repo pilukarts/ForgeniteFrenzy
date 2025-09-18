@@ -16,8 +16,6 @@ import { motion } from 'framer-motion';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import IntroScreen from '@/components/intro/IntroScreen';
-import BottomNavBar from '@/components/navigation/BottomNavBar';
-import SidebarNav from '@/components/navigation/SidebarNav';
 
 
 const formatTimeLeft = (milliseconds: number): string => {
@@ -65,12 +63,16 @@ export default function HomePage() {
 
 
   // --- Render logic based on setup/loading state ---
+  if (isLoading) {
+    return <IntroScreen />;
+  }
+
   if (!isInitialSetupDone) {
       return <PlayerSetup />;
   }
 
   if (!playerProfile) {
-    return null; // AppLayout will handle the IntroScreen
+    return <IntroScreen />; // Should not happen if isInitialSetupDone is true, but as a fallback.
   }
   
   const handleInviteClick = async () => {
@@ -121,9 +123,7 @@ export default function HomePage() {
   
   return (
     <>
-      <div className="flex h-full">
-        <SidebarNav />
-        <div className="relative flex flex-col h-full overflow-hidden flex-grow">
+      <div className="relative flex flex-col h-full overflow-hidden flex-grow">
           {/* Background Layers */}
           <div 
               className="absolute inset-0 bg-black bg-cover bg-center animate-pan-background z-0"
@@ -253,7 +253,6 @@ export default function HomePage() {
                   }
               }
           `}</style>
-        </div>
         </div>
     </>
   );
