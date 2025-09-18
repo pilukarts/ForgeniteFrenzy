@@ -14,6 +14,7 @@ import { motion } from 'framer-motion';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import IntroScreen from '@/components/intro/IntroScreen';
+import { Card, CardContent } from '@/components/ui/card';
 
 
 const formatTimeLeft = (milliseconds: number): string => {
