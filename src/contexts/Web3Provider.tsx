@@ -5,7 +5,7 @@ import { RainbowKitProvider, getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { WagmiProvider, cookieToInitialState } from 'wagmi';
 import { mainnet, polygon, optimism, arbitrum, base } from 'wagmi/chains';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
-import { headers } from 'next/headers';
+import type { headers } from 'next/headers';
 
 const config = getDefaultConfig({
   appName: 'Alliance Forge',
@@ -18,13 +18,12 @@ const queryClient = new QueryClient();
 
 interface Web3ProviderProps {
     children: ReactNode;
+    cookie?: string | null;
 }
 
-const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
+const Web3Provider: React.FC<Web3ProviderProps> = ({ children, cookie }) => {
     
-    // In a real app, you'd use headers() from next/headers to get the cookie for SSR
-    // For this prototype, we'll pass undefined to simulate client-side state initialization
-    const initialState = cookieToInitialState(config, undefined);
+    const initialState = cookieToInitialState(config, cookie);
 
     return (
         <WagmiProvider config={config} initialState={initialState}>
