@@ -12,9 +12,9 @@ import { AURON_COST_FOR_TAP_REFILL, ALL_AVATARS, getLeagueIconAndColor } from '@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
+import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import IntroScreen from '@/components/intro/IntroScreen';
-import { Card, CardContent } from '@/components/ui/card';
 
 
 const formatTimeLeft = (milliseconds: number): string => {
@@ -30,7 +30,7 @@ export default function HomePage() {
   const { toast } = useToast();
   const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number | null>(null);
   
-  const spaceImageUrl = "https://picsum.photos/seed/spacebg/1920/1080";
+  const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   
   useEffect(() => {
     if (!playerProfile) return;
