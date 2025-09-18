@@ -26,9 +26,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   }
 
   if (!playerProfile) {
-    // This case should be handled by pages that require a profile, like HomePage.
-    // AppLayout will render its structure, but children might render a setup screen.
-    // For robustness, we can show a loader, but the page itself has the primary responsibility.
+    // PlayerSetup is now handled by HomePage, so we show the intro screen
+    // while the profile is being created for the first time.
     return <IntroScreen />;
   }
 

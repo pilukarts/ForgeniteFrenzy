@@ -1,5 +1,4 @@
 
-
 "use client";
 import React, { useState } from 'react';
 import { useGame } from '@/contexts/GameContext';
@@ -36,7 +35,10 @@ const PlayerSetup: React.FC = () => {
     }
   };
   
-  if (!playerProfile) {
+  if (playerProfile !== null && playerProfile.name !== '') {
+    // This component shouldn't be rendered if a profile is already set up.
+    // It will be unmounted by the parent component's logic.
+    // We can show a loader or nothing as a fallback.
     return <IntroScreen />;
   }
   

@@ -151,6 +151,23 @@ export default function HomePage() {
 
               <div className="flex flex-grow w-full items-center justify-center p-2 sm:p-4">
                   <motion.div 
+                    initial={{ x: -100, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
+                    className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-40"
+                  >
+                      <Button asChild variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm">
+                        <Link href="/leaderboard"><Trophy className="h-4 w-4" /></Link>
+                      </Button>
+                      <Button asChild variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm">
+                        <Link href="/upgrades"><Ship className="h-4 w-4" /></Link>
+                      </Button>
+                      <Button onClick={handleInviteClick} variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm">
+                        <Share2 className="h-4 w-4" />
+                      </Button>
+                  </motion.div>
+
+                  <motion.div 
                     initial={{ x: 100, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
@@ -177,6 +194,50 @@ export default function HomePage() {
                       )}
                   </motion.div>
               </div>
+
+              <motion.div
+                initial={{ y: 100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
+                className="absolute bottom-[70px] md:bottom-4 left-2 right-2 flex justify-between items-center z-40"
+              >
+                  <Button onClick={() => isMusicPlaying ? toggleMusic() : toggleMusic()} variant="outline" size="icon" className="bg-background/70 backdrop-blur-sm h-9 w-9">
+                      {isMusicPlaying ? <Music className="h-4 w-4" /> : <Music2 className="h-4 w-4" />}
+                  </Button>
+
+                  <Button onClick={refillTaps} variant="outline" className="bg-background/70 backdrop-blur-sm h-9">
+                      <Zap className="h-4 w-4 mr-2 text-yellow-400"/> Refill Taps ({AURON_COST_FOR_TAP_REFILL} Auron)
+                  </Button>
+                  
+                  <Dialog>
+                    <DialogTrigger asChild>
+                        <Button variant="outline" size="icon" className="bg-background/70 backdrop-blur-sm h-9 w-9">
+                            <Replace className="h-4 w-4" />
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Switch Commander</DialogTitle>
+                            <DialogDescription>
+                                Switch between available commanders. This is a cosmetic change.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="flex justify-around py-4">
+                            {ALL_AVATARS.map(avatar => (
+                                <Image 
+                                    key={avatar.url} 
+                                    src={avatar.url} 
+                                    alt={avatar.sex}
+                                    width={100} height={100} 
+                                    className={cn("rounded-full border-4 cursor-pointer", playerProfile.avatarUrl === avatar.url ? "border-primary" : "border-transparent opacity-70 hover:opacity-100")}
+                                    onClick={toggleCommander}
+                                    data-ai-hint={`${avatar.sex} commander portrait`}
+                                />
+                            ))}
+                        </div>
+                    </DialogContent>
+                  </Dialog>
+              </motion.div>
           </div>
 
           <style jsx>{`
