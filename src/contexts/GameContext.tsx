@@ -696,7 +696,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     addCoreMessage, isCoreUnlocked, coreLastInteractionTime: 0, connectWallet, handleTap, criticalTapChance, criticalTapMultiplier, comboMultiplier: comboMultiplierValue,
     comboCount, setComboCount, marketplaceItems: MARKETPLACE_ITEMS_DATA, claimQuestReward, refreshDailyQuestsIfNeeded, refillTaps, battlePassData: BATTLE_PASS_DATA,
     purchasePremiumPass, claimBattlePassReward, watchRewardedAd, rewardedAdCooldown, isWatchingAd, updatePlayerProfile, toggleCommander, resetGame, toggleMusic, isMusicPlaying,
-    isTelegramEnv, connectTelegramWallet, purchaseWithTelegramWallet, purchaseMarketplaceItem
+    isTelegramEnv, connectTelegramWallet, purchaseWithTelegramWallet,
+    purchaseMarketplaceItem
   };
 
   return <GameContext.Provider value={contextValue}>{children}</GameContext.Provider>;
@@ -707,3 +708,5 @@ export const useGame = (): GameContextType => {
   if (context === undefined) throw new Error('useGame must be used within a GameProvider');
   return context;
 };
+
+    
