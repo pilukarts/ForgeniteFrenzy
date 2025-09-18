@@ -1,4 +1,3 @@
-
 {
   "apphosting": {
     "backendId": "forgeite-frenzy",
@@ -11,6 +10,17 @@
     ],
     "alwaysDeployFromSource": true,
     "project": "ark-evac"
+  },
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      { "source": "/api/**", "function": "api" },
+      { "source": "**", "destination": "/index.html" }
+    ]
   }
 }
-
