@@ -100,43 +100,41 @@ export default function HomePage() {
   return (
     <>
       <div className="relative flex flex-col h-full overflow-hidden flex-grow">
-          {/* Background Layers */}
+          {/* Background Layer */}
           <div 
-              className="absolute inset-0 bg-black bg-cover bg-center animate-pan-background z-0"
-              style={{ backgroundImage: `url('${spaceImageUrl}')` }}
-              data-ai-hint="futuristic space background"
+              className="absolute inset-0 bg-black z-0"
           />
           
           {/* UI and Game Content */}
-          <div className="relative z-30 w-full flex flex-col flex-grow">
+          <div className="relative z-10 w-full flex flex-col flex-grow">
               <motion.div
                 initial={{ y: -100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-                className="w-full text-center my-2 md:my-4"
+                transition={{ delay: 0.2, type: 'spring', stiffness: 50 }}
+                className="w-full text-center my-2 md:my-3"
               >
-                 <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-primary font-headline">
+                 <p className="text-xl sm:text-2xl font-semibold text-primary font-headline">
                   Taps: {playerProfile.currentTaps.toLocaleString()} / {playerProfile.maxTaps.toLocaleString()}
                 </p>
                 {isOutOfTaps && timeLeftForTapRegen !== null && (
-                  <p className="text-sm sm:text-base md:text-lg text-orange-400 animate-pulse">
+                  <p className="text-sm sm:text-base text-orange-400 animate-pulse">
                     Regeneration in: {formatTimeLeft(timeLeftForTapRegen)}
                   </p>
                 )}
               </motion.div>
 
-              <div className="flex flex-grow w-full items-center justify-center p-2 sm:p-4">
-                  <motion.div 
+              <div className="flex-grow flex items-stretch justify-center p-2 gap-2">
+                {/* Left Action Bar */}
+                <motion.div 
                     initial={{ x: -100, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-                    className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-40"
-                  >
-                      {/* Left Action Bar */}
+                    className="flex flex-col gap-1.5 w-[150px] sm:w-[180px] flex-shrink-0"
+                >
                       <Dialog>
                         <DialogTrigger asChild>
                             <Button variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
-                                <Replace className="h-4 w-4" /> <span className="hidden md:inline">Switch Commander</span><span className="md:hidden">Switch</span>
+                                <Replace className="h-4 w-4" /> Switch Commander
                             </Button>
                         </DialogTrigger>
                         <DialogContent>
@@ -161,20 +159,20 @@ export default function HomePage() {
                       </Dialog>
 
                       <Button onClick={toggleMusic} variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
-                        {isMusicPlaying ? <Music className="h-4 w-4" /> : <Music2 className="h-4 w-4" />} {isMusicPlaying ? "Music On" : "Music Off"}
+                        {isMusicPlaying ? <Music className="h-4 w-4" /> : <Music2 className="h-4 w-4" />} Music {isMusicPlaying ? "On" : "Off"}
                       </Button>
                       
-                      <Card className="bg-background/70 backdrop-blur-sm p-2 w-full text-left">
+                      <Card className="bg-background/70 backdrop-blur-sm p-1.5 w-full text-left">
                         <CardContent className="p-0">
                             <p className="text-xs text-muted-foreground flex items-center gap-1"><SeasonIcon className="h-3 w-3" /> {currentSeason.objectiveResourceName}</p>
-                            <p className="font-bold text-primary">{seasonProgress.toLocaleString()}</p>
+                            <p className="text-sm font-bold text-primary">{seasonProgress.toLocaleString()}</p>
                         </CardContent>
                       </Card>
                       
-                      <Card className="bg-background/70 backdrop-blur-sm p-2 w-full text-left">
+                      <Card className="bg-background/70 backdrop-blur-sm p-1.5 w-full text-left">
                         <CardContent className="p-0">
                             <p className="text-xs text-muted-foreground flex items-center gap-1"><Trophy className={cn("h-3 w-3", leagueColorClass)} /> League</p>
-                            <p className={cn("font-bold", leagueColorClass)}>{playerProfile.league}</p>
+                            <p className={cn("text-sm font-bold", leagueColorClass)}>{playerProfile.league}</p>
                         </CardContent>
                       </Card>
                       
@@ -188,7 +186,7 @@ export default function HomePage() {
                         <Share2 className="h-4 w-4" /> Invite
                       </Button>
 
-                      <Button asChild variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
+                       <Button asChild variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
                         <a href="https://t.me/AllianceForgeHQ" target="_blank" rel="noopener noreferrer">
                            <Send className="h-4 w-4" /> Comunidad
                         </a>
@@ -202,50 +200,58 @@ export default function HomePage() {
 
                        <Button asChild variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
                         <a href="https://x.com/AllianceForgeHQ" target="_blank" rel="noopener noreferrer">
-                          <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 fill-current mr-1.5"><title>X</title><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" /></svg>
+                          <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 fill-current mr-1.5"><title>X</title><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" /></svg>
                           X (Twitter)
                         </a>
                       </Button>
-                  </motion.div>
+                </motion.div>
 
-                  <motion.div 
-                    initial={{ scale: 0.5, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.2, type: 'spring' }}
-                    className="flex-grow flex flex-col items-center justify-center"
-                  >
-                      <CommanderPortrait 
-                        onTap={() => handleTap(false)}
-                        onLogoTap={() => handleTap(true)}
-                      />
+                {/* Main Viewport */}
+                <div className="flex-grow flex flex-col items-center justify-center rounded-lg overflow-hidden relative border-2 border-border/20 bg-black">
+                     <div 
+                        className="absolute inset-0 bg-cover bg-center animate-pan-background"
+                        style={{ backgroundImage: `url('${spaceImageUrl}')` }}
+                        data-ai-hint="futuristic space background"
+                    />
+                    <motion.div 
+                        initial={{ scale: 0.5, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.2, type: 'spring' }}
+                        className="flex-grow flex flex-col items-center justify-center z-10"
+                    >
+                        <CommanderPortrait 
+                            onTap={() => handleTap(false)}
+                            onLogoTap={() => handleTap(true)}
+                        />
 
-                      {isOutOfTaps && (
-                          <motion.div
-                              initial={{ y: 50, opacity: 0 }}
-                              animate={{ y: 0, opacity: 1 }}
-                              transition={{ delay: 0.2 }}
-                              className="w-full max-w-[280px] sm:max-w-xs bg-destructive/20 border border-destructive/50 text-destructive-foreground p-2 sm:p-3 rounded-lg shadow-lg space-y-1.5 text-center mt-2 sm:mt-4 z-40"
-                          >
-                              <div className="flex items-center justify-center gap-1.5">
-                                  <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 animate-pulse" />
-                                  <p className="font-bold text-sm sm:text-base">Tap Energy Depleted!</p>
-                              </div>
-                              <p className="text-xs sm:text-sm">Wait for regeneration or refill your taps with Auron.</p>
-                          </motion.div>
-                      )}
-                  </motion.div>
+                        {isOutOfTaps && (
+                            <motion.div
+                                initial={{ y: 50, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                transition={{ delay: 0.2 }}
+                                className="w-full max-w-[280px] sm:max-w-xs bg-destructive/20 border border-destructive/50 text-destructive-foreground p-2 sm:p-3 rounded-lg shadow-lg space-y-1.5 text-center mt-2 sm:mt-4 z-40"
+                            >
+                                <div className="flex items-center justify-center gap-1.5">
+                                    <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 animate-pulse" />
+                                    <p className="font-bold text-sm sm:text-base">Tap Energy Depleted!</p>
+                                </div>
+                                <p className="text-xs sm:text-sm">Wait for regeneration or refill your taps with Auron.</p>
+                            </motion.div>
+                        )}
+                    </motion.div>
+                </div>
               </div>
 
           </div>
 
           <style jsx>{`
               @keyframes pan-background {
-                  0% { background-position: 0% 50%; }
-                  50% { background-position: 5% 50%; }
-                  100% { background-position: 0% 50%; }
+                  0% { background-position: 0% 50%; transform: scale(1.1); }
+                  50% { background-position: 5% 55%; transform: scale(1.15); }
+                  100% { background-position: 0% 50%; transform: scale(1.1); }
               }
               .animate-pan-background {
-                  animation: pan-background 90s linear infinite;
+                  animation: pan-background 120s linear infinite;
               }
           `}</style>
         </div>
