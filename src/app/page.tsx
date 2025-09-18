@@ -30,8 +30,7 @@ export default function HomePage() {
   const { toast } = useToast();
   const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number | null>(null);
   
-  const bridgeImageUrl = "https://i.imgur.com/2qaJ3H1.png";
-  const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
+  const spaceImageUrl = "https://picsum.photos/seed/spacebg/1920/1080";
   
   useEffect(() => {
     if (!playerProfile) return;
@@ -106,11 +105,6 @@ export default function HomePage() {
               className="absolute inset-0 bg-black bg-cover bg-center animate-pan-background z-0"
               style={{ backgroundImage: `url('${spaceImageUrl}')` }}
               data-ai-hint="futuristic space background"
-          />
-          <div
-              className="absolute inset-0 bg-contain bg-no-repeat bg-bottom z-10 pointer-events-none"
-              style={{ backgroundImage: `url('${bridgeImageUrl}')` }}
-              data-ai-hint="spaceship bridge interior"
           />
           
           {/* UI and Game Content */}
