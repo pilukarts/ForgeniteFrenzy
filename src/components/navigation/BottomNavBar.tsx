@@ -27,7 +27,7 @@ const BottomNavBar: React.FC = () => {
   const pathname = usePathname();
 
   return (
-    <nav className="absolute bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-t border-border/50 shadow-lg z-50 h-14 md:hidden flex items-center">
+    <nav className="absolute bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-t border-border/50 shadow-lg z-50 h-14 flex items-center">
       <ScrollArea className="w-full whitespace-nowrap">
         <div className="flex w-max justify-around items-center px-1">
           {navItems.map(({ href, label, icon: Icon }) => {
