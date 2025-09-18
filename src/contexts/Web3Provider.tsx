@@ -9,7 +9,7 @@ import { headers } from 'next/headers';
 
 const config = getDefaultConfig({
   appName: 'Alliance Forge',
-  projectId: 'YOUR_PROJECT_ID',
+  projectId: '2d3c8d3527e02bcb7d17675be8c07e5c',
   chains: [mainnet, polygon, optimism, arbitrum, base],
   ssr: true, 
 });
