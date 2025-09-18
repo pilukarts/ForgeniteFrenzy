@@ -29,6 +29,7 @@ const secondaryNavItems = [
   { href: '/nfts', label: 'NFTs', icon: GalleryHorizontal },
   { href: '/community', label: 'Community', icon: Users },
   { href: '/support', label: 'Support', icon: LifeBuoy },
+  { href: '/profile', label: 'Profile', icon: UserCircle },
   { href: '/legal/smart-contracts', label: 'Contracts', icon: FileText },
 ];
 
@@ -43,6 +44,8 @@ const socialLinks = [
 const NavLink: React.FC<{ href: string; label: string; icon: React.ElementType; isExternal?: boolean }> = ({ href, label, icon: Icon, isExternal }) => {
     const pathname = usePathname();
     const isActive = !isExternal && (href === '/' ? pathname === href : pathname.startsWith(href));
+     const isArcadeActive = (href === '/arcade' && (pathname.startsWith('/arcade') || pathname.startsWith('/minigame')));
+     const finalIsActive = isArcadeActive || (!isArcadeActive && isActive);
 
     return (
         <TooltipProvider delayDuration={100}>
@@ -54,7 +57,7 @@ const NavLink: React.FC<{ href: string; label: string; icon: React.ElementType; 
                         rel={isExternal ? "noopener noreferrer" : ""}
                         className={cn(
                           "flex items-center justify-center h-10 w-10 rounded-lg transition-colors",
-                          isActive ? "bg-primary/20 text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                          finalIsActive ? "bg-primary/20 text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"
                         )}
                     >
                         <Icon className={cn("h-6 w-6", Icon === socialLinks.find(sl => sl.label === 'X (Twitter)')?.icon ? "h-4 w-4 fill-current" : "")} />
@@ -79,7 +82,7 @@ const SidebarNav: React.FC = () => {
                 <NavLink key={item.href} {...item} />
             ))}
         </div>
-        <div className="flex-grow" />
+        <div className="my-2 h-px w-full bg-border" />
         <div className="flex flex-col gap-2">
             {secondaryNavItems.map((item) => (
                 <NavLink key={item.href} {...item} />

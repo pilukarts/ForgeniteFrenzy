@@ -1,5 +1,4 @@
 
-
 "use client";
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -66,12 +65,8 @@ export default function HomePage() {
     return <IntroScreen />;
   }
 
-  if (!isInitialSetupDone) {
+  if (!isInitialSetupDone || !playerProfile) {
       return <PlayerSetup />;
-  }
-
-  if (!playerProfile) {
-    return <IntroScreen />; // Should not happen if isInitialSetupDone is true, but as a fallback.
   }
   
   const handleInviteClick = async () => {

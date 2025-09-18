@@ -18,19 +18,17 @@ interface AppLayoutProps {
 }
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
-  const { playerProfile, connectWallet, currentSeason, isLoading } = useGame();
+  const { playerProfile, connectWallet, currentSeason, isLoading, isInitialSetupDone } = useGame();
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   
-  if (isLoading) {
+  if (isLoading || !isInitialSetupDone) {
     return <IntroScreen />;
   }
 
-  // If loading is finished but there's no profile, something is wrong.
-  // This state should be handled by the page itself (e.g., redirecting to setup or showing an error).
-  // AppLayout should not block rendering.
   if (!playerProfile) {
-    // Render a minimal layout or an error screen, but don't stop the whole app.
-    // IntroScreen is a safe bet here as it indicates a loading/transitional state.
+    // This case should be handled by pages that require a profile, like HomePage.
+    // AppLayout will render its structure, but children might render a setup screen.
+    // For robustness, we can show a loader, but the page itself has the primary responsibility.
     return <IntroScreen />;
   }
 
@@ -47,7 +45,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           animation: 'pan-background-global 90s linear infinite',
         }}
       >
-        <div className="relative flex w-full h-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-4xl xl:max-w-7xl bg-background/95 shadow-2xl overflow-hidden md:rounded-2xl border-border/20">
+        <div className="relative flex w-full h-screen max-w-7xl bg-background/95 shadow-2xl overflow-hidden md:rounded-2xl border-border/20">
           <SidebarNav />
           <div className="flex flex-col flex-grow min-h-screen">
             <header className="sticky top-0 z-50 p-2 bg-background/80 backdrop-blur-md shadow-sm border-b border-border/50">
@@ -81,7 +79,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                               if (connected && account?.address && !playerProfile.isWalletConnected) {
                                   connectWallet(account.address);
                               }
-                          }, [connected, account?.address, connectWallet]);
+                          }, [connected, account?.address, connectWallet, playerProfile.isWalletConnected]);
 
                           return (
                             <div
