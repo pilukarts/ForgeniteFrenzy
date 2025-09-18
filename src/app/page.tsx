@@ -6,15 +6,14 @@ import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
-import { Zap, AlertTriangle, Trophy, Ship, Share2, Send, Users, Globe, Coffee, Gamepad2, Replace, RefreshCw, Music, Music2 } from 'lucide-react';
+import { Zap, AlertTriangle, Trophy, Ship, Share2, Send, Users, Globe, Coffee, Gamepad2, Replace, RefreshCw, Music, Music2, Swords, Bot, Award } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import { AURON_COST_FOR_TAP_REFILL, ALL_AVATARS } from '@/lib/gameData';
+import { AURON_COST_FOR_TAP_REFILL, ALL_AVATARS, getLeagueIconAndColor } from '@/lib/gameData';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import IntroScreen from '@/components/intro/IntroScreen';
-
 
 const formatTimeLeft = (milliseconds: number): string => {
   if (milliseconds <= 0) return "00:00";
@@ -45,7 +44,6 @@ export default function HomePage() {
         setTimeLeftForTapRegen(prevTime => {
             if (prevTime === null) return null;
             if (prevTime <= 1000) {
-                // When the timer hits zero, check the profile again to see if taps were refilled.
                 if(playerProfile.currentTaps < playerProfile.maxTaps) {
                     const remaining = (playerProfile.tapsAvailableAt || 0) - Date.now();
                     return Math.max(0, remaining);
@@ -59,8 +57,6 @@ export default function HomePage() {
     return () => clearInterval(timerId);
   }, [playerProfile]);
 
-
-  // --- Render logic based on setup/loading state ---
   if (isLoading) {
     return <IntroScreen />;
   }
@@ -68,11 +64,11 @@ export default function HomePage() {
   if (!isInitialSetupDone || !playerProfile) {
       return <PlayerSetup />;
   }
-  
+
   const handleInviteClick = async () => {
     if (!playerProfile.referralCode) return;
     
-    const referralLink = `https://alliance-forge.game/?ref=${playerProfile.referralCode}`; 
+    const referralLink = `https://forgeitedrenzy.online/?ref=${playerProfile.referralCode}`; 
     const shareData = {
       title: 'Join Alliance Forge!',
       text: `Join my alliance in Forgeite Frenzy and help humanity's escape! Use my link to get a head start.`,
@@ -82,39 +78,22 @@ export default function HomePage() {
     try {
         if (navigator.share) {
             await navigator.share(shareData);
-            toast({
-                title: "Invitation Sent!",
-                description: "Your recruitment message is on its way, Commander.",
-            });
         } else {
             await navigator.clipboard.writeText(referralLink);
-            toast({
-                title: "Referral Link Copied!",
-                description: "Your invite link has been copied to the clipboard.",
-            });
+            toast({ title: "Referral Link Copied!", description: "Your invite link has been copied." });
         }
     } catch (err) {
-        console.error('Failed to share or copy referral link: ', err);
-        try {
-            await navigator.clipboard.writeText(referralLink);
-            toast({
-                title: "Referral Link Copied!",
-                description: "Sharing was canceled, so the link was copied instead.",
-            });
-        } catch (copyErr) {
-            console.error('Fallback copy failed: ', copyErr);
-            toast({
-                title: "Action Failed",
-                description: "Could not share or copy the referral link. Please try again.",
-                variant: "destructive",
-            });
-        }
+        console.error('Share/Copy failed:', err);
+        await navigator.clipboard.writeText(referralLink);
+        toast({ title: "Referral Link Copied!", description: "Sharing failed, link copied instead." });
     }
   };
 
-
   const isOutOfTaps = playerProfile.currentTaps <= 0 && timeLeftForTapRegen !== null && timeLeftForTapRegen > 0;
   
+  const seasonProgress = playerProfile.seasonProgress?.[currentSeason.id] ?? 0;
+  const { Icon: LeagueIcon, colorClass: leagueColorClass } = getLeagueIconAndColor(playerProfile.league);
+
   return (
     <>
       <div className="relative flex flex-col h-full overflow-hidden flex-grow">
@@ -139,14 +118,15 @@ export default function HomePage() {
                 transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
                 className="w-full text-center my-2 md:my-4"
               >
-                <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-primary font-headline">
-                  Taps: {playerProfile.currentTaps} / {playerProfile.maxTaps}
+                 <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-primary font-headline">
+                  Taps: {playerProfile.currentTaps.toLocaleString()} / {playerProfile.maxTaps.toLocaleString()}
                 </p>
                 {isOutOfTaps && timeLeftForTapRegen !== null && (
                   <p className="text-sm sm:text-base md:text-lg text-orange-400 animate-pulse">
                     Regeneration in: {formatTimeLeft(timeLeftForTapRegen)}
                   </p>
                 )}
+                <p className="text-base text-cyan-300 font-mono mt-1">Season Materials: {seasonProgress.toLocaleString()}</p>
               </motion.div>
 
               <div className="flex flex-grow w-full items-center justify-center p-2 sm:p-4">
@@ -154,23 +134,87 @@ export default function HomePage() {
                     initial={{ x: -100, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-                    className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-40"
+                    className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 flex flex-col gap-1.5 z-40"
                   >
-                      <Button asChild variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm">
-                        <Link href="/leaderboard"><Trophy className="h-4 w-4" /></Link>
+                      {/* Left Action Bar */}
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                            <Replace className="h-4 w-4" /> <span className="hidden md:inline">Switch</span>
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Switch Commander</DialogTitle>
+                            <DialogDescription>Select your active commander. This is a cosmetic change.</DialogDescription>
+                          </DialogHeader>
+                           <div className="flex justify-around py-4">
+                                {ALL_AVATARS.map(avatar => (
+                                    <Image 
+                                        key={avatar.url} 
+                                        src={avatar.url} 
+                                        alt={avatar.sex}
+                                        width={100} height={100} 
+                                        className={cn("rounded-full border-4 cursor-pointer", playerProfile.avatarUrl === avatar.url ? "border-primary" : "border-transparent opacity-70 hover:opacity-100")}
+                                        onClick={toggleCommander}
+                                        data-ai-hint={`${avatar.sex} commander portrait`}
+                                    />
+                                ))}
+                            </div>
+                        </DialogContent>
+                      </Dialog>
+
+                      <Button onClick={toggleMusic} variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                        {isMusicPlaying ? <Music className="h-4 w-4" /> : <Music2 className="h-4 w-4" />} <span className="hidden md:inline">Music</span>
                       </Button>
-                      <Button asChild variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm">
-                        <Link href="/upgrades"><Ship className="h-4 w-4" /></Link>
+                      
+                      <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                        <Link href="/leaderboard">
+                          <Trophy className={cn("h-4 w-4", leagueColorClass)} /> <span className="hidden md:inline">Leagues</span>
+                        </Link>
                       </Button>
-                      <Button onClick={handleInviteClick} variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm">
-                        <Share2 className="h-4 w-4" />
+                      
+                      <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                        <a href="https://allianceforge.online" target="_blank" rel="noopener noreferrer">
+                          <Globe className="h-4 w-4" /> <span className="hidden md:inline">Website</span>
+                        </a>
+                      </Button>
+                      
+                      <Button onClick={handleInviteClick} variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                        <Share2 className="h-4 w-4" /> <span className="hidden md:inline">Invite</span>
+                      </Button>
+
+                      <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                        <Link href="/community">
+                           <Users className="h-4 w-4" /> <span className="hidden md:inline">Community</span>
+                        </Link>
+                      </Button>
+                      
+                      <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                        <a href="https://t.me/ForgeiteFrenzyGame_bot" target="_blank" rel="noopener noreferrer">
+                           <Bot className="h-4 w-4" /> <span className="hidden md:inline">TG Game</span>
+                        </a>
+                      </Button>
+
+                       <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                        <a href="https://discord.gg/xnWDwGBC" target="_blank" rel="noopener noreferrer">
+                          <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 fill-current"><title>Discord</title><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.446.825-.667 1.284-1.39-1.29-3.91-1.516-3.91-1.516l-.044-.02-3.91 1.516c-.22-.46-.456-.909-.667-1.284a.074.074 0 0 0-.078-.037A19.791 19.791 0 0 0 3.682 4.37a.069.069 0 0 0-.032.023C.543 9.046-.32 13.58.1 18.058a.08.08 0 0 0 .041.058c1.837.775 3.652 1.165 5.447 1.165a12.602 12.602 0 0 0 2.378-.221.074.074 0 0 0 .063-.056c.208-1.01.43-2.06.435-2.22a.074.074_0_0_0-.045-.083c-.933-.424-1.782-1.026-2.52-1.844a.074.074 0 0 1 .018-.11c0-.009.012-.018.036-.027a10.872 10.872 0 0 1 2.982-1.108.074.074 0 0 1 .084.026c.462.632 1.053 1.253 1.725 1.799a.074.074 0 0 0 .084.026c1.13-.39 2.1-1.107 2.982-1.107.012 0 .024.009.036.027a.074.074 0 0 1 .018.11c-.738.818-1.587 1.42-2.52 1.844a.074.074_0_0_0-.045.083c.005.16.227 1.21.435 2.22a.074.074 0 0 0 .063.056c.792.264 1.582.424 2.378.221 1.795 0 3.61-.39 5.447-1.165a.08.08 0 0 0 .041-.058c.418-4.478-1.242-9.012-4.015-13.664a.069.069 0 0 0-.032-.023zM8.02 15.33c-.94 0-1.7-.76-1.7-1.7s.76-1.7 1.7-1.7 1.7.76 1.7 1.7-.76 1.7-1.7 1.7zm7.96 0c-.94 0-1.7-.76-1.7-1.7s.76-1.7 1.7-1.7 1.7.76 1.7 1.7-.76 1.7-1.7 1.7z" /></svg>
+                           <span className="hidden md:inline">Discord</span>
+                        </a>
+                      </Button>
+
+                       <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                        <a href="https://x.com/AllianceForgeHQ" target="_blank" rel="noopener noreferrer">
+                          <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 fill-current"><title>X</title><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" /></svg>
+                          <span className="hidden md:inline">X.com</span>
+                        </a>
                       </Button>
                   </motion.div>
 
                   <motion.div 
-                    initial={{ x: 100, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.2, type: 'spring' }}
                     className="flex-grow flex flex-col items-center justify-center"
                   >
                       <CommanderPortrait 
@@ -193,51 +237,30 @@ export default function HomePage() {
                           </motion.div>
                       )}
                   </motion.div>
+                   <motion.div 
+                    initial={{ x: 100, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
+                    className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 flex flex-col gap-1.5 z-40"
+                  >
+                      <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                        <Link href="/upgrades"><Ship className="h-4 w-4" /> <span className="hidden md:inline">Upgrades</span></Link>
+                      </Button>
+                       <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                        <Link href="/battle-pass"><Swords className="h-4 w-4" /> <span className="hidden md:inline">Pass</span></Link>
+                      </Button>
+                      <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                        <Link href="/quests"><Award className="h-4 w-4" /> <span className="hidden md:inline">Quests</span></Link>
+                      </Button>
+                       <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                        <Link href="/arcade"><Gamepad2 className="h-4 w-4" /> <span className="hidden md:inline">Arcade</span></Link>
+                      </Button>
+                      <Button onClick={refillTaps} variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                        <Zap className="h-4 w-4 text-yellow-400"/> <span className="hidden md:inline">Refill</span>
+                      </Button>
+                  </motion.div>
               </div>
 
-              <motion.div
-                initial={{ y: 100, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-                className="absolute bottom-[70px] md:bottom-4 left-2 right-2 flex justify-between items-center z-40"
-              >
-                  <Button onClick={() => isMusicPlaying ? toggleMusic() : toggleMusic()} variant="outline" size="icon" className="bg-background/70 backdrop-blur-sm h-9 w-9">
-                      {isMusicPlaying ? <Music className="h-4 w-4" /> : <Music2 className="h-4 w-4" />}
-                  </Button>
-
-                  <Button onClick={refillTaps} variant="outline" className="bg-background/70 backdrop-blur-sm h-9">
-                      <Zap className="h-4 w-4 mr-2 text-yellow-400"/> Refill Taps ({AURON_COST_FOR_TAP_REFILL} Auron)
-                  </Button>
-                  
-                  <Dialog>
-                    <DialogTrigger asChild>
-                        <Button variant="outline" size="icon" className="bg-background/70 backdrop-blur-sm h-9 w-9">
-                            <Replace className="h-4 w-4" />
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Switch Commander</DialogTitle>
-                            <DialogDescription>
-                                Switch between available commanders. This is a cosmetic change.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="flex justify-around py-4">
-                            {ALL_AVATARS.map(avatar => (
-                                <Image 
-                                    key={avatar.url} 
-                                    src={avatar.url} 
-                                    alt={avatar.sex}
-                                    width={100} height={100} 
-                                    className={cn("rounded-full border-4 cursor-pointer", playerProfile.avatarUrl === avatar.url ? "border-primary" : "border-transparent opacity-70 hover:opacity-100")}
-                                    onClick={toggleCommander}
-                                    data-ai-hint={`${avatar.sex} commander portrait`}
-                                />
-                            ))}
-                        </div>
-                    </DialogContent>
-                  </Dialog>
-              </motion.div>
           </div>
 
           <style jsx>{`
