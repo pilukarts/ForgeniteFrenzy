@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AURON_COST_FOR_TAP_REFILL, ALL_AVATARS, getLeagueIconAndColor } from '@/lib/gameData';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import IntroScreen from '@/components/intro/IntroScreen';
 import { Card, CardContent } from '@/components/ui/card';
