@@ -19,24 +19,12 @@ interface AppLayoutProps {
 }
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
-  const { playerProfile, connectWallet, currentSeason, isLoading, isInitialSetupDone, completeInitialSetup } = useGame();
+  const { playerProfile, connectWallet, currentSeason, isLoading } = useGame();
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   
-  if (isLoading) {
+  if (isLoading || !playerProfile) {
     return <IntroScreen />;
   }
-
-  if (!isInitialSetupDone) {
-    // If setup is not done, show the PlayerSetup component, which is now self-contained.
-    return <PlayerSetup />;
-  }
-  
-  if (!playerProfile) {
-      // This case should theoretically not be hit if isLoading is false and setup is done,
-      // but it's a good safeguard.
-      return <IntroScreen />;
-  }
-
 
   const seasonProgress = playerProfile?.seasonProgress?.[currentSeason.id] ?? 0;
 
