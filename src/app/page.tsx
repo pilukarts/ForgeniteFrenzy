@@ -6,16 +6,16 @@ import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Zap, AlertTriangle, Trophy, Ship, Share2, Users, Globe, Gamepad2, Replace, Music, Music2, Bot, Award, Send } from 'lucide-react';
+import { Zap, AlertTriangle, Trophy, Ship, Share2, Send, Users, Globe, Coffee, Gamepad2, Replace, RefreshCw, Music, Music2 } from 'lucide-react';
+import PreIntroScreen from '@/components/intro/PreIntroScreen';
 import { useToast } from "@/hooks/use-toast";
-import { getLeagueIconAndColor } from '@/lib/gameData';
+import { AURON_COST_FOR_TAP_REFILL, ALL_AVATARS } from '@/lib/gameData';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import IntroScreen from '@/components/intro/IntroScreen';
-import { ALL_AVATARS } from '@/lib/gameData';
+
 
 const formatTimeLeft = (milliseconds: number): string => {
   if (milliseconds <= 0) return "00:00";
@@ -26,7 +26,7 @@ const formatTimeLeft = (milliseconds: number): string => {
 };
 
 export default function HomePage() {
-  const { playerProfile, isLoading, isInitialSetupDone, handleTap, refillTaps, currentSeason, toggleCommander, toggleMusic, isMusicPlaying } = useGame();
+  const { playerProfile, isLoading, isInitialSetupDone, handleTap, refillTaps, currentSeason, toggleCommander, toggleMusic, isMusicPlaying, resetGame } = useGame();
   const { toast } = useToast();
   const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number | null>(null);
   
