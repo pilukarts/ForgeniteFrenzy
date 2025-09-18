@@ -6,7 +6,8 @@ import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
-import { Zap, AlertTriangle, Trophy, Ship, Share2, Users, Globe, Gamepad2, Replace, Music, Music2, Bot, Award } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Zap, AlertTriangle, Trophy, Ship, Share2, Users, Globe, Gamepad2, Replace, Music, Music2, Bot, Award, Send } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { getLeagueIconAndColor } from '@/lib/gameData';
 import Link from 'next/link';
@@ -29,6 +30,7 @@ export default function HomePage() {
   const { toast } = useToast();
   const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number | null>(null);
   
+  const bridgeImageUrl = "https://i.imgur.com/2qaJ3H1.png";
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   
   useEffect(() => {
@@ -94,6 +96,7 @@ export default function HomePage() {
   
   const seasonProgress = playerProfile.seasonProgress?.[currentSeason.id] ?? 0;
   const { Icon: LeagueIcon, colorClass: leagueColorClass } = getLeagueIconAndColor(playerProfile.league);
+  const SeasonIcon = currentSeason.objectiveResourceIcon || Ship;
 
   return (
     <>
@@ -104,12 +107,11 @@ export default function HomePage() {
               style={{ backgroundImage: `url('${spaceImageUrl}')` }}
               data-ai-hint="futuristic space background"
           />
-          <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
-              <div className="shooting-star"></div>
-              <div className="shooting-star"></div>
-              <div className="shooting-star"></div>
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none z-20" />
+          <div
+              className="absolute inset-0 bg-contain bg-no-repeat bg-bottom z-10 pointer-events-none"
+              style={{ backgroundImage: `url('${bridgeImageUrl}')` }}
+              data-ai-hint="spaceship bridge interior"
+          />
           
           {/* UI and Game Content */}
           <div className="relative z-30 w-full flex flex-col flex-grow">
@@ -127,7 +129,6 @@ export default function HomePage() {
                     Regeneration in: {formatTimeLeft(timeLeftForTapRegen)}
                   </p>
                 )}
-                <p className="text-base text-cyan-300 font-mono mt-1">Season Materials: {seasonProgress.toLocaleString()}</p>
               </motion.div>
 
               <div className="flex flex-grow w-full items-center justify-center p-2 sm:p-4">
@@ -141,7 +142,7 @@ export default function HomePage() {
                       <Dialog>
                         <DialogTrigger asChild>
                             <Button variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
-                                <Replace className="h-4 w-4" /> <span className="hidden md:inline">Switch</span>
+                                <Replace className="h-4 w-4" /> <span className="hidden md:inline">Switch Commander</span><span className="md:hidden">Switch</span>
                             </Button>
                         </DialogTrigger>
                         <DialogContent>
@@ -166,48 +167,49 @@ export default function HomePage() {
                       </Dialog>
 
                       <Button onClick={toggleMusic} variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
-                        {isMusicPlaying ? <Music className="h-4 w-4" /> : <Music2 className="h-4 w-4" />} <span className="hidden md:inline">Music</span>
+                        {isMusicPlaying ? <Music className="h-4 w-4" /> : <Music2 className="h-4 w-4" />} {isMusicPlaying ? "Music On" : "Music Off"}
                       </Button>
                       
-                      <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
-                        <Link href="/leaderboard">
-                          <Trophy className={cn("h-4 w-4", leagueColorClass)} /> <span className="hidden md:inline">Leagues</span>
-                        </Link>
-                      </Button>
+                      <Card className="bg-background/70 backdrop-blur-sm p-1.5 w-full text-left">
+                        <CardContent className="p-0">
+                            <p className="text-xs text-muted-foreground flex items-center gap-1"><SeasonIcon className="h-3 w-3" /> {currentSeason.objectiveResourceName}</p>
+                            <p className="text-sm font-bold text-primary">{seasonProgress.toLocaleString()}</p>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card className="bg-background/70 backdrop-blur-sm p-1.5 w-full text-left">
+                        <CardContent className="p-0">
+                            <p className="text-xs text-muted-foreground flex items-center gap-1"><Trophy className={cn("h-3 w-3", leagueColorClass)} /> League</p>
+                            <p className={cn("text-sm font-bold", leagueColorClass)}>{playerProfile.league}</p>
+                        </CardContent>
+                      </Card>
                       
                       <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
                         <a href="https://allianceforge.online" target="_blank" rel="noopener noreferrer">
-                          <Globe className="h-4 w-4" /> <span className="hidden md:inline">Website</span>
+                          <Globe className="h-4 w-4" /> Website
                         </a>
                       </Button>
                       
                       <Button onClick={handleInviteClick} variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
-                        <Share2 className="h-4 w-4" /> <span className="hidden md:inline">Invite</span>
+                        <Share2 className="h-4 w-4" /> Invite
                       </Button>
 
                       <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
                         <Link href="/community">
-                           <Users className="h-4 w-4" /> <span className="hidden md:inline">Community</span>
+                           <Send className="h-4 w-4" /> Comunidad
                         </Link>
                       </Button>
                       
                       <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
                         <a href="https://t.me/ForgeiteFrenzyGame_bot" target="_blank" rel="noopener noreferrer">
-                           <Bot className="h-4 w-4" /> <span className="hidden md:inline">TG Game</span>
-                        </a>
-                      </Button>
-
-                       <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
-                        <a href="https://discord.gg/xnWDwGBC" target="_blank" rel="noopener noreferrer">
-                          <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 fill-current"><title>Discord</title><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.446.825-.667 1.284-1.39-1.29-3.91-1.516-3.91-1.516l-.044-.02-3.91 1.516c-.22-.46-.456-.909-.667-1.284a.074.074 0 0 0-.078-.037A19.791 19.791 0 0 0 3.682 4.37a.069.069 0 0 0-.032.023C.543 9.046-.32 13.58.1 18.058a.08.08 0 0 0 .041.058c1.837.775 3.652 1.165 5.447 1.165a12.602 12.602 0 0 0 2.378-.221.074.074 0 0 0 .063-.056c.208-1.01.43-2.06.435-2.22a.074.074_0_0_0-.045-.083c-.933-.424-1.782-1.026-2.52-1.844a.074.074 0 0 1 .018-.11c0-.009.012-.018.036-.027a10.872 10.872 0 0 1 2.982-1.108.074.074 0 0 1 .084.026c.462.632 1.053 1.253 1.725 1.799a.074.074 0 0 0 .084.026c.113-.39 2.1-1.107 2.982-1.107.012 0 .024.009.036.027a.074.074 0 0 1 .018.11c-.738.818-1.587 1.42-2.52 1.844a.074.074_0_0_0-.045.083c.005.16.227 1.21.435 2.22a.074.074 0 0 0 .063.056c.792.264 1.582.424 2.378.221 1.795 0 3.61-.39 5.447-1.165a.08.08 0 0 0 .041-.058c.418-4.478-1.242-9.012-4.015-13.664a.069.069 0 0 0-.032-.023zM8.02 15.33c-.94 0-1.7-.76-1.7-1.7s.76-1.7 1.7-1.7 1.7.76 1.7 1.7-.76 1.7-1.7 1.7zm7.96 0c-.94 0-1.7-.76-1.7-1.7s.76-1.7 1.7-1.7 1.7.76 1.7 1.7-.76 1.7-1.7 1.7z" /></svg>
-                           <span className="hidden md:inline">Discord</span>
+                           <Gamepad2 className="h-4 w-4" /> TG Mini Game
                         </a>
                       </Button>
 
                        <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
                         <a href="https://x.com/AllianceForgeHQ" target="_blank" rel="noopener noreferrer">
-                          <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 fill-current"><title>X</title><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" /></svg>
-                          <span className="hidden md:inline">X.com</span>
+                          <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 fill-current mr-1.5"><title>X</title><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" /></svg>
+                          X (Twitter)
                         </a>
                       </Button>
                   </motion.div>
@@ -238,25 +240,6 @@ export default function HomePage() {
                           </motion.div>
                       )}
                   </motion.div>
-                   <motion.div 
-                    initial={{ x: 100, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-                    className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 flex flex-col gap-1.5 z-40"
-                  >
-                      <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
-                        <Link href="/upgrades"><Ship className="h-4 w-4" /> <span className="hidden md:inline">Upgrades</span></Link>
-                      </Button>
-                      <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
-                        <Link href="/quests"><Award className="h-4 w-4" /> <span className="hidden md:inline">Quests</span></Link>
-                      </Button>
-                       <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
-                        <Link href="/arcade"><Gamepad2 className="h-4 w-4" /> <span className="hidden md:inline">Arcade</span></Link>
-                      </Button>
-                      <Button onClick={refillTaps} variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
-                        <Zap className="h-4 w-4 text-yellow-400"/> <span className="hidden md:inline">Refill</span>
-                      </Button>
-                  </motion.div>
               </div>
 
           </div>
@@ -270,68 +253,8 @@ export default function HomePage() {
               .animate-pan-background {
                   animation: pan-background 90s linear infinite;
               }
-
-              .shooting-star {
-                  position: absolute;
-                  top: 50%;
-                  left: 50%;
-                  width: 3px;
-                  height: 3px;
-                  background: #fff;
-                  border-radius: 50%;
-                  box-shadow: 0 0 0 4px rgba(255,255,255,0.1), 0 0 0 8px rgba(255,255,255,0.1), 0 0 20px rgba(255,255,255,1);
-                  animation: animate-star 3s linear infinite;
-              }
-              .shooting-star::before {
-                  content: '';
-                  position: absolute;
-                  top: 50%;
-                  transform: translateY(-50%);
-                  width: 300px;
-                  height: 1px;
-                  background: linear-gradient(90deg, #fff, transparent);
-              }
-              
-              .shooting-star:nth-child(1) {
-                  top: 0;
-                  right: 0;
-                  left: initial;
-                  animation-delay: 0s;
-                  animation-duration: 5s;
-              }
-              .shooting-star:nth-child(2) {
-                  top: 10%;
-                  right: 400px;
-                  left: initial;
-                  animation-delay: 1.4s;
-                  animation-duration: 4.5s;
-              }
-              .shooting-star:nth-child(3) {
-                  top: 80px;
-                  right: 0;
-                  left: initial;
-                  animation-delay: 2.8s;
-                  animation-duration: 6s;
-              }
-
-
-              @keyframes animate-star {
-                  0% {
-                      transform: rotate(315deg) translateX(0);
-                      opacity: 1;
-                  }
-                  70% {
-                      opacity: 1;
-                  }
-                  100% {
-                      transform: rotate(315deg) translateX(-1500px);
-                      opacity: 0;
-                  }
-              }
           `}</style>
         </div>
     </>
   );
 }
-
-    

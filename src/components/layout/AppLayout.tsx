@@ -25,10 +25,17 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     return <IntroScreen />;
   }
   
-  if (!isInitialSetupDone || !playerProfile) {
+  if (!isInitialSetupDone) {
     // PlayerSetup will be handled by the page itself (e.g., HomePage)
     // We just render the children, which will show PlayerSetup if needed.
     return <>{children}</>;
+  }
+  
+  // A secondary check to ensure playerProfile is not null before rendering the main layout.
+  // This helps prevent crashes during the brief moment between isInitialSetupDone being true
+  // and playerProfile being fully hydrated.
+  if (!playerProfile) {
+    return <IntroScreen />;
   }
 
 
