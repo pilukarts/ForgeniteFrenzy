@@ -178,29 +178,29 @@ export default function HomePage() {
                         </CardContent>
                       </Card>
                       
-                      <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                      <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
                         <a href="https://allianceforge.online" target="_blank" rel="noopener noreferrer">
                           <Globe className="h-4 w-4" /> Website
                         </a>
                       </Button>
                       
-                      <Button onClick={handleInviteClick} variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                      <Button onClick={handleInviteClick} variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
                         <Share2 className="h-4 w-4" /> Invite
                       </Button>
 
-                      <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
-                        <Link href="/community">
+                      <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
+                        <a href="https://t.me/AllianceForgeHQ" target="_blank" rel="noopener noreferrer">
                            <Send className="h-4 w-4" /> Comunidad
-                        </Link>
+                        </a>
                       </Button>
                       
-                      <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                      <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
                         <a href="https://t.me/ForgeiteFrenzyGame_bot" target="_blank" rel="noopener noreferrer">
                            <Gamepad2 className="h-4 w-4" /> TG Mini Game
                         </a>
                       </Button>
 
-                       <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                       <Button asChild variant="outline" size="xs" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
                         <a href="https://x.com/AllianceForgeHQ" target="_blank" rel="noopener noreferrer">
                           <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 fill-current mr-1.5"><title>X</title><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" /></svg>
                           X (Twitter)
