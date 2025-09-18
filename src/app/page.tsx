@@ -143,13 +143,13 @@ export default function HomePage() {
                 initial={{ y: -100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-                className="w-full text-center my-2"
+                className="w-full text-center my-2 md:my-4"
               >
-                <p className="text-xl sm:text-2xl font-semibold text-primary font-headline">
+                <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-primary font-headline">
                   Taps: {playerProfile.currentTaps} / {playerProfile.maxTaps}
                 </p>
                 {isOutOfTaps && timeLeftForTapRegen !== null && (
-                  <p className="text-sm sm:text-base text-orange-400 animate-pulse">
+                  <p className="text-sm sm:text-base md:text-lg text-orange-400 animate-pulse">
                     Regeneration in: {formatTimeLeft(timeLeftForTapRegen)}
                   </p>
                 )}
@@ -172,13 +172,13 @@ export default function HomePage() {
                               initial={{ y: 50, opacity: 0 }}
                               animate={{ y: 0, opacity: 1 }}
                               transition={{ delay: 0.2 }}
-                              className="w-full max-w-[280px] bg-destructive/20 border border-destructive/50 text-destructive-foreground p-2 rounded-lg shadow-lg space-y-1.5 text-center mt-2 z-40"
+                              className="w-full max-w-[280px] sm:max-w-xs bg-destructive/20 border border-destructive/50 text-destructive-foreground p-2 sm:p-3 rounded-lg shadow-lg space-y-1.5 text-center mt-2 sm:mt-4 z-40"
                           >
                               <div className="flex items-center justify-center gap-1.5">
-                                  <AlertTriangle className="h-4 w-4 animate-pulse" />
+                                  <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 animate-pulse" />
                                   <p className="font-bold text-sm sm:text-base">Tap Energy Depleted!</p>
                               </div>
-                              <p className="text-xs">Wait for regeneration or refill your taps with Auron.</p>
+                              <p className="text-xs sm:text-sm">Wait for regeneration or refill your taps with Auron.</p>
                           </motion.div>
                       )}
                   </motion.div>

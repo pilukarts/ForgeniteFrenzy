@@ -51,7 +51,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         animation: 'pan-background-global 90s linear infinite',
       }}
     >
-      <div className="relative flex flex-col w-full h-full max-w-sm sm:max-w-md md:max-w-2xl lg:max-w-4xl bg-background/95 shadow-2xl overflow-hidden md:rounded-2xl border-border/20">
+      <div className="relative flex flex-col w-full h-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-4xl xl:max-w-7xl bg-background/95 shadow-2xl overflow-hidden md:rounded-2xl border-border/20">
         <div className="flex flex-col min-h-screen">
           <header className="sticky top-0 z-50 p-2 bg-background/80 backdrop-blur-md shadow-sm border-b border-border/50">
             <div className="flex items-center justify-between gap-2">
