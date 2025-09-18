@@ -21,15 +21,16 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const { playerProfile, connectWallet, currentSeason, isLoading, isInitialSetupDone } = useGame();
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   
-  if (isLoading || !isInitialSetupDone) {
+  if (isLoading) {
     return <IntroScreen />;
+  }
+  
+  if (!isInitialSetupDone || !playerProfile) {
+    // PlayerSetup will be handled by the page itself (e.g., HomePage)
+    // We just render the children, which will show PlayerSetup if needed.
+    return <>{children}</>;
   }
 
-  if (!playerProfile) {
-    // PlayerSetup is now handled by HomePage, so we show the intro screen
-    // while the profile is being created for the first time.
-    return <IntroScreen />;
-  }
 
   const seasonProgress = playerProfile.seasonProgress?.[currentSeason.id] ?? 0;
 
