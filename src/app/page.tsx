@@ -16,7 +16,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import IntroScreen from '@/components/intro/IntroScreen';
 
-
 const formatTimeLeft = (milliseconds: number): string => {
   if (milliseconds <= 0) return "00:00";
   const totalSeconds = Math.floor(milliseconds / 1000);
@@ -24,6 +23,51 @@ const formatTimeLeft = (milliseconds: number): string => {
   const seconds = totalSeconds % 60;
   return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 };
+
+const ArkCountdown = () => {
+    const calculateTimeLeft = () => {
+        const launchDate = new Date('2024-10-19T00:00:00Z');
+        const now = new Date();
+        const difference = launchDate.getTime() - now.getTime();
+        
+        let timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+
+        if (difference > 0) {
+            timeLeft = {
+                days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+                hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+                minutes: Math.floor((difference / 1000 / 60) % 60),
+                seconds: Math.floor((difference / 1000) % 60),
+            };
+        }
+        return timeLeft;
+    };
+
+    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setTimeLeft(calculateTimeLeft());
+        }, 1000);
+        return () => clearTimeout(timer);
+    });
+
+    return (
+        <Card className="bg-background/70 backdrop-blur-sm p-1.5 w-full text-center">
+            <CardContent className="p-1">
+                 <Image src="https://i.imgur.com/fs3NHC9.png" alt="Star-Forge Ark" width={150} height={100} className="mx-auto rounded-md mb-2" data-ai-hint="colony spaceship" />
+                <p className="text-xs text-muted-foreground">ARK LAUNCH IN:</p>
+                <div className="text-sm font-bold text-primary tabular-nums">
+                    <span>{String(timeLeft.days).padStart(2, '0')}d </span>
+                    <span>{String(timeLeft.hours).padStart(2, '0')}h </span>
+                    <span>{String(timeLeft.minutes).padStart(2, '0')}m </span>
+                    <span>{String(timeLeft.seconds).padStart(2, '0')}s</span>
+                </div>
+            </CardContent>
+        </Card>
+    );
+};
+
 
 export default function HomePage() {
   const { playerProfile, isLoading, isInitialSetupDone, handleTap, refillTaps, currentSeason, toggleCommander, toggleMusic, isMusicPlaying, resetGame } = useGame();
@@ -237,8 +281,17 @@ export default function HomePage() {
                         )}
                     </motion.div>
                 </div>
-              </div>
 
+                {/* Right Action Bar */}
+                 <motion.div 
+                    initial={{ x: 100, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
+                    className="flex flex-col gap-1.5 w-[150px] sm:w-[180px] flex-shrink-0"
+                >
+                    <ArkCountdown />
+                </motion.div>
+              </div>
           </div>
 
           <style jsx>{`
