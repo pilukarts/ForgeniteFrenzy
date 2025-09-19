@@ -55,7 +55,7 @@ const ArkCountdown = () => {
     return (
         <Card className="bg-background/70 backdrop-blur-sm p-1.5 w-full text-center">
             <CardContent className="p-1">
-                 <Image src="https://imgur.com/fs3NHC9.png" alt="Star-Forge Ark" width={150} height={100} className="mx-auto rounded-md mb-2" data-ai-hint="colony spaceship" />
+                 <Image src="https://i.imgur.com/fs3NHC9.png" alt="Star-Forge Ark" width={150} height={100} className="mx-auto rounded-md mb-2" data-ai-hint="colony spaceship" />
                 <p className="text-xs text-muted-foreground">ARK LAUNCH IN:</p>
                 <div className="text-sm font-bold text-primary tabular-nums">
                     <span>{String(timeLeft.days).padStart(2, '0')}d </span>
@@ -313,3 +313,5 @@ export default function HomePage() {
     </>
   );
 }
+
+    
