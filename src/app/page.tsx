@@ -58,10 +58,7 @@ const ArkCountdown = () => {
                  <Image src="https://i.imgur.com/fs3NHC9.png" alt="Star-Forge Ark" width={150} height={100} className="mx-auto rounded-md mb-2" data-ai-hint="colony spaceship" />
                 <p className="text-xs text-muted-foreground">ARK LAUNCH IN:</p>
                 <div className="text-sm font-bold text-primary tabular-nums">
-                    <span>{String(timeLeft.days).padStart(2, '0')}d </span>
-                    <span>{String(timeLeft.hours).padStart(2, '0')}h </span>
-                    <span>{String(timeLeft.minutes).padStart(2, '0')}m </span>
-                    <span>{String(timeLeft.seconds).padStart(2, '0')}s</span>
+                    <span>{String(timeLeft.days).padStart(2, '0')}d</span>
                 </div>
             </CardContent>
         </Card>
@@ -144,6 +141,13 @@ export default function HomePage() {
   return (
     <>
       <div className="relative flex flex-col h-full overflow-hidden flex-grow">
+          
+          {/* Layer 2: Shooting Stars Container */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
+              <div className="shooting-star"></div>
+              <div className="shooting-star"></div>
+              <div className="shooting-star"></div>
+          </div>
           
           {/* UI and Game Content */}
           <div className="relative z-10 w-full flex flex-col flex-grow">
@@ -307,6 +311,62 @@ export default function HomePage() {
               }
               .animate-pan-background {
                   animation: pan-background 120s linear infinite;
+              }
+              .shooting-star {
+                  position: absolute;
+                  top: 50%;
+                  left: 50%;
+                  width: 3px;
+                  height: 3px;
+                  background: #fff;
+                  border-radius: 50%;
+                  box-shadow: 0 0 0 4px rgba(255,255,255,0.1), 0 0 0 8px rgba(255,255,255,0.1), 0 0 20px rgba(255,255,255,1);
+                  animation: animate-star 3s linear infinite;
+              }
+              .shooting-star::before {
+                  content: '';
+                  position: absolute;
+                  top: 50%;
+                  transform: translateY(-50%);
+                  width: 300px;
+                  height: 1px;
+                  background: linear-gradient(90deg, #fff, transparent);
+              }
+              
+              .shooting-star:nth-child(1) {
+                  top: 0;
+                  right: 0;
+                  left: initial;
+                  animation-delay: 0s;
+                  animation-duration: 5s;
+              }
+              .shooting-star:nth-child(2) {
+                  top: 10%;
+                  right: 400px;
+                  left: initial;
+                  animation-delay: 1.4s;
+                  animation-duration: 4.5s;
+              }
+              .shooting-star:nth-child(3) {
+                  top: 80px;
+                  right: 0;
+                  left: initial;
+                  animation-delay: 2.8s;
+                  animation-duration: 6s;
+              }
+
+              @keyframes animate-star {
+                  0% {
+                      transform: rotate(315deg) translateX(0);
+                      opacity: 1;
+                  }
+                  70% {
+                      opacity: 1;
+                  }
+                  100% {
+                      transform: rotate(315deg) translateX(-1500px);
+                      opacity: 0;
+                  }
               }
           `}</style>
         </div>
