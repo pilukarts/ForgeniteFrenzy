@@ -6,8 +6,6 @@ import AppLayout from '@/components/layout/AppLayout';
 import './globals.css';
 import '@rainbow-me/rainbowkit/styles.css';
 import Web3Provider from '@/contexts/Web3Provider';
-import { headers } from 'next/headers';
-import { cookieToInitialState } from 'wagmi';
 
 
 export const metadata: Metadata = {
@@ -21,7 +19,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookie = headers().get('cookie');
   return (
     <html lang="en">
       <head>
@@ -32,7 +29,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#1a202c" />
       </head>
       <body className="font-body antialiased bg-background text-foreground">
-        <Web3Provider cookie={cookie}>
+        <Web3Provider>
           <GameProvider>
               <AppLayout>
                 {children}
