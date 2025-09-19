@@ -159,7 +159,6 @@ export default function HomePage() {
           {/* UI and Game Content */}
           <div className="relative z-10 w-full flex flex-col flex-grow">
              
-
               <div className="flex-grow flex items-stretch justify-center p-2 gap-2">
                 {/* Left Action Bar */}
                 <motion.div 
@@ -231,7 +230,7 @@ export default function HomePage() {
                       
                       <Button asChild variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
                         <a href="https://t.me/ForgeiteFrenzyGame_bot" target="_blank" rel="noopener noreferrer">
-                           <Bot className="h-4 w-4" /> TG Mini App
+                           <Bot className="h-4 w-4" /> TG Mini Game
                         </a>
                       </Button>
 
@@ -381,3 +380,4 @@ export default function HomePage() {
     </>
   );
 }
+
