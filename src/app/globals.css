@@ -166,11 +166,11 @@
 /* Link Glow */
 @keyframes link-glow {
   0%, 100% {
-    filter: drop-shadow(0 0 4px hsla(var(--primary), 0.8));
-    border-color: hsl(var(--primary)/0.9);
+    filter: drop-shadow(0 0 4px hsla(var(--primary), 0.6));
+    border-color: hsl(var(--primary)/0.8);
   }
   50% {
-    filter: drop-shadow(0 0 10px hsla(var(--primary), 1)) drop-shadow(0 0 20px hsla(var(--primary), 0.8));
+    filter: drop-shadow(0 0 8px hsla(var(--primary), 0.8)) drop-shadow(0 0 16px hsla(var(--primary), 0.6));
     border-color: hsl(var(--primary));
   }
 }
@@ -178,4 +178,3 @@
 .link-glow {
   animation: link-glow 2.5s infinite ease-in-out;
 }
-

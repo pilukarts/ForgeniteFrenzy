@@ -230,7 +230,7 @@ export default function HomePage() {
                       
                       <Button asChild variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
                         <a href="https://t.me/ForgeiteFrenzyGame_bot" target="_blank" rel="noopener noreferrer">
-                           <Bot className="h-4 w-4" /> TG Mini Game
+                           <Bot className="h-4 w-4" /> TG Mini App
                         </a>
                       </Button>
 
@@ -380,4 +380,3 @@ export default function HomePage() {
     </>
   );
 }
-
