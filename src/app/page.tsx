@@ -255,27 +255,23 @@ export default function HomePage() {
                         style={{ backgroundImage: `url('${spaceImageUrl}')` }}
                         data-ai-hint="futuristic space background"
                     />
-                    <motion.div
-                        initial={{ y: -100, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.2, type: 'spring', stiffness: 50 }}
-                        className="w-full text-center my-2 md:my-3"
-                    >
-                        <p className="text-xl sm:text-2xl font-semibold text-primary font-headline">
-                        Taps: {playerProfile.currentTaps.toLocaleString()} / {playerProfile.maxTaps.toLocaleString()}
-                        </p>
-                        {isOutOfTaps && timeLeftForTapRegen !== null && (
-                        <p className="text-sm sm:text-base text-orange-400 animate-pulse">
-                            Regeneration in: {formatTimeLeft(timeLeftForTapRegen)}
-                        </p>
-                        )}
-                    </motion.div>
                     <motion.div 
                         initial={{ scale: 0.5, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ delay: 0.2, type: 'spring' }}
-                        className="flex-grow flex flex-col items-center justify-center z-10"
+                        className="flex-grow flex flex-col items-center justify-center z-10 w-full"
                     >
+                         <div className="w-full text-center my-2 md:my-3 z-20">
+                            <p className="text-xl sm:text-2xl font-semibold text-primary font-headline">
+                            Taps: {playerProfile.currentTaps.toLocaleString()} / {playerProfile.maxTaps.toLocaleString()}
+                            </p>
+                            {isOutOfTaps && timeLeftForTapRegen !== null && (
+                            <p className="text-sm sm:text-base text-orange-400 animate-pulse">
+                                Regeneration in: {formatTimeLeft(timeLeftForTapRegen)}
+                            </p>
+                            )}
+                        </div>
+
                         <CommanderPortrait 
                             onTap={() => handleTap(false)}
                             onLogoTap={() => handleTap(true)}
