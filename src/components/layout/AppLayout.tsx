@@ -26,13 +26,10 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   }
 
   if (!isInitialSetupDone) {
-    // If setup is not done, show the PlayerSetup component, which is now self-contained.
     return <PlayerSetup />;
   }
   
   if (!playerProfile) {
-      // This case should theoretically not be hit if isLoading is false and setup is done,
-      // but it's a good safeguard.
       return <IntroScreen />;
   }
 
@@ -50,7 +47,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         animation: 'pan-background-global 90s linear infinite',
       }}
     >
-      <div className="relative flex w-full h-screen max-w-full bg-background/95 shadow-2xl overflow-hidden border-border/20">
+      <div className="relative flex w-full h-full max-w-full bg-background/95 shadow-2xl overflow-hidden border-border/20 md:h-screen">
           <div className="flex flex-col flex-grow min-h-screen">
             <header className="sticky top-0 z-50 p-2 bg-background/80 backdrop-blur-md shadow-sm border-b border-border/50">
               <div className="flex items-center justify-between gap-2">
