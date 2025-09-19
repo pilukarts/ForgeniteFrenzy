@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -58,7 +59,10 @@ const ArkCountdown = () => {
                  <Image src="https://i.imgur.com/fs3NHC9.png" alt="Star-Forge Ark" width={150} height={100} className="mx-auto rounded-md mb-2" data-ai-hint="colony spaceship" />
                 <p className="text-xs text-muted-foreground">ARK LAUNCH IN:</p>
                 <div className="text-sm font-bold text-primary tabular-nums">
-                    <span>{String(timeLeft.days).padStart(2, '0')}d</span>
+                    <span>{String(timeLeft.days).padStart(2, '0')}d </span>
+                    <span>{String(timeLeft.hours).padStart(2, '0')}h </span>
+                    <span>{String(timeLeft.minutes).padStart(2, '0')}m </span>
+                    <span>{String(timeLeft.seconds).padStart(2, '0')}s</span>
                 </div>
             </CardContent>
         </Card>
