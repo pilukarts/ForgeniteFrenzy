@@ -12,6 +12,7 @@ import IntroScreen from '../intro/IntroScreen';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import PlayerSetup from '../player/PlayerSetup';
 import PreIntroScreen from '../intro/PreIntroScreen';
+import SidebarNav from '../navigation/SidebarNav';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -39,7 +40,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   return (
     <>
     <div 
-      className="flex flex-col min-h-screen bg-background text-foreground items-center justify-center p-0"
+      className="flex flex-col min-h-screen bg-background text-foreground items-center justify-center"
       style={{
         backgroundImage: `url('${spaceImageUrl}')`,
         backgroundSize: 'cover',
@@ -47,7 +48,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         animation: 'pan-background-global 90s linear infinite',
       }}
     >
-      <div className="relative flex w-full h-full max-w-full bg-background/95 shadow-2xl overflow-hidden border-border/20 md:h-screen">
+      <div className="relative flex w-full h-full max-w-full bg-background/95 shadow-2xl overflow-hidden md:h-screen">
+          <SidebarNav />
           <div className="flex flex-col flex-grow min-h-screen">
             <header className="sticky top-0 z-50 p-2 bg-background/80 backdrop-blur-md shadow-sm border-b border-border/50">
               <div className="flex items-center justify-between gap-2">
