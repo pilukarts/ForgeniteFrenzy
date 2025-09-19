@@ -121,13 +121,13 @@ export default function HomePage() {
           {/* UI and Game Content */}
           <div className="relative z-10 w-full flex flex-grow">
              
-              <div className="flex-grow flex items-stretch justify-center gap-2">
+              <div className="flex-grow flex items-stretch justify-center">
                 {/* Left Action Bar */}
                 <motion.div 
                     initial={{ x: -100, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-                    className="hidden md:flex flex-col gap-1.5 w-[180px] flex-shrink-0"
+                    className="hidden md:flex flex-col gap-1.5 w-[180px] flex-shrink-0 mx-2"
                 >
                       <Dialog>
                         <DialogTrigger asChild>
@@ -241,7 +241,7 @@ export default function HomePage() {
                     initial={{ x: 100, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-                    className="hidden md:flex flex-col gap-1.5 w-[180px] flex-shrink-0"
+                    className="hidden md:flex flex-col gap-1.5 w-[180px] flex-shrink-0 mx-2"
                 >
                     <ArkCountdown />
                 </motion.div>
