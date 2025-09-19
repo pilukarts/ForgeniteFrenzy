@@ -334,8 +334,8 @@ export const SELECTABLE_AVATARS: SelectableAvatar[] = [
 
 // This list is only kept for backwards compatibility or reference, but is not actively used in the setup logic.
 export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; }[] = [
-    { url: "https://i.imgur.com/HWzFPP2.png", sex: 'male' }, // WITH LOGO
-    { url: "https://i.imgur.com/Anv0mBW.png", sex: 'female' }, // WITH LOGO
+    { url: "https://i.imgur.com/CDaaV86.png", sex: 'male' }, // Full Body
+    { url: "https://i.imgur.com/5PkLY8Q.png", sex: 'female' }, // Full Body
 ];
 
 
