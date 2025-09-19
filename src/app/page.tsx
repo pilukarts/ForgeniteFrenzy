@@ -100,10 +100,7 @@ export default function HomePage() {
   return (
     <>
       <div className="relative flex flex-col h-full overflow-hidden flex-grow">
-          {/* Background Layer */}
-          <div 
-              className="absolute inset-0 bg-black z-0"
-          />
+          {/* Background Layer - This is now part of the main content area */}
           
           {/* UI and Game Content */}
           <div className="relative z-10 w-full flex flex-col flex-grow">
