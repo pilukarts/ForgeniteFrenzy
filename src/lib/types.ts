@@ -123,7 +123,7 @@ export interface LeaderboardEntry {
 }
 
 export interface CoreMessage {
-  type: 'briefing' | 'progress_update' | 'lore_snippet' | 'advice' | 'system_alert';
+  type: 'briefing' | 'progress_update' | 'lore_snippet' | 'advice' | 'system_alert' | 'question' | 'answer';
   content: string;
   timestamp: number;
 }

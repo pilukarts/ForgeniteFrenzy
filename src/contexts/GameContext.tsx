@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode, useRef } from 'react';
@@ -8,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { getCoreBriefing } from '@/ai/flows/core-briefings';
 import { getCoreLoreSnippet } from '@/ai/flows/core-lore-snippets';
 import { getCoreProgressUpdate } from '@/ai/flows/core-progress-updates';
+import { askCore, CoreAskInput } from '@/ai/flows/core-ask-question';
 import { syncPlayerProfileInFirestore } from '@/lib/firestore';
 
 // --- Constants ---
@@ -60,6 +60,7 @@ export interface GameContextType {
   isTelegramEnv: boolean;
   connectTelegramWallet: () => void;
   purchaseWithTelegramWallet: (pkg: { amount: number; price: number }) => void;
+  askCore: (question: string) => Promise<void>;
 }
 
 // --- Context Creation ---
@@ -669,6 +670,32 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   }, [isTelegramEnv, playerProfile, toast]);
 
+  const askCore = useCallback(async (question: string) => {
+    if (!playerProfile) return;
+
+    addCoreMessage({ type: 'question', content: question });
+
+    try {
+      const input: CoreAskInput = {
+        question,
+        playerContext: {
+          level: playerProfile.level,
+          points: playerProfile.points,
+          rankTitle: playerProfile.rankTitle,
+          season: currentSeason.title,
+          seasonObjective: currentSeason.coreBriefingObjective,
+        },
+      };
+      const response = await askCore(input);
+      addCoreMessage({ type: 'answer', content: response.answer });
+    } catch (error) {
+      console.error('Error asking C.O.R.E.:', error);
+      addCoreMessage({
+        type: 'system_alert',
+        content: 'Connection to C.O.R.E. data stream lost. Please try again.',
+      });
+    }
+  }, [playerProfile, currentSeason, addCoreMessage]);
 
   useEffect(() => {
     if (playerProfile && isInitialSetupDone) {
@@ -697,7 +724,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     comboCount, setComboCount, marketplaceItems: MARKETPLACE_ITEMS_DATA, claimQuestReward, refreshDailyQuestsIfNeeded, refillTaps, battlePassData: BATTLE_PASS_DATA,
     purchasePremiumPass, claimBattlePassReward, watchRewardedAd, rewardedAdCooldown, isWatchingAd, updatePlayerProfile, toggleCommander, resetGame, toggleMusic, isMusicPlaying,
     isTelegramEnv, connectTelegramWallet, purchaseWithTelegramWallet,
-    purchaseMarketplaceItem
+    purchaseMarketplaceItem,
+    askCore,
   };
 
   return <GameContext.Provider value={contextValue}>{children}</GameContext.Provider>;
@@ -708,5 +736,3 @@ export const useGame = (): GameContextType => {
   if (context === undefined) throw new Error('useGame must be used within a GameProvider');
   return context;
 };
-
-    

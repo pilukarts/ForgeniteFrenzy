@@ -1,17 +1,20 @@
-
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Hexagon, MessageSquare, X } from 'lucide-react';
+import { Hexagon, MessageSquare, X, Send, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { CoreMessage, PlayerProfile } from '@/lib/types'; // Import PlayerProfile
 
 const CoreDisplay: React.FC = () => {
-  const { playerProfile, coreMessages, isCoreUnlocked } = useGame();
+  const { playerProfile, coreMessages, isCoreUnlocked, askCore } = useGame();
   const [isOpen, setIsOpen] = useState(false);
   const [hasUnread, setHasUnread] = useState(false);
+  const [question, setQuestion] = useState('');
+  const [isAsking, setIsAsking] = useState(false);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const prevCoreMessagesLength = useRef(coreMessages.length);
 
@@ -34,6 +37,25 @@ const CoreDisplay: React.FC = () => {
   if (!isCoreUnlocked || !playerProfile) {
     return null; 
   }
+
+  const handleAskQuestion = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!question.trim() || isAsking) return;
+    
+    setIsAsking(true);
+    const questionToAsk = question;
+    setQuestion('');
+
+    try {
+      await askCore(questionToAsk);
+    } catch (error) {
+      console.error("Failed to get answer from C.O.R.E.", error);
+      // Optionally add an error message back to the chat
+    } finally {
+      setIsAsking(false);
+    }
+  };
+
 
   const toggleCore = () => {
     setIsOpen(!isOpen);
@@ -101,9 +123,9 @@ const CoreDisplay: React.FC = () => {
 
         <ScrollArea className="flex-grow p-3 space-y-3">
           {coreMessages.map((msg, index) => (
-            <div key={index} className="mb-3 p-2.5 rounded-md bg-card/60 shadow-sm last:mb-0">
-              <p className={`text-xs font-medium ${getVoiceColor(playerProfile.coreVoiceProtocol)} mb-1`}>
-                C.O.R.E. [{msg.type.replace('_', ' ').toUpperCase()}]:
+            <div key={index} className={cn("mb-3 p-2.5 rounded-md shadow-sm last:mb-0", msg.type === 'question' ? 'bg-primary/10' : 'bg-card/60')}>
+              <p className={cn("text-xs font-medium mb-1", msg.type === 'question' ? 'text-primary' : getVoiceColor(playerProfile.coreVoiceProtocol))}>
+                 {msg.type === 'question' ? <> <User className="inline h-3 w-3 mr-1"/> Commander</> : <>C.O.R.E. [{msg.type.replace('_', ' ').toUpperCase()}]</>}:
               </p>
               <p className="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed">{msg.content}</p>
               <p className="text-xs text-muted-foreground mt-1.5 text-right">
@@ -120,11 +142,23 @@ const CoreDisplay: React.FC = () => {
             </div>
           )}
         </ScrollArea>
+
+        <form onSubmit={handleAskQuestion} className="p-3 border-t border-[hsla(var(--dynamic-core-color)/0.3)] flex items-center gap-2">
+            <Input 
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder="Ask C.O.R.E. anything..."
+              className="bg-input/70 border-border/50 focus:ring-[hsl(var(--dynamic-core-color))]"
+              disabled={isAsking}
+              autoComplete="off"
+            />
+            <Button type="submit" size="icon" disabled={!question.trim() || isAsking}>
+                <Send className="h-4 w-4" />
+            </Button>
+        </form>
       </div>
     </>
   );
 };
 
 export default CoreDisplay;
-
-    
