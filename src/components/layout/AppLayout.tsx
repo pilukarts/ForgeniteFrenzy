@@ -1,3 +1,4 @@
+
 "use client";
 import React, { ReactNode, useEffect } from 'react';
 import BottomNavBar from '../navigation/BottomNavBar';
@@ -48,7 +49,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         animation: 'pan-background-global 90s linear infinite',
       }}
     >
-      <div className="relative flex w-full h-full max-w-screen-xl mx-auto bg-background/95 shadow-2xl overflow-hidden md:h-screen">
+      <div className="relative flex w-full h-full max-w-full bg-background/95 shadow-2xl overflow-hidden md:h-screen">
           <SidebarNav />
           <div className="flex flex-col flex-grow min-h-screen">
             <header className="sticky top-0 z-50 p-2 bg-background/80 backdrop-blur-md shadow-sm border-b border-border/50">
