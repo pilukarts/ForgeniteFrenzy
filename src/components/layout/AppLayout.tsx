@@ -1,12 +1,12 @@
 
 "use client";
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import BottomNavBar from '../navigation/BottomNavBar';
 import PlayerProfileHeader from '@/components/player/PlayerProfileHeader';
 import ResourceDisplay from '@/components/game/ResourceDisplay';
 import { Button } from '@/components/ui/button';
 import { useGame } from '@/contexts/GameContext';
-import { Wallet, CreditCard } from 'lucide-react'; 
+import { Wallet, CreditCard, Zap, AlertTriangle } from 'lucide-react'; 
 import CoreDisplay from '@/components/core/CoreDisplay';
 import Link from 'next/link';
 import IntroScreen from '../intro/IntroScreen';
@@ -14,9 +14,70 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import PlayerSetup from '../player/PlayerSetup';
 import PreIntroScreen from '../intro/PreIntroScreen';
 import SidebarNav from '../navigation/SidebarNav';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface AppLayoutProps {
   children: ReactNode;
+}
+
+const formatTimeLeft = (milliseconds: number): string => {
+  if (milliseconds <= 0) return "00:00:00";
+  const totalSeconds = Math.floor(milliseconds / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+};
+
+const TapStatusCard: React.FC = () => {
+    const { playerProfile } = useGame();
+    const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number | null>(null);
+
+    useEffect(() => {
+        if (!playerProfile) return;
+
+        const calculateInitialTime = () => {
+            const remaining = (playerProfile.tapsAvailableAt || 0) - Date.now();
+            setTimeLeftForTapRegen(Math.max(0, remaining));
+        };
+
+        calculateInitialTime();
+
+        const timerId = setInterval(() => {
+            setTimeLeftForTapRegen(prevTime => {
+                if (prevTime === null) return null;
+                if (prevTime <= 1000) {
+                    if (playerProfile.currentTaps < playerProfile.maxTaps) {
+                        const remaining = (playerProfile.tapsAvailableAt || 0) - Date.now();
+                        return Math.max(0, remaining);
+                    }
+                    return 0;
+                }
+                return prevTime - 1000;
+            });
+        }, 1000);
+
+        return () => clearInterval(timerId);
+    }, [playerProfile]);
+
+    if (!playerProfile) return null;
+
+    const isOutOfTaps = playerProfile.currentTaps <= 0 && timeLeftForTapRegen !== null && timeLeftForTapRegen > 0;
+
+    return (
+        <Card className="bg-card/50 shadow-sm flex-grow text-center p-1">
+            <CardContent className="p-0">
+                <p className="text-sm font-semibold text-primary font-headline flex items-center justify-center gap-1">
+                    <Zap className="h-4 w-4"/> Taps: {playerProfile.currentTaps.toLocaleString()} / {playerProfile.maxTaps.toLocaleString()}
+                </p>
+                 {isOutOfTaps && timeLeftForTapRegen !== null && (
+                    <p className="text-xs text-orange-400 animate-pulse">
+                        Regen in: {formatTimeLeft(timeLeftForTapRegen)}
+                    </p>
+                )}
+            </CardContent>
+        </Card>
+    );
 }
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
@@ -55,6 +116,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             <header className="sticky top-0 z-50 p-2 bg-background/80 backdrop-blur-md shadow-sm border-b border-border/50">
               <div className="flex items-center justify-between gap-2">
                 <PlayerProfileHeader profile={playerProfile} />
+                <TapStatusCard />
                 <div className="flex items-start gap-1">
                   <ResourceDisplay 
                     seasonResourceAmount={seasonProgress}

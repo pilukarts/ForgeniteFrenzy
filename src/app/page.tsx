@@ -76,37 +76,9 @@ const ArkCountdown = () => {
 export default function HomePage() {
   const { playerProfile, isLoading, isInitialSetupDone, handleTap, refillTaps, currentSeason, toggleCommander, toggleMusic, isMusicPlaying, resetGame } = useGame();
   const { toast } = useToast();
-  const [timeLeftForTapRegen, setTimeLeftForTapRegen] = useState<number | null>(null);
   
   const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
   
-  useEffect(() => {
-    if (!playerProfile) return;
-  
-    const calculateInitialTime = () => {
-        const remaining = (playerProfile.tapsAvailableAt || 0) - Date.now();
-        setTimeLeftForTapRegen(Math.max(0, remaining));
-    };
-
-    calculateInitialTime();
-
-    const timerId = setInterval(() => {
-        setTimeLeftForTapRegen(prevTime => {
-            if (prevTime === null) return null;
-            if (prevTime <= 1000) {
-                if(playerProfile.currentTaps < playerProfile.maxTaps) {
-                    const remaining = (playerProfile.tapsAvailableAt || 0) - Date.now();
-                    return Math.max(0, remaining);
-                }
-                return 0;
-            }
-            return prevTime - 1000;
-        });
-    }, 1000);
-
-    return () => clearInterval(timerId);
-  }, [playerProfile]);
-
   if (isLoading) {
     return <IntroScreen />;
   }
@@ -139,8 +111,6 @@ export default function HomePage() {
     }
   };
 
-  const isOutOfTaps = playerProfile.currentTaps <= 0 && timeLeftForTapRegen !== null && timeLeftForTapRegen > 0;
-  
   const seasonProgress = playerProfile.seasonProgress?.[currentSeason.id] ?? 0;
   const { Icon: LeagueIcon, colorClass: leagueColorClass } = getLeagueIconAndColor(playerProfile.league);
   const SeasonIcon = currentSeason.objectiveResourceIcon || Ship;
@@ -148,18 +118,10 @@ export default function HomePage() {
   return (
     <>
       <div className="relative flex flex-col h-full overflow-hidden flex-grow">
-          
-          {/* Layer 2: Shooting Stars Container */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
-              <div className="shooting-star"></div>
-              <div className="shooting-star"></div>
-              <div className="shooting-star"></div>
-          </div>
-          
           {/* UI and Game Content */}
-          <div className="relative z-10 w-full flex flex-col flex-grow">
+          <div className="relative z-10 w-full flex flex-grow">
              
-              <div className="flex-grow flex items-stretch justify-center p-2 gap-2">
+              <div className="flex-grow flex items-stretch justify-center gap-2">
                 {/* Left Action Bar */}
                 <motion.div 
                     initial={{ x: -100, opacity: 0 }}
@@ -249,48 +211,28 @@ export default function HomePage() {
                 </motion.div>
 
                 {/* Main Viewport */}
-                <div className="flex-grow flex flex-col items-center justify-center rounded-lg overflow-hidden relative border-2 border-border/20 bg-black">
+                <div className="flex-grow flex flex-col items-center justify-center rounded-lg overflow-hidden relative border-2 border-border/20 bg-black max-w-md mx-auto">
                      <div 
                         className="absolute inset-0 bg-cover bg-center animate-pan-background"
                         style={{ backgroundImage: `url('${spaceImageUrl}')` }}
                         data-ai-hint="futuristic space background"
                     />
+                    {/* Shooting Stars Container */}
+                    <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
+                        <div className="shooting-star"></div>
+                        <div className="shooting-star"></div>
+                        <div className="shooting-star"></div>
+                    </div>
                     <motion.div 
                         initial={{ scale: 0.5, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ delay: 0.2, type: 'spring' }}
-                        className="flex-grow flex flex-col items-center justify-center z-10 w-full"
+                        className="flex-grow flex flex-col items-center justify-center z-20 w-full"
                     >
-                         <div className="w-full text-center my-2 md:my-3 z-20">
-                            <p className="text-xl sm:text-2xl font-semibold text-primary font-headline">
-                            Taps: {playerProfile.currentTaps.toLocaleString()} / {playerProfile.maxTaps.toLocaleString()}
-                            </p>
-                            {isOutOfTaps && timeLeftForTapRegen !== null && (
-                            <p className="text-sm sm:text-base text-orange-400 animate-pulse">
-                                Regeneration in: {formatTimeLeft(timeLeftForTapRegen)}
-                            </p>
-                            )}
-                        </div>
-
                         <CommanderPortrait 
                             onTap={() => handleTap(false)}
                             onLogoTap={() => handleTap(true)}
                         />
-
-                        {isOutOfTaps && (
-                            <motion.div
-                                initial={{ y: 50, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                transition={{ delay: 0.2 }}
-                                className="w-full max-w-[280px] sm:max-w-xs bg-destructive/20 border border-destructive/50 text-destructive-foreground p-2 sm:p-3 rounded-lg shadow-lg space-y-1.5 text-center mt-2 sm:mt-4 z-40"
-                            >
-                                <div className="flex items-center justify-center gap-1.5">
-                                    <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 animate-pulse" />
-                                    <p className="font-bold text-sm sm:text-base">Tap Energy Depleted!</p>
-                                </div>
-                                <p className="text-xs sm:text-sm">Wait for regeneration or refill your taps with Auron.</p>
-                            </motion.div>
-                        )}
                     </motion.div>
                 </div>
 
