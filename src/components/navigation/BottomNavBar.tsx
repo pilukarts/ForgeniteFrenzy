@@ -35,7 +35,7 @@ const BottomNavBar: React.FC = () => {
   const allItems = [...navItems, ...socialLinks];
 
   return (
-    <nav className="absolute bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-t border-border/50 shadow-lg z-50 h-14 flex items-center">
+    <nav className="md:hidden absolute bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-t border-border/50 shadow-lg z-50 h-14 flex items-center">
       <ScrollArea className="w-full whitespace-nowrap">
         <div className="flex w-max justify-around items-center px-1">
           {allItems.map(({ href, label, icon: Icon }) => {
