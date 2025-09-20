@@ -189,9 +189,9 @@ const LevelMap: React.FC = () => {
                           />
                       </motion.div>
 
-                      {StageEndComponent && (
+                      {StageEndComponent && level !== TOTAL_LEVELS && level < endLevel && (
                         <div className="text-center my-8" style={{'--stage-color-primary': StageEndComponent.colors.primary} as React.CSSProperties}>
-                          <h2 className="text-4xl sm:text-5xl font-headline tracking-widest text-[hsl(var(--stage-color-primary))]">
+                          <h2 className="text-4xl sm:text-5xl font-headline tracking-widest text-[hsl(var(--stage-color-primary))] opacity-80">
                             {StageEndComponent.name}
                           </h2>
                           <p className="text-muted-foreground text-sm">Levels {StageEndComponent.startLevel}-{StageEndComponent.endLevel}</p>
