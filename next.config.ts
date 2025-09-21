@@ -32,6 +32,17 @@ const nextConfig: NextConfig = {
       }
     ],
   },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        "pino": false,
+        "pino-pretty": false,
+      }
+    }
+    config.externals.push("pino-pretty");
+    return config;
+  }
 };
 
 export default nextConfig;
