@@ -1,6 +1,6 @@
 "use client";
 import Link from 'next/link';
-import { Home, ChevronsUp, Trophy, Users, ShoppingCart, MessagesSquare, ListChecks, Swords, Map, Gamepad2, FileText, UserCircle, GalleryHorizontal, LifeBuoy, Info, Replace, Music, Music2, RefreshCw, Globe, Share2, Send, Bot } from 'lucide-react';
+import { Home, ChevronsUp, Trophy, Users, ShoppingCart, MessagesSquare, ListChecks, Swords, Map, Gamepad2, FileText, UserCircle, GalleryHorizontal, LifeBuoy, Info, Globe, Send, Bot } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
@@ -15,6 +15,9 @@ const navItems = [
   { href: '/marketplace', label: 'Shop', icon: ShoppingCart },
   { href: '/arcade', label: 'Arcade', icon: Gamepad2 },
   { href: '/alliance-chat', label: 'Chat', icon: MessagesSquare },
+];
+
+const secondaryNavItems = [
   { href: '/nfts', label: 'NFTs', icon: GalleryHorizontal },
   { href: '/community', label: 'Community', icon: Users },
   { href: '/support', label: 'Support', icon: LifeBuoy },
@@ -32,7 +35,7 @@ const socialLinks = [
 
 const BottomNavBar: React.FC = () => {
   const pathname = usePathname();
-  const allItems = [...navItems, ...socialLinks];
+  const allItems = [...navItems, ...secondaryNavItems, ...socialLinks];
 
   return (
     <nav className="md:hidden absolute bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-t border-border/50 shadow-lg z-50 h-14 flex items-center">
@@ -52,7 +55,7 @@ const BottomNavBar: React.FC = () => {
                   finalIsActive ? "text-primary font-semibold bg-primary/10" : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                <Icon className={cn("h-5 w-5 mb-0.5", finalIsActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground", label === 'Discord' || label === 'X (Twitter)' ? 'fill-current' : '')} />
+                <Icon className={cn("h-5 w-5 mb-0.5", finalIsActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground", label === 'Discord' || label === 'X (Twitter)' ? 'fill-current h-4 w-4' : '')} />
                 {label}
               </div>
             );
