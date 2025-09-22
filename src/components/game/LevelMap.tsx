@@ -11,7 +11,6 @@ import { useToast } from '@/hooks/use-toast';
 import { LEVEL_STAGES } from '@/lib/gameData';
 
 const LEVELS_BEFORE = 10; // How many past levels to show
-const LEVELS_AFTER = 100; // How many upcoming levels to show
 const TOTAL_LEVELS = 50000; // The total number of levels in this stage
 
 
@@ -144,7 +143,19 @@ const LevelMap: React.FC = () => {
   };
 
   const startLevel = Math.max(1, currentPlayerLevel - LEVELS_BEFORE);
-  const endLevel = Math.min(TOTAL_LEVELS, currentPlayerLevel + LEVELS_AFTER);
+  const currentStage = getStageForLevel(currentPlayerLevel);
+  const nextStage = LEVEL_STAGES.find(s => s.startLevel > currentStage.endLevel);
+  const endLevelBuffer = 100; // Render at least 100 levels ahead
+
+  // Dynamically calculate the end level to ensure we show a good amount of future levels
+  let endLevel = currentPlayerLevel + endLevelBuffer;
+  if (nextStage) {
+    // If the next stage is within the buffer, extend the render distance to the end of that next stage
+    if (nextStage.startLevel < endLevel) {
+      endLevel = Math.max(endLevel, nextStage.endLevel);
+    }
+  }
+  endLevel = Math.min(TOTAL_LEVELS, endLevel);
   
   const levelsToRender = Array.from({ length: (endLevel - startLevel) + 1 }, (_, i) => startLevel + i);
 
@@ -190,7 +201,7 @@ const LevelMap: React.FC = () => {
                           />
                       </motion.div>
 
-                      {StageEndComponent && level !== TOTAL_LEVELS && level < endLevel && (
+                      {StageEndComponent && level !== TOTAL_LEVELS && (
                         <div className="text-center my-8" style={{'--stage-color-primary': StageEndComponent.colors.primary} as React.CSSProperties}>
                           <h2 className="text-4xl sm:text-5xl font-headline tracking-widest text-[hsl(var(--stage-color-primary))] opacity-80">
                             {StageEndComponent.name}
