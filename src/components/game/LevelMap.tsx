@@ -123,8 +123,8 @@ const LevelMap: React.FC = () => {
     return <div className="flex items-center justify-center h-full"><p className="text-muted-foreground">Loading player data...</p></div>;
   }
 
-  const { level: currentPlayerLevel, commanderSex } = playerProfile;
-  const commanderImgSrc = commanderSex === 'male' ? "https://i.imgur.com/gB3i4OQ.png" : "https://i.imgur.com/J3tG1e4.png";
+  const { level: currentPlayerLevel, commanderSex, portraitUrl } = playerProfile;
+  const commanderImgSrc = portraitUrl;
   const commanderAlt = commanderSex === 'male' ? "Male Commander" : "Female Commander";
   const commanderDataAiHint = commanderSex === 'male' ? "male soldier portrait" : "female soldier portrait";
 
