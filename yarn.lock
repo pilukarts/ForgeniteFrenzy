@@ -422,10 +422,10 @@
   resolved "https://registry.npmjs.org/@emotion/weak-memoize/-/weak-memoize-0.4.0.tgz"
   integrity sha512-snKqtPW01tN0ui7yu9rGv69aJXr/a/Ywvl11sUjNtEcRc+ng/mQriFL0wLXMef74iHa/EkftbDzU9F8iFbH+zg==
 
-"@esbuild/linux-x64@0.25.9":
-  version "0.25.9"
-  resolved "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.25.9.tgz"
-  integrity sha512-iSwByxzRe48YVkmpbgoxVzn76BXjlYFXC7NvLYq+b+kDjyyk30J0JY47DIn8z1MO3K0oSl9fZoRmZPQI4Hklzg==
+"@esbuild/linux-x64@0.25.10":
+  version "0.25.10"
+  resolved "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.25.10.tgz"
+  integrity sha512-QSX81KhFoZGwenVyPoberggdW1nrQZSvfVDAIUXr3WqLRZGZqWk/P4T8p2SP+de2Sr5HPcvjhcJzEiulKgnxtA==
 
 "@ethereumjs/common@^3.2.0":
   version "3.2.0"
@@ -773,15 +773,7 @@
     "@firebase/util" "1.10.0"
     tslib "^2.1.0"
 
-"@firebase/database-types@^1.0.6":
-  version "1.0.15"
-  resolved "https://registry.npmjs.org/@firebase/database-types/-/database-types-1.0.15.tgz"
-  integrity sha512-XWHJ0VUJ0k2E9HDMlKxlgy/ZuTa9EvHCGLjaKSUvrQnwhgZuRU5N3yX6SZ+ftf2hTzZmfRkv+b3QRvGg40bKNw==
-  dependencies:
-    "@firebase/app-types" "0.9.3"
-    "@firebase/util" "1.12.1"
-
-"@firebase/database-types@1.0.16":
+"@firebase/database-types@^1.0.6", "@firebase/database-types@1.0.16":
   version "1.0.16"
   resolved "https://registry.npmjs.org/@firebase/database-types/-/database-types-1.0.16.tgz"
   integrity sha512-xkQLQfU5De7+SPhEGAXFBnDryUWhhlFXelEg2YeZOQMCdoe7dL64DDAd77SQsR+6uoXIZY5MB4y/inCs4GTfcw==
@@ -1230,14 +1222,7 @@
   dependencies:
     tslib "^2.1.0"
 
-"@firebase/util@1.12.1", "@firebase/util@1.x":
-  version "1.12.1"
-  resolved "https://registry.npmjs.org/@firebase/util/-/util-1.12.1.tgz"
-  integrity sha512-zGlBn/9Dnya5ta9bX/fgEoNC3Cp8s6h+uYPYaDieZsFOAdHP/ExzQ/eaDgxD3GOROdPkLKpvKY0iIzr9adle0w==
-  dependencies:
-    tslib "^2.1.0"
-
-"@firebase/util@1.13.0":
+"@firebase/util@1.13.0", "@firebase/util@1.x":
   version "1.13.0"
   resolved "https://registry.npmjs.org/@firebase/util/-/util-1.13.0.tgz"
   integrity sha512-0AZUyYUfpMNcztR5l09izHwXkZpghLgCUaAGjtMwXnCg3bj4ml5VgiwqOMOxJ+Nw4qN/zJAaOQBcJ7KGkWStqQ==
@@ -1292,6 +1277,22 @@
   resolved "https://registry.npmjs.org/@floating-ui/utils/-/utils-0.2.10.tgz"
   integrity sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==
 
+"@genkit-ai/ai@1.18.0":
+  version "1.18.0"
+  resolved "https://registry.npmjs.org/@genkit-ai/ai/-/ai-1.18.0.tgz"
+  integrity sha512-/rkMAtn3voQ3MhvGult863mrDRf0p86koyYk5Rfh8DSPffy/ir2QVzT1UCmNP/VaXEZig9+vfKh//8COsygUVg==
+  dependencies:
+    "@genkit-ai/core" "1.18.0"
+    "@opentelemetry/api" "^1.9.0"
+    "@types/node" "^20.11.19"
+    colorette "^2.0.20"
+    dotprompt "^1.1.1"
+    json5 "^2.2.3"
+    node-fetch "^3.3.2"
+    partial-json "^0.1.7"
+    uri-templates "^0.2.0"
+    uuid "^10.0.0"
+
 "@genkit-ai/ai@1.19.2":
   version "1.19.2"
   resolved "https://registry.npmjs.org/@genkit-ai/ai/-/ai-1.19.2.tgz"
@@ -1307,6 +1308,33 @@
     partial-json "^0.1.7"
     uri-templates "^0.2.0"
     uuid "^10.0.0"
+
+"@genkit-ai/core@1.18.0":
+  version "1.18.0"
+  resolved "https://registry.npmjs.org/@genkit-ai/core/-/core-1.18.0.tgz"
+  integrity sha512-meuc5A4cJWI+vMXeaELLRKDx+vytyvVvBSjD6pz6tD66j5H6I25Y9iGmM/UIAHqbrarM5Kl4bKLI8MtD+QSXdA==
+  dependencies:
+    "@opentelemetry/api" "^1.9.0"
+    "@opentelemetry/context-async-hooks" "~1.25.0"
+    "@opentelemetry/core" "~1.25.0"
+    "@opentelemetry/exporter-jaeger" "^1.25.0"
+    "@opentelemetry/sdk-metrics" "~1.25.0"
+    "@opentelemetry/sdk-node" "^0.52.0"
+    "@opentelemetry/sdk-trace-base" "~1.25.0"
+    "@types/json-schema" "^7.0.15"
+    ajv "^8.12.0"
+    ajv-formats "^3.0.1"
+    async-mutex "^0.5.0"
+    body-parser "^1.20.3"
+    cors "^2.8.5"
+    dotprompt "^1.1.1"
+    express "^4.21.0"
+    get-port "^5.1.0"
+    json-schema "^0.4.0"
+    zod "^3.23.8"
+    zod-to-json-schema "^3.22.4"
+  optionalDependencies:
+    "@genkit-ai/firebase" "^1.16.1"
 
 "@genkit-ai/core@1.19.2":
   version "1.19.2"
@@ -1365,27 +1393,27 @@
     node-fetch "^3.3.2"
     winston "^3.12.0"
 
-"@genkit-ai/googleai@1.19.2":
-  version "1.19.2"
-  resolved "https://registry.npmjs.org/@genkit-ai/googleai/-/googleai-1.19.2.tgz"
-  integrity sha512-0/gfJkn2dpe/7WnvoWNV1nXigchXViRMijjE9pS8RFPLqJ3FW4pG07S7NKmvx45gSYUpYsBdLLtS2Hp53npXvA==
+"@genkit-ai/googleai@1.18.0":
+  version "1.18.0"
+  resolved "https://registry.npmjs.org/@genkit-ai/googleai/-/googleai-1.18.0.tgz"
+  integrity sha512-W9gNgkb5dA2CZYQ++CKekTR1Al99dMSvjBF73l1EPmDC211CCBbq1metj6QkeSkFfSGhVFLveKUCC7RxIsoPxA==
   dependencies:
     "@google/generative-ai" "^0.24.0"
     google-auth-library "^9.6.3"
     node-fetch "^3.3.2"
 
-"@genkit-ai/next@1.19.2":
-  version "1.19.2"
-  resolved "https://registry.npmjs.org/@genkit-ai/next/-/next-1.19.2.tgz"
-  integrity sha512-Os1OhCk+0bnxxJfOV47Eo6KGPAYrefAoogM9BCJEBCEcr13u/55ofcjjwduXpconHR+e/2J0A5N+YETDiQwB4g==
+"@genkit-ai/next@1.18.0":
+  version "1.18.0"
+  resolved "https://registry.npmjs.org/@genkit-ai/next/-/next-1.18.0.tgz"
+  integrity sha512-PYcp6RZWG1FK7TGqPsfECD4Do1PLLkCv2cjdOQFzsVjpKWNHQ6roVVNIGSO3S6JdwnfhClRy189dkQt+KQo5tA==
 
-"@genkit-ai/telemetry-server@1.19.2":
-  version "1.19.2"
-  resolved "https://registry.npmjs.org/@genkit-ai/telemetry-server/-/telemetry-server-1.19.2.tgz"
-  integrity sha512-ZpRONGQtwn19MDv8QlBZn0x3e6TNDSipXYxd9XfsquuTkmxbLZZr4nW9k26CkNvbldsikrvi6AqQ7hkdCOt/0Q==
+"@genkit-ai/telemetry-server@1.18.0":
+  version "1.18.0"
+  resolved "https://registry.npmjs.org/@genkit-ai/telemetry-server/-/telemetry-server-1.18.0.tgz"
+  integrity sha512-CRPZ4R5WBNR1IgEXKBMI//NCtgZ+s8s7Q9yJ+Zh1CFw1D/2hE8rugKcQippcr9nTxL8EQHmMjgodxfU1c3oTSg==
   dependencies:
     "@asteasolutions/zod-to-openapi" "^7.0.0"
-    "@genkit-ai/tools-common" "1.19.2"
+    "@genkit-ai/tools-common" "1.18.0"
     "@google-cloud/firestore" "^7.6.0"
     "@opentelemetry/api" "~1.9.0"
     "@opentelemetry/context-async-hooks" "~1.25.0"
@@ -1398,10 +1426,10 @@
     lockfile "^1.0.4"
     zod "^3.22.4"
 
-"@genkit-ai/tools-common@1.19.2":
-  version "1.19.2"
-  resolved "https://registry.npmjs.org/@genkit-ai/tools-common/-/tools-common-1.19.2.tgz"
-  integrity sha512-z0Ov/fxF1iRNVj/72tiYfa2lHNyyPySJnWGgk/Wq/Kf6c6i9Pz02LEI+Wwl1yaVf2DVwomVD9HDL5wadXTxsCg==
+"@genkit-ai/tools-common@1.18.0":
+  version "1.18.0"
+  resolved "https://registry.npmjs.org/@genkit-ai/tools-common/-/tools-common-1.18.0.tgz"
+  integrity sha512-nVkn0bnc4qkZ4CghpCw30WX13mn9ltZ2QQJdEcLYlb3K6+88gZ9mA7C370gPZVxF2yWlFlfOuNF6XARpgx463w==
   dependencies:
     "@asteasolutions/zod-to-openapi" "^7.0.0"
     "@inquirer/prompts" "^7.8.0"
@@ -1445,9 +1473,9 @@
     teeny-request "^9.0.0"
 
 "@google-cloud/firestore@^7.11.0", "@google-cloud/firestore@^7.6.0":
-  version "7.11.3"
-  resolved "https://registry.npmjs.org/@google-cloud/firestore/-/firestore-7.11.3.tgz"
-  integrity sha512-qsM3/WHpawF07SRVvEJJVRwhYzM7o9qtuksyuqnrMig6fxIrwWnsezECWsG/D5TyYru51Fv5c/RTqNDQ2yU+4w==
+  version "7.11.4"
+  resolved "https://registry.npmjs.org/@google-cloud/firestore/-/firestore-7.11.4.tgz"
+  integrity sha512-9jwx87tnm0x8QMfppT543oqIvcPaBKvfn0t5toygqlwh17lN92OwCDsUl7S+jg3a9Nhxjl9/Y3TZAusVJzugrA==
   dependencies:
     "@opentelemetry/api" "^1.3.0"
     fast-deep-equal "^3.1.1"
@@ -1573,11 +1601,11 @@
     "@types/node" ">=12.12.47"
 
 "@grpc/grpc-js@^1.10.9":
-  version "1.13.4"
-  resolved "https://registry.npmjs.org/@grpc/grpc-js/-/grpc-js-1.13.4.tgz"
-  integrity sha512-GsFaMXCkMqkKIvwCQjCrwH+GHbPKBjhwo/8ZuUkWHqbI73Kky9I+pQltrlT0+MWpedCoosda53lgjYfyEPgxBg==
+  version "1.14.0"
+  resolved "https://registry.npmjs.org/@grpc/grpc-js/-/grpc-js-1.14.0.tgz"
+  integrity sha512-N8Jx6PaYzcTRNzirReJCtADVoq4z7+1KQ4E70jTg/koQiMoUSN1kbNjPOqpPbhMFhfU1/l7ixspPl8dNY+FoUg==
   dependencies:
-    "@grpc/proto-loader" "^0.7.13"
+    "@grpc/proto-loader" "^0.8.0"
     "@js-sdsl/ordered-map" "^4.4.2"
 
 "@grpc/proto-loader@^0.7.0", "@grpc/proto-loader@^0.7.13", "@grpc/proto-loader@^0.7.8":
@@ -1590,144 +1618,159 @@
     protobufjs "^7.2.5"
     yargs "^17.7.2"
 
+"@grpc/proto-loader@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.npmjs.org/@grpc/proto-loader/-/proto-loader-0.8.0.tgz"
+  integrity sha512-rc1hOQtjIWGxcxpb9aHAfLpIctjEnsDehj0DAiVfBlmT84uvR0uUtN2hEi/ecvWVjXUGf5qPF4qEgiLOx1YIMQ==
+  dependencies:
+    lodash.camelcase "^4.3.0"
+    long "^5.0.0"
+    protobufjs "^7.5.3"
+    yargs "^17.7.2"
+
 "@hookform/resolvers@^3.3.4":
   version "3.10.0"
   resolved "https://registry.npmjs.org/@hookform/resolvers/-/resolvers-3.10.0.tgz"
   integrity sha512-79Dv+3mDF7i+2ajj7SkypSKHhl1cbln1OGavqrsF7p6mbUv11xpqpacPsGDCTRvCSjEEIez2ef1NveSVL3b0Ag==
 
-"@inquirer/checkbox@^4.2.2":
-  version "4.2.2"
-  resolved "https://registry.npmjs.org/@inquirer/checkbox/-/checkbox-4.2.2.tgz"
-  integrity sha512-E+KExNurKcUJJdxmjglTl141EwxWyAHplvsYJQgSwXf8qiNWkTxTuCCqmhFEmbIXd4zLaGMfQFJ6WrZ7fSeV3g==
+"@inquirer/ansi@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/@inquirer/ansi/-/ansi-1.0.0.tgz"
+  integrity sha512-JWaTfCxI1eTmJ1BIv86vUfjVatOdxwD0DAVKYevY8SazeUUZtW+tNbsdejVO1GYE0GXJW1N1ahmiC3TFd+7wZA==
+
+"@inquirer/checkbox@^4.2.4":
+  version "4.2.4"
+  resolved "https://registry.npmjs.org/@inquirer/checkbox/-/checkbox-4.2.4.tgz"
+  integrity sha512-2n9Vgf4HSciFq8ttKXk+qy+GsyTXPV1An6QAwe/8bkbbqvG4VW1I/ZY1pNu2rf+h9bdzMLPbRSfcNxkHBy/Ydw==
   dependencies:
-    "@inquirer/core" "^10.2.0"
+    "@inquirer/ansi" "^1.0.0"
+    "@inquirer/core" "^10.2.2"
     "@inquirer/figures" "^1.0.13"
     "@inquirer/type" "^3.0.8"
-    ansi-escapes "^4.3.2"
     yoctocolors-cjs "^2.1.2"
 
-"@inquirer/confirm@^5.1.16":
-  version "5.1.16"
-  resolved "https://registry.npmjs.org/@inquirer/confirm/-/confirm-5.1.16.tgz"
-  integrity sha512-j1a5VstaK5KQy8Mu8cHmuQvN1Zc62TbLhjJxwHvKPPKEoowSF6h/0UdOpA9DNdWZ+9Inq73+puRq1df6OJ8Sag==
+"@inquirer/confirm@^5.1.18":
+  version "5.1.18"
+  resolved "https://registry.npmjs.org/@inquirer/confirm/-/confirm-5.1.18.tgz"
+  integrity sha512-MilmWOzHa3Ks11tzvuAmFoAd/wRuaP3SwlT1IZhyMke31FKLxPiuDWcGXhU+PKveNOpAc4axzAgrgxuIJJRmLw==
   dependencies:
-    "@inquirer/core" "^10.2.0"
+    "@inquirer/core" "^10.2.2"
     "@inquirer/type" "^3.0.8"
 
-"@inquirer/core@^10.2.0":
-  version "10.2.0"
-  resolved "https://registry.npmjs.org/@inquirer/core/-/core-10.2.0.tgz"
-  integrity sha512-NyDSjPqhSvpZEMZrLCYUquWNl+XC/moEcVFqS55IEYIYsY0a1cUCevSqk7ctOlnm/RaSBU5psFryNlxcmGrjaA==
+"@inquirer/core@^10.2.2":
+  version "10.2.2"
+  resolved "https://registry.npmjs.org/@inquirer/core/-/core-10.2.2.tgz"
+  integrity sha512-yXq/4QUnk4sHMtmbd7irwiepjB8jXU0kkFRL4nr/aDBA2mDz13cMakEWdDwX3eSCTkk03kwcndD1zfRAIlELxA==
   dependencies:
+    "@inquirer/ansi" "^1.0.0"
     "@inquirer/figures" "^1.0.13"
     "@inquirer/type" "^3.0.8"
-    ansi-escapes "^4.3.2"
     cli-width "^4.1.0"
     mute-stream "^2.0.0"
     signal-exit "^4.1.0"
     wrap-ansi "^6.2.0"
     yoctocolors-cjs "^2.1.2"
 
-"@inquirer/editor@^4.2.18":
-  version "4.2.18"
-  resolved "https://registry.npmjs.org/@inquirer/editor/-/editor-4.2.18.tgz"
-  integrity sha512-yeQN3AXjCm7+Hmq5L6Dm2wEDeBRdAZuyZ4I7tWSSanbxDzqM0KqzoDbKM7p4ebllAYdoQuPJS6N71/3L281i6w==
+"@inquirer/editor@^4.2.20":
+  version "4.2.20"
+  resolved "https://registry.npmjs.org/@inquirer/editor/-/editor-4.2.20.tgz"
+  integrity sha512-7omh5y5bK672Q+Brk4HBbnHNowOZwrb/78IFXdrEB9PfdxL3GudQyDk8O9vQ188wj3xrEebS2M9n18BjJoI83g==
   dependencies:
-    "@inquirer/core" "^10.2.0"
-    "@inquirer/external-editor" "^1.0.1"
+    "@inquirer/core" "^10.2.2"
+    "@inquirer/external-editor" "^1.0.2"
     "@inquirer/type" "^3.0.8"
 
-"@inquirer/expand@^4.0.18":
-  version "4.0.18"
-  resolved "https://registry.npmjs.org/@inquirer/expand/-/expand-4.0.18.tgz"
-  integrity sha512-xUjteYtavH7HwDMzq4Cn2X4Qsh5NozoDHCJTdoXg9HfZ4w3R6mxV1B9tL7DGJX2eq/zqtsFjhm0/RJIMGlh3ag==
+"@inquirer/expand@^4.0.20":
+  version "4.0.20"
+  resolved "https://registry.npmjs.org/@inquirer/expand/-/expand-4.0.20.tgz"
+  integrity sha512-Dt9S+6qUg94fEvgn54F2Syf0Z3U8xmnBI9ATq2f5h9xt09fs2IJXSCIXyyVHwvggKWFXEY/7jATRo2K6Dkn6Ow==
   dependencies:
-    "@inquirer/core" "^10.2.0"
+    "@inquirer/core" "^10.2.2"
     "@inquirer/type" "^3.0.8"
     yoctocolors-cjs "^2.1.2"
 
-"@inquirer/external-editor@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/@inquirer/external-editor/-/external-editor-1.0.1.tgz"
-  integrity sha512-Oau4yL24d2B5IL4ma4UpbQigkVhzPDXLoqy1ggK4gnHg/stmkffJE4oOXHXF3uz0UEpywG68KcyXsyYpA1Re/Q==
+"@inquirer/external-editor@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/@inquirer/external-editor/-/external-editor-1.0.2.tgz"
+  integrity sha512-yy9cOoBnx58TlsPrIxauKIFQTiyH+0MK4e97y4sV9ERbI+zDxw7i2hxHLCIEGIE/8PPvDxGhgzIOTSOWcs6/MQ==
   dependencies:
     chardet "^2.1.0"
-    iconv-lite "^0.6.3"
+    iconv-lite "^0.7.0"
 
 "@inquirer/figures@^1.0.13":
   version "1.0.13"
   resolved "https://registry.npmjs.org/@inquirer/figures/-/figures-1.0.13.tgz"
   integrity sha512-lGPVU3yO9ZNqA7vTYz26jny41lE7yoQansmqdMLBEfqaGsmdg7V3W9mK9Pvb5IL4EVZ9GnSDGMO/cJXud5dMaw==
 
-"@inquirer/input@^4.2.2":
-  version "4.2.2"
-  resolved "https://registry.npmjs.org/@inquirer/input/-/input-4.2.2.tgz"
-  integrity sha512-hqOvBZj/MhQCpHUuD3MVq18SSoDNHy7wEnQ8mtvs71K8OPZVXJinOzcvQna33dNYLYE4LkA9BlhAhK6MJcsVbw==
+"@inquirer/input@^4.2.4":
+  version "4.2.4"
+  resolved "https://registry.npmjs.org/@inquirer/input/-/input-4.2.4.tgz"
+  integrity sha512-cwSGpLBMwpwcZZsc6s1gThm0J+it/KIJ+1qFL2euLmSKUMGumJ5TcbMgxEjMjNHRGadouIYbiIgruKoDZk7klw==
   dependencies:
-    "@inquirer/core" "^10.2.0"
+    "@inquirer/core" "^10.2.2"
     "@inquirer/type" "^3.0.8"
 
-"@inquirer/number@^3.0.18":
-  version "3.0.18"
-  resolved "https://registry.npmjs.org/@inquirer/number/-/number-3.0.18.tgz"
-  integrity sha512-7exgBm52WXZRczsydCVftozFTrrwbG5ySE0GqUd2zLNSBXyIucs2Wnm7ZKLe/aUu6NUg9dg7Q80QIHCdZJiY4A==
+"@inquirer/number@^3.0.20":
+  version "3.0.20"
+  resolved "https://registry.npmjs.org/@inquirer/number/-/number-3.0.20.tgz"
+  integrity sha512-bbooay64VD1Z6uMfNehED2A2YOPHSJnQLs9/4WNiV/EK+vXczf/R988itL2XLDGTgmhMF2KkiWZo+iEZmc4jqg==
   dependencies:
-    "@inquirer/core" "^10.2.0"
+    "@inquirer/core" "^10.2.2"
     "@inquirer/type" "^3.0.8"
 
-"@inquirer/password@^4.0.18":
-  version "4.0.18"
-  resolved "https://registry.npmjs.org/@inquirer/password/-/password-4.0.18.tgz"
-  integrity sha512-zXvzAGxPQTNk/SbT3carAD4Iqi6A2JS2qtcqQjsL22uvD+JfQzUrDEtPjLL7PLn8zlSNyPdY02IiQjzoL9TStA==
+"@inquirer/password@^4.0.20":
+  version "4.0.20"
+  resolved "https://registry.npmjs.org/@inquirer/password/-/password-4.0.20.tgz"
+  integrity sha512-nxSaPV2cPvvoOmRygQR+h0B+Av73B01cqYLcr7NXcGXhbmsYfUb8fDdw2Us1bI2YsX+VvY7I7upgFYsyf8+Nug==
   dependencies:
-    "@inquirer/core" "^10.2.0"
+    "@inquirer/ansi" "^1.0.0"
+    "@inquirer/core" "^10.2.2"
     "@inquirer/type" "^3.0.8"
-    ansi-escapes "^4.3.2"
 
 "@inquirer/prompts@^7.8.0":
-  version "7.8.4"
-  resolved "https://registry.npmjs.org/@inquirer/prompts/-/prompts-7.8.4.tgz"
-  integrity sha512-MuxVZ1en1g5oGamXV3DWP89GEkdD54alcfhHd7InUW5BifAdKQEK9SLFa/5hlWbvuhMPlobF0WAx7Okq988Jxg==
+  version "7.8.6"
+  resolved "https://registry.npmjs.org/@inquirer/prompts/-/prompts-7.8.6.tgz"
+  integrity sha512-68JhkiojicX9SBUD8FE/pSKbOKtwoyaVj1kwqLfvjlVXZvOy3iaSWX4dCLsZyYx/5Ur07Fq+yuDNOen+5ce6ig==
   dependencies:
-    "@inquirer/checkbox" "^4.2.2"
-    "@inquirer/confirm" "^5.1.16"
-    "@inquirer/editor" "^4.2.18"
-    "@inquirer/expand" "^4.0.18"
-    "@inquirer/input" "^4.2.2"
-    "@inquirer/number" "^3.0.18"
-    "@inquirer/password" "^4.0.18"
-    "@inquirer/rawlist" "^4.1.6"
-    "@inquirer/search" "^3.1.1"
-    "@inquirer/select" "^4.3.2"
+    "@inquirer/checkbox" "^4.2.4"
+    "@inquirer/confirm" "^5.1.18"
+    "@inquirer/editor" "^4.2.20"
+    "@inquirer/expand" "^4.0.20"
+    "@inquirer/input" "^4.2.4"
+    "@inquirer/number" "^3.0.20"
+    "@inquirer/password" "^4.0.20"
+    "@inquirer/rawlist" "^4.1.8"
+    "@inquirer/search" "^3.1.3"
+    "@inquirer/select" "^4.3.4"
 
-"@inquirer/rawlist@^4.1.6":
-  version "4.1.6"
-  resolved "https://registry.npmjs.org/@inquirer/rawlist/-/rawlist-4.1.6.tgz"
-  integrity sha512-KOZqa3QNr3f0pMnufzL7K+nweFFCCBs6LCXZzXDrVGTyssjLeudn5ySktZYv1XiSqobyHRYYK0c6QsOxJEhXKA==
+"@inquirer/rawlist@^4.1.8":
+  version "4.1.8"
+  resolved "https://registry.npmjs.org/@inquirer/rawlist/-/rawlist-4.1.8.tgz"
+  integrity sha512-CQ2VkIASbgI2PxdzlkeeieLRmniaUU1Aoi5ggEdm6BIyqopE9GuDXdDOj9XiwOqK5qm72oI2i6J+Gnjaa26ejg==
   dependencies:
-    "@inquirer/core" "^10.2.0"
+    "@inquirer/core" "^10.2.2"
     "@inquirer/type" "^3.0.8"
     yoctocolors-cjs "^2.1.2"
 
-"@inquirer/search@^3.1.1":
-  version "3.1.1"
-  resolved "https://registry.npmjs.org/@inquirer/search/-/search-3.1.1.tgz"
-  integrity sha512-TkMUY+A2p2EYVY3GCTItYGvqT6LiLzHBnqsU1rJbrpXUijFfM6zvUx0R4civofVwFCmJZcKqOVwwWAjplKkhxA==
+"@inquirer/search@^3.1.3":
+  version "3.1.3"
+  resolved "https://registry.npmjs.org/@inquirer/search/-/search-3.1.3.tgz"
+  integrity sha512-D5T6ioybJJH0IiSUK/JXcoRrrm8sXwzrVMjibuPs+AgxmogKslaafy1oxFiorNI4s3ElSkeQZbhYQgLqiL8h6Q==
   dependencies:
-    "@inquirer/core" "^10.2.0"
+    "@inquirer/core" "^10.2.2"
     "@inquirer/figures" "^1.0.13"
     "@inquirer/type" "^3.0.8"
     yoctocolors-cjs "^2.1.2"
 
-"@inquirer/select@^4.3.2":
-  version "4.3.2"
-  resolved "https://registry.npmjs.org/@inquirer/select/-/select-4.3.2.tgz"
-  integrity sha512-nwous24r31M+WyDEHV+qckXkepvihxhnyIaod2MG7eCE6G0Zm/HUF6jgN8GXgf4U7AU6SLseKdanY195cwvU6w==
+"@inquirer/select@^4.3.4":
+  version "4.3.4"
+  resolved "https://registry.npmjs.org/@inquirer/select/-/select-4.3.4.tgz"
+  integrity sha512-Qp20nySRmfbuJBBsgPU7E/cL62Hf250vMZRzYDcBHty2zdD1kKCnoDFWRr0WO2ZzaXp3R7a4esaVGJUx0E6zvA==
   dependencies:
-    "@inquirer/core" "^10.2.0"
+    "@inquirer/ansi" "^1.0.0"
+    "@inquirer/core" "^10.2.2"
     "@inquirer/figures" "^1.0.13"
     "@inquirer/type" "^3.0.8"
-    ansi-escapes "^4.3.2"
     yoctocolors-cjs "^2.1.2"
 
 "@inquirer/type@^3.0.8":
@@ -2920,15 +2963,15 @@
     "@opentelemetry/sdk-trace-base" "1.25.1"
     semver "^7.5.2"
 
-"@opentelemetry/semantic-conventions@^1.22.0", "@opentelemetry/semantic-conventions@^1.23.0", "@opentelemetry/semantic-conventions@^1.24.0", "@opentelemetry/semantic-conventions@^1.27.0":
-  version "1.37.0"
-  resolved "https://registry.npmjs.org/@opentelemetry/semantic-conventions/-/semantic-conventions-1.37.0.tgz"
-  integrity sha512-JD6DerIKdJGmRp4jQyX5FlrQjA4tjOw1cvfsPAZXfOOEErMUHjPcPSICS+6WnM0nB0efSFARh0KAZss+bvExOA==
-
-"@opentelemetry/semantic-conventions@1.25.1":
+"@opentelemetry/semantic-conventions@^1.22.0", "@opentelemetry/semantic-conventions@^1.23.0", "@opentelemetry/semantic-conventions@^1.24.0", "@opentelemetry/semantic-conventions@1.25.1":
   version "1.25.1"
   resolved "https://registry.npmjs.org/@opentelemetry/semantic-conventions/-/semantic-conventions-1.25.1.tgz"
   integrity sha512-ZDjMJJQRlyk8A1KZFCc+bCbsyrn1wTwdNt56F7twdfUfnHUZUq77/WfONCj8p72NZOyP7pNTdUWSTYC3GTbuuQ==
+
+"@opentelemetry/semantic-conventions@^1.27.0":
+  version "1.37.0"
+  resolved "https://registry.npmjs.org/@opentelemetry/semantic-conventions/-/semantic-conventions-1.37.0.tgz"
+  integrity sha512-JD6DerIKdJGmRp4jQyX5FlrQjA4tjOw1cvfsPAZXfOOEErMUHjPcPSICS+6WnM0nB0efSFARh0KAZss+bvExOA==
 
 "@opentelemetry/semantic-conventions@1.28.0":
   version "1.28.0"
@@ -3951,7 +3994,7 @@
   resolved "https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.35.1.tgz"
   integrity sha512-0Dnpybqb8+ps6WgqBnqFEC+1F/xLvUosRAq+wiGisTgolOZzqZfkE2995dEXmhuzINiTM7/a6xSGznU0NIvBkw==
 
-"@tanstack/react-query@>=5.0.0", "@tanstack/react-query@5.35.1":
+"@tanstack/react-query@>=5.0.0":
   version "5.35.1"
   resolved "https://registry.npmjs.org/@tanstack/react-query/-/react-query-5.35.1.tgz"
   integrity sha512-i2T7m2ffQdNqlX3pO+uMsnQ0H4a59Ens2GxtlMsRiOvdSB4SfYmHb27MnvFV8rGmtWRaa4gPli0/rpDoSS5LbQ==
@@ -4253,16 +4296,16 @@
     undici-types "~5.26.4"
 
 "@types/node@^20.11.19":
-  version "20.19.14"
-  resolved "https://registry.npmjs.org/@types/node/-/node-20.19.14.tgz"
-  integrity sha512-gqiKWld3YIkmtrrg9zDvg9jfksZCcPywXVN7IauUGhilwGV/yOyeUsvpR796m/Jye0zUzMXPKe8Ct1B79A7N5Q==
+  version "20.19.17"
+  resolved "https://registry.npmjs.org/@types/node/-/node-20.19.17.tgz"
+  integrity sha512-gfehUI8N1z92kygssiuWvLiwcbOB3IRktR6hTDgJlXMYh5OvkPSRmgfoBUmfZt+vhwJtX7v1Yw4KvvAf7c5QKQ==
   dependencies:
     undici-types "~6.21.0"
 
 "@types/node@^22.8.7":
-  version "22.18.3"
-  resolved "https://registry.npmjs.org/@types/node/-/node-22.18.3.tgz"
-  integrity sha512-gTVM8js2twdtqM+AE2PdGEe9zGQY4UvmFjan9rZcVb6FGdStfjWoWejdmy4CfWVO9rh5MiYQGZloKAGkJt8lMw==
+  version "22.18.6"
+  resolved "https://registry.npmjs.org/@types/node/-/node-22.18.6.tgz"
+  integrity sha512-r8uszLPpeIWbNKtvWRt/DbVi5zbqZyj1PTmhRMqBMvDnaz1QpmSKujUtJLrqGZeoM8v72MfYggDceY4K1itzWQ==
   dependencies:
     undici-types "~6.21.0"
 
@@ -4829,13 +4872,6 @@ ansi-color@^0.2.1:
   resolved "https://registry.npmjs.org/ansi-color/-/ansi-color-0.2.1.tgz"
   integrity sha512-bF6xLaZBLpOQzgYUtYEhJx090nPSZk1BQ/q2oyBK9aMMcJHzx9uXGCjI2Y+LebsN4Jwoykr0V9whbPiogdyHoQ==
 
-ansi-escapes@^4.3.2:
-  version "4.3.2"
-  resolved "https://registry.npmjs.org/ansi-escapes/-/ansi-escapes-4.3.2.tgz"
-  integrity sha512-gKXj5ALrKWQLsYG9jlTRmR/xKluxHV+Z9QEwNIgCfM1/uwPMCuzVVnh5mwTd+OuBZcwSIMbqssNWRm1lE51QaQ==
-  dependencies:
-    type-fest "^0.21.3"
-
 ansi-regex@^5.0.0:
   version "5.0.1"
   resolved "https://registry.npmjs.org/ansi-regex/-/ansi-regex-5.0.1.tgz"
@@ -4969,9 +5005,9 @@ available-typed-arrays@^1.0.7:
     possible-typed-array-names "^1.0.0"
 
 axios@^1.7.7:
-  version "1.11.0"
-  resolved "https://registry.npmjs.org/axios/-/axios-1.11.0.tgz"
-  integrity sha512-1Lx3WLFQWm3ooKDYZD1eXmoGO9fxYQjrycfHFC8P0sCfQVXyROp0p9PFWBehewBOdCwHc+f/b8I0fMto5eSfwA==
+  version "1.12.2"
+  resolved "https://registry.npmjs.org/axios/-/axios-1.12.2.tgz"
+  integrity sha512-vMJzPewAlRyOgxV2dU0Cuz2O8zzzx9VYtbJOaBgXFeLc4IV/Eg50n4LowmehOOR61S8ZMpc2K5Sa7g6A4jfkUw==
   dependencies:
     follow-redirects "^1.15.6"
     form-data "^4.0.4"
@@ -5870,9 +5906,9 @@ debug@~4.3.2:
     ms "^2.1.3"
 
 debug@4:
-  version "4.4.1"
-  resolved "https://registry.npmjs.org/debug/-/debug-4.4.1.tgz"
-  integrity sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==
+  version "4.4.3"
+  resolved "https://registry.npmjs.org/debug/-/debug-4.4.3.tgz"
+  integrity sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==
   dependencies:
     ms "^2.1.3"
 
@@ -6188,36 +6224,36 @@ es-set-tostringtag@^2.1.0:
     hasown "^2.0.2"
 
 esbuild@~0.25.0:
-  version "0.25.9"
-  resolved "https://registry.npmjs.org/esbuild/-/esbuild-0.25.9.tgz"
-  integrity sha512-CRbODhYyQx3qp7ZEwzxOk4JBqmD/seJrzPa/cGjY1VtIn5E09Oi9/dB4JwctnfZ8Q8iT7rioVv5k/FNT/uf54g==
+  version "0.25.10"
+  resolved "https://registry.npmjs.org/esbuild/-/esbuild-0.25.10.tgz"
+  integrity sha512-9RiGKvCwaqxO2owP61uQ4BgNborAQskMR6QusfWzQqv7AZOg5oGehdY2pRJMTKuwxd1IDBP4rSbI5lHzU7SMsQ==
   optionalDependencies:
-    "@esbuild/aix-ppc64" "0.25.9"
-    "@esbuild/android-arm" "0.25.9"
-    "@esbuild/android-arm64" "0.25.9"
-    "@esbuild/android-x64" "0.25.9"
-    "@esbuild/darwin-arm64" "0.25.9"
-    "@esbuild/darwin-x64" "0.25.9"
-    "@esbuild/freebsd-arm64" "0.25.9"
-    "@esbuild/freebsd-x64" "0.25.9"
-    "@esbuild/linux-arm" "0.25.9"
-    "@esbuild/linux-arm64" "0.25.9"
-    "@esbuild/linux-ia32" "0.25.9"
-    "@esbuild/linux-loong64" "0.25.9"
-    "@esbuild/linux-mips64el" "0.25.9"
-    "@esbuild/linux-ppc64" "0.25.9"
-    "@esbuild/linux-riscv64" "0.25.9"
-    "@esbuild/linux-s390x" "0.25.9"
-    "@esbuild/linux-x64" "0.25.9"
-    "@esbuild/netbsd-arm64" "0.25.9"
-    "@esbuild/netbsd-x64" "0.25.9"
-    "@esbuild/openbsd-arm64" "0.25.9"
-    "@esbuild/openbsd-x64" "0.25.9"
-    "@esbuild/openharmony-arm64" "0.25.9"
-    "@esbuild/sunos-x64" "0.25.9"
-    "@esbuild/win32-arm64" "0.25.9"
-    "@esbuild/win32-ia32" "0.25.9"
-    "@esbuild/win32-x64" "0.25.9"
+    "@esbuild/aix-ppc64" "0.25.10"
+    "@esbuild/android-arm" "0.25.10"
+    "@esbuild/android-arm64" "0.25.10"
+    "@esbuild/android-x64" "0.25.10"
+    "@esbuild/darwin-arm64" "0.25.10"
+    "@esbuild/darwin-x64" "0.25.10"
+    "@esbuild/freebsd-arm64" "0.25.10"
+    "@esbuild/freebsd-x64" "0.25.10"
+    "@esbuild/linux-arm" "0.25.10"
+    "@esbuild/linux-arm64" "0.25.10"
+    "@esbuild/linux-ia32" "0.25.10"
+    "@esbuild/linux-loong64" "0.25.10"
+    "@esbuild/linux-mips64el" "0.25.10"
+    "@esbuild/linux-ppc64" "0.25.10"
+    "@esbuild/linux-riscv64" "0.25.10"
+    "@esbuild/linux-s390x" "0.25.10"
+    "@esbuild/linux-x64" "0.25.10"
+    "@esbuild/netbsd-arm64" "0.25.10"
+    "@esbuild/netbsd-x64" "0.25.10"
+    "@esbuild/openbsd-arm64" "0.25.10"
+    "@esbuild/openbsd-x64" "0.25.10"
+    "@esbuild/openharmony-arm64" "0.25.10"
+    "@esbuild/sunos-x64" "0.25.10"
+    "@esbuild/win32-arm64" "0.25.10"
+    "@esbuild/win32-ia32" "0.25.10"
+    "@esbuild/win32-x64" "0.25.10"
 
 escalade@^3.1.1, escalade@^3.2.0:
   version "3.2.0"
@@ -6845,13 +6881,13 @@ gcp-metadata@^6.0.0, gcp-metadata@^6.1.0:
     google-logging-utils "^0.0.2"
     json-bigint "^1.0.0"
 
-genkit-cli@1.19.2:
-  version "1.19.2"
-  resolved "https://registry.npmjs.org/genkit-cli/-/genkit-cli-1.19.2.tgz"
-  integrity sha512-ugXPWi8olpCWg0lJ+Ywrh0/z7ne4ziZog47dRf+xTxoumZnTY/iggkIcxIl/ZIwcR922pfoZYcvGH/gKiu+rJg==
+genkit-cli@1.18.0:
+  version "1.18.0"
+  resolved "https://registry.npmjs.org/genkit-cli/-/genkit-cli-1.18.0.tgz"
+  integrity sha512-XmoLNFkdTXBRg6ywVaXceINmR59I2+N3Be9FzsOLrysGpxRmS6XtWw5vZinxIf/rYRp7F/M1K1hCY8H1Mx3Mdw==
   dependencies:
-    "@genkit-ai/telemetry-server" "1.19.2"
-    "@genkit-ai/tools-common" "1.19.2"
+    "@genkit-ai/telemetry-server" "1.18.0"
+    "@genkit-ai/tools-common" "1.18.0"
     "@inquirer/prompts" "^7.8.0"
     "@modelcontextprotocol/sdk" "^1.13.1"
     axios "^1.7.7"
@@ -6863,7 +6899,16 @@ genkit-cli@1.19.2:
     ora "^5.4.1"
     semver "^7.7.2"
 
-genkit@^1.19.2, genkit@1.19.2:
+genkit@^1.18.0, genkit@1.18.0:
+  version "1.18.0"
+  resolved "https://registry.npmjs.org/genkit/-/genkit-1.18.0.tgz"
+  integrity sha512-vu7i25e6f8YV3j4UfxPER2QXWVqY/kpYlw3sexuGOS60a0md/pwlQlIhg++cPAPlvvAb9eQ7ZxlFlUtrHJaiRQ==
+  dependencies:
+    "@genkit-ai/ai" "1.18.0"
+    "@genkit-ai/core" "1.18.0"
+    uuid "^10.0.0"
+
+genkit@^1.19.2:
   version "1.19.2"
   resolved "https://registry.npmjs.org/genkit/-/genkit-1.19.2.tgz"
   integrity sha512-GLTMqAzq8Dw7ECW9m1sqtcM4Y6lVLLQmu5UnZ7wkIR9Sj6iRmmjOV/IJcVluMDqnJ1BdiCTB7DmMxTxmO7ndrw==
@@ -7272,6 +7317,13 @@ iconv-lite@^0.6.3:
   dependencies:
     safer-buffer ">= 2.1.2 < 3.0.0"
 
+iconv-lite@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.npmjs.org/iconv-lite/-/iconv-lite-0.7.0.tgz"
+  integrity sha512-cf6L2Ds3h57VVmkZe+Pn+5APsT7FpqJtEhhieDCvrE2MK5Qk9MyffgQyuxQTm6BChfeZNtcOLHp9IcWRVcIcBQ==
+  dependencies:
+    safer-buffer ">= 2.1.2 < 3.0.0"
+
 iconv-lite@0.4.24:
   version "0.4.24"
   resolved "https://registry.npmjs.org/iconv-lite/-/iconv-lite-0.4.24.tgz"
@@ -7388,9 +7440,9 @@ is-arrayish@^0.2.1:
   integrity sha512-zz06S8t0ozoDXMG+ube26zeCTNXcKIPJZJi8hBrF4idCLms4CG9QtK7qBl1boi5ODzFpjswb5JPmHCbMpjaYzg==
 
 is-arrayish@^0.3.1:
-  version "0.3.2"
-  resolved "https://registry.npmjs.org/is-arrayish/-/is-arrayish-0.3.2.tgz"
-  integrity sha512-eVRqCvVlZbuw3GrM63ovNSNAeA1K16kaR/LRY/92w0zxQ5/1YzwblUX652i4Xs9RwAGjW9d9y6X88t8OaAJfWQ==
+  version "0.3.4"
+  resolved "https://registry.npmjs.org/is-arrayish/-/is-arrayish-0.3.4.tgz"
+  integrity sha512-m6UrgzFVUYawGBh1dUsWR5M2Clqic9RVXC/9f8ceNlv2IcO9j9J/z8UoCLPqtsPBFNzEpfR3xftohbfqDx8EQA==
 
 is-binary-path@~2.1.0:
   version "2.1.0"
@@ -9170,10 +9222,10 @@ proto3-json-serializer@^2.0.2:
   dependencies:
     protobufjs "^7.2.5"
 
-protobufjs@^7.2.5, protobufjs@^7.2.6, protobufjs@^7.3.0, protobufjs@^7.3.2:
-  version "7.4.0"
-  resolved "https://registry.npmjs.org/protobufjs/-/protobufjs-7.4.0.tgz"
-  integrity sha512-mRUWCc3KUU4w1jU8sGxICXH/gNS94DvI1gxqDvBzhj1JpcsimQkYiOJfwsPUykUI5ZaspFbSgmBLER8IrQ3tqw==
+protobufjs@^7.2.5, protobufjs@^7.2.6, protobufjs@^7.3.0, protobufjs@^7.3.2, protobufjs@^7.5.3:
+  version "7.5.4"
+  resolved "https://registry.npmjs.org/protobufjs/-/protobufjs-7.5.4.tgz"
+  integrity sha512-CvexbZtbov6jW2eXAvLukXjXUW1TzFaivC46BpWc/3BpcCysb5Vffu+B3XHMm8lVEuy2Mm4XGex8hBSg1yapPg==
   dependencies:
     "@protobufjs/aspromise" "^1.1.2"
     "@protobufjs/base64" "^1.1.2"
@@ -9965,9 +10017,9 @@ signal-exit@^4.0.1, signal-exit@^4.1.0:
   integrity sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==
 
 simple-swizzle@^0.2.2:
-  version "0.2.2"
-  resolved "https://registry.npmjs.org/simple-swizzle/-/simple-swizzle-0.2.2.tgz"
-  integrity sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==
+  version "0.2.4"
+  resolved "https://registry.npmjs.org/simple-swizzle/-/simple-swizzle-0.2.4.tgz"
+  integrity sha512-nAu1WFPQSMNr2Zn9PGSZK9AGn4t/y97lEm+MXTtUDwfP0ksAIX4nO+6ruD9Jwut4C49SB1Ws+fbXsm/yScWOHw==
   dependencies:
     is-arrayish "^0.3.1"
 
@@ -10465,11 +10517,6 @@ type-detect@4.0.8:
   version "4.0.8"
   resolved "https://registry.npmjs.org/type-detect/-/type-detect-4.0.8.tgz"
   integrity sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==
-
-type-fest@^0.21.3:
-  version "0.21.3"
-  resolved "https://registry.npmjs.org/type-fest/-/type-fest-0.21.3.tgz"
-  integrity sha512-t0rzBq87m3fVcduHDUFhKmyyX+9eo6WQjZvf51Ea/M0Q7+T374Jp1aUiyUl0GKxp8M/OETVHSDvmkyPgvX+X2w==
 
 type-fest@^0.7.1:
   version "0.7.1"
