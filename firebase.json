@@ -8,6 +8,7 @@
       "**/node_modules/**"
     ],
     "frameworksBackend": {
+      "source": ".",
       "project": "ark-evac",
       "backend": "forgeite-frenzy",
       "location": "us-central1"
