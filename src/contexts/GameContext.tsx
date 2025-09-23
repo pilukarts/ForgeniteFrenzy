@@ -538,7 +538,11 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     addCoreMessage({ type: 'briefing', content: `Welcome, Commander ${name}! Your mission begins. Your referral code is ${newProfileData.referralCode}.`});
 
     try {
-        await syncPlayerProfileInFirestore({ ...newProfileData, activeDailyQuests: newProfileData.activeDailyQuests.map(({ icon, ...rest }) => rest) });
+        const profileToSave = {
+            ...newProfileData,
+            activeDailyQuests: newProfileData.activeDailyQuests.map(({ icon, ...rest }) => rest),
+        };
+        await syncPlayerProfileInFirestore(profileToSave);
     } catch (error) {
         toast({ title: 'Sync Failed', description: `Could not save profile to server: ${error instanceof Error ? error.message : 'Unknown error'}`, variant: 'destructive' });
     }
@@ -699,13 +703,31 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     if (playerProfile && isInitialSetupDone) {
+      // Create a serializable version of the profile
+      const profileToSave = {
+        ...playerProfile,
+        // Remove non-serializable data before saving
+        activeDailyQuests: playerProfile.activeDailyQuests.map(({ icon, ...rest }) => rest),
+      };
+
+      // Save to Firebase
+      syncPlayerProfileInFirestore(profileToSave).catch(error => {
+        console.error("Firestore sync failed:", error);
+        toast({
+            title: "Sync Error",
+            description: "Failed to save progress to the cloud. Progress is saved locally.",
+            variant: "destructive"
+        });
+      });
+
+      // Save to localStorage as a fallback
       try {
-        localStorage.setItem('playerProfile', JSON.stringify({ ...playerProfile, activeDailyQuests: playerProfile.activeDailyQuests.map(({ icon, ...rest }) => rest) }));
+        localStorage.setItem('playerProfile', JSON.stringify(profileToSave));
       } catch (e) {
-          console.error("Failed to save player profile:", e);
+          console.error("Failed to save player profile to localStorage:", e);
       }
     }
-  }, [playerProfile, isInitialSetupDone]);
+  }, [playerProfile, isInitialSetupDone, toast]);
   
   useEffect(() => {
       if (!playerProfile) return;
