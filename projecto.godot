@@ -1,0 +1,9 @@
+[gd_project]
+config_version=4
+
+[application]
+config/name="ForgeniteFrenzy"
+run/main_scene="res://main.tscn"  # Puedes cambiar esto por el nombre de tu escena principal
+
+[rendering]
+renderer/rendering_method="forward_plus"
