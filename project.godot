@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ; Engine configuration file.
 ; It's best edited using the editor UI and not directly,
 ; since the parameters that go here are not all obvious.
@@ -18,3 +19,14 @@ config/icon="res://icon.svg"
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+=======
+[gd_project]
+config_version=4
+
+[application]
+config/name="ForgeniteFrenzy"
+run/main_scene="res://main.tscn"  # Puedes cambiar esto por el nombre de tu escena principal
+
+[rendering]
+renderer/rendering_method="forward_plus"
+>>>>>>> 7799552726ae35605e263679d9282d3ddde740d7

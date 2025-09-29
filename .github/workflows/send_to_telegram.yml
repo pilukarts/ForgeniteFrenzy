@@ -1,0 +1,29 @@
+# name: Run Telegram Bot on push
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   run_bot:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout repo
+#         uses: actions/checkout@v4
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20'
+
+#       - name: Install dependencies
+#         run: npm install
+
+#       - name: Build Telegram Bot
+#         run: npm run build:bot
+
+#       - name: Run Telegram Bot
+#         env:
+#           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+#         run: npm run start:bot

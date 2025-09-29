@@ -1,0 +1,10 @@
+# Settings for Backend (on Cloud Run).
+# See https://firebase.google.com/docs/app-hosting/configure
+runConfig:
+  minInstances: 0
+build:
+  - npm install
+  - npm run build
+start:
+  - npm run start
+runtime: nodejs22

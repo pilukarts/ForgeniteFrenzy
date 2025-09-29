@@ -1,0 +1,13 @@
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow read/write access to player data for development purposes.
+    // TODO: Secure this for production by only allowing authenticated users
+    // to write to their own document.
+    match /players/{playerId} {
+      allow read, write: if true;
+    }
+  }
+}
