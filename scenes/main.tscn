@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://b1m63mf43lowg"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
+
+[node name="TileMap" type="TileMap" parent="CharacterBody2D"]
+format = 2
+
+[node name="Node2D" type="Node2D" parent="CharacterBody2D/TileMap"]
+
+[node name="commander" type="Sprite2D" parent="CharacterBody2D/TileMap/Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D/TileMap/Node2D/commander"]
