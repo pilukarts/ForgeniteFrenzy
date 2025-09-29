@@ -1,8 +1,12 @@
-<<<<<<< HEAD
 # Godot 4+ specific ignores
 .godot/
-/android/
-=======
+.android/
+.import/
+.export/
+*.import/
+*.tmp
+*.log
+
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
@@ -48,4 +52,3 @@ next-env.d.ts
 # firebase
 firebase-debug.log
 firestore-debug.log
->>>>>>> 7799552726ae35605e263679d9282d3ddde740d7
