@@ -5,17 +5,16 @@
   "commanders": {
     "male_full": "/images/commanders/male_full.png",
     "male_portrait": "/images/commanders/male_portrait.png",
+    "male_headshot": "/images/commanders/male_headshot.png",
     "female_full": "/images/commanders/female_full.png",
     "female_portrait": "/images/commanders/female_portrait.png",
-    "male_headshot": "/images/commanders/male_headshot.png",
     "female_headshot": "/images/commanders/female_headshot.png"
   },
   "core": {
     "ai_icon": "/images/core/ai_icon.png"
   },
   "ark": {
-    "starforge_ark": "/images/ark/starforge_ark.png",
-    "colony_ship": "/images/ark/colony_ship.png"
+    "starforge_ark": "/images/ark/starforge_ark.png"
   },
   "nfts": {
     "aegis_frigate": "/images/nfts/aegis_frigate.png",

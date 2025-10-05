@@ -193,7 +193,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     if (!musicRef.current) {
         try {
-            const backgroundMusicUrl = 'https://firebasestorage.googleapis.com/v0/b/genkit-90196.appspot.com/o/sci-fi-background-music.mp3?alt=media&token=e16f39e3-80ae-432e-9d22-48a5717651a9';
+            const backgroundMusicUrl = '/audio/background_music.mp3';
             musicRef.current = new Audio(backgroundMusicUrl);
             musicRef.current.loop = true;
         } catch (e) {
