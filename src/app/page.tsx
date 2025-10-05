@@ -16,6 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import IntroScreen from '@/components/intro/IntroScreen';
+import images from '@/lib/placeholder-images.json';
 
 const formatTimeLeft = (milliseconds: number): string => {
   if (milliseconds <= 0) return "00:00:00";
@@ -58,7 +59,7 @@ const ArkCountdown = () => {
         <Card className="bg-background/70 backdrop-blur-sm p-1.5 w-full text-center">
             <CardContent className="p-1">
                  <div className="relative w-full h-24 mb-2 commander-aura-glow">
-                    <Image src="https://i.imgur.com/fs3NHC9.png" alt="Star-Forge Ark" layout="fill" objectFit="contain" className="rounded-md" data-ai-hint="colony spaceship" />
+                    <Image src={images.ark.starforge_ark} alt="Star-Forge Ark" layout="fill" objectFit="contain" className="rounded-md" data-ai-hint="colony spaceship" />
                  </div>
                 <p className="text-xs text-muted-foreground">ARK LAUNCH IN:</p>
                 <div className="text-sm font-bold text-primary tabular-nums">
@@ -77,7 +78,7 @@ export default function HomePage() {
   const { playerProfile, isLoading, isInitialSetupDone, handleTap, refillTaps, currentSeason, toggleCommander, toggleMusic, isMusicPlaying, resetGame } = useGame();
   const { toast } = useToast();
   
-  const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
+  const spaceImageUrl = images.global.spaceBackground;
   
   if (isLoading) {
     return <IntroScreen />;
@@ -316,4 +317,3 @@ export default function HomePage() {
     </>
   );
 }
-

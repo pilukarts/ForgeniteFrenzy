@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -8,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Award, Timer, X } from 'lucide-react';
 import { useGame } from '@/contexts/GameContext';
+import images from '@/lib/placeholder-images.json';
 
 interface CommanderOrderProps {
   order: CommanderOrder;
@@ -30,8 +32,8 @@ const CommanderOrderBanner: React.FC<CommanderOrderProps> = ({ order, onClaim, o
   const [key, setKey] = React.useState(order.id);
 
   const commanderImgSrc = playerProfile?.commanderSex === 'male' 
-    ? "https://i.imgur.com/gB3i4OQ.png"
-    : "https://i.imgur.com/J3tG1e4.png";
+    ? images.commanders.male_headshot
+    : images.commanders.female_headshot;
   const commanderAlt = playerProfile?.commanderSex === 'male' ? 'Male Commander' : 'Female Commander';
   const commanderDataAiHint = playerProfile?.commanderSex === 'male' ? 'male commander headshot' : 'female commander headshot';
   

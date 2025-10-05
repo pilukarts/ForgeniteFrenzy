@@ -13,6 +13,7 @@ import IntroScreen from '@/components/intro/IntroScreen';
 import { useToast } from '@/hooks/use-toast';
 import { REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES } from '@/lib/gameData';
 import Image from 'next/image';
+import images from '@/lib/placeholder-images.json';
 
 const auronPackages = [
   { id: 'auron_pack_1', amount: 100, price: 0.99, bestValue: false, icon: Gem },
@@ -96,7 +97,7 @@ const MarketplacePage: React.FC = () => {
             <section className="mb-6 sm:mb-8">
                  <Card className="bg-blue-500/10 border-blue-400/50 text-card-foreground shadow-lg flex flex-col items-center p-4">
                     <CardHeader className="items-center text-center p-2">
-                         <Image src="https://i.imgur.com/uNEP2fT.png" alt="Telegram Wallet" width={48} height={48} data-ai-hint="telegram wallet" />
+                         <Image src={images.ui.telegram_wallet} alt="Telegram Wallet" width={48} height={48} data-ai-hint="telegram wallet" />
                         <CardTitle className="text-lg sm:text-xl font-semibold text-blue-300 mt-2">Connect Telegram Wallet</CardTitle>
                         <CardDescription className="text-base text-muted-foreground mt-1">
                             Connect your wallet to purchase Auron with Toncoin (TON).

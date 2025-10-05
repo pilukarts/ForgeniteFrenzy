@@ -16,6 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { UserCircle } from 'lucide-react';
 import { countries } from '@/lib/countries';
 import { formatDistanceToNow, parseISO } from 'date-fns';
+import images from '@/lib/placeholder-images.json';
 
 interface LeaderboardTableProps {
     initialLeaderboardData: LeaderboardEntry[];
@@ -91,7 +92,7 @@ const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ initialLeaderboardD
                     data.map((entry) => {
                         const { Icon: LeagueIcon, colorClass: leagueColorClass } = getLeagueIconAndColor(entry.playerLeague);
                         const flagSrc = `https://flags.fmcdn.net/data/flags/w580/${entry.country?.toLowerCase()}.png`;
-                        const avatarSrc = entry.avatarUrl || "https://picsum.photos/seed/default/200";
+                        const avatarSrc = entry.avatarUrl || images.generic.default_avatar;
                         const dataAiHint = "commander portrait";
 
                         return (

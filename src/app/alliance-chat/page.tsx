@@ -11,6 +11,7 @@ import { SendHorizonal, UserCircle } from 'lucide-react';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import IntroScreen from '@/components/intro/IntroScreen';
 import { cn } from '@/lib/utils';
+import images from '@/lib/placeholder-images.json';
 
 // Helper to generate a simple unique ID compatible with all environments
 const generateUniqueId = () => `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
@@ -32,7 +33,7 @@ const AllianceChatPage: React.FC = () => {
           content: 'Welcome to the Alliance Strategic Comms, Commander. Coordinate with your allies here.',
           timestamp: Date.now() - 20000,
           isPlayer: false,
-          senderAvatar: 'https://i.imgur.com/8D3wW8E.png' // AI icon
+          senderAvatar: images.core.ai_icon
         },
         {
           id: generateUniqueId(),
@@ -41,7 +42,7 @@ const AllianceChatPage: React.FC = () => {
           content: 'Glad to be here. Let\'s push for the next objective!',
           timestamp: Date.now() - 10000,
           isPlayer: false,
-          senderAvatar: 'https://i.imgur.com/gB3i4OQ.png' // Generic male commander
+          senderAvatar: images.commanders.male_portrait
         },
       ]);
     }
@@ -86,9 +87,9 @@ const AllianceChatPage: React.FC = () => {
 
   const getAvatarSrc = (msg: ChatMessage) => {
     if (msg.isPlayer) {
-        return playerProfile.commanderSex === 'male' ? "https://i.imgur.com/gB3i4OQ.png" : "https://i.imgur.com/J3tG1e4.png";
+        return playerProfile.commanderSex === 'male' ? images.commanders.male_portrait : images.commanders.female_portrait;
     }
-    return msg.senderAvatar || "https://i.imgur.com/8D3wW8E.png";
+    return msg.senderAvatar || images.generic.default_avatar;
   }
    const getAvatarHint = (msg: ChatMessage) => {
     if (msg.isPlayer && playerProfile) { 

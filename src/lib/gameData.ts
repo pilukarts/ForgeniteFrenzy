@@ -1,7 +1,7 @@
 
-
 import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate, LeagueName, LeagueTier, BattlePass, LevelStage, SelectableAvatar } from './types';
 import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle, Shield, ShieldCheck, Award, Star, Crown, LucideIcon, Swords, Shirt, Replace } from 'lucide-react';
+import images from './placeholder-images.json';
 
 export const SEASONS_DATA: Season[] = [
   {
@@ -301,32 +301,32 @@ export const BATTLE_PASS_DATA: BattlePass = {
 };
 
 export const LEVEL_STAGES: LevelStage[] = [
-    { name: 'SILVER STAGE', startLevel: 1, endLevel: 49, colors: { primary: TIER_COLORS_HSL.SILVER, fill: '210 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/kG03t4j.jpeg', aiHint: 'silver nebula' },
-    { name: 'CYAN SECTOR', startLevel: 50, endLevel: 99, colors: { primary: TIER_COLORS_HSL.CYAN, fill: '180 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/w9zL2H6.jpeg', aiHint: 'cyan nebula' },
-    { name: 'JADE NEBULA', startLevel: 100, endLevel: 199, colors: { primary: TIER_COLORS_HSL.GREEN_LIGHT, fill: '120 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/iR3u1a5.jpeg', aiHint: 'green nebula' },
-    { name: 'VIOLET ABYSS', startLevel: 200, endLevel: 299, colors: { primary: TIER_COLORS_HSL.PURPLE, fill: '270 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/sSct2iC.jpeg', aiHint: 'purple nebula' },
-    { name: 'CORAL EXPANSE', startLevel: 300, endLevel: 499, colors: { primary: TIER_COLORS_HSL.CORAL, fill: '16 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/2s4oXgG.jpeg', aiHint: 'orange nebula' },
-    { name: 'INFERNO REALM', startLevel: 500, endLevel: 749, colors: { primary: TIER_COLORS_HSL.FIERY_RED, fill: '0 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/G5i6hJ5.jpeg', aiHint: 'red nebula' },
-    { name: 'AETHERIS CORE', startLevel: 750, endLevel: 999, colors: { primary: TIER_COLORS_HSL.GOLD, fill: '45 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/i8hGqA1.jpeg', aiHint: 'gold nebula' },
-    { name: 'VOID OF STARS', startLevel: 1000, endLevel: 1999, colors: { primary: '240 50% 70%', fill: '240 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/S5Tj8pA.jpeg', aiHint: 'dark space' },
-    { name: 'EMERALD CHASM', startLevel: 2000, endLevel: 3999, colors: { primary: '145 70% 50%', fill: '145 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/X4sWk5n.jpeg', aiHint: 'emerald galaxy' },
-    { name: 'RUBY VEIL', startLevel: 4000, endLevel: 6999, colors: { primary: '350 80% 60%', fill: '350 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/M6eCg2C.jpeg', aiHint: 'ruby galaxy' },
-    { name: 'CELESTIAL FORGE', startLevel: 7000, endLevel: 10000, colors: { primary: '0 0% 100%', fill: '0 0% 20%' }, backgroundImageUrl: 'https://i.imgur.com/yO8m88A.jpeg', aiHint: 'white galaxy' },
-    { name: 'OMEGA CLUSTER', startLevel: 10001, endLevel: 15000, colors: { primary: '300 100% 80%', fill: '300 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/5Jp9J5N.jpeg', aiHint: 'pink nebula' },
-    { name: 'HYPERION RIFT', startLevel: 15001, endLevel: 25000, colors: { primary: '210 100% 70%', fill: '210 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/v8tTj8H.jpeg', aiHint: 'light blue space' },
-    { name: 'GALACTIC CORE', startLevel: 25001, endLevel: 50000, colors: { primary: '60 100% 50%', fill: '60 25% 15%' }, backgroundImageUrl: 'https://i.imgur.com/Z7o5p6Y.jpeg', aiHint: 'bright galaxy core' },
+    { name: 'SILVER STAGE', startLevel: 1, endLevel: 49, colors: { primary: TIER_COLORS_HSL.SILVER, fill: '210 25% 15%' }, backgroundImageUrl: images.nfts.aegis_frigate, aiHint: 'silver nebula' },
+    { name: 'CYAN SECTOR', startLevel: 50, endLevel: 99, colors: { primary: TIER_COLORS_HSL.CYAN, fill: '180 25% 15%' }, backgroundImageUrl: images.nfts.javelin_destroyer, aiHint: 'cyan nebula' },
+    { name: 'JADE NEBULA', startLevel: 100, endLevel: 199, colors: { primary: TIER_COLORS_HSL.GREEN_LIGHT, fill: '120 25% 15%' }, backgroundImageUrl: images.nfts.leviathan_carrier, aiHint: 'green nebula' },
+    { name: 'VIOLET ABYSS', startLevel: 200, endLevel: 299, colors: { primary: TIER_COLORS_HSL.PURPLE, fill: '270 25% 15%' }, backgroundImageUrl: images.nfts.starforge_ark_nft, aiHint: 'purple nebula' },
+    { name: 'CORAL EXPANSE', startLevel: 300, endLevel: 499, colors: { primary: TIER_COLORS_HSL.CORAL, fill: '16 25% 15%' }, backgroundImageUrl: images.global.spaceBackground, aiHint: 'orange nebula' },
+    { name: 'INFERNO REALM', startLevel: 500, endLevel: 749, colors: { primary: TIER_COLORS_HSL.FIERY_RED, fill: '0 25% 15%' }, backgroundImageUrl: images.global.spaceBackground, aiHint: 'red nebula' },
+    { name: 'AETHERIS CORE', startLevel: 750, endLevel: 999, colors: { primary: TIER_COLORS_HSL.GOLD, fill: '45 25% 15%' }, backgroundImageUrl: images.global.spaceBackground, aiHint: 'gold nebula' },
+    { name: 'VOID OF STARS', startLevel: 1000, endLevel: 1999, colors: { primary: '240 50% 70%', fill: '240 25% 15%' }, backgroundImageUrl: images.global.spaceBackground, aiHint: 'dark space' },
+    { name: 'EMERALD CHASM', startLevel: 2000, endLevel: 3999, colors: { primary: '145 70% 50%', fill: '145 25% 15%' }, backgroundImageUrl: images.global.spaceBackground, aiHint: 'emerald galaxy' },
+    { name: 'RUBY VEIL', startLevel: 4000, endLevel: 6999, colors: { primary: '350 80% 60%', fill: '350 25% 15%' }, backgroundImageUrl: images.global.spaceBackground, aiHint: 'ruby galaxy' },
+    { name: 'CELESTIAL FORGE', startLevel: 7000, endLevel: 10000, colors: { primary: '0 0% 100%', fill: '0 0% 20%' }, backgroundImageUrl: images.global.spaceBackground, aiHint: 'white galaxy' },
+    { name: 'OMEGA CLUSTER', startLevel: 10001, endLevel: 15000, colors: { primary: '300 100% 80%', fill: '300 25% 15%' }, backgroundImageUrl: images.global.spaceBackground, aiHint: 'pink nebula' },
+    { name: 'HYPERION RIFT', startLevel: 15001, endLevel: 25000, colors: { primary: '210 100% 70%', fill: '210 25% 15%' }, backgroundImageUrl: images.global.spaceBackground, aiHint: 'light blue space' },
+    { name: 'GALACTIC CORE', startLevel: 25001, endLevel: 50000, colors: { primary: '60 100% 50%', fill: '60 25% 15%' }, backgroundImageUrl: images.global.spaceBackground, aiHint: 'bright galaxy core' },
 ];
 
 export const SELECTABLE_AVATARS: SelectableAvatar[] = [
     {
-      portraitUrl: "https://i.imgur.com/Wq9PqxG.png",
-      fullBodyUrl: "https://i.imgur.com/CDaaV86.png",
+      portraitUrl: images.commanders.male_portrait,
+      fullBodyUrl: images.commanders.male_full,
       sex: 'male',
       hint: 'male commander headshot',
     },
     {
-      portraitUrl: "https://i.imgur.com/BOKoTIM.png",
-      fullBodyUrl: "https://i.imgur.com/5PkLY8Q.png",
+      portraitUrl: images.commanders.female_portrait,
+      fullBodyUrl: images.commanders.female_full,
       sex: 'female',
       hint: 'female commander headshot',
     },
@@ -334,10 +334,6 @@ export const SELECTABLE_AVATARS: SelectableAvatar[] = [
 
 // This list is only kept for backwards compatibility or reference, but is not actively used in the setup logic.
 export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; }[] = [
-    { url: "https://i.imgur.com/CDaaV86.png", sex: 'male' }, // Full Body
-    { url: "https://i.imgur.com/5PkLY8Q.png", sex: 'female' }, // Full Body
+    { url: images.commanders.male_full, sex: 'male' }, // Full Body
+    { url: images.commanders.female_full, sex: 'female' }, // Full Body
 ];
-
-
-
-    

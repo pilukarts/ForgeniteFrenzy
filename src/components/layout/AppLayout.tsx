@@ -15,6 +15,7 @@ import PlayerSetup from '../player/PlayerSetup';
 import PreIntroScreen from '../intro/PreIntroScreen';
 import SidebarNav from '../navigation/SidebarNav';
 import { Card, CardContent } from '@/components/ui/card';
+import images from '@/lib/placeholder-images.json';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -82,7 +83,7 @@ const TapStatusCard: React.FC = () => {
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const { playerProfile, connectWallet, currentSeason, isLoading, isInitialSetupDone, completeInitialSetup } = useGame();
-  const spaceImageUrl = "https://i.imgur.com/foWm9FG.jpeg";
+  const spaceImageUrl = images.global.spaceBackground;
   
   if (isLoading) {
     return <IntroScreen />;
