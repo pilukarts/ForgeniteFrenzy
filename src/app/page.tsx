@@ -78,7 +78,7 @@ export default function HomePage() {
   const { playerProfile, isLoading, isInitialSetupDone, handleTap, refillTaps, currentSeason, toggleCommander, toggleMusic, isMusicPlaying, resetGame } = useGame();
   const { toast } = useToast();
   
-  const spaceImageUrl = images.global.spaceBackground;
+  const spaceImageUrl = images.global.mainScreenBackground;
   
   if (isLoading) {
     return <IntroScreen />;
@@ -215,7 +215,7 @@ export default function HomePage() {
                    <div 
                       className="absolute inset-0 bg-cover bg-center animate-pan-background"
                       style={{ backgroundImage: `url('${spaceImageUrl}')` }}
-                      data-ai-hint="futuristic space background"
+                      data-ai-hint="futuristic cockpit window with planet"
                   />
                   {/* Shooting Stars Container */}
                   <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
