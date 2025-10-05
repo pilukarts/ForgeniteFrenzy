@@ -1,28 +1,28 @@
 {
   "global": {
     "spaceBackground": "/images/global/space-background.jpg",
-    "background1": "/images/global/background1.jpg",
-    "background2": "/images/global/background2.jpg",
-    "background3": "/images/global/background3.jpg",
-    "background4": "/images/global/background4.jpg",
-    "background5": "/images/global/background5.jpg",
-    "background6": "/images/global/background6.jpg",
-    "background7": "/images/global/background7.jpg",
+    "background1": "/images/global/background1.png",
+    "background2": "/images/global/background2.png",
+    "background3": "/images/global/background3.png",
+    "background4": "/images/global/background4.png",
+    "background5": "/images/global/background5.png",
+    "background6": "/images/global/background6.png",
+    "background7": "/images/global/background7.png",
     "mainScreenBackground": "/images/global/main_screen.jpg"
   },
   "commanders": {
     "male_full": "/images/commanders/commander-man-full.png",
-    "male_portrait": "/images/commanders/profile-man.png",
+    "male_portrait": "/images/commanders/avatar-profile-man.png",
     "male_headshot": "/images/commanders/male_headshot.png",
     "female_full": "/images/commanders/commander-woman-full.png",
-    "female_portrait": "/images/commanders/profile-lady.png",
+    "female_portrait": "/images/commanders/avatar-profile-lady.png",
     "female_headshot": "/images/commanders/female_headshot.png"
   },
   "core": {
     "ai_icon": "/images/core/ai_icon.png"
   },
   "ark": {
-    "starforge_ark": "/images/ark/starforge_ark.png"
+    "starforge_ark": "/images/ark/ark.png"
   },
   "nfts": {
     "aegis_frigate": "/images/nfts/aegis_frigate.png",
