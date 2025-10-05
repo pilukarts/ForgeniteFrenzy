@@ -4,6 +4,10 @@
     "background1": "/images/global/background1.jpg",
     "background2": "/images/global/background2.jpg",
     "background3": "/images/global/background3.jpg",
+    "background4": "/images/global/background4.jpg",
+    "background5": "/images/global/background5.jpg",
+    "background6": "/images/global/background6.jpg",
+    "background7": "/images/global/background7.jpg",
     "mainScreenBackground": "/images/global/main_screen.jpg"
   },
   "commanders": {
