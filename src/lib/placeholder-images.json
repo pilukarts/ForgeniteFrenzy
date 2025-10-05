@@ -1,6 +1,9 @@
 {
   "global": {
-    "spaceBackground": "/images/global/space-background.jpg"
+    "spaceBackground": "/images/global/space-background.jpg",
+    "background1": "/images/global/background1.jpg",
+    "background2": "/images/global/background2.jpg",
+    "background3": "/images/global/background3.jpg"
   },
   "commanders": {
     "male_full": "/images/commanders/male_full.png",

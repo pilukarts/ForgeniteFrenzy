@@ -26,42 +26,18 @@ const LevelMapPage: React.FC = () => {
     
     const currentStage = getStageForLevel(playerProfile.level);
 
-    // Function to generate the dynamic SVG hexagon pattern
-    const generateHexagonPattern = (primaryColor: string, fillColor: string) => {
-      const svg = `
-        <svg xmlns='http://www.w3.org/2000/svg' width='60' height='69.28'>
-          <defs>
-            <pattern id='hex' patternUnits='userSpaceOnUse' width='60' height='69.28' viewBox='0 -11.54 60 69.28'>
-              <g id='hexagon'>
-                <path 
-                  stroke='hsl(${primaryColor})' 
-                  stroke-width='1.5' 
-                  fill='hsl(${fillColor})' 
-                  d='M30 0 l30 17.32 v34.64 l-30 17.32 l-30 -17.32 v-34.64 Z' />
-              </g>
-            </pattern>
-          </defs>
-          <rect width='100%' height='100%' fill='url(#hex)'/>
-        </svg>
-      `;
-      // Use Buffer to handle Base64 encoding in all environments
-      return `url('data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}')`;
-    };
-
-    const hexPatternUrl = generateHexagonPattern(currentStage.colors.primary, currentStage.colors.fill);
-
     const dynamicBackgroundStyle = {
-      backgroundImage: hexPatternUrl,
-      backgroundSize: 'auto', // Let the pattern repeat at its natural size
-      opacity: 0.2, // Make it a subtle background
+      backgroundImage: `url(${currentStage.backgroundImageUrl})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
     };
 
   return (
     <>
       <div className="h-full w-full flex flex-col relative overflow-hidden">
-        {/* Layer 1: Dynamic Hexagon Background */}
+        {/* Layer 1: Dynamic Background Image */}
         <div 
-          className="absolute inset-0 bg-background z-0 transition-all duration-1000 ease-in-out"
+          className="absolute inset-0 z-0 transition-all duration-1000 ease-in-out"
           style={dynamicBackgroundStyle}
         />
         
