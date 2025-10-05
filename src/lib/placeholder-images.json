@@ -1,14 +1,14 @@
 {
   "global": {
     "spaceBackground": "/images/global/space-background.jpg",
+    "mainScreenBackground": "/images/global/main_screen.png",
     "background1": "/images/global/background1.png",
     "background2": "/images/global/background2.png",
     "background3": "/images/global/background3.png",
     "background4": "/images/global/background4.png",
     "background5": "/images/global/background5.png",
     "background6": "/images/global/background6.png",
-    "background7": "/images/global/background7.png",
-    "mainScreenBackground": "/images/global/main_screen.jpg"
+    "background7": "/images/global/background7.png"
   },
   "commanders": {
     "male_full": "/images/commanders/commander-man-full.png",
