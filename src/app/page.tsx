@@ -119,8 +119,21 @@ export default function HomePage() {
   return (
     <>
       <div className="relative flex flex-col h-full overflow-hidden flex-grow">
+          {/* Background Layer */}
+          <div 
+              className="absolute inset-0 bg-cover bg-center animate-pan-background z-0"
+              style={{ backgroundImage: `url('${spaceImageUrl}')` }}
+              data-ai-hint="futuristic cockpit window with planet"
+          />
+          {/* Shooting Stars Container */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
+              <div className="shooting-star"></div>
+              <div className="shooting-star"></div>
+              <div className="shooting-star"></div>
+          </div>
+          
           {/* UI and Game Content */}
-          <div className="relative z-10 w-full flex flex-grow items-stretch justify-center">
+          <div className="relative z-20 w-full flex flex-grow items-stretch justify-center">
              
               {/* Left Action Bar */}
               <motion.div 
@@ -212,17 +225,7 @@ export default function HomePage() {
 
               {/* Main Viewport */}
               <div className="flex-grow flex flex-col items-center justify-center rounded-lg overflow-hidden relative border-2 border-border/20 bg-black max-w-md">
-                   <div 
-                      className="absolute inset-0 bg-cover bg-center animate-pan-background"
-                      style={{ backgroundImage: `url('${spaceImageUrl}')` }}
-                      data-ai-hint="futuristic cockpit window with planet"
-                  />
-                  {/* Shooting Stars Container */}
-                  <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
-                      <div className="shooting-star"></div>
-                      <div className="shooting-star"></div>
-                      <div className="shooting-star"></div>
-                  </div>
+                   
                   <motion.div 
                       initial={{ scale: 0.5, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
@@ -317,3 +320,5 @@ export default function HomePage() {
     </>
   );
 }
+
+    
