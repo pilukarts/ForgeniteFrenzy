@@ -1,32 +1,32 @@
 {
   "global": {
-    "spaceBackground": "https://picsum.photos/seed/space/1920/1080"
+    "spaceBackground": "https://picsum.photos/seed/scifi_space/1920/1080"
   },
   "commanders": {
-    "male_full": "https://picsum.photos/seed/cmdrMaleFull/400/600",
-    "male_portrait": "https://picsum.photos/seed/cmdrMalePort/200/200",
-    "female_full": "https://picsum.photos/seed/cmdrFemaleFull/400/600",
-    "female_portrait": "https://picsum.photos/seed/cmdrFemalePort/200/200",
-    "male_headshot": "https://picsum.photos/seed/cmdrMaleHead/200/200",
-    "female_headshot": "https://picsum.photos/seed/cmdrFemaleHead/200/200"
+    "male_full": "https://picsum.photos/seed/scifi_male_full/400/600",
+    "male_portrait": "https://picsum.photos/seed/scifi_male_portrait/200/200",
+    "female_full": "https://picsum.photos/seed/scifi_female_full/400/600",
+    "female_portrait": "https://picsum.photos/seed/scifi_female_portrait/200/200",
+    "male_headshot": "https://picsum.photos/seed/scifi_male_head/200/200",
+    "female_headshot": "https://picsum.photos/seed/scifi_female_head/200/200"
   },
   "core": {
-    "ai_icon": "https://picsum.photos/seed/coreIcon/200/200"
+    "ai_icon": "https://picsum.photos/seed/scifi_ai_icon/200/200"
   },
   "ark": {
-    "starforge_ark": "https://picsum.photos/seed/ark/800/450",
-    "colony_ship": "https://picsum.photos/seed/colonyShip/600/400"
+    "starforge_ark": "https://picsum.photos/seed/scifi_ark/800/450",
+    "colony_ship": "https://picsum.photos/seed/scifi_colony_ship/600/400"
   },
   "nfts": {
-    "aegis_frigate": "https://picsum.photos/seed/nftAegis/800/450",
-    "javelin_destroyer": "https://picsum.photos/seed/nftJavelin/800/450",
-    "leviathan_carrier": "https://picsum.photos/seed/nftLeviathan/800/450",
-    "starforge_ark_nft": "https://picsum.photos/seed/nftArk/800/450"
+    "aegis_frigate": "https://picsum.photos/seed/scifi_frigate/800/450",
+    "javelin_destroyer": "https://picsum.photos/seed/scifi_destroyer/800/450",
+    "leviathan_carrier": "https://picsum.photos/seed/scifi_carrier/800/450",
+    "starforge_ark_nft": "https://picsum.photos/seed/scifi_ark_nft/800/450"
   },
   "ui": {
-    "telegram_wallet": "https://picsum.photos/seed/tgWallet/100/100"
+    "telegram_wallet": "https://picsum.photos/seed/scifi_wallet_icon/100/100"
   },
   "generic": {
-    "default_avatar": "https://picsum.photos/seed/defaultAvatar/200/200"
+    "default_avatar": "https://picsum.photos/seed/scifi_default_avatar/200/200"
   }
 }
