@@ -7,15 +7,15 @@
     "background3": "/images/global/background3.jpg",
     "background4": "/images/global/background4.jpg",
     "background5": "/images/global/background5.jpg",
-    "background6": "/images/global/background6.jpg",
+    "background6": "/images/global/background6.png",
     "background7": "/images/global/background7.jpg"
   },
   "commanders": {
     "male_full": "/images/commanders/commander-man-full.png",
-    "male_portrait": "/images/commanders/avatar-profile-man.png",
+    "male_portrait": "/images/global/avatar-profile-man.png",
     "male_headshot": "/images/commanders/male_headshot.png",
     "female_full": "/images/commanders/commander-woman-full.png",
-    "female_portrait": "/images/commanders/avatar-profile-lady.png",
+    "female_portrait": "/images/global/avatar-profile-lady.png",
     "female_headshot": "/images/commanders/female_headshot.png"
   },
   "core": {
