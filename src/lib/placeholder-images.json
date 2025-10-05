@@ -1,7 +1,7 @@
 {
   "global": {
     "spaceBackground": "/images/global/space-background.jpg",
-    "mainScreenBackground": "/images/global/main_screen.jpg",
+    "mainScreenBackground": "/images/global/main_screen.png",
     "background1": "/images/global/background1.jpg",
     "background2": "/images/global/background2.jpg",
     "background3": "/images/global/background3.jpg",
