@@ -30,6 +30,7 @@ const LevelMapPage: React.FC = () => {
       backgroundImage: `url(${currentStage.backgroundImageUrl})`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
+      filter: 'brightness(40%)',
     };
 
   return (
