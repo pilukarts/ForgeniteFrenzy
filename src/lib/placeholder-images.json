@@ -11,10 +11,10 @@
     "background7": "/images/global/background7.jpg"
   },
   "commanders": {
-    "male_full": "/images/commanders/commander-man-full.png",
+    "male_full": "/images/global/commander-man-full.png",
     "male_portrait": "/images/global/avatar-profile-man.png",
     "male_headshot": "/images/commanders/male_headshot.png",
-    "female_full": "/images/commanders/commander-woman-full.png",
+    "female_full": "/images/global/commander-woman-full.png",
     "female_portrait": "/images/global/avatar-profile-lady.png",
     "female_headshot": "/images/commanders/female_headshot.png"
   },
