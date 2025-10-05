@@ -16,15 +16,18 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
   const [isTapped, setIsTapped] = useState(false);
 
   // The full-body image is now used for the main game view tap area.
-  const imageUrl = playerProfile?.avatarUrl;
+  const baseImageUrl = playerProfile?.avatarUrl;
 
-  if (!playerProfile || !imageUrl) {
+  if (!playerProfile || !baseImageUrl) {
     return (
       <div className="relative w-64 h-80 sm:w-72 sm:h-96 flex items-center justify-center">
         <Skeleton className="w-full h-full" />
       </div>
     );
   }
+  
+  // Cache-busting: append a timestamp to ensure the latest image is always fetched.
+  const imageUrl = `${baseImageUrl}?t=${new Date().getTime()}`;
   
   const altText = `Commander ${playerProfile.name}`;
   const dataAiHint = playerProfile.commanderSex === 'male' ? "male commander full body" : "female commander full body";
