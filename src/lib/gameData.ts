@@ -1,4 +1,5 @@
 
+
 import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate, LeagueName, LeagueTier, BattlePass, LevelStage, SelectableAvatar } from './types';
 import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle, Shield, ShieldCheck, Award, Star, Crown, LucideIcon, Swords, Shirt, Replace } from 'lucide-react';
 import images from './placeholder-images.json';
@@ -302,8 +303,8 @@ export const BATTLE_PASS_DATA: BattlePass = {
 
 export const LEVEL_STAGES: LevelStage[] = [
     { name: 'SILVER STAGE', startLevel: 1, endLevel: 49, colors: { primary: TIER_COLORS_HSL.SILVER, fill: '210 25% 15%' }, backgroundImageUrl: images.global.background1, aiHint: 'silver nebula' },
-    { name: 'CYAN SECTOR', startLevel: 50, endLevel: 99, colors: { primary: TIER_COLORS_HSL.CYAN, fill: '180 25% 15%' }, backgroundImageUrl: images.global.background2, aiHint: 'cyan nebula' },
-    { name: 'JADE NEBULA', startLevel: 100, endLevel: 199, colors: { primary: TIER_COLORS_HSL.GREEN_LIGHT, fill: '120 25% 15%' }, backgroundImageUrl: images.global.background3, aiHint: 'green nebula' },
+    { name: 'CYAN SECTOR', startLevel: 50, endLevel: 99, colors: { primary: TIER_COLORS_HSL.CYAN, fill: '180 25% 15%' }, backgroundImageUrl: images.global.background3, aiHint: 'cyan nebula' },
+    { name: 'JADE NEBULA', startLevel: 100, endLevel: 199, colors: { primary: TIER_COLORS_HSL.GREEN_LIGHT, fill: '120 25% 15%' }, backgroundImageUrl: images.global.background2, aiHint: 'green nebula' },
     { name: 'VIOLET ABYSS', startLevel: 200, endLevel: 299, colors: { primary: TIER_COLORS_HSL.PURPLE, fill: '270 25% 15%' }, backgroundImageUrl: images.global.background4, aiHint: 'purple nebula' },
     { name: 'CORAL EXPANSE', startLevel: 300, endLevel: 499, colors: { primary: TIER_COLORS_HSL.CORAL, fill: '16 25% 15%' }, backgroundImageUrl: images.global.background5, aiHint: 'orange nebula' },
     { name: 'INFERNO REALM', startLevel: 500, endLevel: 749, colors: { primary: TIER_COLORS_HSL.FIERY_RED, fill: '0 25% 15%' }, backgroundImageUrl: images.global.background6, aiHint: 'red nebula' },
@@ -337,5 +338,6 @@ export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; }[] = [
     { url: images.commanders.male_full, sex: 'male' }, // Full Body
     { url: images.commanders.female_full, sex: 'female' }, // Full Body
 ];
+
 
 
