@@ -11,11 +11,11 @@
     "mainScreenBackground": "/images/global/main_screen.jpg"
   },
   "commanders": {
-    "male_full": "/images/commanders/male_full.png",
-    "male_portrait": "/images/commanders/male_portrait.png",
+    "male_full": "/images/commanders/commander-man-full.png",
+    "male_portrait": "/images/commanders/profile-man.png",
     "male_headshot": "/images/commanders/male_headshot.png",
-    "female_full": "/images/commanders/female_full.png",
-    "female_portrait": "/images/commanders/female_portrait.png",
+    "female_full": "/images/commanders/commander-woman-full.png",
+    "female_portrait": "/images/commanders/profile-lady.png",
     "female_headshot": "/images/commanders/female_headshot.png"
   },
   "core": {
