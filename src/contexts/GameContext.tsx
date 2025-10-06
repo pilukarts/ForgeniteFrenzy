@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { getCoreBriefing } from '@/ai/flows/core-briefings';
 import { getCoreLoreSnippet } from '@/ai/flows/core-lore-snippets';
 import { getCoreProgressUpdate } from '@/ai/flows/core-progress-updates';
-import { askCore, CoreAskInput } from '@/ai/flows/core-ask-question';
+import { askCore as askCoreFlow, CoreAskInput } from '@/ai/flows/core-ask-question';
 import { syncPlayerProfileInFirestore } from '@/lib/firestore';
 
 // --- Constants ---
@@ -62,6 +62,10 @@ export interface GameContextType {
   connectTelegramWallet: () => void;
   purchaseWithTelegramWallet: (pkg: { amount: number; price: number }) => void;
   askCore: (question: string) => Promise<void>;
+  isOpen: boolean; // CORE panel state
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  hasUnread: boolean;
+  setHasUnread: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 // --- Context Creation ---
@@ -124,10 +128,11 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isTelegramEnv, setIsTelegramEnv] = useState(false);
   const musicRef = useRef<HTMLAudioElement | null>(null);
   const tapSoundRef = useRef<HTMLAudioElement | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [hasUnread, setHasUnread] = useState(false);
 
   const { toast } = useToast();
   
-  // Game Initialization Logic
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -441,8 +446,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (isLogoTap) addCoreMessage({ type: 'system_alert', content: `Precision Strike! Bonus points awarded.` });
       else if (isCritical) addCoreMessage({ type: 'system_alert', content: `Critical Tap! Power amplified.` });
 
-      // Directly call the logic from addPoints instead of calling addPoints to avoid nested state updates.
-      // This is a simplified version of addPoints logic for taps.
       updatedProfile.points += finalAmount;
       updatedProfile.seasonProgress[currentSeason.id] = (updatedProfile.seasonProgress[currentSeason.id] || 0) + finalAmount;
       let newXp = updatedProfile.xp + finalAmount;
@@ -691,7 +694,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           seasonObjective: currentSeason.coreBriefingObjective,
         },
       };
-      const response = await askCore(input);
+      const response = await askCoreFlow(input);
       addCoreMessage({ type: 'answer', content: response.answer });
     } catch (error) {
       console.error('Error asking C.O.R.E.:', error);
@@ -704,14 +707,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     if (playerProfile && isInitialSetupDone) {
-      // Create a serializable version of the profile
       const profileToSave = {
         ...playerProfile,
-        // Remove non-serializable data before saving
         activeDailyQuests: playerProfile.activeDailyQuests.map(({ icon, ...rest }) => rest),
       };
-
-      // Save to Firebase
       syncPlayerProfileInFirestore(profileToSave).catch(error => {
         console.error("Firestore sync failed:", error);
         toast({
@@ -720,8 +719,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             variant: "destructive"
         });
       });
-
-      // Save to localStorage as a fallback
       try {
         localStorage.setItem('playerProfile', JSON.stringify(profileToSave));
       } catch (e) {
@@ -749,6 +746,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     isTelegramEnv, connectTelegramWallet, purchaseWithTelegramWallet,
     purchaseMarketplaceItem,
     askCore,
+    isOpen,
+    setIsOpen,
+    hasUnread,
+    setHasUnread
   };
 
   return <GameContext.Provider value={contextValue}>{children}</GameContext.Provider>;
