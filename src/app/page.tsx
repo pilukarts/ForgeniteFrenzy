@@ -78,7 +78,7 @@ export default function HomePage() {
   const { playerProfile, isLoading, isInitialSetupDone, handleTap, refillTaps, currentSeason, toggleCommander, toggleMusic, isMusicPlaying, resetGame } = useGame();
   const { toast } = useToast();
   
-  const spaceImageUrl = images.global.mainScreenBackground;
+  const spaceImageUrl = "/images/global/main_screen.png";
   
   if (isLoading) {
     return <IntroScreen />;
@@ -301,3 +301,5 @@ export default function HomePage() {
     </>
   );
 }
+
+    
