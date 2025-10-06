@@ -15,18 +15,16 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
   const { playerProfile } = useGame();
   const [isTapped, setIsTapped] = useState(false);
 
-  // The full-body image is now used for the main game view tap area.
   const baseImageUrl = playerProfile?.avatarUrl;
 
   if (!playerProfile || !baseImageUrl) {
     return (
-      <div className="relative w-64 h-80 sm:w-72 sm:h-96 flex items-center justify-center">
+      <div className="relative w-full h-full flex items-center justify-center">
         <Skeleton className="w-full h-full" />
       </div>
     );
   }
   
-  // Cache-busting: append a timestamp to ensure the latest image is always fetched.
   const imageUrl = `${baseImageUrl}?t=${new Date().getTime()}`;
   
   const altText = `Commander ${playerProfile.name}`;
@@ -42,11 +40,8 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
     setTimeout(() => setIsTapped(false), 200);
   };
   
-  // These values are percentages of the parent container's width and height.
-  // They define the position and size of the invisible logo tap area.
   const logoHitbox = playerProfile.commanderSex === 'female'
     ? { top: '38%', left: '41%', width: '18%', height: '10%' }
-    // Using the same hitbox for the mirrored male commander
     : { top: '38%', left: '41%', width: '18%', height: '10%' }; 
     
   const dynamicGlowStyle = {
@@ -58,9 +53,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
     <div 
       onClick={() => handleInteraction(false)} 
       className={cn(
-        "relative focus:outline-none transition-transform duration-100 cursor-pointer",
-        "w-64 h-80 sm:w-72 sm:h-96", // Default size for the portrait area
-        "flex items-center justify-center",
+        "relative focus:outline-none transition-transform duration-100 cursor-pointer w-full h-full",
         isTapped && "scale-105"
       )}
       aria-label="Tap Commander"
@@ -82,14 +75,14 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
               "object-contain transition-all duration-200"
             )}
             priority
-            key={playerProfile.avatarUrl} // Add key to force re-render on image URL change
+            key={playerProfile.avatarUrl}
             />
         </div>
 
         {/* Invisible button for the AF logo hotspot */}
         <button
             onClick={(e) => {
-                e.stopPropagation(); // Prevents the main div click from firing
+                e.stopPropagation(); 
                 handleInteraction(true);
             }}
             onTouchStart={(e) => {
@@ -101,7 +94,6 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
             className="absolute z-20 rounded-full"
             style={{
             top: logoHitbox.top,
-            // Adjust left position for the flipped male commander
             left: logoHitbox.left,
             width: logoHitbox.width,
             height: logoHitbox.height,
@@ -112,3 +104,5 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
 };
 
 export default CommanderPortrait;
+
+    

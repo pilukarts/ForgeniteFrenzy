@@ -198,20 +198,20 @@ export default function HomePage() {
               </motion.div>
 
               {/* Main Viewport */}
-              <div className="flex-grow flex flex-col items-center justify-center rounded-lg overflow-hidden relative max-w-md">
-                   
-                  <motion.div 
-                      initial={{ scale: 0.5, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: 0.2, type: 'spring' }}
-                      className="flex-grow flex flex-col items-center justify-center z-20 w-full"
-                  >
-                      <CommanderPortrait 
-                          onTap={() => handleTap(false)}
-                          onLogoTap={() => handleTap(true)}
-                      />
-                  </motion.div>
-              </div>
+                <div className="flex-grow flex flex-col items-center justify-end relative w-full h-full">
+                    <motion.div
+                        initial={{ y: 200, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.2, type: 'spring', stiffness: 50 }}
+                        className="relative w-full h-full max-h-[80vh] flex items-end justify-center"
+                    >
+                        <CommanderPortrait
+                            onTap={() => handleTap(false)}
+                            onLogoTap={() => handleTap(true)}
+                        />
+                    </motion.div>
+                </div>
+
 
               {/* Right Action Bar */}
                <motion.div 
