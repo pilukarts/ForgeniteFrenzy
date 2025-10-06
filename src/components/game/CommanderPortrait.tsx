@@ -79,7 +79,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
             data-ai-hint={dataAiHint}
             fill
             className={cn(
-              "object-contain transition-all duration-200 drop-shadow-2xl"
+              "object-contain transition-all duration-200"
             )}
             priority
             key={imageUrl} // Add key to force re-render on image URL change
