@@ -145,7 +145,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                             if (connected && account?.address && !playerProfile.isWalletConnected) {
                                 connectWallet(account.address);
                             }
-                        }, [connected, account?.address]);
+                        }, [connected, account?.address, connectWallet]);
 
                         return (
                           <div
