@@ -59,12 +59,9 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
       aria-label="Tap Commander"
       style={dynamicGlowStyle}
     >
-        {/* Dynamic Aura */}
-        <div className="absolute inset-0 commander-aura-glow z-0 pointer-events-none" />
-
-        {/* Main visual element for the whole commander */}
+        {/* Dynamic Aura - applies to the Image now */}
         <div
-            className="w-full h-full relative group z-10"
+            className="w-full h-full relative group z-10 commander-aura-glow"
         >
             <Image
             src={imageUrl}
