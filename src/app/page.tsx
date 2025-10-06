@@ -144,29 +144,10 @@ export default function HomePage() {
               >
                     <Dialog>
                       <DialogTrigger asChild>
-                          <Button variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
+                          <Button onClick={toggleCommander} variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
                               <Replace className="h-4 w-4" /> Switch Commander
                           </Button>
                       </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Switch Commander</DialogTitle>
-                          <DialogDescription>Select your active commander. This is a cosmetic change.</DialogDescription>
-                        </DialogHeader>
-                         <div className="flex justify-around py-4">
-                              {ALL_AVATARS.map(avatar => (
-                                  <Image 
-                                      key={avatar.url} 
-                                      src={avatar.url} 
-                                      alt={avatar.sex}
-                                      width={100} height={100} 
-                                      className={cn("rounded-full border-4 cursor-pointer", playerProfile.avatarUrl === avatar.url ? "border-primary" : "border-transparent opacity-70 hover:opacity-100")}
-                                      onClick={toggleCommander}
-                                      data-ai-hint={`${avatar.sex} commander portrait`}
-                                  />
-                              ))}
-                          </div>
-                      </DialogContent>
                     </Dialog>
 
                     <Button onClick={toggleMusic} variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full">
