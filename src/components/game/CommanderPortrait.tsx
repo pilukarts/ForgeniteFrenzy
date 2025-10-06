@@ -82,7 +82,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
               "object-contain transition-all duration-200"
             )}
             priority
-            key={imageUrl} // Add key to force re-render on image URL change
+            key={playerProfile.avatarUrl} // Add key to force re-render on image URL change
             />
         </div>
 
