@@ -15,7 +15,6 @@ import PlayerSetup from '../player/PlayerSetup';
 import PreIntroScreen from '../intro/PreIntroScreen';
 import SidebarNav from '../navigation/SidebarNav';
 import { Card, CardContent } from '@/components/ui/card';
-import images from '@/lib/placeholder-images.json';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -104,7 +103,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     <div 
       className="flex flex-col min-h-screen text-foreground items-center justify-center"
       style={{
-        backgroundImage: `url('${images.global.main_scene}')`,
+        backgroundImage: "url('/images/global/main_scene.jpg')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         animation: 'pan-background-global 90s linear infinite',

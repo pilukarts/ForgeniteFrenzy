@@ -89,7 +89,7 @@ const CoreDisplay: React.FC = () => {
         )}
         aria-label="Toggle C.O.R.E. Interface"
       >
-        <Image src={images.core.ai_icon} alt="C.O.R.E." width={40} height={40} className="object-contain" data-ai-hint="colony spaceship"/>
+        <Image src={images.core.ai_icon} alt="C.O.R.E." width={40} height={40} className="object-contain" data-ai-hint="ai hexagon"/>
         {hasUnread && !isOpen && (
           <span className="absolute top-0 right-0 block h-3 w-3 rounded-full bg-accent ring-2 ring-background" />
         )}
@@ -106,7 +106,7 @@ const CoreDisplay: React.FC = () => {
       >
         <div className={cn("flex items-center justify-between p-3 border-b border-[hsla(var(--dynamic-core-color)/0.3)]")}>
           <div className="flex items-center gap-2">
-            <Image src={images.core.ai_icon} alt="C.O.R.E." width={28} height={28} className="object-contain" data-ai-hint="colony spaceship"/>
+            <Image src={images.core.ai_icon} alt="C.O.R.E." width={28} height={28} className="object-contain" data-ai-hint="ai hexagon"/>
             <h3 className={cn("font-headline text-xl text-[hsl(var(--dynamic-core-color))]")}>C.O.R.E.</h3>
           </div>
           <Button variant="ghost" size="icon" onClick={toggleCore} className="text-muted-foreground hover:text-foreground">
