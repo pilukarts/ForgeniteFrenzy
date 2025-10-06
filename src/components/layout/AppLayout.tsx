@@ -104,7 +104,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     <div 
       className="flex flex-col min-h-screen text-foreground items-center justify-center"
       style={{
-        backgroundImage: `url('/images/global/main_screen.png')`,
+        backgroundImage: `url('/images/global/main_screen.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         animation: 'pan-background-global 90s linear infinite',
