@@ -1,6 +1,6 @@
 
 "use client";
-import React, 'react';
+import React from 'react';
 import Image from 'next/image';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
