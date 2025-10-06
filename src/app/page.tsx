@@ -116,7 +116,14 @@ export default function HomePage() {
 
   return (
     <>
-      <div className="relative flex flex-col h-full overflow-hidden flex-grow">
+      <div 
+        className="relative flex flex-col h-full overflow-hidden flex-grow"
+        style={{
+            backgroundImage: "url('/images/global/main_scene.jpg')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+        }}
+      >
           
           {/* UI and Game Content */}
           <div className="relative z-20 w-full flex flex-grow items-stretch justify-center">
@@ -191,7 +198,7 @@ export default function HomePage() {
               </motion.div>
 
               {/* Main Viewport */}
-              <div className="flex-grow flex flex-col items-center justify-center rounded-lg overflow-hidden relative border-2 border-border/20 bg-black max-w-md">
+              <div className="flex-grow flex flex-col items-center justify-center rounded-lg overflow-hidden relative max-w-md">
                    
                   <motion.div 
                       initial={{ scale: 0.5, opacity: 0 }}
@@ -220,3 +227,5 @@ export default function HomePage() {
     </>
   );
 }
+
+    

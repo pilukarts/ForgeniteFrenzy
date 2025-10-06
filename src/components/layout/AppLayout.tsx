@@ -102,12 +102,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     <>
     <div 
       className="flex flex-col min-h-screen text-foreground items-center justify-center"
-      style={{
-        backgroundImage: "url('/images/global/main_scene.jpg')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        animation: 'pan-background-global 90s linear infinite',
-      }}
     >
       <div className="relative flex w-full h-full max-w-7xl mx-auto bg-background/95 shadow-2xl overflow-hidden md:h-screen">
           <SidebarNav />
@@ -214,7 +208,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             </div>
           </header>
           
-          <main className="flex-grow overflow-y-auto pb-[56px] md:pb-0">
+          <main className="flex-grow overflow-y-auto pb-[56px] md:pb-0 flex flex-col">
             {children}
           </main>
           
@@ -223,16 +217,11 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           <BottomNavBar />
         </div>
       </div>
-      <style jsx global>{`
-        @keyframes pan-background-global {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 10% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-      `}</style>
     </div>
     </>
   );
 };
 
 export default AppLayout;
+
+    
