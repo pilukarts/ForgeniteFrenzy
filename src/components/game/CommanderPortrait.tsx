@@ -53,7 +53,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
     <div 
       onClick={() => handleInteraction(false)} 
       className={cn(
-        "relative focus:outline-none transition-transform duration-100 cursor-pointer w-full h-full",
+        "relative focus:outline-none transition-transform duration-100 cursor-pointer w-full h-full pointer-events-auto", // Make commander portrait clickable
         isTapped && "scale-105"
       )}
       aria-label="Tap Commander"
@@ -72,7 +72,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
             data-ai-hint={dataAiHint}
             fill
             className={cn(
-              "object-contain transition-all duration-200"
+              "object-contain object-bottom transition-all duration-200" // Use object-contain and anchor to bottom
             )}
             priority
             key={playerProfile.avatarUrl}
@@ -104,5 +104,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
 };
 
 export default CommanderPortrait;
+
+    
 
     
