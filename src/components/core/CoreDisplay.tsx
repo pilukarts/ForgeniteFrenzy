@@ -155,5 +155,3 @@ const CoreDisplay: React.FC = () => {
 };
 
 export default CoreDisplay;
-
-    
