@@ -106,7 +106,7 @@ const CoreDisplay: React.FC = () => {
       >
         <div className={cn("flex items-center justify-between p-3 border-b border-[hsla(var(--dynamic-core-color)/0.3)]")}>
           <div className="flex items-center gap-2">
-            <Hexagon className={cn("h-7 w-7 text-[hsl(var(--dynamic-core-color))]")} />
+            <Image src={images.ark.starforge_ark} alt="C.O.R.E." width={28} height={28} className="object-contain" data-ai-hint="colony spaceship"/>
             <h3 className={cn("font-headline text-xl text-[hsl(var(--dynamic-core-color))]")}>C.O.R.E.</h3>
           </div>
           <Button variant="ghost" size="icon" onClick={toggleCore} className="text-muted-foreground hover:text-foreground">
@@ -155,3 +155,5 @@ const CoreDisplay: React.FC = () => {
 };
 
 export default CoreDisplay;
+
+    
