@@ -83,7 +83,7 @@ const TapStatusCard: React.FC = () => {
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const { playerProfile, connectWallet, currentSeason, isLoading, isInitialSetupDone, completeInitialSetup } = useGame();
-  const spaceImageUrl = images.global.spaceBackground;
+  const spaceImageUrl = images.global.mainScreenBackground;
   
   if (isLoading) {
     return <IntroScreen />;

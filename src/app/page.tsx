@@ -78,8 +78,6 @@ export default function HomePage() {
   const { playerProfile, isLoading, isInitialSetupDone, handleTap, refillTaps, currentSeason, toggleCommander, toggleMusic, isMusicPlaying, resetGame } = useGame();
   const { toast } = useToast();
   
-  const spaceImageUrl = "/images/global/main_screen.png";
-  
   if (isLoading) {
     return <IntroScreen />;
   }
@@ -119,12 +117,6 @@ export default function HomePage() {
   return (
     <>
       <div className="relative flex flex-col h-full overflow-hidden flex-grow">
-          {/* Background Layer */}
-          <div 
-              className="absolute inset-0 bg-cover bg-center animate-pan-background z-0"
-              style={{ backgroundImage: `url('${spaceImageUrl}')` }}
-              data-ai-hint="futuristic cockpit window with planet"
-          />
           {/* Shooting Stars Container */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
               <div className="shooting-star"></div>
@@ -232,14 +224,6 @@ export default function HomePage() {
           </div>
 
           <style jsx>{`
-              @keyframes pan-background {
-                  0% { background-position: 0% 50%; transform: scale(1.1); }
-                  50% { background-position: 5% 55%; transform: scale(1.15); }
-                  100% { background-position: 0% 50%; transform: scale(1.1); }
-              }
-              .animate-pan-background {
-                  animation: pan-background 120s linear infinite;
-              }
               .shooting-star {
                   position: absolute;
                   top: 50%;
