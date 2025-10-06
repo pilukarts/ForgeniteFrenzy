@@ -1,7 +1,6 @@
 {
   "global": {
-    "spaceBackground": "/images/global/space-background.jpg",
-    "mainScreenBackground": "/images/global/main_scene.jpg",
+    "main_scene": "https://i.imgur.com/foWm9FG.jpeg",
     "background1": "/images/global/1.jpg",
     "background2": "/images/global/2.jpg",
     "background3": "/images/global/3.jpg",
@@ -19,10 +18,10 @@
     "female_headshot": "/images/commanders/female_headshot.png"
   },
   "core": {
-    "ai_icon": "/images/core/ai_icon.png"
+    "ai_icon": "https://i.imgur.com/sfaDBs4.png"
   },
   "ark": {
-    "starforge_ark": "/images/ark/ark.png"
+    "ark": "https://i.imgur.com/C41rKqM.png"
   },
   "nfts": {
     "aegis_frigate": "/images/nfts/aegis_frigate.png",
