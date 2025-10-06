@@ -83,7 +83,6 @@ const TapStatusCard: React.FC = () => {
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const { playerProfile, connectWallet, currentSeason, isLoading, isInitialSetupDone, completeInitialSetup } = useGame();
-  const spaceImageUrl = images.global.mainScreenBackground;
   
   if (isLoading) {
     return <IntroScreen />;
@@ -103,9 +102,9 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   return (
     <>
     <div 
-      className="flex flex-col min-h-screen bg-background text-foreground items-center justify-center"
+      className="flex flex-col min-h-screen text-foreground items-center justify-center"
       style={{
-        backgroundImage: `url('${spaceImageUrl}')`,
+        backgroundImage: `url('/images/global/main_screen.png')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         animation: 'pan-background-global 90s linear infinite',
