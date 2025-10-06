@@ -320,5 +320,3 @@ export default function HomePage() {
     </>
   );
 }
-
-    
