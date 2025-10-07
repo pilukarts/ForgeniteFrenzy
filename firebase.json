@@ -1,5 +1,8 @@
 
 {
+  "projects": {
+    "default": "forgeite-frenzy"
+  },
   "hosting": {
     "source": ".",
     "ignore": [
@@ -9,7 +12,7 @@
     ],
     "frameworksBackend": {
       "source": ".",
-      "project": "ark-evac",
+      "project": "forgeite-frenzy",
       "backend": "forgeite-frenzy",
       "location": "us-central1"
     }

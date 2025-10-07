@@ -2,7 +2,7 @@
 import { Telegraf, Context } from 'telegraf';
 
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8275463245:AAEG-X1D8Y-xtppY_7WVJobn488WMxkYLEw';
-const GAME_URL = 'https://forgeitedrenzy.online';
+const GAME_URL = 'https://forgeite-frenzy.web.app';
 
 const bot = new Telegraf(TOKEN);
 
