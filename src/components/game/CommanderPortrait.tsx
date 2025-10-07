@@ -53,15 +53,14 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
     <div 
       onClick={() => handleInteraction(false)} 
       className={cn(
-        "relative focus:outline-none transition-transform duration-100 cursor-pointer w-full h-full pointer-events-auto", // Make commander portrait clickable
+        "relative focus:outline-none transition-transform duration-100 cursor-pointer w-full h-full pointer-events-auto",
         isTapped && "scale-105"
       )}
       aria-label="Tap Commander"
-      style={dynamicGlowStyle}
     >
-        {/* Dynamic Aura - applies to the Image now */}
+        {/* Container for the image to ensure proper layout and stacking context */}
         <div
-            className="w-full h-full relative group z-10 commander-aura-glow"
+            className="w-full h-full relative group z-10"
         >
             <Image
             src={imageUrl}
@@ -69,8 +68,9 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
             data-ai-hint={dataAiHint}
             fill
             className={cn(
-              "object-contain object-bottom transition-all duration-200" // Use object-contain and anchor to bottom
+              "object-contain object-bottom transition-all duration-200 commander-aura-glow" 
             )}
+            style={dynamicGlowStyle}
             priority
             key={playerProfile.avatarUrl}
             />
