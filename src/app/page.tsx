@@ -58,7 +58,9 @@ const ArkCountdown = () => {
     return (
         <Card className="bg-background/70 backdrop-blur-sm p-1.5 w-full text-center">
             <CardContent className="p-1 flex flex-col items-center">
-                 <Image src="/images/ark/ark.png" alt="Star-Forge Ark" width={96} height={96} className="rounded-md commander-aura-glow mb-2 object-contain" data-ai-hint="colony spaceship" />
+                 <div className="relative h-24 w-24 mb-2 commander-aura-glow flex items-center justify-center">
+                    <Image src={images.ark.ark} alt="Star-Forge Ark" layout="fill" objectFit="contain" data-ai-hint="colony spaceship" />
+                </div>
                 <p className="text-xs text-muted-foreground">ARK LAUNCH IN:</p>
                 <div className="text-sm font-bold text-primary tabular-nums">
                     <span>{String(timeLeft.days).padStart(2, '0')}d </span>
@@ -87,7 +89,7 @@ export default function HomePage() {
   const handleInviteClick = async () => {
     if (!playerProfile.referralCode) return;
     
-    const referralLink = `https://forgeitedrenzy.online/?ref=${playerProfile.referralCode}`; 
+    const referralLink = `https://forgeite-frenzy.web.app/?ref=${playerProfile.referralCode}`; 
     const shareData = {
       title: 'Join Alliance Forge!',
       text: `Join my alliance in Forgeite Frenzy and help humanity's escape! Use my link to get a head start.`,
@@ -220,5 +222,3 @@ export default function HomePage() {
     </>
   );
 }
-
-    
