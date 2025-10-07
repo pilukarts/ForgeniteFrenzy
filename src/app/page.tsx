@@ -58,7 +58,7 @@ const ArkCountdown = () => {
     return (
         <Card className="bg-background/70 backdrop-blur-sm p-1.5 w-full text-center">
             <CardContent className="p-1 flex flex-col items-center">
-                 <div className="relative h-24 w-24 mb-2 commander-aura-glow flex items-center justify-center">
+                 <div className="relative h-24 w-24 mb-2 core-hexagon-glow flex items-center justify-center">
                     <Image src={images.ark.ark} alt="Star-Forge Ark" layout="fill" objectFit="contain" data-ai-hint="colony spaceship" />
                 </div>
                 <p className="text-xs text-muted-foreground">ARK LAUNCH IN:</p>
