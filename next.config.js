@@ -1,7 +1,5 @@
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -9,6 +7,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
+    unoptimized: true, // ⭐ CLAVE para Firebase App Hosting
     remotePatterns: [
       {
         protocol: 'https',
@@ -25,6 +24,15 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'picsum.photos',
+      },
+      // Agregar tus dominios de Firebase
+      {
+        protocol: 'https',
+        hostname: 'forgeitedrenzy.online',
+      },
+      {
+        protocol: 'https',
+        hostname: 'studio--ark-evac.us-central1.hosted.app',
       }
     ],
   },
