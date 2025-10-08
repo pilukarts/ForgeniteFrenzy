@@ -1,9 +1,11 @@
-// Your web app's Firebase configuration for project forgeite-frenzy
+// ✅ NUEVO CONTENIDO COMPLETO para src/lib/firebaseConfig.ts:
+// Your web app's Firebase configuration for project ark-evac (Studio backend)
 export const firebaseConfig = {
-  apiKey: "AIzaSyD_k1j2l3k4j5l6k7j8h9g0f1e2d3c4b5a",
-  authDomain: "forgeite-frenzy.firebaseapp.com",
-  projectId: "forgeite-frenzy",
-  storageBucket: "forgeite-frenzy.appspot.com",
-  messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:abcdef1234567890abcdef"
+  apiKey: "AIzaSyDMdkst7F612rqEyu0iF86CaYOdJGBXPaw",
+  authDomain: "ark-evac.firebaseapp.com",
+  databaseURL: "https://ark-evac-default-rtdb.firebaseio.com/",
+  projectId: "ark-evac",
+  storageBucket: "ark-evac.firebasestorage.app",
+  messagingSenderId: "928400685620",
+  appId: "1:928400685620:web:b7f918ab52c5a3559b6861"
 };
