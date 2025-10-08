@@ -1,7 +1,7 @@
-
 // Import Firebase core and required modules
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from 'firebase/firestore';
+import { getDatabase } from 'firebase/database'; // ← AGREGADO para Realtime Database
 import { firebaseConfig } from "./firebaseConfig";
 
 // Function to initialize Firebase app (handles SSR and client-side)
@@ -30,4 +30,7 @@ const app = initializeFirebaseApp();
 // Export Firestore instance for use in the app
 const db = getFirestore(app);
 
-export { app, db };
+// Export Realtime Database instance for live stats ← AGREGADO
+const database = getDatabase(app);
+
+export { app, db, database }; // ← database agregado a la exportación
