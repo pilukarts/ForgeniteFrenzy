@@ -10,13 +10,13 @@
   "theme_color": "#facc15",
   "icons": [
     {
-      "src": "https://i.imgur.com/8D3wW8E.png",
+      "src": "/images/global/star-ark-forge.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://i.imgur.com/8D3wW8E.png",
+      "src": "/images/global/star-ark-forge.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

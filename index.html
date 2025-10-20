@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Studio - Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        .status { color: green; font-size: 24px; }
+    </style>
+</head>
+<body>
+    <h1>🎉 Firebase Studio Test</h1>
+    <div class="status">✅ Servidor funcionando correctamente</div>
+    <p>Timestamp: <span id="timestamp"></span></p>
+    
+    <script>
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+        console.log('Firebase Studio Test - Funcionando!');
+    </script>
+</body>
+</html>

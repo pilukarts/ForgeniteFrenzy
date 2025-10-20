@@ -7,7 +7,7 @@ import { firebaseConfig } from "@/lib/firebaseConfig"; // Import the correct con
 import { parseISO } from 'date-fns';
 
 // Ensure Firebase is initialized on the server, but only once.
-const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);
 
 export const fetchLeaderboardData = async (): Promise<LeaderboardEntry[]> => {

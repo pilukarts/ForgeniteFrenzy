@@ -320,14 +320,14 @@ export const LEVEL_STAGES: LevelStage[] = [
 
 export const SELECTABLE_AVATARS: SelectableAvatar[] = [
     {
-      portraitUrl: images.commanders.male_portrait,
-      fullBodyUrl: images.commanders.male_full,
+      portraitUrl: "/images/global/avatar-profile-man.png",
+      fullBodyUrl: "/images/global/commander-man-full.png",
       sex: 'male',
       hint: 'male commander headshot',
     },
     {
-      portraitUrl: images.commanders.female_portrait,
-      fullBodyUrl: images.commanders.female_full,
+      portraitUrl: "/images/global/avatar-profile-lady.png",
+      fullBodyUrl: "/images/global/commander-woman-full.png",
       sex: 'female',
       hint: 'female commander headshot',
     },
@@ -335,17 +335,6 @@ export const SELECTABLE_AVATARS: SelectableAvatar[] = [
 
 // This list is only kept for backwards compatibility or reference, but is not actively used in the setup logic.
 export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; }[] = [
-    { url: images.commanders.male_full, sex: 'male' },
-    { url: images.commanders.female_full, sex: 'female' },
+    { url: "/images/global/commander-man-full.png", sex: 'male' },
+    { url: "/images/global/commander-woman-full.png", sex: 'female' },
 ];
-
-
-
-
-
-
-
-
-
-
-

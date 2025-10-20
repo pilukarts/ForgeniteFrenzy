@@ -101,7 +101,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   return (
     <>
     <div 
-      className="flex flex-col min-h-screen text-foreground items-center justify-center"
+      className="flex flex-col min-h-screen bg-background text-foreground items-center justify-center"
     >
       <div className="relative flex w-full h-full max-w-7xl mx-auto bg-background/95 shadow-2xl overflow-hidden md:h-screen">
           <SidebarNav />

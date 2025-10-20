@@ -1,16 +1,14 @@
 
-import React from 'react';
-import LeaderboardTable from './LeaderboardTable';
 import { fetchLeaderboardData } from '@/lib/server/data';
+import LeaderboardTable from './LeaderboardTable';
 
+// This is a server-side rendered page
 const LeaderboardPage = async () => {
-  const initialLeaderboardData = await fetchLeaderboardData();
+  // Fetch data on the server
+  const leaderboardData = await fetchLeaderboardData();
 
-  return (
-    <>
-      <LeaderboardTable initialLeaderboardData={initialLeaderboardData} />
-    </>
-  );
+  // Pass the fetched data as a prop to the client component
+  return <LeaderboardTable initialLeaderboardData={leaderboardData} />;
 };
 
 export default LeaderboardPage;
