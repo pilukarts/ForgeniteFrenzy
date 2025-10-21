@@ -5,7 +5,7 @@ import { GameProvider } from '@/contexts/GameContext';
 import AppLayout from '@/components/layout/AppLayout';
 import './globals.css';
 import '@rainbow-me/rainbowkit/styles.css';
-import Web3ProviderWrapper from '@/contexts/Web3Provider';
+import Web3Provider from '@/contexts/Web3Provider';
 
 
 export const metadata: Metadata = {
@@ -29,14 +29,14 @@ export default function RootLayout({
         <meta name="theme-color" content="#1a202c" />
       </head>
       <body className="font-body antialiased bg-background text-foreground">
-        <Web3ProviderWrapper>
+        <Web3Provider>
           <GameProvider>
               <AppLayout>
                 {children}
               </AppLayout>
             <Toaster />
           </GameProvider>
-        </Web3ProviderWrapper>
+        </Web3Provider>
       </body>
     </html>
   );
