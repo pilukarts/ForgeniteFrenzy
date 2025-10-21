@@ -59,7 +59,7 @@ const ArkCountdown = () => {
             <CardContent className="p-1 flex flex-col items-center">
                  <div className="relative h-24 w-24 mb-2 core-hexagon-glow flex items-center justify-center">
                  <Image 
-                    src="/images/global/star-ark-forge.png" 
+                    src={images.ark.ark}
                     alt="Star-Forge Ark" 
                     fill 
                     style={{objectFit: 'contain'}} 
@@ -174,7 +174,21 @@ export default function HomePage() {
                         <p className={cn("text-sm font-bold", leagueColorClass)}>{playerProfile.league}</p>
                     </CardContent>
                   </Card>
-                  
+
+            </motion.div>
+
+            {/* Empty Center Column */}
+            <div className="col-start-2 row-span-2"></div>
+            
+            {/* Right Action Bar */}
+             <motion.div 
+                initial={{ x: 100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
+                className="hidden md:flex flex-col gap-1.5 w-[180px] flex-shrink-0 pointer-events-auto"
+            >
+                <ArkCountdown />
+                
                   <Button asChild variant="outline" size="sm" className="bg-background/70 backdrop-blur-sm justify-start gap-1.5 w-full link-glow">
                     <a href="https://allianceforge.online" target="_blank" rel="noopener noreferrer">
                       <Globe className="h-4 w-4" /> Website
@@ -209,19 +223,6 @@ export default function HomePage() {
                        Discord
                     </a>
                   </Button>
-            </motion.div>
-
-            {/* Empty Center Column */}
-            <div className="col-start-2 row-span-2"></div>
-            
-            {/* Right Action Bar */}
-             <motion.div 
-                initial={{ x: 100, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.5, type: 'spring', stiffness: 50 }}
-                className="hidden md:flex flex-col gap-1.5 w-[180px] flex-shrink-0 pointer-events-auto"
-            >
-                <ArkCountdown />
             </motion.div>
         </div>
       </div>
