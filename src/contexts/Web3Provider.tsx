@@ -8,32 +8,46 @@ import { mainnet, polygon, optimism, arbitrum, base } from 'wagmi/chains';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 
 import {
-  injectedWallet,
-  rainbowWallet,
-  walletConnectWallet,
   metaMaskWallet,
+  walletConnectWallet,
+  rainbowWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 // Import RainbowKit CSS
 import '@rainbow-me/rainbowkit/styles.css';
+
 interface Web3ProviderProps {
     children: ReactNode;
 }
+
 // Create the provider component
 const Web3ProviderInner: React.FC<Web3ProviderProps> = ({ children }) => {
     const [mounted, setMounted] = useState(false);
     useEffect(() => {
         setMounted(true);
     }, []);
+
     // Don't render anything until mounted (client-side)
     if (!mounted) {
         return null;
     }
+    
     const config = getDefaultConfig({
         appName: 'Alliance Forge',
         projectId: '2d3c8d3527e02bcb7d17675be8c07e5c',
         chains: [mainnet, polygon, optimism, arbitrum, base], 
+        wallets: [
+            {
+                groupName: 'Recommended',
+                wallets: [
+                    metaMaskWallet,
+                    rainbowWallet,
+                    walletConnectWallet,
+                ]
+            }
+        ],
         ssr: false, 
     });
+
     const queryClient = new QueryClient({
         defaultOptions: {
             queries: {
@@ -42,6 +56,7 @@ const Web3ProviderInner: React.FC<Web3ProviderProps> = ({ children }) => {
             },
         },
     });
+
     return (
         <WagmiProvider config={config}>
             <QueryClientProvider client={queryClient}>
@@ -55,7 +70,8 @@ const Web3ProviderInner: React.FC<Web3ProviderProps> = ({ children }) => {
         </WagmiProvider>
     );
 };
-// Error boundary component
+
+// Error boundary component remains the same
 class Web3ErrorBoundary extends React.Component<
     { children: ReactNode },
     { hasError: boolean; error?: string }
@@ -78,7 +94,7 @@ class Web3ErrorBoundary extends React.Component<
             return (
                 <div style={{ 
                     padding: '20px', 
-                    border: '1px solid #red', 
+                    border: '1px solid #d32f2f', 
                     borderRadius: '8px',
                     background: '#fff5f5',
                     color: '#d32f2f'
@@ -104,6 +120,7 @@ class Web3ErrorBoundary extends React.Component<
         return this.props.children;
     }
 }
+
 // Dynamically import with better loading states
 const Web3Provider = dynamic(
     () => Promise.resolve(({ children }: Web3ProviderProps) => (
@@ -123,11 +140,10 @@ const Web3Provider = dynamic(
             }}>
                 <div>
                     <div>🔄 Initializing Web3...</div>
-                    <div style={{ fontSize: '12px', marginTop: '8px' }}>
-                    </div>
                 </div>
             </div>
         )
     }
 );
+
 export default Web3Provider;
