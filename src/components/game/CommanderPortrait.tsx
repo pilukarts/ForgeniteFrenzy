@@ -67,10 +67,10 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
             alt={altText}
             data-ai-hint={dataAiHint}
             fill
+            style={{ objectFit: 'contain', objectPosition: 'bottom' }}
             className={cn(
-              "object-contain object-bottom transition-all duration-200 commander-aura-glow" 
+              "transition-all duration-200 commander-aura-glow" 
             )}
-            style={dynamicGlowStyle}
             priority
             key={playerProfile.avatarUrl}
             />
