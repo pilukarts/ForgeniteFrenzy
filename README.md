@@ -84,3 +84,4 @@ The deployment process is automated via GitHub Actions:
 1.  Push your code changes to the `main` branch of your GitHub repository.
 2.  Firebase App Hosting automatically detects the push, builds the Next.js application, and deploys it.
 3.  The live URL will be available in your Firebase project's App Hosting dashboard, which is `https://forgeite-frenzy.web.app`.
+# forgeite-frenzy-AF
