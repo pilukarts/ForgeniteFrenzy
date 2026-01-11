@@ -1,11 +1,11 @@
-import React, { ReactNode, useRef, useLayoutEffect, useCallback, useState } from "react";
+
+import React, { ReactNode, useRef, useLayoutEffect, useCallback, useState, forwardRef } from "react";
 
 type ButtonItem = { id: string; label: string; onClick?: () => void; icon?: React.ReactNode; };
 
 type Props = {
   fullBodyUrl?: string;
   avatarUrl?: string;
-  showHalo?: boolean;
   onAvatarClick?: () => void;
   onTap?: (ev?: React.MouseEvent | React.TouchEvent) => void | Promise<void>;
   bottomButtons?: ButtonItem[];
@@ -17,12 +17,12 @@ type Props = {
   handLeftX?: number;
   handRightX?: number;
   handY?: number;
+  auraRef?: React.RefObject<HTMLDivElement>; // To control the aura from parent
 };
 
-const CommanderCenter: React.FC<Props> = ({
+const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
   fullBodyUrl,
   avatarUrl,
-  showHalo = false,
   onTap,
   bottomButtons,
   rightButtons,
@@ -33,12 +33,12 @@ const CommanderCenter: React.FC<Props> = ({
   handLeftX = 0.18,
   handRightX = 0.82,
   handY = 0.62,
-}) => {
+  auraRef,
+}, ref) => {
   const imgRef = useRef<HTMLImageElement | null>(null);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const [leftPos, setLeftPos] = useState<{ top: number; left: number } | null>(null);
   const [rightPos, setRightPos] = useState<{ top: number; left: number } | null>(null);
-  const [tapPulse, setTapPulse] = useState(false);
 
   const bottomDefault: ButtonItem[] = [
     { id: "missions", label: "Missions" },
@@ -84,19 +84,19 @@ const CommanderCenter: React.FC<Props> = ({
   }, [computeHandPositions]);
 
   const handleTap = async (ev?: React.MouseEvent | React.TouchEvent) => {
-    setTapPulse(true);
-    window.setTimeout(() => setTapPulse(false), 130);
     await Promise.resolve(onTap?.(ev));
   };
 
   return (
-    // wrapper has lower z than header (header z-90 in layout). Keep wrapper z lower so header never shows commander.
     <div ref={wrapperRef} className={`commander-center relative z-10 w-full min-h-[50vh] flex items-center justify-center ${className}`}>
-      {showHalo && (
-        <div aria-hidden className="absolute -z-10 w-[520px] h-[520px] rounded-full bg-[rgba(255,255,255,0.03)] blur-[6px]" style={{ transform: "translateY(8%)" }} />
-      )}
+      <div 
+        ref={auraRef} 
+        aria-hidden 
+        className="absolute -z-10 w-[520px] h-[520px] rounded-full bg-[rgba(255,255,255,0.03)] blur-[6px]" 
+        style={{ transform: "translateY(8%)" }} 
+      />
 
-      <div className={`relative flex flex-col items-center ${tapPulse ? "scale-[0.98]" : ""} transition-transform duration-150`}>
+      <div ref={ref} className="relative flex flex-col items-center transition-transform duration-150">
         <img
           ref={imgRef}
           src={imgSrc}
@@ -129,7 +129,6 @@ const CommanderCenter: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* anchored left panel: lower z than header but above background */}
       {leftPanel && leftPos && (
         <div
           className="absolute z-20 pointer-events-auto"
@@ -143,7 +142,6 @@ const CommanderCenter: React.FC<Props> = ({
         </div>
       )}
 
-      {/* anchored right panel */}
       {rightPanel && rightPos && (
         <div
           className="absolute z-20 pointer-events-auto"
@@ -157,7 +155,6 @@ const CommanderCenter: React.FC<Props> = ({
         </div>
       )}
 
-      {/* fallback right column (if rightPanel not provided) */}
       {!rightPanel && (
         <div className="hidden md:block absolute top-1/3 transform -translate-y-1/3 z-20 pointer-events-auto" style={{ right: rightOffset }}>
           <div className="flex flex-col gap-2 bg-black/60 border border-white/5 rounded-xl p-2 shadow-lg w-[140px]">
@@ -171,6 +168,8 @@ const CommanderCenter: React.FC<Props> = ({
       )}
     </div>
   );
-};
+});
+
+CommanderCenter.displayName = "CommanderCenter";
 
 export default CommanderCenter;

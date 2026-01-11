@@ -5,7 +5,7 @@
 // Vibrant environment with holograms that invites to play
 
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
@@ -77,6 +77,9 @@ export default function HomePage() {
   
   const [tapCount, setTapCount] = useState(0);
   const timeLeft = ArkCountdown();
+  const commanderCenterRef = useRef<HTMLDivElement>(null);
+  const auraRef = useRef<HTMLDivElement>(null);
+
 
   if (isLoading) return <IntroScreen />;
   if (!isInitialSetupDone || !playerProfile) return <PlayerSetup />;
@@ -85,9 +88,25 @@ export default function HomePage() {
     setTapCount(prev => prev + 1);
     handleTap(isLogoTap);
     
+    // Trigger animations directly
+    const commanderDiv = commanderCenterRef.current;
+    const auraDiv = auraRef.current;
+    if (commanderDiv) {
+        commanderDiv.classList.remove('tap-pulse');
+        void commanderDiv.offsetWidth; // Trigger reflow
+        commanderDiv.classList.add('tap-pulse');
+    }
+    if (auraDiv) {
+        auraDiv.classList.remove('commander-aura-glow');
+        void auraDiv.offsetWidth; // Trigger reflow
+        auraDiv.classList.add('commander-aura-glow');
+    }
+
     setTimeout(() => {
+      if (commanderDiv) commanderDiv.classList.remove('tap-pulse');
+      if (auraDiv) auraDiv.classList.remove('commander-aura-glow');
       setTapCount(0);
-    }, 2500);
+    }, 500); // Animation duration
   };
 
   const handleNavClick = (path: string) => {
@@ -208,8 +227,9 @@ export default function HomePage() {
         />
 
         <CommanderCenter
+            ref={commanderCenterRef}
+            auraRef={auraRef}
             fullBodyUrl={playerProfile.avatarUrl}
-            showHalo={true}
             onTap={() => handleTapWithAnimation(false)}
             bottomButtons={[
                 { id: "change", label: "Change", onClick: toggleCommander },
