@@ -30,8 +30,8 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
   rightOffset = "1.5rem",
   leftPanel,
   rightPanel,
-  handLeftX = 0.18,
-  handRightX = 0.82,
+  handLeftX = -0.3,
+  handRightX = 1.3,
   handY = 0.62,
   auraRef,
 }, ref) => {

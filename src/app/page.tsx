@@ -206,6 +206,10 @@ export default function HomePage() {
           ))}
         </div>
         
+        {/* Floor platform */}
+        <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none z-20" />
+
+
         <div 
             aria-hidden 
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[400px] md:h-[400px] rounded-full border-2 border-white/20"
@@ -237,8 +241,8 @@ export default function HomePage() {
             ]}
              leftPanel={<HolographicMenu options={navOptions.map(o => o.label)} onSelect={(label) => handleNavClick(navOptions.find(o => o.label === label)!.path)} side="left" />}
              rightPanel={<ArkForgePanel countdown={timeLeft} />}
-             handLeftX={-0.45}
-             handRightX={1.45}
+             handLeftX={-0.3}
+             handRightX={1.3}
         />
         
       </div>
