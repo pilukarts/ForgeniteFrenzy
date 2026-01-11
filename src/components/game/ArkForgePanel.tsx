@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import arkImage from "../../../public/images/ark/star-forge-ark.png";
 
 type Props = {
   countdown?: string;
