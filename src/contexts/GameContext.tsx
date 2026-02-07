@@ -491,32 +491,30 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
-    if (!playerProfile) return;
-
-    const now = Date.now();
-    const tapsAvailableAt = playerProfile.tapsAvailableAt || now;
-
-    if (playerProfile.currentTaps < playerProfile.maxTaps && now >= tapsAvailableAt) {
-      setPlayerProfile(p => p ? {
-        ...p,
-        currentTaps: p.maxTaps,
-        tapsAvailableAt: now + TAP_REGEN_COOLDOWN_MILLISECONDS
-      } : null);
-    }
-
     const timer = setInterval(() => {
       setPlayerProfile(p => {
-        if (!p || p.currentTaps >= p.maxTaps) return p;
-        const now = Date.now();
-        if (now >= p.tapsAvailableAt) {
-          return { ...p, currentTaps: p.maxTaps, tapsAvailableAt: now + TAP_REGEN_COOLDOWN_MILLISECONDS };
+        if (!p) return null;
+
+        // Only check for regen if taps are not full
+        if (p.currentTaps < p.maxTaps) {
+          const now = Date.now();
+          if (now >= p.tapsAvailableAt) {
+            // Time to regenerate
+            return { 
+              ...p, 
+              currentTaps: p.maxTaps, 
+              tapsAvailableAt: now + TAP_REGEN_COOLDOWN_MILLISECONDS 
+            };
+          }
         }
+        
+        // No change needed
         return p;
       });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [playerProfile]);
+  }, []); // Run only once on mount
 
   const refillTaps = () => {
     setPlayerProfile(p => {
@@ -873,5 +871,3 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
-
-    
