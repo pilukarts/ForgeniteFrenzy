@@ -39,7 +39,7 @@ const ArkForgePanel: React.FC<Props> = ({ countdown = "30d 0h 0m", className = "
         </div>
 
         <div className="w-full text-center space-y-2">
-          <div className="text-[11px] uppercase tracking-[0.3em] text-primary font-headline font-bold">Ark-Forge Status</div>
+          <div className="text-[11px] uppercase tracking-[0.3em] text-primary font-headline font-bold">Star-Forge Status</div>
           <div className="font-mono font-bold text-yellow-300 text-xl sm:text-2xl drop-shadow-[0_0_10px_rgba(234,179,8,0.6)]">
             {countdown}
           </div>

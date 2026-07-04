@@ -95,14 +95,14 @@ export default function HomePage() {
       </AnimatePresence>
 
       <div className="relative h-full w-full overflow-hidden flex flex-col items-center bg-gray-950">
-        {/* FONDO ESPACIAL - ESCENA DE EVACUACIÓN (SPACE STATION BRIDGE) */}
+        {/* FONDO ESPACIAL - NEBULOSA Y PLANETAS (FAVORITO DEL JEFE) */}
         <div 
           className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
           style={{ 
             backgroundImage: `url('${images.global.main_scene}')`, 
-            filter: 'brightness(0.7) contrast(1.1)' 
+            filter: 'brightness(0.8) contrast(1.1)' 
           }}
-          data-ai-hint="space station bridge"
+          data-ai-hint="nebula with planets"
         />
         
         {/* PLATAFORMA DE SUELO SÓLIDA RECTANGULAR - ELEVADA Y ESPACIOSA */}
@@ -126,8 +126,8 @@ export default function HomePage() {
             leftPanel={<HolographicMenu options={navOptions.map(o => o.label)} onSelect={(l) => router.push(navOptions.find(o => o.label === l)!.path)} side="left" />}
             rightPanel={<ArkForgePanel countdown={timeLeft} />}
             /* Alejamos los paneles para evitar que estén muy apretados */
-            handLeftX={-1.3} 
-            handRightX={2.3}
+            handLeftX={-1.5} 
+            handRightX={2.5}
             handY={0.35}
             className="mt-0"
         />

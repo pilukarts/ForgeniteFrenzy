@@ -1,6 +1,6 @@
 {
   "global": {
-    "main_scene": "https://picsum.photos/seed/space-station-bridge-dark/1920/1080",
+    "main_scene": "https://picsum.photos/seed/nebula_planets_v2/1920/1080",
     "background1": "https://picsum.photos/seed/nebula1/1200/800",
     "background2": "https://picsum.photos/seed/nebula2/1200/800",
     "background3": "https://picsum.photos/seed/nebula3/1200/800",
@@ -21,7 +21,7 @@
     "ai_icon": "https://picsum.photos/seed/core_ai_hex/200/200"
   },
   "ark": {
-    "ark": "https://picsum.photos/seed/spaceship-hangar-empty/600/600"
+    "ark": "https://picsum.photos/seed/spaceship-hangar-empty-dark/600/600"
   },
   "nfts": {
     "aegis_frigate": "https://picsum.photos/seed/frigate1/600/400",
