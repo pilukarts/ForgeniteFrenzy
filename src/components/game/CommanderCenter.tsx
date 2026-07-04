@@ -40,7 +40,6 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
     const wrapRect = wrapper.getBoundingClientRect();
     const imgRect = img.getBoundingClientRect();
     
-    // Si la imagen aún no tiene tamaño real, no calculamos para evitar saltos
     if (imgRect.width === 0) return;
 
     const imgLeft = imgRect.left - wrapRect.left;
@@ -57,29 +56,28 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
   }, [handLeftX, handRightX, handY]);
 
   useEffect(() => {
-    // Calculamos inicialmente después del montaje
     computePositions();
     window.addEventListener("resize", computePositions);
     return () => window.removeEventListener("resize", computePositions);
   }, [computePositions]);
 
   return (
-    <div ref={wrapperRef} className={cn("commander-center relative z-20 w-full flex-grow flex items-center justify-center", className)}>
+    <div ref={wrapperRef} className={cn("commander-center relative z-20 w-full flex-grow flex items-center justify-center overflow-visible", className)}>
       {/* Aura de resplandor dinámico */}
       <div 
         ref={auraRef} 
         aria-hidden 
-        className="absolute w-[500px] h-[500px] md:w-[750px] md:h-[750px] rounded-full bg-primary/20 blur-[80px] pointer-events-none opacity-60" 
+        className="absolute w-[550px] h-[550px] md:w-[850px] md:h-[850px] rounded-full bg-primary/20 blur-[100px] pointer-events-none opacity-60" 
         style={{ transform: "translateY(5%)" }} 
       />
 
       <div ref={ref} className="relative flex flex-col items-center">
-        <div className="commander-img-container relative transition-all duration-200">
+        <div className="commander-img-container relative transition-all duration-300">
           <img
             ref={imgRef}
             src={imgSrc}
             alt="Commander"
-            className="w-auto max-h-[72vh] min-h-[400px] object-contain object-bottom pointer-events-none drop-shadow-[0_0_40px_rgba(0,0,0,1)]"
+            className="w-auto max-h-[68vh] min-h-[400px] object-contain object-bottom pointer-events-none drop-shadow-[0_0_50px_rgba(0,0,0,0.8)]"
             draggable={false}
             onLoad={computePositions}
             onError={() => console.error("Error loading commander image")}
@@ -95,12 +93,12 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
 
       {leftPanel && (
         <div
-          className="absolute z-40 pointer-events-auto transition-all duration-500"
+          className="absolute z-40 pointer-events-auto transition-all duration-700 ease-out"
           style={leftPos ? {
             left: leftPos.left,
             top: leftPos.top,
             transform: "translate(-50%, -50%)",
-          } : { left: '15%', top: '45%', transform: "translate(-50%, -50%)" }}
+          } : { left: '10%', top: '40%', transform: "translate(-50%, -50%)" }}
         >
           {leftPanel}
         </div>
@@ -108,12 +106,12 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
 
       {rightPanel && (
         <div
-          className="absolute z-40 pointer-events-auto transition-all duration-500"
+          className="absolute z-40 pointer-events-auto transition-all duration-700 ease-out"
           style={rightPos ? {
             left: rightPos.left,
             top: rightPos.top,
             transform: "translate(-50%, -50%)",
-          } : { right: '15%', top: '45%', transform: "translate(50%, -50%)" }}
+          } : { right: '10%', top: '40%', transform: "translate(50%, -50%)" }}
         >
           {rightPanel}
         </div>
