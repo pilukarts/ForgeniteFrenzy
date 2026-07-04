@@ -94,26 +94,26 @@ export default function HomePage() {
         ))}
       </AnimatePresence>
 
-      <div className="relative h-full w-full overflow-hidden flex flex-col items-center bg-gray-900">
-        {/* FONDO ESPACIAL - ESCENA DE EVACUACIÓN (STATION BRIDGE) */}
+      <div className="relative h-full w-full overflow-hidden flex flex-col items-center bg-gray-950">
+        {/* FONDO ESPACIAL - ESCENA DE EVACUACIÓN (SPACE STATION BRIDGE) */}
         <div 
           className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
           style={{ 
             backgroundImage: `url('${images.global.main_scene}')`, 
-            filter: 'brightness(0.8) saturate(1.2)' 
+            filter: 'brightness(0.7) contrast(1.1)' 
           }}
           data-ai-hint="space station bridge"
         />
         
-        {/* PLATAFORMA DE SUELO SÓLIDA RECTANGULAR */}
-        <div className="absolute bottom-0 left-0 right-0 h-[24%] z-10">
-            <div className="w-full h-full bg-gradient-to-t from-black via-gray-950 to-gray-900/80 border-t-2 border-primary/40 flex flex-col items-center pt-10 shadow-[0_-15px_60px_rgba(0,0,0,0.9)]">
-                {/* Línea de energía táctica en el borde del suelo */}
-                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary/80 to-transparent shadow-[0_0_20px_rgba(255,215,0,0.6)]" />
+        {/* PLATAFORMA DE SUELO SÓLIDA RECTANGULAR - ELEVADA Y ESPACIOSA */}
+        <div className="absolute bottom-0 left-0 right-0 h-[26%] z-10">
+            <div className="w-full h-full bg-gradient-to-t from-black via-gray-950 to-gray-900/60 border-t-2 border-primary/30 flex flex-col items-center pt-8 shadow-[0_-20px_80px_rgba(0,0,0,1)]">
+                {/* Línea de energía táctica */}
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
                 
-                <div className="flex gap-6 sm:gap-16 px-4 w-full justify-center mt-2 max-w-5xl">
-                     <HolographicButton label="Change" onClick={toggleCommander} className="w-44 md:w-52" />
-                     <HolographicButton label="Invite" onClick={() => toast({title: "Invite Link Copied"})} className="w-44 md:w-52" />
+                <div className="flex gap-6 sm:gap-12 px-4 w-full justify-center mt-4 max-w-4xl">
+                     <HolographicButton label="Change" onClick={toggleCommander} className="w-44 md:w-52 h-12 text-lg" />
+                     <HolographicButton label="Invite" onClick={() => toast({title: "Invite Link Copied"})} className="w-44 md:w-52 h-12 text-lg" />
                 </div>
             </div>
         </div>
@@ -125,9 +125,10 @@ export default function HomePage() {
             onTap={handleTapWithAnimation}
             leftPanel={<HolographicMenu options={navOptions.map(o => o.label)} onSelect={(l) => router.push(navOptions.find(o => o.label === l)!.path)} side="left" />}
             rightPanel={<ArkForgePanel countdown={timeLeft} />}
-            handLeftX={-1.1} 
-            handRightX={2.1}
-            handY={0.4}
+            /* Alejamos los paneles para evitar que estén muy apretados */
+            handLeftX={-1.3} 
+            handRightX={2.3}
+            handY={0.35}
             className="mt-0"
         />
       </div>
