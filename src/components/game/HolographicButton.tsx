@@ -18,7 +18,7 @@ const HolographicButton: React.FC<Props> = ({ label, onClick, active = false, cl
         `w-40 md:w-48 px-3 py-2 rounded-lg text-base font-semibold text-white/95 transition-all duration-300 transform 
          hover:scale-105 focus:scale-105 focus:outline-none 
          bg-gradient-to-b from-white/5 via-white/3 to-transparent backdrop-blur-md
-         border border-white/40 hover:border-white/80 focus:border-white/80
+         border border-white/60 hover:border-white/100 focus:border-white/100
          shadow-[0_8px_24px_rgba(0,0,0,0.5)] hover:shadow-primary/20
          ${active ? "ring-2 ring-primary/60 border-primary/50" : ""} ${className}`
       }

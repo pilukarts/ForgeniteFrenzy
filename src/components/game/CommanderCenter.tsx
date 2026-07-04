@@ -1,5 +1,5 @@
-
 import React, { ReactNode, useRef, useLayoutEffect, useCallback, useState, forwardRef } from "react";
+import { cn } from "@/lib/utils";
 
 type ButtonItem = { id: string; label: string; onClick?: () => void; icon?: React.ReactNode; };
 
@@ -17,7 +17,7 @@ type Props = {
   handLeftX?: number;
   handRightX?: number;
   handY?: number;
-  auraRef?: React.RefObject<HTMLDivElement>; // To control the aura from parent
+  auraRef?: React.RefObject<HTMLDivElement>;
 };
 
 const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
@@ -40,20 +40,7 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
   const [leftPos, setLeftPos] = useState<{ top: number; left: number } | null>(null);
   const [rightPos, setRightPos] = useState<{ top: number; left: number } | null>(null);
 
-  const bottomDefault: ButtonItem[] = [
-    { id: "missions", label: "Missions" },
-    { id: "rewards", label: "Rewards" },
-    { id: "community", label: "Community" },
-    { id: "alliance", label: "Alliance" },
-  ];
-  const rightDefault: ButtonItem[] = [
-    { id: "ark", label: "Ark-Forge" },
-    { id: "change", label: "Change" },
-    { id: "invite", label: "Invite" },
-  ];
-  const bottom = bottomButtons ?? bottomDefault;
-  const right = rightButtons ?? rightDefault;
-  const imgSrc = fullBodyUrl ?? avatarUrl ?? "/images/commander-placeholder-full.png";
+  const imgSrc = fullBodyUrl ?? avatarUrl ?? "/images/global/commander-man-full.png";
 
   const computeHandPositions = useCallback(() => {
     const wrapper = wrapperRef.current;
@@ -75,11 +62,9 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
     const onResize = () => computeHandPositions();
     window.addEventListener("resize", onResize);
     window.addEventListener("orientationchange", onResize);
-    window.addEventListener("scroll", onResize, true);
     return () => {
       window.removeEventListener("resize", onResize);
       window.removeEventListener("orientationchange", onResize);
-      window.removeEventListener("scroll", onResize, true);
     };
   }, [computeHandPositions]);
 
@@ -88,54 +73,42 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
   };
 
   return (
-    <div ref={wrapperRef} className={`commander-center relative z-10 w-full min-h-[50vh] flex items-center justify-center ${className}`}>
+    <div ref={wrapperRef} className={cn("commander-center relative z-20 w-full flex-grow flex items-center justify-center", className)}>
+      {/* Dynamic Aura controlled by parent */}
       <div 
         ref={auraRef} 
         aria-hidden 
-        className="absolute -z-10 w-[520px] h-[520px] rounded-full bg-[rgba(255,255,255,0.03)] blur-[6px]" 
-        style={{ transform: "translateY(8%)" }} 
+        className="absolute w-[450px] h-[450px] md:w-[600px] md:h-[600px] rounded-full bg-white/5 blur-[40px] pointer-events-none opacity-50" 
+        style={{ transform: "translateY(5%)" }} 
       />
 
-      <div ref={ref} className="relative flex flex-col items-center transition-transform duration-150">
-        <img
-          ref={imgRef}
-          src={imgSrc}
-          alt="Commander full body"
-          className="w-auto max-h-[68vh] object-contain object-bottom pointer-events-none"
-          draggable={false}
-          onLoad={() => computeHandPositions()}
-        />
+      <div ref={ref} className="relative flex flex-col items-center">
+        <div className="commander-img-container relative transition-transform duration-150">
+          <img
+            ref={imgRef}
+            src={imgSrc}
+            alt="Commander full body"
+            className="w-auto max-h-[65vh] object-contain object-bottom pointer-events-none drop-shadow-[0_0_20px_rgba(0,0,0,0.8)]"
+            draggable={false}
+            onLoad={() => computeHandPositions()}
+          />
 
-        <button
-          type="button"
-          aria-label="Tap commander"
-          onClick={handleTap}
-          className="absolute inset-0 w-full h-full bg-transparent border-0 p-0 m-0"
-          style={{ pointerEvents: "auto" }}
-        />
-
-        <div className="mt-2 -translate-y-1">
-          <div className="inline-flex items-center gap-2 bg-black/40 border border-white/5 rounded-full p-1 px-3 shadow-md">
-            {bottom.map((b) => (
-              <button
-                key={b.id}
-                onClick={() => b.onClick?.()}
-                className="px-4 py-2 rounded-full text-sm md:text-base bg-black/10 hover:bg-black/20"
-              >
-                {b.label}
-              </button>
-            ))}
-          </div>
+          <button
+            type="button"
+            aria-label="Tap commander"
+            onClick={handleTap}
+            className="absolute inset-0 w-full h-full bg-transparent border-0 cursor-pointer z-30"
+          />
         </div>
       </div>
 
       {leftPanel && leftPos && (
         <div
-          className="absolute z-20 pointer-events-auto"
+          className="absolute z-40 pointer-events-auto transition-all duration-500"
           style={{
             left: leftPos.left,
             top: leftPos.top,
-            transform: "translate(-50%, -20%)",
+            transform: "translate(-100%, -50%)",
           }}
         >
           {leftPanel}
@@ -144,26 +117,14 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
 
       {rightPanel && rightPos && (
         <div
-          className="absolute z-20 pointer-events-auto"
+          className="absolute z-40 pointer-events-auto transition-all duration-500"
           style={{
             left: rightPos.left,
             top: rightPos.top,
-            transform: "translate(-50%, -20%)",
+            transform: "translate(0%, -50%)",
           }}
         >
           {rightPanel}
-        </div>
-      )}
-
-      {!rightPanel && (
-        <div className="hidden md:block absolute top-1/3 transform -translate-y-1/3 z-20 pointer-events-auto" style={{ right: rightOffset }}>
-          <div className="flex flex-col gap-2 bg-black/60 border border-white/5 rounded-xl p-2 shadow-lg w-[140px]">
-            {right.map((b) => (
-              <button key={b.id} onClick={() => b.onClick?.()} className="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-white/2">
-                {b.label}
-              </button>
-            ))}
-          </div>
         </div>
       )}
     </div>
