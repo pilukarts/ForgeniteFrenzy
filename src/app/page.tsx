@@ -51,7 +51,6 @@ export default function HomePage() {
     setTapCount(prev => prev + 1);
     handleTap(false);
     
-    // Disparar animaciones manuales en el DOM para respuesta instantánea
     const cmdr = commanderCenterRef.current?.querySelector('.commander-img-container');
     const aura = auraRef.current;
     
@@ -96,21 +95,21 @@ export default function HomePage() {
       </AnimatePresence>
 
       <div className="relative h-full w-full overflow-hidden flex flex-col items-center">
-        {/* FONDO ESPACIAL - ESCENA DE EVACUACIÓN */}
+        {/* FONDO ESPACIAL - ESCENA DE EVACUACIÓN (STATION BRIDGE) */}
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ 
             backgroundImage: `url('${images.global.main_scene}')`, 
-            filter: 'brightness(0.3) saturate(1.2)' 
+            filter: 'brightness(0.4) saturate(1.2)' 
           }}
-          data-ai-hint="space station"
+          data-ai-hint="space station bridge"
         />
         
-        {/* PLATAFORMA DE SUELO RECTANGULAR */}
+        {/* PLATAFORMA DE SUELO SÓLIDA RECTANGULAR */}
         <div className="absolute bottom-0 left-0 right-0 h-[22%] z-10">
-            <div className="w-full h-full bg-gradient-to-t from-black via-gray-900 to-transparent border-t-2 border-white/20 flex flex-col items-center pt-8">
-                {/* Línea de energía en el borde del suelo */}
-                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_20px_rgba(255,215,0,0.4)]" />
+            <div className="w-full h-full bg-gradient-to-t from-black via-gray-950 to-gray-900/40 border-t-2 border-white/20 flex flex-col items-center pt-8">
+                {/* Línea de energía táctica en el borde del suelo */}
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary/80 to-transparent shadow-[0_0_15px_rgba(255,215,0,0.5)]" />
                 
                 <div className="flex gap-4 sm:gap-12 px-4 w-full justify-center mt-2 max-w-4xl">
                      <HolographicButton label="Change" onClick={toggleCommander} className="w-44 md:w-52" />
