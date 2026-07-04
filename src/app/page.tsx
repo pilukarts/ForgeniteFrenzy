@@ -1,3 +1,4 @@
+
 // FIREBASE STUDIO - COMMAND CENTER REFINED
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
@@ -13,12 +14,6 @@ import ArkForgePanel from '@/components/game/ArkForgePanel';
 import HolographicMenu from '@/components/game/HolographicMenu';
 import HolographicButton from '@/components/game/HolographicButton';
 import { useRouter } from 'next/navigation';
-
-
-// Image configuration
-const IMAGE_PATHS = {
-  background: images.global.main_scene
-};
 
 // ARK COUNTDOWN
 const ArkCountdown = () => {
@@ -64,7 +59,6 @@ export default function HomePage() {
   const timeLeft = ArkCountdown();
   const commanderCenterRef = useRef<HTMLDivElement>(null);
   const auraRef = useRef<HTMLDivElement>(null);
-
 
   if (isLoading) return <IntroScreen />;
   if (!isInitialSetupDone || !playerProfile) return <PlayerSetup />;
@@ -126,7 +120,6 @@ export default function HomePage() {
     { label: 'Alliance', path: '/alliance-chat'},
   ]
 
-
   return (
     <>
       <AnimatePresence>
@@ -138,7 +131,7 @@ export default function HomePage() {
             transition={{ duration: 1.2, ease: "easeOut" }}
             className="absolute top-1/2 left-1/2 pointer-events-none z-50"
           >
-            <div className="flex items-center justify-center text-yellow-300 font-bold text-xl drop-shadow-lg">
+            <div className="flex items-center justify-center text-yellow-300 font-bold text-xl drop-shadow-[0_0_10px_rgba(255,255,0,0.8)]">
               <Zap className="w-5 h-5 text-yellow-400 fill-current mr-1" />
               +{Math.floor(playerProfile.pointsPerTap * (1 + (Math.random() * 0.5)))}
             </div>
@@ -150,22 +143,22 @@ export default function HomePage() {
         <div 
           className="absolute inset-0 bg-cover bg-center bg-fixed"
           style={{ 
-            backgroundImage: `url('${IMAGE_PATHS.background}')`,
-            filter: 'brightness(0.7) contrast(1.2)'
+            backgroundImage: `url('${images.global.main_scene}')`,
+            filter: 'brightness(0.5) contrast(1.2)'
           }}
         />
         
         {/* Floor Platform - The Commander's Deck */}
-        <div className="absolute bottom-0 left-0 right-0 h-[20%] z-10">
+        <div className="absolute bottom-0 left-0 right-0 h-[22%] z-10">
             {/* The "Rectangle" floor piece */}
-            <div className="w-full h-full bg-gradient-to-t from-gray-950 via-gray-900 to-transparent border-t border-white/20 flex flex-col items-center justify-center">
+            <div className="w-full h-full bg-gradient-to-t from-gray-950 via-gray-900 to-transparent border-t-2 border-white/20 flex flex-col items-center justify-start pt-6">
                 {/* Deck visual accents */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent shadow-[0_0_15px_rgba(255,215,0,0.3)]" />
+                <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_20px_rgba(255,215,0,0.5)]" />
                 
-                {/* Floor Buttons - Styled like the side menus */}
-                <div className="flex gap-4 sm:gap-12 mt-4">
-                     <HolographicButton label="Change" onClick={toggleCommander} className="w-36 sm:w-44 border-white/40" />
-                     <HolographicButton label="Invite" onClick={handleInviteClick} className="w-36 sm:w-44 border-white/40" />
+                {/* Floor Buttons - Reorganized to match Sidebar style */}
+                <div className="flex gap-6 sm:gap-12 px-4 w-full justify-center">
+                     <HolographicButton label="Change" onClick={toggleCommander} className="w-full max-w-[180px] border-white/60" />
+                     <HolographicButton label="Invite" onClick={handleInviteClick} className="w-full max-w-[180px] border-white/60" />
                 </div>
             </div>
         </div>
@@ -173,8 +166,8 @@ export default function HomePage() {
         {/* Central Circular Decor */}
         <div 
             aria-hidden 
-            className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] md:w-[500px] md:h-[500px] rounded-full border border-white/10"
-            style={{ boxShadow: '0 0 40px rgba(255, 255, 255, 0.05)' }}
+            className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] md:w-[550px] md:h-[550px] rounded-full border border-white/10"
+            style={{ boxShadow: '0 0 60px rgba(255, 255, 255, 0.03)' }}
         />
 
         <CommanderCenter
@@ -183,11 +176,11 @@ export default function HomePage() {
             fullBodyUrl={playerProfile.avatarUrl}
             onTap={() => handleTapWithAnimation(false)}
             bottomButtons={[]} 
-             leftPanel={<HolographicMenu options={navOptions.map(o => o.label)} onSelect={(label) => handleNavClick(navOptions.find(o => o.label === label)!.path)} side="left" />}
-             rightPanel={<ArkForgePanel countdown={timeLeft} />}
-             handLeftX={-0.35}
-             handRightX={1.4}
-             className="mt-[-8vh]"
+            leftPanel={<HolographicMenu options={navOptions.map(o => o.label)} onSelect={(label) => handleNavClick(navOptions.find(o => o.label === label)!.path)} side="left" />}
+            rightPanel={<ArkForgePanel countdown={timeLeft} />}
+            handLeftX={-0.45}
+            handRightX={1.45}
+            className="mt-[-12vh]"
         />
       </div>
     </>

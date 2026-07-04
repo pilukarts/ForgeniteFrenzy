@@ -6,7 +6,7 @@ import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Hexagon, MessageSquare, X, Send, User } from 'lucide-react';
+import { MessageSquare, X, Send, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { CoreMessage, PlayerProfile } from '@/lib/types';
 import images from '@/lib/placeholder-images.json';
@@ -82,14 +82,14 @@ const CoreDisplay: React.FC = () => {
         onClick={toggleCore}
         style={dynamicCoreStyle}
         className={cn(
-          "fixed bottom-20 right-4 z-[60] h-14 w-14 rounded-full bg-transparent core-hexagon-glow",
+          "fixed bottom-20 right-4 z-[60] h-14 w-14 rounded-full bg-black/40 backdrop-blur-md core-hexagon-glow border border-primary/30",
           "flex items-center justify-center p-2",
           "hover:bg-background/20",
           isOpen && "opacity-0 pointer-events-none"
         )}
         aria-label="Toggle C.O.R.E. Interface"
       >
-        <Image src={images.core.ai_icon} alt="C.O.R.E." width={40} height={40} className="object-contain" data-ai-hint="ai hexagon"/>
+        <Image src={images.core.ai_icon} alt="C.O.R.E. AI" width={40} height={40} className="object-contain" data-ai-hint="artificial intelligence"/>
         {hasUnread && !isOpen && (
           <span className="absolute top-0 right-0 block h-3 w-3 rounded-full bg-accent ring-2 ring-background" />
         )}
@@ -99,14 +99,16 @@ const CoreDisplay: React.FC = () => {
         style={{ '--dynamic-core-color': currentTierColor } as React.CSSProperties}
         className={cn(
           "fixed inset-x-0 bottom-0 z-[70] h-[60vh] transform transition-transform duration-300 ease-in-out md:inset-x-auto md:right-4 md:bottom-4 md:h-[70vh] md:w-[380px] md:rounded-lg",
-          "bg-background/80 backdrop-blur-md md:border-2 shadow-2xl flex flex-col",
+          "bg-background/90 backdrop-blur-xl md:border-2 shadow-2xl flex flex-col",
           "border-t-2 border-[hsl(var(--dynamic-core-color))] md:border-[hsl(var(--dynamic-core-color))]",
           isOpen ? "translate-y-0" : "translate-y-full md:translate-y-[calc(100%_+_1rem)]"
         )}
       >
         <div className={cn("flex items-center justify-between p-3 border-b border-[hsla(var(--dynamic-core-color)/0.3)]")}>
           <div className="flex items-center gap-2">
-            <Image src={images.core.ai_icon} alt="C.O.R.E." width={28} height={28} className="object-contain" data-ai-hint="ai hexagon"/>
+             <div className="w-8 h-8 relative rounded-md overflow-hidden border border-primary/30">
+                <Image src={images.core.ai_icon} alt="C.O.R.E." fill className="object-cover" data-ai-hint="ai hexagon"/>
+             </div>
             <h3 className={cn("font-headline text-xl text-[hsl(var(--dynamic-core-color))]")}>C.O.R.E.</h3>
           </div>
           <Button variant="ghost" size="icon" onClick={toggleCore} className="text-muted-foreground hover:text-foreground">
