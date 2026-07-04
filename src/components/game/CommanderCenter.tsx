@@ -1,6 +1,6 @@
 
 "use client";
-import React, { useRef, useLayoutEffect, useCallback, useState, forwardRef } from "react";
+import React, { useRef, useEffect, useCallback, useState, forwardRef } from "react";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -23,7 +23,7 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
   rightPanel,
   handLeftX = -0.6,
   handRightX = 1.6,
-  handY = 0.45, // Elevado ligeramente para estar más a la altura de las "manos"
+  handY = 0.45, 
   auraRef,
 }, ref) => {
   const imgRef = useRef<HTMLImageElement | null>(null);
@@ -39,6 +39,10 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
     if (!wrapper || !img) return;
     const wrapRect = wrapper.getBoundingClientRect();
     const imgRect = img.getBoundingClientRect();
+    
+    // Si la imagen aún no tiene tamaño real, no calculamos para evitar saltos
+    if (imgRect.width === 0) return;
+
     const imgLeft = imgRect.left - wrapRect.left;
     const imgTop = imgRect.top - wrapRect.top;
     
@@ -52,7 +56,8 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
     });
   }, [handLeftX, handRightX, handY]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
+    // Calculamos inicialmente después del montaje
     computePositions();
     window.addEventListener("resize", computePositions);
     return () => window.removeEventListener("resize", computePositions);
@@ -64,7 +69,7 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
       <div 
         ref={auraRef} 
         aria-hidden 
-        className="absolute w-[500px] h-[500px] md:w-[750px] md:h-[750px] rounded-full bg-primary/5 blur-[60px] pointer-events-none opacity-40" 
+        className="absolute w-[500px] h-[500px] md:w-[750px] md:h-[750px] rounded-full bg-primary/20 blur-[80px] pointer-events-none opacity-60" 
         style={{ transform: "translateY(5%)" }} 
       />
 
@@ -74,9 +79,10 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
             ref={imgRef}
             src={imgSrc}
             alt="Commander"
-            className="w-auto max-h-[72vh] object-contain object-bottom pointer-events-none drop-shadow-[0_0_40px_rgba(0,0,0,1)]"
+            className="w-auto max-h-[72vh] min-h-[400px] object-contain object-bottom pointer-events-none drop-shadow-[0_0_40px_rgba(0,0,0,1)]"
             draggable={false}
             onLoad={computePositions}
+            onError={() => console.error("Error loading commander image")}
           />
           <button
             type="button"
@@ -87,27 +93,27 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
         </div>
       </div>
 
-      {leftPanel && leftPos && (
+      {leftPanel && (
         <div
           className="absolute z-40 pointer-events-auto transition-all duration-500"
-          style={{
+          style={leftPos ? {
             left: leftPos.left,
             top: leftPos.top,
             transform: "translate(-50%, -50%)",
-          }}
+          } : { left: '15%', top: '45%', transform: "translate(-50%, -50%)" }}
         >
           {leftPanel}
         </div>
       )}
 
-      {rightPanel && rightPos && (
+      {rightPanel && (
         <div
           className="absolute z-40 pointer-events-auto transition-all duration-500"
-          style={{
+          style={rightPos ? {
             left: rightPos.left,
             top: rightPos.top,
             transform: "translate(-50%, -50%)",
-          }}
+          } : { right: '15%', top: '45%', transform: "translate(50%, -50%)" }}
         >
           {rightPanel}
         </div>

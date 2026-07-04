@@ -88,26 +88,26 @@ export default function HomePage() {
           >
             <div className="flex items-center text-yellow-300 font-bold text-2xl drop-shadow-[0_0_12px_rgba(255,215,0,0.9)]">
               <Zap className="w-6 h-6 fill-current mr-1" />
-              +{Math.floor(playerProfile.pointsPerTap || 1 * 1.2)}
+              +{Math.floor(playerProfile.pointsPerTap || 1)}
             </div>
           </motion.div>
         ))}
       </AnimatePresence>
 
-      <div className="relative h-full w-full overflow-hidden flex flex-col items-center">
+      <div className="relative h-full w-full overflow-hidden flex flex-col items-center bg-gray-900">
         {/* FONDO ESPACIAL - ESCENA DE EVACUACIÓN (STATION BRIDGE) */}
         <div 
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
           style={{ 
             backgroundImage: `url('${images.global.main_scene}')`, 
-            filter: 'brightness(0.4) saturate(1.2)' 
+            filter: 'brightness(0.7) saturate(1.2)' 
           }}
           data-ai-hint="space station bridge"
         />
         
         {/* PLATAFORMA DE SUELO SÓLIDA RECTANGULAR */}
         <div className="absolute bottom-0 left-0 right-0 h-[22%] z-10">
-            <div className="w-full h-full bg-gradient-to-t from-black via-gray-950 to-gray-900/40 border-t-2 border-white/20 flex flex-col items-center pt-8">
+            <div className="w-full h-full bg-gradient-to-t from-black via-gray-950 to-gray-900/60 border-t-2 border-primary/40 flex flex-col items-center pt-8 shadow-[0_-10px_50px_rgba(0,0,0,0.8)]">
                 {/* Línea de energía táctica en el borde del suelo */}
                 <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary/80 to-transparent shadow-[0_0_15px_rgba(255,215,0,0.5)]" />
                 
@@ -125,9 +125,9 @@ export default function HomePage() {
             onTap={handleTapWithAnimation}
             leftPanel={<HolographicMenu options={navOptions.map(o => o.label)} onSelect={(l) => router.push(navOptions.find(o => o.label === l)!.path)} side="left" />}
             rightPanel={<ArkForgePanel countdown={timeLeft} />}
-            handLeftX={-0.65}
-            handRightX={1.65}
-            className="mt-[-6vh]"
+            handLeftX={-0.7}
+            handRightX={1.7}
+            className="mt-[-4vh]"
         />
       </div>
     </>
