@@ -1,3 +1,5 @@
+
+"use client";
 import React, { ReactNode, useRef, useLayoutEffect, useCallback, useState, forwardRef } from "react";
 import { cn } from "@/lib/utils";
 
@@ -11,7 +13,6 @@ type Props = {
   bottomButtons?: ButtonItem[];
   rightButtons?: ButtonItem[];
   className?: string;
-  rightOffset?: string;
   leftPanel?: React.ReactNode;
   rightPanel?: React.ReactNode;
   handLeftX?: number;
@@ -24,15 +25,12 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
   fullBodyUrl,
   avatarUrl,
   onTap,
-  bottomButtons,
-  rightButtons,
   className = "",
-  rightOffset = "1.5rem",
   leftPanel,
   rightPanel,
-  handLeftX = -0.3,
-  handRightX = 1.3,
-  handY = 0.62,
+  handLeftX = -0.6,
+  handRightX = 1.6,
+  handY = 0.5,
   auraRef,
 }, ref) => {
   const imgRef = useRef<HTMLImageElement | null>(null);
@@ -40,9 +38,9 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
   const [leftPos, setLeftPos] = useState<{ top: number; left: number } | null>(null);
   const [rightPos, setRightPos] = useState<{ top: number; left: number } | null>(null);
 
-  const imgSrc = fullBodyUrl ?? avatarUrl ?? "/images/global/commander-man-full.png";
+  const imgSrc = fullBodyUrl || avatarUrl || "https://picsum.photos/seed/cmdr_fallback/600/1000";
 
-  const computeHandPositions = useCallback(() => {
+  const computePositions = useCallback(() => {
     const wrapper = wrapperRef.current;
     const img = imgRef.current;
     if (!wrapper || !img) return;
@@ -50,35 +48,29 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
     const imgRect = img.getBoundingClientRect();
     const imgLeft = imgRect.left - wrapRect.left;
     const imgTop = imgRect.top - wrapRect.top;
-    const leftX = imgLeft + imgRect.width * handLeftX;
-    const rightX = imgLeft + imgRect.width * handRightX;
-    const y = imgTop + imgRect.height * handY;
-    setLeftPos({ left: leftX, top: y });
-    setRightPos({ left: rightX, top: y });
+    
+    setLeftPos({ 
+      left: imgLeft + imgRect.width * handLeftX, 
+      top: imgTop + imgRect.height * handY 
+    });
+    setRightPos({ 
+      left: imgLeft + imgRect.width * handRightX, 
+      top: imgTop + imgRect.height * handY 
+    });
   }, [handLeftX, handRightX, handY]);
 
   useLayoutEffect(() => {
-    computeHandPositions();
-    const onResize = () => computeHandPositions();
-    window.addEventListener("resize", onResize);
-    window.addEventListener("orientationchange", onResize);
-    return () => {
-      window.removeEventListener("resize", onResize);
-      window.removeEventListener("orientationchange", onResize);
-    };
-  }, [computeHandPositions]);
-
-  const handleTap = async (ev?: React.MouseEvent | React.TouchEvent) => {
-    await Promise.resolve(onTap?.(ev));
-  };
+    computePositions();
+    window.addEventListener("resize", computePositions);
+    return () => window.removeEventListener("resize", computePositions);
+  }, [computePositions]);
 
   return (
     <div ref={wrapperRef} className={cn("commander-center relative z-20 w-full flex-grow flex items-center justify-center", className)}>
-      {/* Dynamic Aura controlled by parent */}
       <div 
         ref={auraRef} 
         aria-hidden 
-        className="absolute w-[450px] h-[450px] md:w-[600px] md:h-[600px] rounded-full bg-white/5 blur-[40px] pointer-events-none opacity-50" 
+        className="absolute w-[500px] h-[500px] md:w-[700px] md:h-[700px] rounded-full bg-white/5 blur-[50px] pointer-events-none opacity-40" 
         style={{ transform: "translateY(5%)" }} 
       />
 
@@ -87,16 +79,15 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
           <img
             ref={imgRef}
             src={imgSrc}
-            alt="Commander full body"
-            className="w-auto max-h-[65vh] object-contain object-bottom pointer-events-none drop-shadow-[0_0_20px_rgba(0,0,0,0.8)]"
+            alt="Commander"
+            className="w-auto max-h-[70vh] object-contain object-bottom pointer-events-none drop-shadow-[0_0_30px_rgba(0,0,0,0.9)]"
             draggable={false}
-            onLoad={() => computeHandPositions()}
+            onLoad={computePositions}
           />
-
           <button
             type="button"
             aria-label="Tap commander"
-            onClick={handleTap}
+            onClick={() => onTap?.()}
             className="absolute inset-0 w-full h-full bg-transparent border-0 cursor-pointer z-30"
           />
         </div>
@@ -108,7 +99,7 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
           style={{
             left: leftPos.left,
             top: leftPos.top,
-            transform: "translate(-100%, -50%)",
+            transform: "translate(-50%, -50%)",
           }}
         >
           {leftPanel}
@@ -121,7 +112,7 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
           style={{
             left: rightPos.left,
             top: rightPos.top,
-            transform: "translate(0%, -50%)",
+            transform: "translate(-50%, -50%)",
           }}
         >
           {rightPanel}
@@ -132,5 +123,4 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
 });
 
 CommanderCenter.displayName = "CommanderCenter";
-
 export default CommanderCenter;

@@ -1,6 +1,6 @@
 {
   "global": {
-    "main_scene": "https://picsum.photos/seed/space1/1920/1080",
+    "main_scene": "https://picsum.photos/seed/space_station/1920/1080",
     "background1": "https://picsum.photos/seed/nebula1/1200/800",
     "background2": "https://picsum.photos/seed/nebula2/1200/800",
     "background3": "https://picsum.photos/seed/nebula3/1200/800",
@@ -10,29 +10,29 @@
     "background7": "https://picsum.photos/seed/nebula7/1200/800"
   },
   "commanders": {
-    "male_full": "/images/global/commander-man-full.png",
-    "male_portrait": "/images/global/avatar-profile-man.png",
-    "male_headshot": "https://picsum.photos/seed/cmdr1/200/200",
-    "female_full": "/images/global/commander-woman-full.png",
-    "female_portrait": "/images/global/avatar-profile-lady.png",
-    "female_headshot": "https://picsum.photos/seed/cmdr2/200/200"
+    "male_full": "https://picsum.photos/seed/cmdr_male_full/600/1000",
+    "male_portrait": "https://picsum.photos/seed/cmdr_male_port/200/200",
+    "male_headshot": "https://picsum.photos/seed/cmdr_m_h/200/200",
+    "female_full": "https://picsum.photos/seed/cmdr_female_full/600/1000",
+    "female_portrait": "https://picsum.photos/seed/cmdr_female_port/200/200",
+    "female_headshot": "https://picsum.photos/seed/cmdr_f_h/200/200"
   },
   "core": {
-    "ai_icon": "https://picsum.photos/seed/coreai/200/200"
+    "ai_icon": "https://picsum.photos/seed/core_ai_hex/200/200"
   },
   "ark": {
-    "ark": "https://picsum.photos/seed/spaceship99/600/600"
+    "ark": "https://picsum.photos/seed/ark_ship_99/600/600"
   },
   "nfts": {
-    "aegis_frigate": "https://picsum.photos/seed/ship1/600/400",
-    "javelin_destroyer": "https://picsum.photos/seed/ship2/600/400",
-    "leviathan_carrier": "https://picsum.photos/seed/ship3/600/400",
-    "starforge_ark_nft": "https://picsum.photos/seed/ship4/600/400"
+    "aegis_frigate": "https://picsum.photos/seed/ship_aegis/600/400",
+    "javelin_destroyer": "https://picsum.photos/seed/ship_javelin/600/400",
+    "leviathan_carrier": "https://picsum.photos/seed/ship_leviathan/600/400",
+    "starforge_ark_nft": "https://picsum.photos/seed/ship_ark_nft/600/400"
   },
   "ui": {
-    "telegram_wallet": "https://picsum.photos/seed/wallet/100/100"
+    "telegram_wallet": "https://picsum.photos/seed/tg_wallet/100/100"
   },
   "generic": {
-    "default_avatar": "https://picsum.photos/seed/user/100/100"
+    "default_avatar": "https://picsum.photos/seed/generic_user/100/100"
   }
 }

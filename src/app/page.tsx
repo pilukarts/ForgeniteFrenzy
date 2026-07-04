@@ -1,5 +1,4 @@
 
-// FIREBASE STUDIO - COMMAND CENTER REFINED
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import PlayerSetup from '@/components/player/PlayerSetup';
@@ -15,16 +14,12 @@ import HolographicMenu from '@/components/game/HolographicMenu';
 import HolographicButton from '@/components/game/HolographicButton';
 import { useRouter } from 'next/navigation';
 
-// ARK COUNTDOWN
 const ArkCountdown = () => {
   const [timeLeft, setTimeLeft] = useState("");
-
   useEffect(() => {
     const calculateTimeLeft = () => {
       const launchDate = new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000);
-      const now = new Date();
-      const difference = launchDate.getTime() - now.getTime();
-      
+      const difference = launchDate.getTime() - new Date().getTime();
       if (difference > 0) {
         const days = Math.floor(difference / (1000 * 60 * 60 * 24));
         const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
@@ -33,28 +28,17 @@ const ArkCountdown = () => {
       }
       return "00d 00h 00m";
     };
-
     setTimeLeft(calculateTimeLeft());
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
-    }, 60000);
+    const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 60000);
     return () => clearInterval(timer);
   }, []);
-
   return timeLeft;
 };
 
 export default function HomePage() {
-  const { 
-    playerProfile, 
-    isLoading, 
-    isInitialSetupDone, 
-    handleTap, 
-    toggleCommander, 
-  } = useGame();
+  const { playerProfile, isLoading, isInitialSetupDone, handleTap, toggleCommander } = useGame();
   const { toast } = useToast();
   const router = useRouter();
-  
   const [tapCount, setTapCount] = useState(0);
   const timeLeft = ArkCountdown();
   const commanderCenterRef = useRef<HTMLDivElement>(null);
@@ -63,77 +47,44 @@ export default function HomePage() {
   if (isLoading) return <IntroScreen />;
   if (!isInitialSetupDone || !playerProfile) return <PlayerSetup />;
 
-  const handleTapWithAnimation = (isLogoTap: boolean) => {
+  const handleTapWithAnimation = () => {
     setTapCount(prev => prev + 1);
-    handleTap(isLogoTap);
-    
-    // Trigger animations
-    const commanderDiv = commanderCenterRef.current?.querySelector('.commander-img-container');
-    const auraDiv = auraRef.current;
-    
-    if (commanderDiv) {
-        commanderDiv.classList.remove('tap-pulse');
-        void (commanderDiv as HTMLElement).offsetWidth; 
-        commanderDiv.classList.add('tap-pulse');
+    handleTap(false);
+    const cmdr = commanderCenterRef.current?.querySelector('.commander-img-container');
+    const aura = auraRef.current;
+    if (cmdr) {
+        cmdr.classList.remove('tap-pulse');
+        void (cmdr as HTMLElement).offsetWidth; 
+        cmdr.classList.add('tap-pulse');
     }
-    if (auraDiv) {
-        auraDiv.classList.remove('commander-aura-glow');
-        void (auraDiv as HTMLElement).offsetWidth; 
-        auraDiv.classList.add('commander-aura-glow');
+    if (aura) {
+        aura.classList.remove('commander-aura-glow');
+        void (aura as HTMLElement).offsetWidth; 
+        aura.classList.add('commander-aura-glow');
     }
-
-    setTimeout(() => {
-      setTapCount(0);
-    }, 500);
+    setTimeout(() => setTapCount(0), 500);
   };
 
-  const handleNavClick = (path: string) => {
-    router.push(path);
-  }
-
-  const handleInviteClick = async () => {
-    if (!playerProfile.referralCode) return;
-    
-    const referralLink = `https://forgeite-frenzy.web.app/?ref=${playerProfile.referralCode}`;
-    
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: 'Join Alliance Forge!',
-          text: 'Join my alliance in Forgeite Frenzy!',
-          url: referralLink,
-        });
-      } else {
-        await navigator.clipboard.writeText(referralLink);
-        toast({ title: "Referral Link Copied!", description: "Your invite link has been copied." });
-      }
-    } catch (err) {
-      await navigator.clipboard.writeText(referralLink);
-      toast({ title: "Sharing failed, link copied instead." });
-    }
-  };
-  
   const navOptions = [
     { label: 'Missions', path: '/quests'},
     { label: 'Rewards', path: '/battle-pass'},
     { label: 'Community', path: '/community'},
     { label: 'Alliance', path: '/alliance-chat'},
-  ]
+  ];
 
   return (
     <>
       <AnimatePresence>
         {tapCount > 0 && Array.from({ length: 3 }).map((_, i) => (
           <motion.div
-            key={`point-${i}-${tapCount}`}
-            initial={{ x: Math.random() * 50 - 25, y: -20, opacity: 1, scale: 0.5 }}
-            animate={{ y: -150 - (Math.random() * 50), opacity: 0, scale: 1.2 }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
+            key={`pt-${i}-${tapCount}`}
+            initial={{ x: Math.random() * 60 - 30, y: -20, opacity: 1, scale: 0.6 }}
+            animate={{ y: -200, opacity: 0, scale: 1.3 }}
             className="absolute top-1/2 left-1/2 pointer-events-none z-50"
           >
-            <div className="flex items-center justify-center text-yellow-300 font-bold text-xl drop-shadow-[0_0_10px_rgba(255,255,0,0.8)]">
-              <Zap className="w-5 h-5 text-yellow-400 fill-current mr-1" />
-              +{Math.floor(playerProfile.pointsPerTap * (1 + (Math.random() * 0.5)))}
+            <div className="flex items-center text-yellow-300 font-bold text-2xl drop-shadow-[0_0_12px_rgba(255,215,0,0.9)]">
+              <Zap className="w-6 h-6 fill-current mr-1" />
+              +{Math.floor(playerProfile.pointsPerTap * 1.2)}
             </div>
           </motion.div>
         ))}
@@ -141,46 +92,31 @@ export default function HomePage() {
 
       <div className="relative h-full w-full overflow-hidden flex flex-col items-center">
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-fixed"
-          style={{ 
-            backgroundImage: `url('${images.global.main_scene}')`,
-            filter: 'brightness(0.5) contrast(1.2)'
-          }}
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url('${images.global.main_scene}')`, filter: 'brightness(0.4)' }}
         />
         
-        {/* Floor Platform - The Commander's Deck */}
-        <div className="absolute bottom-0 left-0 right-0 h-[22%] z-10">
-            {/* The "Rectangle" floor piece */}
-            <div className="w-full h-full bg-gradient-to-t from-gray-950 via-gray-900 to-transparent border-t-2 border-white/20 flex flex-col items-center justify-start pt-6">
-                {/* Deck visual accents */}
-                <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_20px_rgba(255,215,0,0.5)]" />
-                
-                {/* Floor Buttons - Reorganized to match Sidebar style */}
-                <div className="flex gap-6 sm:gap-12 px-4 w-full justify-center">
-                     <HolographicButton label="Change" onClick={toggleCommander} className="w-full max-w-[180px] border-white/60" />
-                     <HolographicButton label="Invite" onClick={handleInviteClick} className="w-full max-w-[180px] border-white/60" />
+        {/* RECTANGULAR FLOOR PLATFORM */}
+        <div className="absolute bottom-0 left-0 right-0 h-[24%] z-10">
+            <div className="w-full h-full bg-gradient-to-t from-black via-gray-900 to-transparent border-t-2 border-white/20 flex flex-col items-center pt-8">
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_25px_rgba(255,215,0,0.6)]" />
+                <div className="flex gap-8 sm:gap-16 px-4 w-full justify-center mt-2">
+                     <HolographicButton label="Change" onClick={toggleCommander} className="w-44 md:w-52" />
+                     <HolographicButton label="Invite" onClick={() => toast({title: "Invite Link Copied"})} className="w-44 md:w-52" />
                 </div>
             </div>
         </div>
 
-        {/* Central Circular Decor */}
-        <div 
-            aria-hidden 
-            className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] md:w-[550px] md:h-[550px] rounded-full border border-white/10"
-            style={{ boxShadow: '0 0 60px rgba(255, 255, 255, 0.03)' }}
-        />
-
         <CommanderCenter
             ref={commanderCenterRef}
             auraRef={auraRef}
-            fullBodyUrl={playerProfile.avatarUrl}
-            onTap={() => handleTapWithAnimation(false)}
-            bottomButtons={[]} 
-            leftPanel={<HolographicMenu options={navOptions.map(o => o.label)} onSelect={(label) => handleNavClick(navOptions.find(o => o.label === label)!.path)} side="left" />}
+            fullBodyUrl={playerProfile.avatarUrl || images.commanders.male_full}
+            onTap={handleTapWithAnimation}
+            leftPanel={<HolographicMenu options={navOptions.map(o => o.label)} onSelect={(l) => router.push(navOptions.find(o => o.label === l)!.path)} side="left" />}
             rightPanel={<ArkForgePanel countdown={timeLeft} />}
-            handLeftX={-0.45}
-            handRightX={1.45}
-            className="mt-[-12vh]"
+            handLeftX={-0.6}
+            handRightX={1.6}
+            className="mt-[-8vh]"
         />
       </div>
     </>
