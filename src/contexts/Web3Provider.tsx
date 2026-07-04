@@ -1,45 +1,38 @@
 
 "use client";
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { RainbowKitProvider, getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import { mainnet, polygon, optimism, arbitrum, base } from 'wagmi/chains';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
-import {
-  metaMaskWallet,
-  walletConnectWallet,
-  rainbowWallet,
-} from '@rainbow-me/rainbowkit/wallets';
-import '@rainbow-me/rainbowkit/styles.css';
 
 interface Web3ProviderProps {
     children: ReactNode;
 }
 
+// Configuración de Wagmi optimizada para evitar errores de conexión automática en desarrollo
 const config = getDefaultConfig({
     appName: 'Alliance Forge',
     projectId: '2d3c8d3527e02bcb7d17675be8c07e5c',
     chains: [mainnet, polygon, optimism, arbitrum, base], 
-    wallets: [
-        {
-            groupName: 'Recommended',
-            wallets: [
-                metaMaskWallet,
-                rainbowWallet,
-                walletConnectWallet,
-            ]
-        }
-    ],
-    ssr: false, 
+    ssr: true, // Habilitar SSR para una hidratación más estable
 });
 
 const queryClient = new QueryClient();
 
 const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) return <div className="bg-black min-h-screen" />;
+
     return (
         <WagmiProvider config={config}>
             <QueryClientProvider client={queryClient}>
-                <RainbowKitProvider>
+                <RainbowKitProvider modalSize="compact">
                     {children}
                 </RainbowKitProvider>
             </QueryClientProvider>
