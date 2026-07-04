@@ -1,27 +1,27 @@
 {
   "global": {
-    "main_scene": "https://picsum.photos/seed/space_station/1920/1080",
-    "background1": "https://picsum.photos/seed/nebula1/1200/800",
-    "background2": "https://picsum.photos/seed/nebula2/1200/800",
-    "background3": "https://picsum.photos/seed/nebula3/1200/800",
-    "background4": "https://picsum.photos/seed/nebula4/1200/800",
-    "background5": "https://picsum.photos/seed/nebula5/1200/800",
-    "background6": "https://picsum.photos/seed/nebula6/1200/800",
-    "background7": "https://picsum.photos/seed/nebula7/1200/800"
+    "main_scene": "https://picsum.photos/seed/space_station_interior/1920/1080",
+    "background1": "https://picsum.photos/seed/nebula_blue/1200/800",
+    "background2": "https://picsum.photos/seed/nebula_cyan/1200/800",
+    "background3": "https://picsum.photos/seed/nebula_green/1200/800",
+    "background4": "https://picsum.photos/seed/nebula_purple/1200/800",
+    "background5": "https://picsum.photos/seed/nebula_orange/1200/800",
+    "background6": "https://picsum.photos/seed/nebula_red/1200/800",
+    "background7": "https://picsum.photos/seed/nebula_gold/1200/800"
   },
   "commanders": {
-    "male_full": "https://picsum.photos/seed/cmdr_male_full/600/1000",
+    "male_full": "https://picsum.photos/seed/cmdr_male_full_scifi/600/1000",
     "male_portrait": "https://picsum.photos/seed/cmdr_male_port/200/200",
     "male_headshot": "https://picsum.photos/seed/cmdr_m_h/200/200",
-    "female_full": "https://picsum.photos/seed/cmdr_female_full/600/1000",
+    "female_full": "https://picsum.photos/seed/cmdr_female_full_scifi/600/1000",
     "female_portrait": "https://picsum.photos/seed/cmdr_female_port/200/200",
     "female_headshot": "https://picsum.photos/seed/cmdr_f_h/200/200"
   },
   "core": {
-    "ai_icon": "https://picsum.photos/seed/core_ai_hex/200/200"
+    "ai_icon": "https://picsum.photos/seed/core_ai_hexagon/200/200"
   },
   "ark": {
-    "ark": "https://picsum.photos/seed/ark_ship_99/600/600"
+    "ark": "https://picsum.photos/seed/massive_spaceship_ark/600/600"
   },
   "nfts": {
     "aegis_frigate": "https://picsum.photos/seed/ship_aegis/600/400",
@@ -30,9 +30,9 @@
     "starforge_ark_nft": "https://picsum.photos/seed/ship_ark_nft/600/400"
   },
   "ui": {
-    "telegram_wallet": "https://picsum.photos/seed/tg_wallet/100/100"
+    "telegram_wallet": "https://picsum.photos/seed/tg_wallet_crypto/100/100"
   },
   "generic": {
-    "default_avatar": "https://picsum.photos/seed/generic_user/100/100"
+    "default_avatar": "https://picsum.photos/seed/generic_user_scifi/100/100"
   }
 }

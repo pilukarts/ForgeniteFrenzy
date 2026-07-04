@@ -50,18 +50,23 @@ export default function HomePage() {
   const handleTapWithAnimation = () => {
     setTapCount(prev => prev + 1);
     handleTap(false);
+    
+    // Disparar animaciones manuales en el DOM para respuesta instantánea
     const cmdr = commanderCenterRef.current?.querySelector('.commander-img-container');
     const aura = auraRef.current;
+    
     if (cmdr) {
         cmdr.classList.remove('tap-pulse');
         void (cmdr as HTMLElement).offsetWidth; 
         cmdr.classList.add('tap-pulse');
     }
+    
     if (aura) {
         aura.classList.remove('commander-aura-glow');
         void (aura as HTMLElement).offsetWidth; 
         aura.classList.add('commander-aura-glow');
     }
+    
     setTimeout(() => setTapCount(0), 500);
   };
 
@@ -84,23 +89,30 @@ export default function HomePage() {
           >
             <div className="flex items-center text-yellow-300 font-bold text-2xl drop-shadow-[0_0_12px_rgba(255,215,0,0.9)]">
               <Zap className="w-6 h-6 fill-current mr-1" />
-              +{Math.floor(playerProfile.pointsPerTap * 1.2)}
+              +{Math.floor(playerProfile.pointsPerTap || 1 * 1.2)}
             </div>
           </motion.div>
         ))}
       </AnimatePresence>
 
       <div className="relative h-full w-full overflow-hidden flex flex-col items-center">
+        {/* FONDO ESPACIAL - ESCENA DE EVACUACIÓN */}
         <div 
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url('${images.global.main_scene}')`, filter: 'brightness(0.4)' }}
+          style={{ 
+            backgroundImage: `url('${images.global.main_scene}')`, 
+            filter: 'brightness(0.3) saturate(1.2)' 
+          }}
+          data-ai-hint="space station"
         />
         
-        {/* RECTANGULAR FLOOR PLATFORM */}
-        <div className="absolute bottom-0 left-0 right-0 h-[24%] z-10">
+        {/* PLATAFORMA DE SUELO RECTANGULAR */}
+        <div className="absolute bottom-0 left-0 right-0 h-[22%] z-10">
             <div className="w-full h-full bg-gradient-to-t from-black via-gray-900 to-transparent border-t-2 border-white/20 flex flex-col items-center pt-8">
-                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_25px_rgba(255,215,0,0.6)]" />
-                <div className="flex gap-8 sm:gap-16 px-4 w-full justify-center mt-2">
+                {/* Línea de energía en el borde del suelo */}
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_20px_rgba(255,215,0,0.4)]" />
+                
+                <div className="flex gap-4 sm:gap-12 px-4 w-full justify-center mt-2 max-w-4xl">
                      <HolographicButton label="Change" onClick={toggleCommander} className="w-44 md:w-52" />
                      <HolographicButton label="Invite" onClick={() => toast({title: "Invite Link Copied"})} className="w-44 md:w-52" />
                 </div>
@@ -114,9 +126,9 @@ export default function HomePage() {
             onTap={handleTapWithAnimation}
             leftPanel={<HolographicMenu options={navOptions.map(o => o.label)} onSelect={(l) => router.push(navOptions.find(o => o.label === l)!.path)} side="left" />}
             rightPanel={<ArkForgePanel countdown={timeLeft} />}
-            handLeftX={-0.6}
-            handRightX={1.6}
-            className="mt-[-8vh]"
+            handLeftX={-0.65}
+            handRightX={1.65}
+            className="mt-[-6vh]"
         />
       </div>
     </>

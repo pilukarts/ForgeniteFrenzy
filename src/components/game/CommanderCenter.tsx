@@ -1,17 +1,11 @@
 
 "use client";
-import React, { ReactNode, useRef, useLayoutEffect, useCallback, useState, forwardRef } from "react";
+import React, { useRef, useLayoutEffect, useCallback, useState, forwardRef } from "react";
 import { cn } from "@/lib/utils";
-
-type ButtonItem = { id: string; label: string; onClick?: () => void; icon?: React.ReactNode; };
 
 type Props = {
   fullBodyUrl?: string;
-  avatarUrl?: string;
-  onAvatarClick?: () => void;
   onTap?: (ev?: React.MouseEvent | React.TouchEvent) => void | Promise<void>;
-  bottomButtons?: ButtonItem[];
-  rightButtons?: ButtonItem[];
   className?: string;
   leftPanel?: React.ReactNode;
   rightPanel?: React.ReactNode;
@@ -23,14 +17,13 @@ type Props = {
 
 const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
   fullBodyUrl,
-  avatarUrl,
   onTap,
   className = "",
   leftPanel,
   rightPanel,
   handLeftX = -0.6,
   handRightX = 1.6,
-  handY = 0.5,
+  handY = 0.45, // Elevado ligeramente para estar más a la altura de las "manos"
   auraRef,
 }, ref) => {
   const imgRef = useRef<HTMLImageElement | null>(null);
@@ -38,7 +31,7 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
   const [leftPos, setLeftPos] = useState<{ top: number; left: number } | null>(null);
   const [rightPos, setRightPos] = useState<{ top: number; left: number } | null>(null);
 
-  const imgSrc = fullBodyUrl || avatarUrl || "https://picsum.photos/seed/cmdr_fallback/600/1000";
+  const imgSrc = fullBodyUrl || "https://picsum.photos/seed/cmdr_fallback/600/1000";
 
   const computePositions = useCallback(() => {
     const wrapper = wrapperRef.current;
@@ -67,20 +60,21 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
 
   return (
     <div ref={wrapperRef} className={cn("commander-center relative z-20 w-full flex-grow flex items-center justify-center", className)}>
+      {/* Aura de resplandor dinámico */}
       <div 
         ref={auraRef} 
         aria-hidden 
-        className="absolute w-[500px] h-[500px] md:w-[700px] md:h-[700px] rounded-full bg-white/5 blur-[50px] pointer-events-none opacity-40" 
+        className="absolute w-[500px] h-[500px] md:w-[750px] md:h-[750px] rounded-full bg-primary/5 blur-[60px] pointer-events-none opacity-40" 
         style={{ transform: "translateY(5%)" }} 
       />
 
       <div ref={ref} className="relative flex flex-col items-center">
-        <div className="commander-img-container relative transition-transform duration-150">
+        <div className="commander-img-container relative transition-all duration-200">
           <img
             ref={imgRef}
             src={imgSrc}
             alt="Commander"
-            className="w-auto max-h-[70vh] object-contain object-bottom pointer-events-none drop-shadow-[0_0_30px_rgba(0,0,0,0.9)]"
+            className="w-auto max-h-[72vh] object-contain object-bottom pointer-events-none drop-shadow-[0_0_40px_rgba(0,0,0,1)]"
             draggable={false}
             onLoad={computePositions}
           />
