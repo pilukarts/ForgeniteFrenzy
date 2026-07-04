@@ -155,16 +155,17 @@ export default function HomePage() {
           }}
         />
         
-        {/* Floor Platform - The Commander's base */}
-        <div className="absolute bottom-0 left-0 right-0 h-[22%] z-10 flex flex-col items-center">
-            <div className="w-full h-full bg-gradient-to-t from-black via-black/80 to-transparent flex flex-col items-center">
-                {/* Visual Floor Edge */}
-                <div className="w-[120%] h-1 bg-white/20 blur-[1px] shadow-[0_0_15px_rgba(255,255,255,0.3)] mb-8" />
+        {/* Floor Platform - The Commander's Deck */}
+        <div className="absolute bottom-0 left-0 right-0 h-[20%] z-10">
+            {/* The "Rectangle" floor piece */}
+            <div className="w-full h-full bg-gradient-to-t from-gray-950 via-gray-900 to-transparent border-t border-white/20 flex flex-col items-center justify-center">
+                {/* Deck visual accents */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent shadow-[0_0_15px_rgba(255,215,0,0.3)]" />
                 
-                {/* Action Buttons Integrated into Floor Area */}
-                <div className="flex gap-4 sm:gap-8 pb-4">
-                     <HolographicButton label="Change" onClick={toggleCommander} className="w-32 sm:w-40" />
-                     <HolographicButton label="Invite" onClick={handleInviteClick} className="w-32 sm:w-40" />
+                {/* Floor Buttons - Styled like the side menus */}
+                <div className="flex gap-4 sm:gap-12 mt-4">
+                     <HolographicButton label="Change" onClick={toggleCommander} className="w-36 sm:w-44 border-white/40" />
+                     <HolographicButton label="Invite" onClick={handleInviteClick} className="w-36 sm:w-44 border-white/40" />
                 </div>
             </div>
         </div>
@@ -173,7 +174,7 @@ export default function HomePage() {
         <div 
             aria-hidden 
             className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] md:w-[500px] md:h-[500px] rounded-full border border-white/10"
-            style={{ boxShadow: '0 0 30px rgba(255, 255, 255, 0.05)' }}
+            style={{ boxShadow: '0 0 40px rgba(255, 255, 255, 0.05)' }}
         />
 
         <CommanderCenter
@@ -181,12 +182,12 @@ export default function HomePage() {
             auraRef={auraRef}
             fullBodyUrl={playerProfile.avatarUrl}
             onTap={() => handleTapWithAnimation(false)}
-            bottomButtons={[]} // Handled by the integrated floor buttons
+            bottomButtons={[]} 
              leftPanel={<HolographicMenu options={navOptions.map(o => o.label)} onSelect={(label) => handleNavClick(navOptions.find(o => o.label === label)!.path)} side="left" />}
              rightPanel={<ArkForgePanel countdown={timeLeft} />}
              handLeftX={-0.35}
-             handRightX={1.35}
-             className="mt-[-10vh]"
+             handRightX={1.4}
+             className="mt-[-8vh]"
         />
       </div>
     </>
