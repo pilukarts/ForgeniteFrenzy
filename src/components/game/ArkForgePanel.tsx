@@ -13,17 +13,17 @@ const ArkForgePanel: React.FC<Props> = ({ countdown = "30d 0h 0m", className = "
   return (
     <div className={`w-64 sm:w-85 rounded-2xl p-6 bg-black/75 backdrop-blur-3xl border border-white/25 shadow-[0_0_80px_rgba(0,0,0,0.95)] transition-all duration-500 hover:border-primary/50 ${className}`}>
       <div className="flex flex-col items-center gap-6">
-        {/* Hangar de construcción Puro */}
+        {/* Hangar de construcción - SIN PERSONAS */}
         <div className="w-full aspect-square relative bg-gradient-to-br from-blue-950/50 via-black to-gray-900 rounded-xl overflow-hidden border border-white/15 group min-h-[200px]">
           <Image
             src={images.ark.ark}
-            alt="Ark Forge Construction"
+            alt="Ark Forge Empty Hangar"
             fill
             unoptimized
             priority
             className="object-cover opacity-95 transition-transform duration-1000 group-hover:scale-110"
             draggable={false}
-            data-ai-hint="spaceship hangar construction"
+            data-ai-hint="space hangar"
           />
           
           {/* Rejilla de hangar Sutil */}
