@@ -13,14 +13,17 @@ import ArkForgePanel from '@/components/game/ArkForgePanel';
 import HolographicMenu from '@/components/game/HolographicMenu';
 import HolographicButton from '@/components/game/HolographicButton';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const ArkCountdown = () => {
-  const [timeLeft, setTimeLeft] = useState("");
+  const [timeLeft, setTimeLeft] = useState("30d 0h 0m");
+  
   useEffect(() => {
-    // Hydration-safe countdown calculation
     const calculateTimeLeft = () => {
-      const launchDate = new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000);
+      const launchDate = new Date();
+      launchDate.setDate(launchDate.getDate() + 30);
       const difference = launchDate.getTime() - new Date().getTime();
+      
       if (difference > 0) {
         const days = Math.floor(difference / (1000 * 60 * 60 * 24));
         const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
@@ -29,11 +32,13 @@ const ArkCountdown = () => {
       }
       return "00d 00h 00m";
     };
+
     setTimeLeft(calculateTimeLeft());
     const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 60000);
     return () => clearInterval(timer);
   }, []);
-  return timeLeft || "Calculating...";
+
+  return <span>{timeLeft}</span>;
 };
 
 export default function HomePage() {
@@ -41,7 +46,6 @@ export default function HomePage() {
   const { toast } = useToast();
   const router = useRouter();
   const [tapCount, setTapCount] = useState(0);
-  const timeLeft = ArkCountdown();
   const commanderCenterRef = useRef<HTMLDivElement>(null);
   const auraRef = useRef<HTMLDivElement>(null);
 
@@ -78,7 +82,7 @@ export default function HomePage() {
   ];
 
   return (
-    <>
+    <div className="relative h-full w-full overflow-hidden flex flex-col items-center bg-slate-950">
       <AnimatePresence>
         {tapCount > 0 && Array.from({ length: 3 }).map((_, i) => (
           <motion.div
@@ -95,44 +99,47 @@ export default function HomePage() {
         ))}
       </AnimatePresence>
 
-      <div className="relative h-full w-full overflow-hidden flex flex-col items-center bg-gray-950">
-        {/* FONDO ESPACIAL - NEBULOSA Y PLANETAS (FAVORITO DEL JEFE) */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
-          style={{ 
-            backgroundImage: `url('${images.global.main_scene}')`, 
-            filter: 'brightness(0.8) contrast(1.1)' 
-          }}
-          data-ai-hint="nebula with planets"
+      {/* FONDO ESPACIAL - NEBULOSA Y PLANETAS (FAVORITO DEL JEFE) */}
+      <div className="absolute inset-0 z-0">
+        <Image 
+          src={images.global.main_scene}
+          alt="Deep Space Nebula"
+          fill
+          priority
+          unoptimized
+          className="object-cover transition-opacity duration-1000 opacity-90"
+          data-ai-hint="nebula planets"
         />
-        
-        {/* PLATAFORMA DE SUELO SÓLIDA RECTANGULAR - ELEVADA Y ESPACIOSA */}
-        <div className="absolute bottom-0 left-0 right-0 h-[26%] z-10">
-            <div className="w-full h-full bg-gradient-to-t from-black via-gray-950 to-gray-900/60 border-t-2 border-primary/30 flex flex-col items-center pt-8 shadow-[0_-20px_80px_rgba(0,0,0,1)]">
-                {/* Línea de energía táctica */}
-                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
-                
-                <div className="flex gap-6 sm:gap-12 px-4 w-full justify-center mt-4 max-w-4xl">
-                     <HolographicButton label="Change" onClick={toggleCommander} className="w-44 md:w-52 h-12 text-lg" />
-                     <HolographicButton label="Invite" onClick={() => toast({title: "Invite Link Copied"})} className="w-44 md:w-52 h-12 text-lg" />
-                </div>
-            </div>
-        </div>
-
-        <CommanderCenter
-            ref={commanderCenterRef}
-            auraRef={auraRef}
-            fullBodyUrl={playerProfile.avatarUrl || images.commanders.male_full}
-            onTap={handleTapWithAnimation}
-            leftPanel={<HolographicMenu options={navOptions.map(o => o.label)} onSelect={(l) => router.push(navOptions.find(o => o.label === l)!.path)} side="left" />}
-            rightPanel={<ArkForgePanel countdown={timeLeft} />}
-            /* Alejamos los paneles para evitar que estén muy apretados */
-            handLeftX={-1.5} 
-            handRightX={2.5}
-            handY={0.35}
-            className="mt-0"
-        />
+        {/* Overlay para profundidad sin oscurecer demasiado */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40" />
       </div>
-    </>
+      
+      {/* PLATAFORMA DE SUELO SÓLIDA RECTANGULAR - ELEVADA Y ESPACIOSA */}
+      <div className="absolute bottom-0 left-0 right-0 h-[28%] z-10">
+          <div className="w-full h-full bg-gradient-to-t from-black via-gray-900 to-gray-800/80 border-t-4 border-primary/40 flex flex-col items-center pt-8 shadow-[0_-30px_100px_rgba(0,0,0,1)]">
+              {/* Línea de energía táctica central */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-[2px] bg-gradient-to-r from-transparent via-primary/80 to-transparent" />
+              
+              <div className="flex gap-8 sm:gap-16 px-4 w-full justify-center mt-6 max-w-5xl">
+                   <HolographicButton label="Change" onClick={toggleCommander} className="w-48 md:w-56 h-14 text-xl shadow-primary/20" />
+                   <HolographicButton label="Invite" onClick={() => toast({title: "Invite Link Copied"})} className="w-48 md:w-56 h-14 text-xl shadow-primary/20" />
+              </div>
+          </div>
+      </div>
+
+      <CommanderCenter
+          ref={commanderCenterRef}
+          auraRef={auraRef}
+          fullBodyUrl={playerProfile.avatarUrl || images.commanders.male_full}
+          onTap={handleTapWithAnimation}
+          leftPanel={<HolographicMenu options={navOptions.map(o => o.label)} onSelect={(l) => router.push(navOptions.find(o => o.label === l)!.path)} side="left" />}
+          rightPanel={<ArkForgePanel countdown={<ArkCountdown />} />}
+          /* SEPARACIÓN TÁCTICA MÁXIMA PARA EVITAR "TIGHTNESS" */
+          handLeftX={-2.2} 
+          handRightX={3.2}
+          handY={0.35}
+          className="mt-0"
+      />
+    </div>
   );
 }

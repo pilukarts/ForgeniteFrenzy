@@ -21,8 +21,8 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
   className = "",
   leftPanel,
   rightPanel,
-  handLeftX = -0.6,
-  handRightX = 1.6,
+  handLeftX = -1.2,
+  handRightX = 2.2,
   handY = 0.45, 
   auraRef,
 }, ref) => {
@@ -40,7 +40,12 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
     const wrapRect = wrapper.getBoundingClientRect();
     const imgRect = img.getBoundingClientRect();
     
-    if (imgRect.width === 0) return;
+    // Si la imagen aún no tiene dimensiones reales, usamos valores por defecto para no ocultar paneles
+    if (imgRect.width === 0) {
+      setLeftPos({ left: wrapRect.width * 0.15, top: wrapRect.height * 0.4 });
+      setRightPos({ left: wrapRect.width * 0.85, top: wrapRect.height * 0.4 });
+      return;
+    }
 
     const imgLeft = imgRect.left - wrapRect.left;
     const imgTop = imgRect.top - wrapRect.top;
@@ -56,9 +61,14 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
   }, [handLeftX, handRightX, handY]);
 
   useEffect(() => {
+    // Calculamos inicialmente y tras un pequeño delay por si la imagen tarda
     computePositions();
+    const timeout = setTimeout(computePositions, 500);
     window.addEventListener("resize", computePositions);
-    return () => window.removeEventListener("resize", computePositions);
+    return () => {
+      window.removeEventListener("resize", computePositions);
+      clearTimeout(timeout);
+    }
   }, [computePositions]);
 
   return (
@@ -67,8 +77,8 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
       <div 
         ref={auraRef} 
         aria-hidden 
-        className="absolute w-[550px] h-[550px] md:w-[850px] md:h-[850px] rounded-full bg-primary/20 blur-[100px] pointer-events-none opacity-60" 
-        style={{ transform: "translateY(5%)" }} 
+        className="absolute w-[600px] h-[600px] md:w-[900px] md:h-[900px] rounded-full bg-primary/25 blur-[120px] pointer-events-none opacity-70" 
+        style={{ transform: "translateY(10%)" }} 
       />
 
       <div ref={ref} className="relative flex flex-col items-center">
@@ -77,7 +87,7 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
             ref={imgRef}
             src={imgSrc}
             alt="Commander"
-            className="w-auto max-h-[68vh] min-h-[400px] object-contain object-bottom pointer-events-none drop-shadow-[0_0_50px_rgba(0,0,0,0.8)]"
+            className="w-auto max-h-[70vh] min-h-[450px] object-contain object-bottom pointer-events-none drop-shadow-[0_0_60px_rgba(0,0,0,0.9)]"
             draggable={false}
             onLoad={computePositions}
             onError={() => console.error("Error loading commander image")}
@@ -98,7 +108,7 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
             left: leftPos.left,
             top: leftPos.top,
             transform: "translate(-50%, -50%)",
-          } : { left: '10%', top: '40%', transform: "translate(-50%, -50%)" }}
+          } : { left: '15%', top: '40%', transform: "translate(-50%, -50%)" }}
         >
           {leftPanel}
         </div>
@@ -111,7 +121,7 @@ const CommanderCenter = forwardRef<HTMLDivElement, Props>(({
             left: rightPos.left,
             top: rightPos.top,
             transform: "translate(-50%, -50%)",
-          } : { right: '10%', top: '40%', transform: "translate(50%, -50%)" }}
+          } : { right: '15%', top: '40%', transform: "translate(-50%, -50%)" }}
         >
           {rightPanel}
         </div>
