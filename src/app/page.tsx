@@ -33,6 +33,7 @@ const ArkCountdown = () => {
       return "00d 00h 00m";
     };
 
+    // Initialize in useEffect to avoid hydration errors
     setTimeLeft(calculateTimeLeft());
     const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 60000);
     return () => clearInterval(timer);
