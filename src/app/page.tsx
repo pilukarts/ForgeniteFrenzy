@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation';
 const ArkCountdown = () => {
   const [timeLeft, setTimeLeft] = useState("");
   useEffect(() => {
+    // Hydration-safe countdown calculation
     const calculateTimeLeft = () => {
       const launchDate = new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000);
       const difference = launchDate.getTime() - new Date().getTime();
@@ -32,7 +33,7 @@ const ArkCountdown = () => {
     const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 60000);
     return () => clearInterval(timer);
   }, []);
-  return timeLeft;
+  return timeLeft || "Calculating...";
 };
 
 export default function HomePage() {
