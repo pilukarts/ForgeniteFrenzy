@@ -12,27 +12,27 @@
   "commanders": {
     "male_full": "/images/global/commander-man-full.png",
     "male_portrait": "/images/global/avatar-profile-man.png",
-    "male_headshot": "/images/commanders/male_headshot.png",
+    "male_headshot": "/images/global/avatar-profile-man.png",
     "female_full": "/images/global/commander-woman-full.png",
     "female_portrait": "/images/global/avatar-profile-lady.png",
-    "female_headshot": "/images/commanders/female_headshot.png"
+    "female_headshot": "/images/global/avatar-profile-lady.png"
   },
   "core": {
-    "ai_icon": "/images/core/ai_icon.png"
+    "ai_icon": "/images/global/star-ark-forge.png"
   },
   "ark": {
-    "ark": "/images/ark/star-forge-ark.png"
+    "ark": "/images/global/star-ark-forge.png"
   },
   "nfts": {
-    "aegis_frigate": "/images/nfts/aegis_frigate.png",
-    "javelin_destroyer": "/images/nfts/javelin_destroyer.png",
-    "leviathan_carrier": "/images/nfts/leviathan_carrier.png",
-    "starforge_ark_nft": "/images/nfts/starforge_ark_nft.png"
+    "aegis_frigate": "/images/global/star-ark-forge.png",
+    "javelin_destroyer": "/images/global/star-ark-forge.png",
+    "leviathan_carrier": "/images/global/star-ark-forge.png",
+    "starforge_ark_nft": "/images/global/star-ark-forge.png"
   },
   "ui": {
-    "telegram_wallet": "/images/ui/telegram_wallet.png"
+    "telegram_wallet": "/images/global/star-ark-forge.png"
   },
   "generic": {
-    "default_avatar": "/images/generic/default_avatar.png"
+    "default_avatar": "/images/global/avatar-profile-man.png"
   }
 }

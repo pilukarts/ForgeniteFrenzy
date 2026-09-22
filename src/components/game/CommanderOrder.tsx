@@ -3,13 +3,20 @@
 
 import React from 'react';
 import Image from 'next/image';
-import type { CommanderOrder } from '@/lib/types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Award, Timer, X } from 'lucide-react';
 import { useGame } from '@/contexts/GameContext';
 import images from '@/lib/placeholder-images.json';
+
+interface CommanderOrder {
+  id: string;
+  startTime: number;
+  endTime: number;
+  target: number;
+  isCompleted: boolean;
+}
 
 interface CommanderOrderProps {
   order: CommanderOrder;

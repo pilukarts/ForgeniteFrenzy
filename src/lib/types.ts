@@ -1,3 +1,5 @@
+
+
 import type { LucideIcon } from 'lucide-react';
 
 export type LeagueName = 'Bronze' | 'Silver' | 'Gold' | 'Platinum' | 'Diamond' | 'Master' | 'Grandmaster';
@@ -22,7 +24,6 @@ export interface BattlePass {
   seasonId: string;
   premiumCostInAuron: number;
   levels: BattlePassLevel[];
-  [key: number]: BattlePassLevel; // Index signature for numeric indexing
 }
 
 export interface PlayerProfile {
@@ -52,7 +53,7 @@ export interface PlayerProfile {
   activeDailyQuests: DailyQuest[];
   lastDailyQuestRefresh: number; // Timestamp of the last daily quest refresh
   referralCode: string;
-  referredByCode?: string; // Made optional to handle undefined values
+  referredByCode: string; // Stores the code of the player who referred this user
 
   // Tap Limit System
   currentTaps: number;
@@ -71,38 +72,12 @@ export interface PlayerProfile {
   xpToNextBattlePassLevel: number;
   hasPremiumPass: boolean;
   claimedBattlePassRewards: { [level: number]: ('free' | 'premium')[] };
-  battlePassRewardsClaimed: { [level: number]: boolean }; // Changed to boolean map
 
   // Rewarded Ad
   lastRewardedAdTimestamp: number;
   
   // Telegram Integration
   isTelegramWalletConnected: boolean;
-
-  // ALL MISSING PROPERTIES ADDED HERE
-  // Game mechanics
-  activeTapBonusMultiplier: number;
-  tapsUsedToday: number;
-  totalLogsTapped: number;
-  totalTaps: number;
-  totalCrits: number;
-  longestTapCombo: number;
-  longestTapStreak: number;
-  tapMax: number;
-  
-  // Commander and Ark
-  selectedCommanderId: string | null;
-  arkUpgrades: { [upgradeId: string]: number };
-  
-  // Wallet and connections
-  connectedWallets: string[];
-  totalTelegramWalletConnections: number;
-  
-  // Statistics and tracking
-  totalTapRegenPurchases: number;
-  battlePassPremiumPurchased: boolean;
-  totalAdsWatched: number;
-  totalArksLaunched: number;
 }
 
 export interface Season {
@@ -134,8 +109,6 @@ export interface ArkUpgrade {
   cost: number;
   visualStage: number;
   isPurchased: boolean;
-  baseCost?: number; // Optional for compatibility
-  costMultiplier?: number; // Optional for compatibility
 }
 
 export interface LeaderboardEntry {
@@ -150,9 +123,7 @@ export interface LeaderboardEntry {
 }
 
 export interface CoreMessage {
-  id: string; // Added for uniqueness
-  title?: string; // Added for compatibility
-  type: 'briefing' | 'progress_update' | 'lore_snippet' | 'advice' | 'system_alert' | 'question' | 'answer' | 'response' | 'progress'; // Extended with missing types
+  type: 'briefing' | 'progress_update' | 'lore_snippet' | 'advice' | 'system_alert' | 'question' | 'answer';
   content: string;
   timestamp: number;
 }
@@ -167,11 +138,6 @@ export interface MarketplaceItem {
     multiplier: number;
   };
   icon?: LucideIcon;
-  // Additional properties for compatibility (ALIASES)
-  costAuron?: number; // Alias for costInAuron
-  type?: string; // Type of bonus
-  multiplier?: number; // Bonus multiplier
-  duration?: number; // Duration in taps
 }
 
 export interface ActiveTapBonus {
@@ -181,11 +147,6 @@ export interface ActiveTapBonus {
   remainingTaps: number;
   bonusMultiplier: number;
   originalDurationTaps: number; // To display progress like X/Y taps
-  // Additional properties for compatibility
-  type?: string;
-  multiplier?: number;
-  duration?: number;
-  expiryTime?: number;
 }
 
 export interface ChatMessage {
@@ -199,8 +160,8 @@ export interface ChatMessage {
   isPlayer: boolean;
 }
 
-// Daily Quests System Types - ALL QUEST TYPES INCLUDED
-export type QuestType = 'taps' | 'points_earned' | 'login' | 'spend_auron' | 'purchase_upgrade' | 'earn_points' | 'tap_log' | 'reach_level' | 'build_ark' | 'upgrade_ark' | 'connect_wallet';
+// Daily Quests System Types
+export type QuestType = 'taps' | 'points_earned' | 'login' | 'spend_auron' | 'purchase_upgrade';
 
 export interface QuestReward {
   points?: number;
@@ -219,8 +180,7 @@ export interface DailyQuest {
   reward: QuestReward;
   isCompleted: boolean; // Calculated: progress >= target
   isClaimed: boolean;
-  completed?: boolean; // Alias for isCompleted
-  icon?: LucideIcon | string; // Extended to support both types
+  icon?: LucideIcon; // From template
 }
 
 // This is for the pool of available quests
@@ -231,7 +191,7 @@ export interface DailyQuestTemplate {
   type: QuestType;
   target: number;
   reward: QuestReward;
-  icon?: LucideIcon | string; // Extended to support both types
+  icon?: LucideIcon;
 }
 
 // League System
@@ -256,131 +216,8 @@ export interface LevelStage {
 }
 
 export interface SelectableAvatar {
-  id?: string; // Added for compatibility
   portraitUrl: string;
   fullBodyUrl: string;
   sex: 'male' | 'female';
   hint: string;
-  imageUrl?: string; // Alternative property name for compatibility
-}
-
-// Commander interface for selection
-export interface Commander {
-  id: string;
-  name: string;
-  description: string;
-  sex: 'male' | 'female';
-  portraitUrl: string;
-  avatarUrl: string;
-  abilities?: string[];
-  rarity?: 'common' | 'rare' | 'epic' | 'legendary';
-}
-
-// Toast interface (for compatibility)
-export interface Toast {
-  id: string;
-  title?: string;
-  description?: string;
-  variant?: 'default' | 'destructive' | 'success';
-}
-
-// Function types for toast (for compatibility)
-export interface ToastFunction {
-  (options: { title?: string; description?: string; variant?: 'default' | 'destructive' | 'success' }): void;
-}
-
-// Game Context Type
-export interface GameContextType {
-  // Profile management
-  playerProfile: PlayerProfile;
-  updatePlayerProfile: (updates: Partial<PlayerProfile>) => void;
-  
-  // Tap mechanics
-  handleTap: (elementId: string) => void;
-  performTap: (baseDamage: number, elementId: string, hasActiveBonuses: boolean) => { damage: number; isCrit: boolean };
-  
-  // Quest management
-  updateQuestProgress: (questId: string, progress: number) => void;
-  claimQuestReward: (questId: string) => void;
-  
-  // Battle Pass
-  claimBattlePassReward: (level: number, rewardType: 'free' | 'premium') => void;
-  
-  // Commander selection
-  selectedCommanderId: string | null;
-  setSelectedCommanderId: (commanderId: string | null) => void;
-  
-  // Wallet operations
-  connectWallet: (address: string) => void;
-  disconnectWallet: () => void;
-  
-  // Ad rewards
-  watchRewardedAd: () => void;
-  
-  // Audio controls
-  toggleMusic: () => void;
-  isMusicPlaying: boolean;
-  
-  // Game actions
-  performAction: (actionType: string, amount: number) => void;
-  
-  // Statistics
-  totalTaps: number;
-  totalCrits: number;
-  totalTapsUsed: number;
-  longestTapCombo: number;
-  longestTapStreak: number;
-}
-
-// Context parameters for AI functions
-export interface PlayerContext {
-  points: number;
-  level: number;
-  rankTitle: string;
-  season: string;
-  seasonObjective: string;
-  playerLevel?: number; // Alias for level
-}
-
-export interface AIQuestion {
-  question: string;
-  playerContext: PlayerContext;
-}
-
-export interface AIProgressContext {
-  playerProgress: number;
-  seasonObjective: string;
-  playerLevel: number;
-  availableUpgrades: string;
-}
-
-// Context for briefing function
-export interface BriefingContext {
-  season: string;
-  playerProgress: string;
-}
-
-export interface AIAdviceContext {
-  playerLevel: number;
-  availableUpgrades: string;
-}
-
-// Type guards and utilities
-export const isDailyQuest = (quest: DailyQuest): boolean => {
-  return typeof quest === 'object' && 'isCompleted' in quest;
-};
-
-export const getQuestType = (template: DailyQuestTemplate): QuestType => {
-  return template.type;
-};
-
-// Commander Selection Component (Props interface)
-export interface CommanderSelectionProps {
-  selectedCommanderId?: string | null;
-  onCommanderSelect: (commanderId: string) => void;
-}
-
-// Commander Portrait Component (Props interface)
-export interface CommanderPortraitProps {
-  playerProfile: PlayerProfile;
 }
