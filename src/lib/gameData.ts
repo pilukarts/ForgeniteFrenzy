@@ -2,7 +2,8 @@
 
 import type { Season, Upgrade, ArkUpgrade, MarketplaceItem, DailyQuestTemplate, LeagueName, LeagueTier, BattlePass, LevelStage, SelectableAvatar } from './types';
 import { Ship, BarChartBig, ShieldAlert, Landmark, Gem, Atom, Sparkles, HelpCircle, Coins, Container, Zap, Package, CircleDollarSign, Target, TrendingUp, LogIn, ShoppingBag, ArrowUpCircle, Shield, ShieldCheck, Award, Star, Crown, LucideIcon, Swords, Shirt, Replace } from 'lucide-react';
-import images from './placeholder-images.json';
+import images from './images';
+import { assetPath } from './assetPath';
 
 export const SEASONS_DATA: Season[] = [
   {
@@ -320,14 +321,14 @@ export const LEVEL_STAGES: LevelStage[] = [
 
 export const SELECTABLE_AVATARS: SelectableAvatar[] = [
     {
-      portraitUrl: "/images/global/avatar-profile-man.png",
-      fullBodyUrl: "/images/global/commander-man-full.png",
+      portraitUrl: assetPath("/images/global/avatar-profile-man.png"),
+      fullBodyUrl: assetPath("/images/global/commander-man-full.png"),
       sex: 'male',
       hint: 'male commander headshot',
     },
     {
-      portraitUrl: "/images/global/avatar-profile-lady.png",
-      fullBodyUrl: "/images/global/commander-woman-full.png",
+      portraitUrl: assetPath("/images/global/avatar-profile-lady.png"),
+      fullBodyUrl: assetPath("/images/global/commander-woman-full.png"),
       sex: 'female',
       hint: 'female commander headshot',
     },
@@ -335,6 +336,6 @@ export const SELECTABLE_AVATARS: SelectableAvatar[] = [
 
 // This list is only kept for backwards compatibility or reference, but is not actively used in the setup logic.
 export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; }[] = [
-    { url: "/images/global/commander-man-full.png", sex: 'male' },
-    { url: "/images/global/commander-woman-full.png", sex: 'female' },
+    { url: assetPath("/images/global/commander-man-full.png"), sex: 'male' },
+    { url: assetPath("/images/global/commander-woman-full.png"), sex: 'female' },
 ];

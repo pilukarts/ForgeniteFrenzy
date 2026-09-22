@@ -5,11 +5,38 @@ import React, { createContext, useContext, useState, useEffect, useCallback, Rea
 import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, SelectableAvatar } from '@/lib/types';
 import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MILLISECONDS, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MILLISECONDS, SELECTABLE_AVATARS, AF_LOGO_TAP_BONUS_MULTIPLIER } from '@/lib/gameData';
 import { useToast } from '@/hooks/use-toast';
-import { getCoreBriefing } from '@/ai/flows/core-briefings';
-import { getCoreLoreSnippet } from '@/ai/flows/core-lore-snippets';
-import { getCoreProgressUpdate } from '@/ai/flows/core-progress-updates';
-import { askCore as askCoreFlow, CoreAskInput } from '@/ai/flows/core-ask-question';
 import { syncPlayerProfileInFirestore } from '@/lib/firestore';
+import { assetPath } from '@/lib/assetPath';
+
+interface CoreAskInput {
+  question: string;
+  playerContext: {
+    level: number;
+    points: number;
+    rankTitle: string;
+    season: string;
+    seasonObjective: string;
+  };
+}
+
+async function askCoreFlow(input: CoreAskInput): Promise<{ answer: string }> {
+  const normalizedQuestion = input.question.toLowerCase();
+  const { level, points, rankTitle, season, seasonObjective } = input.playerContext;
+
+  if (normalizedQuestion.includes('mejora') || normalizedQuestion.includes('upgrade')) {
+    return { answer: `Commander, prioritize tap power and M.U.L.E. production. Your current level is ${level} and every efficient upgrade accelerates the ${season} objective.` };
+  }
+
+  if (normalizedQuestion.includes('punto') || normalizedQuestion.includes('point')) {
+    return { answer: `You currently command ${points.toLocaleString()} points. Continue tapping, complete daily missions, and activate passive production to increase reserves.` };
+  }
+
+  if (normalizedQuestion.includes('misión') || normalizedQuestion.includes('mission') || normalizedQuestion.includes('objetivo')) {
+    return { answer: `Current directive: ${seasonObjective}. Maintain resource production and protect the Ark construction schedule, ${rankTitle}.` };
+  }
+
+  return { answer: `Tactical data received, Commander. You are a level ${level} ${rankTitle} operating in ${season}. Focus on the current directive: ${seasonObjective}.` };
+}
 
 // --- Constants ---
 export const NUMBER_OF_DAILY_QUESTS = 3;
@@ -198,7 +225,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     if (!musicRef.current) {
         try {
-            const backgroundMusicUrl = '/audio/background-music.mp3';
+            const backgroundMusicUrl = assetPath('/audio/background-music.mp3');
             musicRef.current = new Audio(backgroundMusicUrl);
             musicRef.current.loop = true;
         } catch (e) {
@@ -410,7 +437,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     if (!tapSoundRef.current) {
         try {
-            tapSoundRef.current = new Audio('/sounds/tap-sound.mp3');
+            tapSoundRef.current = new Audio(assetPath('/sounds/tap-sound.mp3'));
         } catch (e) {
             console.error("Could not create tap sound Audio element.", e);
         }

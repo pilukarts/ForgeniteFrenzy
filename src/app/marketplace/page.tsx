@@ -13,7 +13,7 @@ import IntroScreen from '@/components/intro/IntroScreen';
 import { useToast } from '@/hooks/use-toast';
 import { REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MINUTES } from '@/lib/gameData';
 import Image from 'next/image';
-import images from '@/lib/placeholder-images.json';
+import images from '@/lib/images';
 
 const auronPackages = [
   { id: 'auron_pack_1', amount: 100, price: 0.99, bestValue: false, icon: Gem },

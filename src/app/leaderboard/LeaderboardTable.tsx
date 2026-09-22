@@ -16,7 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { UserCircle } from 'lucide-react';
 import { countries } from '@/lib/countries';
 import { formatDistanceToNow, parseISO } from 'date-fns';
-import images from '@/lib/placeholder-images.json';
+import images from '@/lib/images';
 
 interface LeaderboardTableProps {
     initialLeaderboardData: LeaderboardEntry[];

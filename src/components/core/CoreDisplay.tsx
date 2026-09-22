@@ -9,7 +9,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Hexagon, MessageSquare, X, Send, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { CoreMessage, PlayerProfile } from '@/lib/types';
-import images from '@/lib/placeholder-images.json';
+import images from '@/lib/images';
 
 const CoreDisplay: React.FC = () => {
   const { playerProfile, coreMessages, isCoreUnlocked, askCore, isOpen, setIsOpen, hasUnread, setHasUnread } = useGame();
