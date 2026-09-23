@@ -1,5 +1,6 @@
 import React from 'react';
 import { useGame } from '@/contexts/GameContext';
+import { assetPath } from '@/lib/assetPath';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
@@ -17,8 +18,8 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
   }
 
   const commanderImage = playerProfile.commanderSex === 'male' 
-    ? '/images/global/commander-man-full.png' 
-    : '/images/global/commander-woman-full.png';
+    ? assetPath('/images/global/commander-man-full.png')
+    : assetPath('/images/global/commander-woman-full.png');
 
   const dataAiHint = playerProfile.commanderSex === 'male' ? "male commander" : "female commander";
 

@@ -11,7 +11,7 @@ import { SendHorizonal, UserCircle } from 'lucide-react';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import IntroScreen from '@/components/intro/IntroScreen';
 import { cn } from '@/lib/utils';
-import images from '@/lib/placeholder-images.json';
+import images from '@/lib/images';
 
 // Helper to generate a simple unique ID compatible with all environments
 const generateUniqueId = () => `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;

@@ -1,5 +1,5 @@
 
-import images from './placeholder-images.json';
+import images from './images';
 
 export interface PlaceholderNft {
   id: string;

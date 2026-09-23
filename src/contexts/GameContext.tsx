@@ -1,256 +1,789 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { PlayerData } from '@/components/player/PlayerSetup';
-interface GameState {
-player: PlayerData | null;
-points: number;
-pointsPerSecond: number;
-currentStreak: number;
-criticalHits: number;
-comboBonus: number;
-dronesCount: number;
-isGameActive: boolean;
-lastSave: number;
-dailyQuests: DailyQuest[];
-achievements: Achievement[];
-battlePass: BattlePassProgress;
+
+"use client";
+
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode, useRef } from 'react';
+import type { PlayerProfile, Season, Upgrade, ArkUpgrade, CoreMessage, MarketplaceItem, ActiveTapBonus, DailyQuest, QuestType, LeagueName, BattlePass, BattlePassReward, RewardType, SelectableAvatar } from '@/lib/types';
+import { SEASONS_DATA, UPGRADES_DATA, ARK_UPGRADES_DATA, MARKETPLACE_ITEMS_DATA, DAILY_QUESTS_POOL, INITIAL_XP_TO_NEXT_LEVEL, XP_LEVEL_MULTIPLIER, getRankTitle, POINTS_PER_TAP, AURON_PER_WALLET_CONNECT, MULE_DRONE_BASE_RATE, INITIAL_MAX_TAPS, TAP_REGEN_COOLDOWN_MILLISECONDS, AURON_COST_FOR_TAP_REFILL, getTierColorByLevel, INITIAL_TIER_COLOR, DEFAULT_LEAGUE, getLeagueByPoints, BATTLE_PASS_DATA, BATTLE_PASS_XP_PER_LEVEL, REWARDED_AD_AURON_REWARD, REWARDED_AD_COOLDOWN_MILLISECONDS, SELECTABLE_AVATARS, AF_LOGO_TAP_BONUS_MULTIPLIER } from '@/lib/gameData';
+import { useToast } from '@/hooks/use-toast';
+import { syncPlayerProfileInFirestore } from '@/lib/firestore';
+import { assetPath } from '@/lib/assetPath';
+
+interface CoreAskInput {
+  question: string;
+  playerContext: {
+    level: number;
+    points: number;
+    rankTitle: string;
+    season: string;
+    seasonObjective: string;
+  };
 }
-interface DailyQuest {
-id: string;
-title: string;
-description: string;
-progress: number;
-target: number;
-reward: number;
-completed: boolean;
-expiresAt: number;
+
+async function askCoreFlow(input: CoreAskInput): Promise<{ answer: string }> {
+  const normalizedQuestion = input.question.toLowerCase();
+  const { level, points, rankTitle, season, seasonObjective } = input.playerContext;
+
+  if (normalizedQuestion.includes('mejora') || normalizedQuestion.includes('upgrade')) {
+    return { answer: `Commander, prioritize tap power and M.U.L.E. production. Your current level is ${level} and every efficient upgrade accelerates the ${season} objective.` };
+  }
+
+  if (normalizedQuestion.includes('punto') || normalizedQuestion.includes('point')) {
+    return { answer: `You currently command ${points.toLocaleString()} points. Continue tapping, complete daily missions, and activate passive production to increase reserves.` };
+  }
+
+  if (normalizedQuestion.includes('misión') || normalizedQuestion.includes('mission') || normalizedQuestion.includes('objetivo')) {
+    return { answer: `Current directive: ${seasonObjective}. Maintain resource production and protect the Ark construction schedule, ${rankTitle}.` };
+  }
+
+  return { answer: `Tactical data received, Commander. You are a level ${level} ${rankTitle} operating in ${season}. Focus on the current directive: ${seasonObjective}.` };
 }
-interface Achievement {
-id: string;
-title: string;
-description: string;
-unlocked: boolean;
-unlockedAt?: number;
+
+// --- Constants ---
+export const NUMBER_OF_DAILY_QUESTS = 3;
+
+// --- Context Type Definition ---
+export interface GameContextType {
+  playerProfile: PlayerProfile | null;
+  setPlayerProfile: React.Dispatch<React.SetStateAction<PlayerProfile | null>>;
+  currentSeason: Season;
+  seasons: Season[];
+  getUpgradeLevel: (upgradeId: string) => number;
+  purchaseUpgrade: (upgradeId: string) => void;
+  getUpgradeCost: (upgradeId: string) => number;
+  upgrades: Upgrade[];
+  arkUpgrades: ArkUpgrade[];
+  purchaseArkUpgrade: (upgradeId: string) => void;
+  getArkUpgradeById: (upgradeId: string) => ArkUpgrade | undefined;
+  addPoints: (amount: number, isFromTap?: boolean) => void;
+  isLoading: boolean;
+  isInitialSetupDone: boolean;
+  completeInitialSetup: (name: string, commanderSex: 'male' | 'female', country: string, referredByCode?: string) => void;
+  coreMessages: CoreMessage[];
+  addCoreMessage: (message: Omit<CoreMessage, 'timestamp'>) => void;
+  isCoreUnlocked: boolean;
+  coreLastInteractionTime: number;
+  connectWallet: (address: string) => void;
+  handleTap: (isLogoTap?: boolean) => void;
+  criticalTapChance: number;
+  criticalTapMultiplier: number;
+  comboMultiplier: number;
+  comboCount: number;
+  setComboCount: React.Dispatch<React.SetStateAction<number>>;
+  marketplaceItems: MarketplaceItem[];
+  purchaseMarketplaceItem: (itemId: string) => void;
+  claimQuestReward: (questId: string) => void;
+  refreshDailyQuestsIfNeeded: () => void;
+  refillTaps: () => void;
+  battlePassData: BattlePass;
+  purchasePremiumPass: () => void;
+  claimBattlePassReward: (level: number, track: 'free' | 'premium') => void;
+  watchRewardedAd: () => void;
+  rewardedAdCooldown: number;
+  isWatchingAd: boolean;
+  updatePlayerProfile: (name: string, selectedPortraitUrl: string) => void;
+  toggleCommander: () => void;
+  resetGame: () => void;
+  toggleMusic: () => void;
+  isMusicPlaying: boolean;
+  isTelegramEnv: boolean;
+  connectTelegramWallet: () => void;
+  purchaseWithTelegramWallet: (pkg: { amount: number; price: number }) => void;
+  askCore: (question: string) => Promise<void>;
+  isOpen: boolean; // CORE panel state
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  hasUnread: boolean;
+  setHasUnread: React.Dispatch<React.SetStateAction<boolean>>;
 }
-interface BattlePassProgress {
-level: number;
-experience: number;
-experienceToNext: number;
-premiumTrackUnlocked: boolean;
-rewardsClaimed: string[];
-}
-type GameAction =
-| { type: 'INIT_PLAYER'; payload: PlayerData }
-| { type: 'ADD_POINTS'; payload: number }
-| { type: 'TAP_COMMANDER' }
-| { type: 'LEVEL_UP' }
-| { type: 'BUY_DRONE' }
-| { type: 'CLAIM_QUEST_REWARD'; payload: string }
-| { type: 'UNLOCK_ACHIEVEMENT'; payload: string }
-| { type: 'SAVE_GAME' }
-| { type: 'LOAD_GAME'; payload: GameState }
-| { type: 'RESET_GAME' };
-const INITIAL_QUEST: DailyQuest[] = [
-{
-id: 'daily_taps',
-title: 'Toca el Comandante',
-description: 'Toca al comandante 100 veces',
-progress: 0,
-target: 100,
-reward: 500,
-completed: false,
-expiresAt: Date.now() + 24 * 60 * 60 * 1000
-},
-{
-id: 'daily_points',
-title: 'Acumula Recursos',
-description: 'Acumula 10,000 puntos totales',
-progress: 0,
-target: 10000,
-reward: 750,
-completed: false,
-expiresAt: Date.now() + 24 * 60 * 60 * 1000
-},
-{
-id: 'daily_criticals',
-title: 'Golpes Críticos',
-description: 'Consigue 25 golpes críticos',
-progress: 0,
-target: 25,
-reward: 1000,
-completed: false,
-expiresAt: Date.now() + 24 * 60 * 60 * 1000
-}
-];
-const INITIAL_ACHIEVEMENTS: Achievement[] = [
-{ id: 'first_tap', title: 'Primer Toque', description: 'Toca al comandante por primera vez', unlocked: false },
-{ id: 'level_5', title: 'Nivel 5', description: 'Alcanza el nivel 5', unlocked: false },
-{ id: '1000_points', title: 'Mil Puntos', description: 'Acumula 1,000 puntos totales', unlocked: false },
-{ id: 'first_drone', title: 'Primer Drone', description: 'Compra tu primer drone M.U.L.E.', unlocked: false },
-{ id: 'critical_master', title: 'Maestro Crítico', description: 'Consigue 100 golpes críticos', unlocked: false }
-];
-const initialState: GameState = {
-player: null,
-points: 0,
-pointsPerSecond: 0,
-currentStreak: 0,
-criticalHits: 0,
-comboBonus: 1.0,
-dronesCount: 0,
-isGameActive: false,
-lastSave: 0,
-dailyQuests: INITIAL_QUEST,
-achievements: INITIAL_ACHIEVEMENTS,
-battlePass: {
-level: 1,
-experience: 0,
-experienceToNext: 1000,
-premiumTrackUnlocked: false,
-rewardsClaimed: []
-}
+
+// --- Context Creation ---
+export const GameContext = createContext<GameContextType | undefined>(undefined);
+
+// --- Default Profile ---
+export const defaultPlayerProfile: Omit<PlayerProfile, 'id' | 'name' | 'commanderSex' | 'avatarUrl' | 'portraitUrl' | 'country' | 'currentSeasonId'> = {
+  points: 0,
+  auron: 0,
+  level: 1,
+  xp: 0,
+  xpToNextLevel: INITIAL_XP_TO_NEXT_LEVEL,
+  rankTitle: getRankTitle(1),
+  seasonProgress: {},
+  upgrades: {},
+  muleDrones: 0,
+  coreVoiceProtocol: 'synthetic',
+  isWalletConnected: false,
+  walletAddress: '',
+  arkHangarFullyUpgraded: false,
+  lastLoginTimestamp: Date.now(),
+  activeTapBonuses: [],
+  activeDailyQuests: [],
+  lastDailyQuestRefresh: 0,
+  referralCode: '',
+  referredByCode: '',
+  currentTaps: INITIAL_MAX_TAPS,
+  maxTaps: INITIAL_MAX_TAPS,
+  tapsAvailableAt: Date.now(),
+  currentTierColor: INITIAL_TIER_COLOR,
+  league: DEFAULT_LEAGUE,
+  battlePassLevel: 1,
+  battlePassXp: 0,
+  xpToNextBattlePassLevel: BATTLE_PASS_XP_PER_LEVEL,
+  hasPremiumPass: false,
+  claimedBattlePassRewards: {},
+  lastRewardedAdTimestamp: 0,
+  isTelegramWalletConnected: false,
 };
-function gameReducer(state: GameState, action: GameAction): GameState {
-switch (action.type) {
-case 'INIT_PLAYER':
-return {
-...state,
-player: action.payload,
-isGameActive: true,
-points: action.payload.points,
-totalPoints: action.payload.totalPoints
+
+// --- Helper Functions ---
+export const generateReferralCode = (name: string): string => {
+  const namePart = name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 4).toUpperCase();
+  const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();
+  return `${namePart}${randomPart || 'ABCDE'}`;
 };
-case 'ADD_POINTS':
-const newPoints = state.points + action.payload;
-const newTotalPoints = state.player ? state.player.totalPoints + action.payload : action.payload;
-return {
-...state,
-points: newPoints,
-player: state.player ? {
-...state.player,
-totalPoints: newTotalPoints
-} : null
+
+// --- Provider Component ---
+export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isInitialSetupDone, setIsInitialSetupDone] = useState(false);
+  const [currentSeason, setCurrentSeason] = useState<Season>(SEASONS_DATA[0]);
+  const [coreMessages, setCoreMessages] = useState<CoreMessage[]>([]);
+  const [isCoreUnlocked, setIsCoreUnlocked] = useState(false);
+  const [comboCount, setComboCount] = useState(0);
+  const [rewardedAdCooldown, setRewardedAdCooldown] = useState(0);
+  const [isWatchingAd, setIsWatchingAd] = useState(false);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+  const [isTelegramEnv, setIsTelegramEnv] = useState(false);
+  const musicRef = useRef<HTMLAudioElement | null>(null);
+  const tapSoundRef = useRef<HTMLAudioElement | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [hasUnread, setHasUnread] = useState(false);
+
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    let savedProfile: string | null = null;
+    try {
+        savedProfile = localStorage.getItem('playerProfile');
+    } catch (e) {
+        console.error("Could not access localStorage. Starting fresh.", e);
+    }
+
+    if (savedProfile) {
+        let parsedProfile = JSON.parse(savedProfile) as PlayerProfile;
+
+        const now = Date.now();
+        const lastLogin = parsedProfile.lastLoginTimestamp ?? now;
+        const timeAwayInMinutes = Math.floor((now - lastLogin) / 60000);
+        let offlineEarnings = 0;
+
+        if (timeAwayInMinutes > 1 && parsedProfile.muleDrones > 0) {
+            offlineEarnings = Math.floor(parsedProfile.muleDrones * MULE_DRONE_BASE_RATE * timeAwayInMinutes);
+            if (offlineEarnings > 0) {
+                parsedProfile.points += offlineEarnings;
+            }
+        }
+
+        const hydratedProfile: PlayerProfile = {
+            ...defaultPlayerProfile,
+            ...parsedProfile,
+            lastLoginTimestamp: now,
+            league: getLeagueByPoints(parsedProfile.points),
+            currentTierColor: getTierColorByLevel(parsedProfile.level),
+        };
+
+        setPlayerProfile(hydratedProfile);
+        const season = SEASONS_DATA.find(s => s.id === hydratedProfile.currentSeasonId) || SEASONS_DATA[0];
+        setIsCoreUnlocked(!!hydratedProfile.upgrades['coreUnlocked'] || SEASONS_DATA.slice(0, SEASONS_DATA.indexOf(season)).some(s => s.unlocksCore));
+
+        if (offlineEarnings > 0) {
+          addCoreMessage({ type: 'system_alert', content: `Welcome back, Commander. Your M.U.L.E. Drones generated ${offlineEarnings.toLocaleString()} points while you were away.` });
+        }
+
+        setIsInitialSetupDone(true);
+    } else {
+        setIsInitialSetupDone(false);
+    }
+
+    setIsLoading(false);
+
+    import('@twa-dev/sdk').then(twa => {
+        if (twa.default.platform !== 'unknown') {
+            setIsTelegramEnv(true);
+        }
+    }).catch(err => console.log("Not in Telegram environment or SDK failed to load."));
+  }, []);
+
+  const addCoreMessage = useCallback((message: Omit<CoreMessage, 'timestamp'>) => {
+    const newMessage = { ...message, timestamp: Date.now() };
+    setCoreMessages(prev => [newMessage, ...prev.slice(0, 49)]);
+  }, []);
+
+  const toggleMusic = useCallback(() => {
+    if (typeof window === 'undefined') return;
+
+    if (!musicRef.current) {
+        try {
+            const backgroundMusicUrl = assetPath('/audio/background-music.mp3');
+            musicRef.current = new Audio(backgroundMusicUrl);
+            musicRef.current.loop = true;
+        } catch (e) {
+            console.error("Could not create Audio element.", e);
+            return;
+        }
+    }
+    if (isMusicPlaying) {
+        musicRef.current.pause();
+    } else {
+        musicRef.current.play().catch(error => console.error("Error playing music:", error));
+    }
+    setIsMusicPlaying(!isMusicPlaying);
+  }, [isMusicPlaying]);
+
+
+  const updateQuestProgress = useCallback((profile: PlayerProfile, type: QuestType, value: number): PlayerProfile => {
+    if (!profile.activeDailyQuests) return profile;
+
+    const updatedQuests = profile.activeDailyQuests.map(quest => {
+      if (quest.type === type && !quest.isClaimed && !quest.isCompleted) {
+        const newProgress = quest.progress + value;
+        const isCompleted = newProgress >= quest.target;
+        if (isCompleted && !quest.isCompleted) {
+            addCoreMessage({ type: 'system_alert', content: `Quest Objective Met: ${quest.title}`});
+        }
+        return { ...quest, progress: Math.min(newProgress, quest.target), isCompleted };
+      }
+      return quest;
+    });
+
+    return { ...profile, activeDailyQuests: updatedQuests };
+  }, [addCoreMessage]);
+
+  const addPoints = useCallback((amount: number, isFromTap: boolean = false) => {
+    setPlayerProfile(prev => {
+      if (!prev) return null;
+
+      let finalAmount = amount;
+      let updatedProfile = { ...prev };
+
+      let expiredBonuses: ActiveTapBonus[] = [];
+
+      if (isFromTap && updatedProfile.activeTapBonuses && updatedProfile.activeTapBonuses.length > 0) {
+        let totalBonusMultiplierFactor = 0;
+        let stillActiveBonuses = updatedProfile.activeTapBonuses.map(bonus => {
+          totalBonusMultiplierFactor += (bonus.bonusMultiplier - 1);
+          return { ...bonus, remainingTaps: bonus.remainingTaps - 1 };
+        }).filter(bonus => bonus.remainingTaps > 0);
+
+        finalAmount = amount * (1 + totalBonusMultiplierFactor);
+
+        updatedProfile.activeTapBonuses.forEach(oldBonus => {
+            if (!stillActiveBonuses.find(b => b.id === oldBonus.id)) {
+                expiredBonuses.push(oldBonus);
+            }
+        });
+        updatedProfile.activeTapBonuses = stillActiveBonuses;
+      }
+
+      if (expiredBonuses.length > 0) {
+        expiredBonuses.forEach(b => addCoreMessage({ type: 'system_alert', content: `Power boost from ${b.name} has expired.` }));
+      }
+
+      finalAmount = Math.round(finalAmount);
+      updatedProfile.points += finalAmount;
+      updatedProfile.seasonProgress[currentSeason.id] = (updatedProfile.seasonProgress[currentSeason.id] || 0) + finalAmount;
+
+      let newXp = updatedProfile.xp + finalAmount;
+      while (newXp >= updatedProfile.xpToNextLevel) {
+        newXp -= updatedProfile.xpToNextLevel;
+        updatedProfile.level++;
+        updatedProfile.xpToNextLevel = Math.floor(updatedProfile.xpToNextLevel * XP_LEVEL_MULTIPLIER);
+        updatedProfile.rankTitle = getRankTitle(updatedProfile.level);
+        updatedProfile.currentTierColor = getTierColorByLevel(updatedProfile.level);
+        toast({ title: 'Level Up!', description: `Congrats Commander! You reached level ${updatedProfile.level}.` });
+      }
+      updatedProfile.xp = newXp;
+
+      const newLeague = getLeagueByPoints(updatedProfile.points);
+      if (newLeague !== updatedProfile.league) {
+        updatedProfile.league = newLeague;
+        addCoreMessage({ type: 'system_alert', content: `Promotion! You've reached the ${newLeague} league.` });
+      }
+
+      updatedProfile = updateQuestProgress(updatedProfile, 'points_earned', finalAmount);
+
+      let newBattlePassXp = updatedProfile.battlePassXp + finalAmount;
+      while(newBattlePassXp >= updatedProfile.xpToNextBattlePassLevel) {
+        newBattlePassXp -= updatedProfile.xpToNextBattlePassLevel;
+        updatedProfile.battlePassLevel++;
+        addCoreMessage({ type: 'system_alert', content: `Battle Pass Level Up! Reached Level ${updatedProfile.battlePassLevel}.` });
+      }
+      updatedProfile.battlePassXp = newBattlePassXp;
+
+      return updatedProfile;
+    });
+  }, [currentSeason.id, addCoreMessage, updateQuestProgress, toast]);
+
+
+  const getUpgradeLevel = useCallback((upgradeId: string) => playerProfile?.upgrades[upgradeId] || 0, [playerProfile]);
+
+  const getUpgradeCost = useCallback((upgradeId: string) => {
+    const upgrade = UPGRADES_DATA.find(u => u.id === upgradeId);
+    if (!upgrade) return Infinity;
+    const level = getUpgradeLevel(upgradeId);
+    return Math.floor(upgrade.baseCost * Math.pow(upgrade.costMultiplier, level));
+  }, [getUpgradeLevel]);
+
+  const purchaseUpgrade = useCallback((upgradeId: string) => {
+    const upgradeInfo = UPGRADES_DATA.find(u => u.id === upgradeId);
+    if (!upgradeInfo) return;
+
+    setPlayerProfile(prev => {
+      if (!prev) return null;
+      const cost = getUpgradeCost(upgradeId);
+      const currentLevel = prev.upgrades[upgradeId] || 0;
+
+      if(prev.points < cost || (upgradeInfo.maxLevel && currentLevel >= upgradeInfo.maxLevel)) {
+        toast({ title: "Upgrade Failed", description: "Insufficient points or max level reached.", variant: "destructive" });
+        return prev;
+      }
+
+      let updatedProfile = {
+        ...prev,
+        points: prev.points - cost,
+        upgrades: { ...prev.upgrades, [upgradeId]: currentLevel + 1 }
+      };
+
+      if (upgradeId === 'muleDrone') {
+        updatedProfile.muleDrones = (updatedProfile.upgrades[upgradeId] || 0);
+      }
+
+      addCoreMessage({ type: 'system_alert', content: `Upgrade complete: ${upgradeInfo.name}.`});
+      return updateQuestProgress(updatedProfile, 'purchase_upgrade', 1);
+    });
+  }, [getUpgradeCost, toast, updateQuestProgress, addCoreMessage]);
+
+  const purchaseArkUpgrade = useCallback((upgradeId: string) => {
+    const arkUpgrade = ARK_UPGRADES_DATA.find(u => u.id === upgradeId);
+    if (!arkUpgrade) return;
+
+    setPlayerProfile(prev => {
+        if (!prev) return null;
+        if (prev.upgrades[upgradeId] || prev.points < arkUpgrade.cost) return prev;
+
+        const newUpgrades = { ...prev.upgrades, [upgradeId]: 1 };
+        const allArkUpgradesPurchased = ARK_UPGRADES_DATA.every(u => newUpgrades[u.id]);
+
+        let updatedProfile = {
+            ...prev,
+            points: prev.points - arkUpgrade.cost,
+            upgrades: newUpgrades,
+            arkHangarFullyUpgraded: allArkUpgradesPurchased,
+        };
+        addCoreMessage({ type: 'system_alert', content: `Ark upgrade installed: ${arkUpgrade.name}.` });
+        return updateQuestProgress(updatedProfile, 'purchase_upgrade', 1);
+    });
+  }, [toast, updateQuestProgress, addCoreMessage]);
+
+  const purchaseMarketplaceItem = useCallback((itemId: string) => {
+    const item = MARKETPLACE_ITEMS_DATA.find(i => i.id === itemId);
+    if (!item) {
+        toast({ title: "Item not found", variant: "destructive" });
+        return;
+    }
+
+    setPlayerProfile(prev => {
+        if (!prev) return null;
+        if (prev.auron < item.costInAuron) {
+            toast({ title: "Insufficient Auron", description: `You need ${item.costInAuron} Auron.`, variant: "destructive" });
+            return prev;
+        }
+
+        const newBonus: ActiveTapBonus = {
+            id: `${Date.now()}-${Math.random()}`,
+            marketItemId: item.id,
+            name: item.name,
+            remainingTaps: item.bonusEffect.durationTaps,
+            bonusMultiplier: item.bonusEffect.multiplier,
+            originalDurationTaps: item.bonusEffect.durationTaps,
+        };
+
+        let updatedProfile = {
+            ...prev,
+            auron: prev.auron - item.costInAuron,
+            activeTapBonuses: [...(prev.activeTapBonuses || []), newBonus],
+        };
+        addCoreMessage({ type: 'system_alert', content: `${item.name} activated.` });
+        return updateQuestProgress(updatedProfile, 'spend_auron', item.costInAuron);
+    });
+  }, [toast, updateQuestProgress, addCoreMessage]);
+
+  const baseTapPower = POINTS_PER_TAP;
+  const tapPowerUpgradeLevel = getUpgradeLevel('tapPower');
+  const pointsPerTapValue = baseTapPower + tapPowerUpgradeLevel;
+
+  const critChanceUpgradeLevel = getUpgradeLevel('critChance');
+  const criticalTapChance = critChanceUpgradeLevel * 0.005;
+
+  const critMultiplierUpgradeLevel = getUpgradeLevel('critMultiplier');
+  const criticalTapMultiplier = 1 + (critMultiplierUpgradeLevel * 0.1);
+
+  const comboBonusUpgradeLevel = getUpgradeLevel('comboBonus');
+  const comboMultiplierValue = 1 + (comboBonusUpgradeLevel * 0.02) + (comboCount * 0.01);
+
+  const handleTap = useCallback((isLogoTap: boolean = false) => {
+    if (typeof window === 'undefined') return;
+
+    if (!tapSoundRef.current) {
+        try {
+            tapSoundRef.current = new Audio(assetPath('/sounds/tap-sound.mp3'));
+        } catch (e) {
+            console.error("Could not create tap sound Audio element.", e);
+        }
+    }
+
+    tapSoundRef.current?.play().catch(e => console.error("Error playing tap sound:", e));
+
+    setPlayerProfile(prev => {
+      if (!prev) return null;
+
+      let updatedProfile = { ...prev };
+
+      if (updatedProfile.currentTaps <= 0) {
+          const now = Date.now();
+          if (now < updatedProfile.tapsAvailableAt) return prev;
+          updatedProfile.currentTaps = updatedProfile.maxTaps;
+      }
+
+      updatedProfile.currentTaps--;
+      if (updatedProfile.currentTaps === 0) {
+          updatedProfile.tapsAvailableAt = Date.now() + TAP_REGEN_COOLDOWN_MILLISECONDS;
+      }
+
+      let basePointsForTap = pointsPerTapValue;
+      if (isLogoTap) basePointsForTap *= AF_LOGO_TAP_BONUS_MULTIPLIER;
+
+      let isCritical = Math.random() < criticalTapChance;
+      if (isCritical) basePointsForTap *= criticalTapMultiplier;
+      basePointsForTap *= comboMultiplierValue;
+
+      const finalAmount = Math.round(basePointsForTap);
+
+      if (isLogoTap) addCoreMessage({ type: 'system_alert', content: `Precision Strike! Bonus points awarded.` });
+      else if (isCritical) addCoreMessage({ type: 'system_alert', content: `Critical Tap! Power amplified.` });
+
+      updatedProfile.points += finalAmount;
+      updatedProfile.seasonProgress[currentSeason.id] = (updatedProfile.seasonProgress[currentSeason.id] || 0) + finalAmount;
+      let newXp = updatedProfile.xp + finalAmount;
+      while (newXp >= updatedProfile.xpToNextLevel) {
+        newXp -= updatedProfile.xpToNextLevel;
+        updatedProfile.level++;
+        updatedProfile.xpToNextLevel = Math.floor(updatedProfile.xpToNextLevel * XP_LEVEL_MULTIPLIER);
+        updatedProfile.rankTitle = getRankTitle(updatedProfile.level);
+        updatedProfile.currentTierColor = getTierColorByLevel(updatedProfile.level);
+        toast({ title: 'Level Up!', description: `Congrats Commander! You reached level ${updatedProfile.level}.` });
+      }
+      updatedProfile.xp = newXp;
+      const newLeague = getLeagueByPoints(updatedProfile.points);
+      if (newLeague !== updatedProfile.league) {
+        updatedProfile.league = newLeague;
+        addCoreMessage({ type: 'system_alert', content: `Promotion! You've reached the ${newLeague} league.` });
+      }
+
+      let profileWithQuestProgress = updateQuestProgress(updatedProfile, 'taps', 1);
+      profileWithQuestProgress = updateQuestProgress(profileWithQuestProgress, 'points_earned', finalAmount);
+
+      return profileWithQuestProgress;
+    });
+
+    setComboCount(prevCount => prevCount + 1);
+    setTimeout(() => setComboCount(0), 3000);
+  }, [pointsPerTapValue, criticalTapChance, criticalTapMultiplier, comboMultiplierValue, addCoreMessage, updateQuestProgress, toast, currentSeason.id]);
+
+
+  const claimQuestReward = useCallback((questId: string) => {
+    setPlayerProfile(prev => {
+        if (!prev) return null;
+        const questIndex = prev.activeDailyQuests.findIndex(q => q.id === questId);
+        if (questIndex === -1 || !prev.activeDailyQuests[questIndex].isCompleted || prev.activeDailyQuests[questIndex].isClaimed) return prev;
+
+        const quest = prev.activeDailyQuests[questIndex];
+        let updatedProfile = { ...prev };
+        if (quest.reward.points) updatedProfile.points += quest.reward.points;
+        if (quest.reward.auron) updatedProfile.auron += quest.reward.auron;
+
+        const updatedQuests = [...updatedProfile.activeDailyQuests];
+        updatedQuests[questIndex] = { ...quest, isClaimed: true };
+        updatedProfile.activeDailyQuests = updatedQuests;
+
+        addCoreMessage({ type: 'system_alert', content: `Reward claimed for quest: ${quest.title}.` });
+        return updatedProfile;
+    });
+  }, [addCoreMessage]);
+
+  const refreshDailyQuestsIfNeeded = useCallback(() => {
+    setPlayerProfile(prev => {
+        if (!prev) return null;
+
+        const now = new Date();
+        const lastRefreshDate = new Date(prev.lastDailyQuestRefresh);
+        if (now.getDate() === lastRefreshDate.getDate() && now.getMonth() === lastRefreshDate.getMonth() && now.getFullYear() === lastRefreshDate.getFullYear() && prev.activeDailyQuests.length > 0) return prev;
+
+        const availableQuestTemplates = [...DAILY_QUESTS_POOL];
+        const newQuests: DailyQuest[] = [];
+        const usedTemplateIds = new Set<string>();
+
+        while (newQuests.length < NUMBER_OF_DAILY_QUESTS && availableQuestTemplates.length > 0) {
+            const randomIndex = Math.floor(Math.random() * availableQuestTemplates.length);
+            const template = availableQuestTemplates.splice(randomIndex, 1)[0];
+            if (usedTemplateIds.has(template.templateId)) continue;
+            newQuests.push({ ...template, id: `${template.templateId}-${now.getTime()}`, progress: template.type === 'login' ? template.target : 0, isCompleted: template.type === 'login', isClaimed: false });
+            usedTemplateIds.add(template.templateId);
+        }
+        addCoreMessage({ type: 'system_alert', content: 'Daily Quest objectives refreshed.'});
+        return { ...prev, activeDailyQuests: newQuests, lastDailyQuestRefresh: now.getTime() };
+    });
+  }, [addCoreMessage]);
+
+  const completeInitialSetup = useCallback(async (name: string, commanderSex: 'male' | 'female', country: string, referredByCode?: string) => {
+    const now = Date.now();
+    const selectedAvatarData = SELECTABLE_AVATARS.find(a => a.sex === commanderSex) ?? SELECTABLE_AVATARS[0];
+
+    const newProfileData: PlayerProfile = {
+      ...defaultPlayerProfile,
+      id: `${now}-${Math.random().toString(36).substring(2, 9)}`,
+      name, commanderSex, country,
+      avatarUrl: selectedAvatarData.fullBodyUrl,
+      portraitUrl: selectedAvatarData.portraitUrl,
+      currentSeasonId: SEASONS_DATA[0].id,
+      lastLoginTimestamp: now,
+      referralCode: generateReferralCode(name),
+      referredByCode: referredByCode?.trim() || '',
+    };
+
+    setPlayerProfile(newProfileData);
+    setIsInitialSetupDone(true);
+    setCurrentSeason(SEASONS_DATA[0]);
+
+    addCoreMessage({ type: 'briefing', content: `Welcome, Commander ${name}! Your mission begins. Your referral code is ${newProfileData.referralCode}.`});
+
+    try {
+        const profileToSave = {
+            ...newProfileData,
+            activeDailyQuests: newProfileData.activeDailyQuests.map(({ icon, ...rest }) => rest),
+        };
+        await syncPlayerProfileInFirestore(profileToSave);
+    } catch (error) {
+        toast({ title: 'Sync Failed', description: `Could not save profile to server: ${error instanceof Error ? error.message : 'Unknown error'}`, variant: 'destructive' });
+    }
+  }, [addCoreMessage, toast]);
+
+
+  const refillTaps = useCallback(() => {
+    setPlayerProfile(prev => {
+        if (!prev || prev.auron < AURON_COST_FOR_TAP_REFILL) {
+            toast({ title: "Insufficient Auron", variant: "destructive" });
+            return prev;
+        }
+
+        const updatedProfile = { ...prev, auron: prev.auron - AURON_COST_FOR_TAP_REFILL, currentTaps: prev.maxTaps, tapsAvailableAt: Date.now() };
+        addCoreMessage({ type: 'system_alert', content: `Tap energy restored for ${AURON_COST_FOR_TAP_REFILL} Auron.` });
+        return updateQuestProgress(updatedProfile, 'spend_auron', AURON_COST_FOR_TAP_REFILL);
+    });
+  }, [toast, updateQuestProgress, addCoreMessage]);
+
+  const connectWallet = useCallback((address: string) => {
+    setPlayerProfile(prev => {
+      if (!prev || prev.isWalletConnected) return prev;
+      addCoreMessage({ type: 'system_alert', content: `Wallet Connected! ${AURON_PER_WALLET_CONNECT} Auron bonus and Ark Hangar unlocked.` });
+      return { ...prev, isWalletConnected: true, walletAddress: address, auron: prev.auron + AURON_PER_WALLET_CONNECT };
+    });
+  }, [addCoreMessage]);
+
+  const purchasePremiumPass = useCallback(() => {
+    setPlayerProfile(prev => {
+        if (!prev || prev.hasPremiumPass || prev.auron < BATTLE_PASS_DATA.premiumCostInAuron) return prev;
+        addCoreMessage({ type: 'system_alert', content: 'Premium Battle Pass unlocked!' });
+        return { ...prev, auron: prev.auron - BATTLE_PASS_DATA.premiumCostInAuron, hasPremiumPass: true };
+    });
+  }, [addCoreMessage]);
+
+  const claimBattlePassReward = useCallback((level: number, track: 'free' | 'premium') => {
+    setPlayerProfile(prev => {
+      if (!prev) return prev;
+
+      const rewardLevel = BATTLE_PASS_DATA.levels.find(l => l.level === level);
+      if (!rewardLevel) return prev;
+      const reward = track === 'free' ? rewardLevel.freeReward : rewardLevel.premiumReward;
+      if (!reward) return prev;
+      if (prev.claimedBattlePassRewards[level]?.includes(track) || prev.battlePassLevel < level) return prev;
+      if (track === 'premium' && !prev.hasPremiumPass) return prev;
+
+      let updatedProfile = { ...prev };
+      if (reward.type === 'points') updatedProfile.points += reward.amount || 0;
+      if (reward.type === 'auron') updatedProfile.auron += reward.amount || 0;
+
+      const claimedForLevel = updatedProfile.claimedBattlePassRewards[level] || [];
+      updatedProfile.claimedBattlePassRewards = { ...updatedProfile.claimedBattlePassRewards, [level]: [...claimedForLevel, track] };
+
+      addCoreMessage({ type: 'system_alert', content: `Battle Pass reward claimed: ${reward?.name || `${reward.amount} ${reward.type}`}` });
+      return updatedProfile;
+    });
+  }, [addCoreMessage]);
+
+  const watchRewardedAd = useCallback(() => {
+    if (rewardedAdCooldown > 0 || isWatchingAd) return;
+    setIsWatchingAd(true);
+    setTimeout(() => {
+      setPlayerProfile(prev => {
+        if (!prev) return null;
+        addCoreMessage({ type: 'system_alert', content: `Broadcast complete. Received ${REWARDED_AD_AURON_REWARD} Auron.` });
+        return { ...prev, auron: prev.auron + REWARDED_AD_AURON_REWARD, lastRewardedAdTimestamp: Date.now() };
+      });
+      setIsWatchingAd(false);
+    }, 3000);
+  }, [rewardedAdCooldown, isWatchingAd, addCoreMessage]);
+
+  const updatePlayerProfile = useCallback((name: string, selectedPortraitUrl: string) => {
+    setPlayerProfile(prev => {
+        if (!prev) return null;
+        const selectedAvatarData = SELECTABLE_AVATARS.find(a => a.portraitUrl === selectedPortraitUrl) ?? SELECTABLE_AVATARS[0];
+        const updatedProfile = { ...prev, name, avatarUrl: selectedAvatarData.fullBodyUrl, portraitUrl: selectedAvatarData.portraitUrl, commanderSex: selectedAvatarData.sex };
+        addCoreMessage({ type: 'system_alert', content: 'Player profile updated.' });
+        toast({ title: 'Profile Updated', description: 'Your callsign and avatar have been updated.' });
+        return updatedProfile;
+    });
+  }, [addCoreMessage, toast]);
+
+  const toggleCommander = useCallback(() => {
+    setPlayerProfile(prev => {
+        if (!prev) return null;
+        const newSex = prev.commanderSex === 'male' ? 'female' : 'male';
+        const newAvatarData = SELECTABLE_AVATARS.find(a => a.sex === newSex) ?? SELECTABLE_AVATARS[0];
+        toast({ title: 'Commander Switched', description: `Now playing as the ${newSex} commander.` });
+        return { ...prev, commanderSex: newSex, avatarUrl: newAvatarData.fullBodyUrl, portraitUrl: newAvatarData.portraitUrl };
+    });
+  }, [toast]);
+
+  const getArkUpgradeById = useCallback((upgradeId: string) => ARK_UPGRADES_DATA.find(u => u.id === upgradeId), []);
+
+  const resetGame = useCallback(() => {
+    try {
+        localStorage.removeItem('playerProfile');
+        localStorage.removeItem('coreMessages');
+        window.location.reload();
+    } catch (e) {
+        toast({ title: "Reset Failed", variant: "destructive" });
+    }
+  }, [toast]);
+
+  const connectTelegramWallet = useCallback(() => {
+    if (!isTelegramEnv) return;
+    import('@twa-dev/sdk').then(twa => {
+      twa.default.requestWriteAccess(isGranted => {
+        if (isGranted) {
+          setPlayerProfile(prev => prev ? { ...prev, isTelegramWalletConnected: true } : null);
+          toast({ title: 'Telegram Wallet Connected!' });
+        } else {
+          toast({ title: 'Permission Denied', variant: 'destructive' });
+        }
+      });
+    });
+  }, [isTelegramEnv, toast]);
+
+  const purchaseWithTelegramWallet = useCallback((pkg: { amount: number; price: number }) => {
+    if (!isTelegramEnv || !playerProfile?.isTelegramWalletConnected) return;
+
+    import('@twa-dev/sdk').then(twa => {
+        twa.default.showConfirm(`Purchase ${pkg.amount} Auron for a simulated ${pkg.price} TON?`, (confirmed) => {
+            if (confirmed) {
+                setPlayerProfile(prev => prev ? { ...prev, auron: prev.auron + pkg.amount } : null);
+                toast({ title: 'Purchase Successful (Simulated)' });
+            }
+        });
+    });
+  }, [isTelegramEnv, playerProfile, toast]);
+
+  const askCore = useCallback(async (question: string) => {
+    if (!playerProfile) return;
+
+    addCoreMessage({ type: 'question', content: question });
+
+    try {
+      const input: CoreAskInput = {
+        question,
+        playerContext: {
+          level: playerProfile.level,
+          points: playerProfile.points,
+          rankTitle: playerProfile.rankTitle,
+          season: currentSeason.title,
+          seasonObjective: currentSeason.coreBriefingObjective,
+        },
+      };
+      const response = await askCoreFlow(input);
+      addCoreMessage({ type: 'answer', content: response.answer });
+    } catch (error) {
+      console.error('Error asking C.O.R.E.:', error);
+      addCoreMessage({
+        type: 'system_alert',
+        content: 'Connection to C.O.R.E. data stream lost. Please try again.',
+      });
+    }
+  }, [playerProfile, currentSeason, addCoreMessage]);
+
+  useEffect(() => {
+    if (playerProfile && isInitialSetupDone) {
+      const profileToSave = {
+        ...playerProfile,
+        activeDailyQuests: playerProfile.activeDailyQuests.map(({ icon, ...rest }) => rest),
+      };
+      syncPlayerProfileInFirestore(profileToSave).catch(error => {
+        console.error("Firestore sync failed:", error);
+        toast({
+            title: "Sync Error",
+            description: "Failed to save progress to the cloud. Progress is saved locally.",
+            variant: "destructive"
+        });
+      });
+      try {
+        localStorage.setItem('playerProfile', JSON.stringify(profileToSave));
+      } catch (e) {
+          console.error("Failed to save player profile to localStorage:", e);
+      }
+    }
+  }, [playerProfile, isInitialSetupDone, toast]);
+
+  useEffect(() => {
+      if (!playerProfile) return;
+      const interval = setInterval(() => {
+          const now = Date.now();
+          const timeSinceLastAd = now - (playerProfile.lastRewardedAdTimestamp || 0);
+          setRewardedAdCooldown(Math.max(0, REWARDED_AD_COOLDOWN_MILLISECONDS - timeSinceLastAd));
+      }, 1000);
+      return () => clearInterval(interval);
+  }, [playerProfile]);
+
+  const contextValue = {
+    playerProfile, setPlayerProfile, currentSeason, seasons: SEASONS_DATA, getUpgradeLevel, purchaseUpgrade, getUpgradeCost, upgrades: UPGRADES_DATA,
+    arkUpgrades: ARK_UPGRADES_DATA, purchaseArkUpgrade, getArkUpgradeById, addPoints, isLoading, isInitialSetupDone, completeInitialSetup, coreMessages,
+    addCoreMessage, isCoreUnlocked, coreLastInteractionTime: 0, connectWallet, handleTap, criticalTapChance, criticalTapMultiplier, comboMultiplier: comboMultiplierValue,
+    comboCount, setComboCount, marketplaceItems: MARKETPLACE_ITEMS_DATA, claimQuestReward, refreshDailyQuestsIfNeeded, refillTaps, battlePassData: BATTLE_PASS_DATA,
+    purchasePremiumPass, claimBattlePassReward, watchRewardedAd, rewardedAdCooldown, isWatchingAd, updatePlayerProfile, toggleCommander, resetGame, toggleMusic, isMusicPlaying,
+    isTelegramEnv, connectTelegramWallet, purchaseWithTelegramWallet,
+    purchaseMarketplaceItem,
+    askCore,
+    isOpen,
+    setIsOpen,
+    hasUnread,
+    setHasUnread
+  };
+
+  return <GameContext.Provider value={contextValue}>{children}</GameContext.Provider>;
 };
-case 'TAP_COMMANDER':
-const basePoints = 1;
-const isCritical = Math.random() < 0.2; // 20% chance
-const criticalMultiplier = isCritical ? 2 : 1;
-const streakMultiplier = Math.min(1 + (state.currentStreak * 0.1), 3);
-const totalMultiplier = criticalMultiplier * state.comboBonus * streakMultiplier;
-const earnedPoints = basePoints * totalMultiplier;
-const newStreak = isCritical ? state.currentStreak + 1 : 0;
-const newCriticalHits = isCritical ? state.criticalHits + 1 : state.criticalHits;
-// Actualizar quests
-const updatedQuests = state.dailyQuests.map(quest => {
-if (quest.id === 'daily_taps') {
-return { ...quest, progress: quest.progress + 1 };
-}
-if (quest.id === 'daily_points') {
-return { ...quest, progress: quest.progress + earnedPoints };
-}
-if (quest.id === 'daily_criticals' && isCritical) {
-return { ...quest, progress: quest.progress + 1 };
-}
-return quest;
-});
-return {
-...state,
-points: state.points + earnedPoints,
-currentStreak: newStreak,
-criticalHits: newCriticalHits,
-dailyQuests: updatedQuests
+
+export const useGame = (): GameContextType => {
+  const context = useContext(GameContext);
+  if (context === undefined) throw new Error('useGame must be used within a GameProvider');
+  return context;
 };
-case 'LEVEL_UP':
-if (!state.player) return state;
-const newLevel = state.player.level + 1;
-const newRank = getRankForLevel(newLevel);
-const newExperience = state.player.experience - state.player.experienceToNext;
-const newExperienceToNext = Math.floor(100 * Math.pow(1.5, newLevel - 1));
-return {
-...state,
-player: {
-...state.player,
-level: newLevel,
-rank: newRank,
-experience: newExperience,
-experienceToNext: newExperienceToNext
-}
-};
-case 'BUY_DRONE':
-return {
-...state,
-dronesCount: state.dronesCount + 1,
-pointsPerSecond: state.pointsPerSecond + 0.5
-};
-case 'SAVE_GAME':
-localStorage.setItem('forgenite_frenzy_save', JSON.stringify(state));
-return { ...state, lastSave: Date.now() };
-case 'LOAD_GAME':
-return action.payload;
-case 'RESET_GAME':
-return {
-...initialState,
-lastSave: Date.now()
-};
-default:
-return state;
-}
-}
-function getRankForLevel(level: number): string {
-if (level >= 75) return 'Maestro';
-if (level >= 50) return 'General';
-if (level >= 35) return 'Comandante';
-if (level >= 25) return 'Capitán';
-if (level >= 15) return 'Teniente';
-if (level >= 10) return 'Sargento';
-if (level >= 5) return 'Soldado';
-return 'Recluta';
-}
-const GameContext = createContext<{
-state: GameState;
-dispatch: React.Dispatch<GameAction>;
-} | null>(null);
-export function GameProvider({ children }: { children: React.ReactNode }) {
-const [state, dispatch] = useReducer(gameReducer, initialState);
-// Auto-save every 30 seconds
-useEffect(() => {
-if (state.isGameActive && state.player) {
-const interval = setInterval(() => {
-dispatch({ type: 'SAVE_GAME' });
-}, 30000);
-return () => clearInterval(interval);
-}
-}, [state.isGameActive, state.player]);
-// Load saved game on mount
-useEffect(() => {
-const savedGame = localStorage.getItem('forgenite_frenzy_save');
-if (savedGame) {
-try {
-const gameState = JSON.parse(savedGame);
-dispatch({ type: 'LOAD_GAME', payload: gameState });
-} catch (error) {
-console.error('Error loading saved game:', error);
-}
-}
-}, []);
-// Drone generation
-useEffect(() => {
-if (state.isGameActive && state.dronesCount > 0) {
-const interval = setInterval(() => {
-const dronePoints = state.dronesCount * 0.5;
-dispatch({ type: 'ADD_POINTS', payload: dronePoints });
-}, 1000);
-return () => clearInterval(interval);
-}
-}, [state.isGameActive, state.dronesCount]);
-return (
-<GameContext.Provider value={{ state, dispatch }}>
-{children}
-</GameContext.Provider>
-);
-}
-export function useGame() {
-const context = useContext(GameContext);
-if (!context) {
-throw new Error('useGame must be used within a GameProvider');
-}
-return context;
-}

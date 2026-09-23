@@ -18,7 +18,8 @@ import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import IntroScreen from '@/components/intro/IntroScreen';
-import images from '@/lib/placeholder-images.json';
+import images from '@/lib/images';
+import { POINTS_PER_TAP } from '@/lib/gameData';
 
 // Image configuration
 const IMAGE_PATHS = {
@@ -239,6 +240,7 @@ export default function HomePage() {
     isLoading, 
     isInitialSetupDone, 
     handleTap, 
+    getUpgradeLevel,
     toggleCommander, 
     toggleMusic, 
     isMusicPlaying 
@@ -312,7 +314,7 @@ export default function HomePage() {
           >
             <div className="flex items-center justify-center text-yellow-300 font-bold text-lg drop-shadow-lg">
               <Zap className="w-4 h-4 text-yellow-400 fill-current mr-1" />
-              +{Math.floor(playerProfile.pointsPerTap * (1 + (Math.random() * 0.5)))}
+              +{POINTS_PER_TAP + getUpgradeLevel('tapPower')}
             </div>
           </motion.div>
         ))}
