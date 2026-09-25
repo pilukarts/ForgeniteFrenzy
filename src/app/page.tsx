@@ -12,6 +12,9 @@ import { useToast } from "@/hooks/use-toast";
 import images from "@/lib/images";
 import { cn } from "@/lib/utils";
 import { POINTS_PER_TAP } from "@/lib/gameData";
+import { assetPath } from "@/lib/assetPath";
+
+const ARK_SHIP_IMAGE = assetPath("/images/global/star-ark-forge.png");
 
 const STARS = [
   [7, 12, 2, .2], [13, 66, 1, 1.7], [19, 30, 2, 2.6], [25, 82, 1, .8],
@@ -118,7 +121,7 @@ export default function HomePage() {
         <motion.div className="forge-ark relative mx-auto aspect-square w-40 cursor-pointer sm:w-48 lg:w-full lg:max-w-[230px]" animate={{ y: [0, -10, 0], rotate: [-1, 1, -1] }} transition={{ duration: 5, repeat: Infinity }} onClick={() => handleTap(true)}>
           <span className="forge-ark-ring absolute inset-[8%] rounded-full border border-cyan-300/50" />
           <span className="absolute inset-[18%] rounded-full bg-cyan-400/20 blur-2xl" />
-          <Image src={images.ark.ark} alt="ARK starship" fill unoptimized className="object-contain drop-shadow-[0_0_22px_rgba(34,211,238,.75)]" />
+          <Image src={ARK_SHIP_IMAGE} alt="ARK starship" fill unoptimized priority className="object-contain drop-shadow-[0_0_22px_rgba(34,211,238,.75)]" />
           <span className="forge-engine absolute bottom-[18%] left-1/2 h-[20%] w-[16%] -translate-x-1/2 rounded-full bg-cyan-200/60 blur-md" />
         </motion.div>
         <div className="rounded-xl border border-cyan-300/30 bg-slate-950/65 p-4 text-center backdrop-blur-xl">
