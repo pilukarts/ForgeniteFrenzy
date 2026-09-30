@@ -78,6 +78,26 @@ export interface PlayerProfile {
   
   // Telegram Integration
   isTelegramWalletConnected: boolean;
+
+  // Persistent equipment collected in the Galactic Shop.
+  inventory?: string[];
+  equippedItems?: Partial<Record<EquipmentSlot, string>>;
+}
+
+export type EquipmentSlot = 'weapon' | 'shield' | 'engine' | 'droid';
+export type EquipmentRarity = 'Common' | 'Rare' | 'Epic' | 'Legendary';
+
+export interface EquipmentItem {
+  id: string;
+  name: string;
+  description: string;
+  slot: EquipmentSlot;
+  rarity: EquipmentRarity;
+  cost: number;
+  currency: 'points' | 'auron';
+  power: number;
+  perk: string;
+  icon: LucideIcon;
 }
 
 export interface Season {
