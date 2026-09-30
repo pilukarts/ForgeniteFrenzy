@@ -103,6 +103,64 @@
   }
 }
 
+/* Forgeite Frenzy command-deck scene */
+@keyframes forge-galaxy-drift {
+  0%, 100% { transform: scale(1.04) translate3d(0, 0, 0); }
+  50% { transform: scale(1.1) translate3d(-1.2%, -0.8%, 0); }
+}
+
+@keyframes forge-nebula-breathe {
+  0%, 100% { opacity: .42; transform: scale(.92); }
+  50% { opacity: .8; transform: scale(1.12); }
+}
+
+@keyframes forge-star-pulse {
+  0%, 100% { opacity: .2; transform: scale(.75); box-shadow: 0 0 3px rgba(255,255,255,.35); }
+  50% { opacity: 1; transform: scale(1.7); box-shadow: 0 0 10px rgba(103,232,249,.95); }
+}
+
+@keyframes forge-aura {
+  0%, 100% { opacity: .45; transform: scale(.9); }
+  50% { opacity: .9; transform: scale(1.08); }
+}
+
+@keyframes forge-ring {
+  from { opacity: .85; transform: rotate(0deg) scale(.92); }
+  50% { opacity: .35; transform: rotate(180deg) scale(1.06); }
+  to { opacity: .85; transform: rotate(360deg) scale(.92); }
+}
+
+@keyframes forge-engine {
+  0%, 100% { opacity: .5; transform: translateX(-50%) scaleY(.7); }
+  50% { opacity: 1; transform: translateX(-50%) scaleY(1.35); }
+}
+
+.forge-galaxy { animation: forge-galaxy-drift 24s ease-in-out infinite; }
+.forge-nebula { animation: forge-nebula-breathe 9s ease-in-out infinite; }
+.forge-nebula-delay { animation-delay: -4.5s; }
+.forge-star { animation: forge-star-pulse 4s ease-in-out infinite; }
+.forge-commander-aura { animation: forge-aura 3.8s ease-in-out infinite; }
+.forge-ark-ring { animation: forge-ring 12s linear infinite; box-shadow: inset 0 0 18px rgba(34,211,238,.3), 0 0 18px rgba(34,211,238,.25); }
+.forge-ark-ring::before,
+.forge-ark-ring::after {
+  content: "";
+  position: absolute;
+  inset: 9%;
+  border-radius: 9999px;
+  border: 1px dashed rgba(103,232,249,.45);
+}
+.forge-ark-ring::after { inset: -10%; border-color: rgba(167,139,250,.3); }
+.forge-engine { animation: forge-engine 1.1s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .forge-galaxy,
+  .forge-nebula,
+  .forge-star,
+  .forge-commander-aura,
+  .forge-ark-ring,
+  .forge-engine { animation: none !important; }
+}
+
 @layer base {
   * {
     @apply border-border;
