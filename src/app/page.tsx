@@ -34,11 +34,11 @@ type ActionProps = {
 function HoloAction({ href, label, icon: Icon, tone = "cyan", onClick }: ActionProps) {
   const className = cn(
     "group relative flex min-h-12 items-center gap-3 overflow-hidden rounded-xl border px-4 py-3",
-    "bg-slate-950/65 text-left font-semibold uppercase tracking-[0.14em] text-white backdrop-blur-xl",
+    "text-left font-semibold uppercase tracking-[0.14em] text-white backdrop-blur-xl",
     "transition duration-300 hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2",
-    tone === "cyan" && "border-cyan-300/40 hover:border-cyan-200 hover:shadow-[0_0_30px_rgba(34,211,238,.32)]",
-    tone === "gold" && "border-amber-300/45 hover:border-amber-200 hover:shadow-[0_0_30px_rgba(251,191,36,.32)]",
-    tone === "violet" && "border-violet-300/40 hover:border-violet-200 hover:shadow-[0_0_30px_rgba(167,139,250,.32)]",
+    tone === "cyan" && "border-cyan-300/55 bg-gradient-to-r from-cyan-950/90 via-sky-900/70 to-blue-950/90 hover:border-cyan-100 hover:shadow-[0_0_32px_rgba(34,211,238,.42)]",
+    tone === "gold" && "border-amber-300/60 bg-gradient-to-r from-amber-950/90 via-orange-900/65 to-yellow-950/90 hover:border-amber-100 hover:shadow-[0_0_32px_rgba(251,191,36,.42)]",
+    tone === "violet" && "border-violet-300/55 bg-gradient-to-r from-violet-950/90 via-fuchsia-900/60 to-indigo-950/90 hover:border-violet-100 hover:shadow-[0_0_32px_rgba(167,139,250,.42)]",
   );
   const content = <>
     <span className="absolute inset-y-0 -left-1/2 w-1/3 skew-x-[-20deg] bg-white/10 transition-all duration-700 group-hover:left-[120%]" />
@@ -94,7 +94,7 @@ export default function HomePage() {
       <div className="flex items-center gap-2">\n        <a href="https://pilukarts.github.io/" target="_blank" rel="noopener noreferrer" aria-label="Open Pilukarts portfolio" className="flex items-center gap-2 rounded-full border border-violet-300/35 bg-violet-950/45 px-3 py-2 text-[10px] font-bold uppercase tracking-[.14em] text-violet-100 backdrop-blur-xl transition hover:border-violet-200 hover:shadow-[0_0_24px_rgba(167,139,250,.3)] sm:text-xs"><ExternalLink className="h-4 w-4" /> Portfolio</a>\n        <div className="hidden items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-950/35 px-3 py-2 text-xs text-emerald-200 sm:flex"><Radio className="h-4 w-4 animate-pulse" /> SYSTEMS ONLINE</div>\n      </div>
     </header>
 
-    <div className="relative z-20 grid min-h-[620px] grid-cols-1 items-center gap-5 px-4 pb-36 pt-2 lg:grid-cols-[minmax(190px,1fr)_minmax(320px,1.5fr)_minmax(190px,1fr)] lg:px-8 lg:pb-32">
+    <div className="relative z-20 grid min-h-[620px] grid-cols-1 items-center gap-5 px-4 pb-36 pt-2 lg:grid-cols-[minmax(210px,1fr)_minmax(320px,1.35fr)_minmax(300px,1.35fr)] lg:px-8 lg:pb-32">
       <nav className="order-2 grid grid-cols-2 gap-3 lg:order-1 lg:grid-cols-1">
         <HoloAction href="/quests" label="Missions" icon={Shield} />
         <HoloAction href="/level-map" label="Star Map" icon={Map} />
@@ -118,7 +118,7 @@ export default function HomePage() {
       </div>
 
       <aside className="order-3 space-y-3">
-        <motion.div className="forge-ark relative mx-auto aspect-square w-40 cursor-pointer sm:w-48 lg:w-full lg:max-w-[230px]" animate={{ y: [0, -10, 0], rotate: [-1, 1, -1] }} transition={{ duration: 5, repeat: Infinity }} onClick={() => handleTap(true)}>
+        <motion.div className="forge-ark relative mx-auto h-32 w-full max-w-[320px] cursor-pointer sm:h-40 sm:max-w-[400px] lg:h-48 lg:max-w-[430px]" animate={{ y: [0, -10, 0], rotate: [-1, 1, -1] }} transition={{ duration: 5, repeat: Infinity }} onClick={() => handleTap(true)}>
           <span className="forge-ark-ring absolute inset-[8%] rounded-full border border-cyan-300/50" />
           <span className="absolute inset-[18%] rounded-full bg-cyan-400/20 blur-2xl" />
           <Image src={ARK_SHIP_IMAGE} alt="ARK carrier starship" fill unoptimized priority className="object-contain drop-shadow-[0_0_22px_rgba(34,211,238,.75)]" />
