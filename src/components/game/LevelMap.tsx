@@ -1,356 +1,87 @@
 "use client";
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, Star, Crown, Sparkles, Zap } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import Image from 'next/image';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Check, Crown, Lock, Navigation, Sparkles, Star, X } from 'lucide-react';
 import { useGame } from '@/contexts/GameContext';
+import { LEVEL_STAGES } from '@/lib/gameData';
+import { assetPath } from '@/lib/assetPath';
+import { cn } from '@/lib/utils';
 
-interface Level {
-  id: number;
-  name: string;
-  isCompleted: boolean;
-  isUnlocked: boolean;
-  stars: number;
-  bossLevel?: boolean;
+const MAX_LEVEL = 50_000;
+const VISIBLE_LEVELS = 25;
+const ARK_IMAGE = assetPath('/images/global/ark-carrier.png');
+
+function stageFor(level: number) {
+  return LEVEL_STAGES.find(stage => level >= stage.startLevel && level <= stage.endLevel) || LEVEL_STAGES[LEVEL_STAGES.length - 1];
 }
 
-interface Stage {
-  id: number;
-  name: string;
-  theme: string;
-  levels: Level[];
-  backgroundColor: string;
-  accentColor: string;
-  description: string;
-}
-
-const STAGES: Stage[] = [
-  {
-    id: 1,
-    name: "Earth",
-    theme: "🌍",
-    description: "El hogar de la humanidad. Aprende los fundamentos.",
-    backgroundColor: "from-green-400 via-blue-500 to-blue-600",
-    accentColor: "from-green-300 to-blue-400",
-    levels: Array.from({ length: 10 }, (_, i) => ({
-      id: i + 1,
-      name: `Nivel ${i + 1}`,
-      isCompleted: false,
-      isUnlocked: i === 0,
-      stars: 0,
-      bossLevel: (i + 1) % 10 === 0
-    }))
-  },
-  {
-    id: 2,
-    name: "Moon", 
-    theme: "🌙",
-    description: "La primera frontera. Desafíos lunares te esperan.",
-    backgroundColor: "from-purple-400 via-gray-400 to-slate-500",
-    accentColor: "from-purple-300 to-gray-300",
-    levels: Array.from({ length: 10 }, (_, i) => ({
-      id: 11 + i,
-      name: `Nivel ${11 + i}`,
-      isCompleted: false,
-      isUnlocked: false,
-      stars: 0,
-      bossLevel: (i + 1) % 10 === 0
-    }))
-  },
-  {
-    id: 3,
-    name: "Mars",
-    theme: "🔴",
-    description: "El planeta rojo. Enfrenta tormentas marcianas.",
-    backgroundColor: "from-red-500 via-orange-500 to-red-600",
-    accentColor: "from-red-400 to-orange-400",
-    levels: Array.from({ length: 10 }, (_, i) => ({
-      id: 21 + i,
-      name: `Nivel ${21 + i}`,
-      isCompleted: false,
-      isUnlocked: false,
-      stars: 0,
-      bossLevel: (i + 1) % 10 === 0
-    }))
-  },
-  {
-    id: 4,
-    name: "Asteroid Belt",
-    theme: "☄️",
-    description: "Navega entre asteroides peligrosos.",
-    backgroundColor: "from-yellow-600 via-amber-600 to-orange-600",
-    accentColor: "from-yellow-500 to-amber-500",
-    levels: Array.from({ length: 10 }, (_, i) => ({
-      id: 31 + i,
-      name: `Nivel ${31 + i}`,
-      isCompleted: false,
-      isUnlocked: false,
-      stars: 0,
-      bossLevel: (i + 1) % 10 === 0
-    }))
-  },
-  {
-    id: 5,
-    name: "Deep Space",
-    theme: "🌌",
-    description: "Las profundidades del cosmos.",
-    backgroundColor: "from-indigo-900 via-purple-900 to-black",
-    accentColor: "from-indigo-700 to-purple-700",
-    levels: Array.from({ length: 10 }, (_, i) => ({
-      id: 41 + i,
-      name: `Nivel ${41 + i}`,
-      isCompleted: false,
-      isUnlocked: false,
-      stars: 0,
-      bossLevel: (i + 1) % 10 === 0
-    }))
-  }
-];
-
-const LevelMap: React.FC = () => {
+export default function LevelMap() {
   const { playerProfile } = useGame();
-  const [selectedStage, setSelectedStage] = useState(1);
-  const [selectedLevel, setSelectedLevel] = useState<Level | null>(null);
+  const currentLevel = Math.min(MAX_LEVEL, Math.max(1, playerProfile?.level || 1));
+  const [selectedLevel, setSelectedLevel] = useState<number | null>(null);
+  const [windowOffset, setWindowOffset] = useState(0);
+  const currentStage = stageFor(currentLevel);
 
-  const currentStage = STAGES.find(s => s.id === selectedStage) || STAGES[0];
+  const levels = useMemo(() => {
+    const naturalStart = Math.max(1, currentLevel - 4 + windowOffset);
+    const start = Math.min(MAX_LEVEL - VISIBLE_LEVELS + 1, naturalStart);
+    return Array.from({ length: VISIBLE_LEVELS }, (_, index) => start + index).filter(level => level <= MAX_LEVEL);
+  }, [currentLevel, windowOffset]);
 
-  const getStageUnlocked = (stageId: number): boolean => {
-    if (stageId === 1) return true;
-    return false; // Simplified for now
+  const moveWindow = (direction: number) => {
+    setWindowOffset(previous => {
+      const desired = previous + direction * 20;
+      const min = 1 - Math.max(1, currentLevel - 4);
+      const max = MAX_LEVEL - VISIBLE_LEVELS + 1 - Math.max(1, currentLevel - 4);
+      return Math.min(max, Math.max(min, desired));
+    });
   };
 
-  const isLevelUnlocked = (stageId: number, levelIndex: number): boolean => {
-    if (stageId === 1) {
-      return levelIndex === 0; // Only first level unlocked in Earth
-    }
-    return false;
-  };
+  return <div className="relative min-h-full overflow-y-auto px-3 pb-28 pt-5 text-white sm:px-6">
+    <header className="sticky top-0 z-30 mx-auto mb-7 flex max-w-3xl flex-wrap items-center justify-between gap-3 rounded-2xl border border-cyan-300/30 bg-slate-950/80 p-4 shadow-[0_0_35px_rgba(34,211,238,.14)] backdrop-blur-xl">
+      <div><p className="text-[10px] font-bold uppercase tracking-[.32em] text-cyan-300">Galactic flight path</p><h1 className="text-2xl font-black">Level {currentLevel.toLocaleString()}</h1><p className="text-xs text-slate-300">{currentStage.name} · Destination 50,000</p></div>
+      <div className="text-right"><p className="text-[10px] uppercase tracking-widest text-slate-400">Journey complete</p><p className="text-xl font-black text-amber-300">{((currentLevel / MAX_LEVEL) * 100).toFixed(2)}%</p></div>
+      <div className="h-2 w-full overflow-hidden rounded-full bg-white/10"><motion.div className="h-full rounded-full bg-gradient-to-r from-cyan-400 via-violet-400 to-amber-300" initial={{ width: 0 }} animate={{ width: `${Math.max(.25, currentLevel / MAX_LEVEL * 100)}%` }} /></div>
+    </header>
 
-  const handleLevelClick = (level: Level, stageId: number) => {
-    if (!isLevelUnlocked(stageId, level.id - currentStage.levels[0].id)) {
-      return;
-    }
-    setSelectedLevel(level);
-  };
+    <div className="mx-auto mb-4 flex max-w-3xl justify-between gap-3">
+      <button onClick={() => moveWindow(-1)} className="rounded-full border border-cyan-300/35 bg-cyan-950/60 px-4 py-2 text-xs font-bold uppercase tracking-wider text-cyan-100 disabled:opacity-30" disabled={levels[0] === 1}>Previous sector</button>
+      <button onClick={() => { setWindowOffset(0); document.getElementById(`level-${currentLevel}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }} className="flex items-center gap-2 rounded-full border border-amber-300/45 bg-amber-950/55 px-4 py-2 text-xs font-bold uppercase tracking-wider text-amber-100"><Navigation className="h-4 w-4" /> Locate ARK</button>
+      <button onClick={() => moveWindow(1)} className="rounded-full border border-violet-300/35 bg-violet-950/60 px-4 py-2 text-xs font-bold uppercase tracking-wider text-violet-100 disabled:opacity-30" disabled={levels[levels.length - 1] === MAX_LEVEL}>Next sector</button>
+    </div>
 
-  const renderStar = (starIndex: number, totalStars: number) => (
-    <Star 
-      key={starIndex}
-      className={`w-3 h-3 ${
-        starIndex < totalStars 
-          ? 'text-yellow-400 fill-yellow-400' 
-          : 'text-gray-600'
-      }`}
-    />
-  );
+    <div className="relative mx-auto max-w-3xl rounded-[2rem] border border-white/10 bg-slate-950/35 px-5 py-10 backdrop-blur-sm sm:px-12">
+      <div className="absolute bottom-12 left-1/2 top-12 w-1 -translate-x-1/2 rounded-full bg-gradient-to-b from-cyan-300/20 via-violet-400/40 to-amber-300/20 shadow-[0_0_18px_rgba(103,232,249,.35)]" />
+      <div className="relative space-y-10">
+        {levels.map((level, index) => {
+          const completed = level < currentLevel;
+          const active = level === currentLevel;
+          const locked = level > currentLevel;
+          const isMilestone = level % 10 === 0 || level === MAX_LEVEL;
+          const left = index % 2 === 0;
+          const nodeStage = stageFor(level);
+          return <div id={`level-${level}`} key={level} className={cn('relative flex min-h-24 items-center', left ? 'justify-start' : 'justify-end')}>
+            <div className={cn('absolute top-1/2 h-px w-[calc(50%-2.75rem)]', left ? 'left-[2.75rem]' : 'right-[2.75rem]', completed ? 'bg-cyan-300/65' : active ? 'bg-amber-300/80' : 'bg-white/15')} />
+            <motion.button whileHover={!locked ? { scale: 1.05 } : {}} whileTap={!locked ? { scale: .96 } : {}} onClick={() => !locked && setSelectedLevel(level)}
+              className={cn('relative z-10 flex h-20 w-[44%] min-w-32 items-center gap-3 rounded-2xl border p-3 text-left backdrop-blur-xl transition', completed && 'border-cyan-300/40 bg-cyan-950/65 shadow-[0_0_20px_rgba(34,211,238,.12)]', active && 'border-amber-200 bg-gradient-to-r from-amber-950/90 via-violet-950/85 to-cyan-950/90 shadow-[0_0_35px_rgba(251,191,36,.28)]', locked && 'cursor-not-allowed border-white/10 bg-slate-950/65 text-slate-500')}
+              style={active ? { borderColor: `hsl(${nodeStage.colors.primary})` } : undefined}>
+              <span className={cn('grid h-11 w-11 shrink-0 place-items-center rounded-full border text-sm font-black', completed ? 'border-cyan-200/60 bg-cyan-400/15 text-cyan-100' : active ? 'border-amber-200 bg-amber-300/15 text-amber-100' : 'border-white/15 bg-white/5')}>
+                {completed ? <Check className="h-5 w-5" /> : locked ? <Lock className="h-4 w-4" /> : level}
+              </span>
+              <span className="min-w-0"><span className="block text-[9px] uppercase tracking-[.2em] opacity-70">{isMilestone ? 'Milestone' : active ? 'ARK position' : completed ? 'Complete' : 'Locked'}</span><span className="block truncate font-black">Level {level.toLocaleString()}</span></span>
+              {isMilestone && <Crown className="ml-auto h-5 w-5 shrink-0 text-amber-300" />}
+            </motion.button>
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">
-            Mapa de Niveles
-          </h1>
-          <p className="text-gray-300">
-            Explora las regiones del cosmos
-          </p>
-        </div>
-
-        {/* Stage Navigation */}
-        <div className="flex justify-center mb-8 overflow-x-auto pb-4">
-          <div className="flex space-x-4 min-w-max px-4">
-            {STAGES.map((stage) => {
-              const isUnlocked = getStageUnlocked(stage.id);
-              const isSelected = selectedStage === stage.id;
-              
-              return (
-                <motion.button
-                  key={stage.id}
-                  onClick={() => isUnlocked && setSelectedStage(stage.id)}
-                  disabled={!isUnlocked}
-                  className={`
-                    relative p-4 rounded-xl border-2 transition-all duration-300 min-w-[160px]
-                    ${isSelected 
-                      ? 'border-yellow-400 bg-gradient-to-br ' + stage.backgroundColor 
-                      : isUnlocked 
-                        ? 'border-gray-600 bg-gray-800/50 hover:border-gray-400' 
-                        : 'border-gray-700 bg-gray-900/50 cursor-not-allowed opacity-50'
-                    }
-                  `}
-                  whileHover={isUnlocked ? { scale: 1.05 } : {}}
-                  whileTap={isUnlocked ? { scale: 0.95 } : {}}
-                >
-                  {!isUnlocked && (
-                    <Lock className="absolute top-2 right-2 w-5 h-5 text-gray-500" />
-                  )}
-                  
-                  <div className="text-3xl mb-2">{stage.theme}</div>
-                  <div className="text-white font-bold text-sm">{stage.name}</div>
-                  <div className="text-gray-300 text-xs mt-1">
-                    Niveles {stage.levels[0].id}-{stage.levels[stage.levels.length - 1].id}
-                  </div>
-                  
-                  {isSelected && (
-                    <motion.div
-                      className="absolute inset-0 border-2 border-yellow-400 rounded-xl"
-                      initial={{ scale: 0.8, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  )}
-                </motion.button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Stage Description */}
-        <div className="text-center mb-8">
-          <motion.div
-            key={selectedStage}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 border border-gray-600 rounded-xl p-6 max-w-2xl mx-auto"
-          >
-            <h2 className="text-2xl font-bold text-white mb-2 flex items-center justify-center">
-              <span className="text-3xl mr-3">{currentStage.theme}</span>
-              {currentStage.name}
-            </h2>
-            <p className="text-gray-300">{currentStage.description}</p>
-          </motion.div>
-        </div>
-
-        {/* Level Grid */}
-        <div className="bg-gradient-to-br from-slate-800/30 to-slate-900/50 rounded-2xl p-6 border border-gray-600">
-          <div className="grid grid-cols-5 gap-4">
-            {currentStage.levels.map((level, index) => {
-              const isUnlocked = isLevelUnlocked(selectedStage, index);
-              const isSelected = selectedLevel?.id === level.id;
-              
-              return (
-                <motion.div
-                  key={level.id}
-                  onClick={() => handleLevelClick(level, selectedStage)}
-                  className={`
-                    relative aspect-square rounded-lg border-2 cursor-pointer transition-all duration-300
-                    ${level.bossLevel ? 'border-red-400' : 'border-gray-600'}
-                    ${isSelected 
-                      ? 'bg-gradient-to-br ' + currentStage.accentColor + ' border-yellow-400' 
-                      : isUnlocked 
-                        ? 'bg-slate-700/50 hover:bg-slate-600/50 border-gray-500' 
-                        : 'bg-gray-900/50 border-gray-700 cursor-not-allowed opacity-50'
-                    }
-                  `}
-                  whileHover={isUnlocked ? { scale: 1.05 } : {}}
-                  whileTap={isUnlocked ? { scale: 0.95 } : {}}
-                  layout
-                >
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className={`font-bold text-sm ${
-                      isUnlocked ? 'text-white' : 'text-gray-500'
-                    }`}>
-                      {level.id}
-                    </span>
-                  </div>
-
-                  {level.bossLevel && (
-                    <div className="absolute top-1 right-1">
-                      <Crown className="w-3 h-3 text-red-400" />
-                    </div>
-                  )}
-
-                  {level.isCompleted && (
-                    <div className="absolute -top-1 -right-1 flex space-x-0">
-                      {[0, 1, 2].map(starIndex => 
-                        renderStar(starIndex, level.stars)
-                      )}
-                    </div>
-                  )}
-
-                  {!isUnlocked && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Lock className="w-4 h-4 text-gray-500" />
-                    </div>
-                  )}
-
-                  {isSelected && (
-                    <motion.div
-                      className="absolute inset-0 border-2 border-yellow-400 rounded-lg"
-                      initial={{ scale: 0.8, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  )}
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Level Details Modal */}
-        <AnimatePresence>
-          {selectedLevel && (
-            <motion.div
-              className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedLevel(null)}
-            >
-              <motion.div
-                className="bg-gradient-to-br from-slate-800 to-slate-900 border border-gray-600 rounded-2xl p-6 max-w-md w-full"
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="text-center mb-6">
-                  <h3 className="text-2xl font-bold text-white mb-2">
-                    {selectedLevel.name}
-                  </h3>
-                  {selectedLevel.bossLevel && (
-                    <div className="flex items-center justify-center space-x-2 text-red-400">
-                      <Crown className="w-5 h-5" />
-                      <span className="font-bold">Nivel Jefe</span>
-                      <Crown className="w-5 h-5" />
-                    </div>
-                  )}
-                </div>
-
-                <div className="space-y-4">
-                  {selectedLevel.isCompleted && (
-                    <div>
-                      <h4 className="text-white font-bold mb-2">Estrellas Obtenidas:</h4>
-                      <div className="flex space-x-2">
-                        {[0, 1, 2].map(starIndex => 
-                          renderStar(starIndex, selectedLevel.stars)
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex space-x-4 mt-6">
-                  <button
-                    onClick={() => setSelectedLevel(null)}
-                    className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
-                  >
-                    Cerrar
-                  </button>
-                  {selectedLevel.isUnlocked && (
-                    <button className="flex-1 px-4 py-2 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-500 hover:to-blue-500 text-white rounded-lg transition-all">
-                      Jugar
-                    </button>
-                  )}
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            {active && <motion.div className="pointer-events-none absolute left-1/2 z-20 h-20 w-36 -translate-x-1/2" initial={{ opacity: 0, y: -35 }} animate={{ opacity: 1, y: [0, -5, 0] }} transition={{ opacity: { duration: .6 }, y: { duration: 2.5, repeat: Infinity } }}>
+              <span className="absolute inset-3 rounded-full bg-cyan-300/25 blur-xl" /><Image src={ARK_IMAGE} alt={`ARK landed at level ${level}`} fill unoptimized className="object-contain drop-shadow-[0_0_12px_rgba(103,232,249,.95)]" />
+            </motion.div>}
+          </div>;
+        })}
       </div>
     </div>
-  );
-};
 
-export default LevelMap;
+    <AnimatePresence>{selectedLevel !== null && <motion.div className="fixed inset-0 z-50 grid place-items-center bg-black/80 p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedLevel(null)}><motion.div className="w-full max-w-sm rounded-3xl border border-cyan-300/35 bg-slate-950 p-6 shadow-[0_0_45px_rgba(34,211,238,.2)]" initial={{ scale: .85, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: .9, opacity: 0 }} onClick={event => event.stopPropagation()}><button className="float-right text-slate-400" onClick={() => setSelectedLevel(null)}><X /></button><Sparkles className="mb-3 h-10 w-10 text-amber-300" /><p className="text-xs uppercase tracking-[.25em] text-cyan-300">{stageFor(selectedLevel).name}</p><h2 className="text-3xl font-black">Level {selectedLevel.toLocaleString()}</h2><p className="mt-3 text-slate-300">{selectedLevel < currentLevel ? 'Route completed. This star coordinate is secured.' : 'The ARK is currently stationed at this coordinate. Complete the mission to fly to the next level.'}</p><div className="mt-5 flex gap-1">{[1,2,3].map(star => <Star key={star} className={cn('h-7 w-7', selectedLevel < currentLevel ? 'fill-amber-300 text-amber-300' : 'text-slate-700')} />)}</div></motion.div></motion.div>}</AnimatePresence>
+  </div>;
+}
