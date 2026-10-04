@@ -126,7 +126,10 @@ export default function HomePage() {
         <p className="text-[10px] uppercase tracking-[0.35em] text-cyan-300">Command deck</p>
         <p className="font-bold tracking-wide">ARK // FORGEITE FRENZY</p>
       </div>
-      <div className="flex items-center gap-2">\n        <a href="https://pilukarts.github.io/" target="_blank" rel="noopener noreferrer" aria-label="Open Pilukarts portfolio" className="flex items-center gap-2 rounded-full border border-violet-300/35 bg-violet-950/45 px-3 py-2 text-[10px] font-bold uppercase tracking-[.14em] text-violet-100 backdrop-blur-xl transition hover:border-violet-200 hover:shadow-[0_0_24px_rgba(167,139,250,.3)] sm:text-xs"><ExternalLink className="h-4 w-4" /> Portfolio</a>\n        <div className="hidden items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-950/35 px-3 py-2 text-xs text-emerald-200 sm:flex"><Radio className="h-4 w-4 animate-pulse" /> SYSTEMS ONLINE</div>\n      </div>
+      <div className="flex items-center gap-2">
+        <a href="https://pilukarts.github.io/" target="_blank" rel="noopener noreferrer" aria-label="Open Pilukarts portfolio" className="flex items-center gap-2 rounded-full border border-violet-300/35 bg-violet-950/45 px-3 py-2 text-[10px] font-bold uppercase tracking-[.14em] text-violet-100 backdrop-blur-xl transition hover:border-violet-200 hover:shadow-[0_0_24px_rgba(167,139,250,.3)] sm:text-xs"><ExternalLink className="h-4 w-4" /> Portfolio</a>
+        <div className="hidden items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-950/35 px-3 py-2 text-xs text-emerald-200 sm:flex"><Radio className="h-4 w-4 animate-pulse" /> SYSTEMS ONLINE</div>
+      </div>
     </header>
 
     <div className="relative z-20 grid min-h-[620px] grid-cols-1 items-center gap-5 px-4 pb-36 pt-2 lg:grid-cols-[minmax(210px,1fr)_minmax(320px,1.35fr)_minmax(300px,1.35fr)] lg:px-8 lg:pb-32">
