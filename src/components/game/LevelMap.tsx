@@ -20,6 +20,7 @@ function stageFor(level: number) {
 export default function LevelMap() {
   const { playerProfile } = useGame();
   const currentLevel = Math.min(MAX_LEVEL, Math.max(1, playerProfile?.level || 1));
+  const levelProgress = Math.min(1, Math.max(0, (playerProfile?.xp || 0) / Math.max(1, playerProfile?.xpToNextLevel || 1)));
   const [selectedLevel, setSelectedLevel] = useState<number | null>(null);
   const [windowOffset, setWindowOffset] = useState(0);
   const currentStage = stageFor(currentLevel);
@@ -41,7 +42,7 @@ export default function LevelMap() {
 
   return <div className="relative min-h-full overflow-y-auto px-3 pb-28 pt-5 text-white sm:px-6">
     <header className="sticky top-0 z-30 mx-auto mb-7 flex max-w-3xl flex-wrap items-center justify-between gap-3 rounded-2xl border border-cyan-300/30 bg-slate-950/80 p-4 shadow-[0_0_35px_rgba(34,211,238,.14)] backdrop-blur-xl">
-      <div><p className="text-[10px] font-bold uppercase tracking-[.32em] text-cyan-300">Galactic flight path</p><h1 className="text-2xl font-black">Level {currentLevel.toLocaleString()}</h1><p className="text-xs text-slate-300">{currentStage.name} · Destination 50,000</p></div>
+      <div><p className="text-[10px] font-bold uppercase tracking-[.32em] text-cyan-300">Galactic flight path</p><h1 className="text-2xl font-black">Level {currentLevel.toLocaleString()}</h1><p className="text-xs text-slate-300">{currentStage.name} · {Math.round(levelProgress * 100)}% to level {(currentLevel + 1).toLocaleString()}</p></div>
       <div className="text-right"><p className="text-[10px] uppercase tracking-widest text-slate-400">Journey complete</p><p className="text-xl font-black text-amber-300">{((currentLevel / MAX_LEVEL) * 100).toFixed(2)}%</p></div>
       <div className="h-2 w-full overflow-hidden rounded-full bg-white/10"><motion.div className="h-full rounded-full bg-gradient-to-r from-cyan-400 via-violet-400 to-amber-300" initial={{ width: 0 }} animate={{ width: `${Math.max(.25, currentLevel / MAX_LEVEL * 100)}%` }} /></div>
     </header>
@@ -74,8 +75,9 @@ export default function LevelMap() {
               {isMilestone && <Crown className="ml-auto h-5 w-5 shrink-0 text-amber-300" />}
             </motion.button>
 
-            {active && <motion.div className="pointer-events-none absolute left-1/2 z-20 h-20 w-36 -translate-x-1/2" initial={{ opacity: 0, y: -35 }} animate={{ opacity: 1, y: [0, -5, 0] }} transition={{ opacity: { duration: .6 }, y: { duration: 2.5, repeat: Infinity } }}>
-              <span className="absolute inset-3 rounded-full bg-cyan-300/25 blur-xl" /><Image src={ARK_IMAGE} alt={`ARK landed at level ${level}`} fill unoptimized className="object-contain drop-shadow-[0_0_12px_rgba(103,232,249,.95)]" />
+            {active && <motion.div className="pointer-events-none absolute z-20 h-20 w-36 -translate-x-1/2 -translate-y-1/2" initial={{ opacity: 0 }} animate={{ opacity: 1, left: `${left ? 44 + levelProgress * 12 : 56 - levelProgress * 12}%`, top: `${50 + levelProgress * 140}%` }} transition={{ opacity: { duration: .6 }, left: { duration: .9, ease: 'easeInOut' }, top: { duration: .9, ease: 'easeInOut' } }}>
+              <span className="absolute left-1 top-1/2 h-2 w-12 -translate-y-1/2 rounded-full bg-gradient-to-l from-cyan-200/80 to-transparent blur-sm" />
+              <span className="absolute inset-3 rounded-full bg-cyan-300/25 blur-xl" /><Image src={ARK_IMAGE} alt={`ARK travelling from level ${level} to level ${Math.min(MAX_LEVEL, level + 1)}`} fill unoptimized className="object-contain drop-shadow-[0_0_12px_rgba(103,232,249,.95)]" />
             </motion.div>}
           </div>;
         })}
