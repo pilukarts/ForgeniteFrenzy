@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { Bot, ExternalLink, Gamepad2, Map, Music, Music2, Radio, Share2, Shield, Sparkles, Trophy, Zap } from "lucide-react";
+import { Bot, Clock3, ExternalLink, Gamepad2, Map, Music, Music2, Radio, Share2, Shield, Sparkles, Trophy, Zap } from "lucide-react";
 import IntroScreen from "@/components/intro/IntroScreen";
 import PlayerSetup from "@/components/player/PlayerSetup";
 import { useGame } from "@/contexts/GameContext";
@@ -15,6 +15,7 @@ import { POINTS_PER_TAP } from "@/lib/gameData";
 import { assetPath } from "@/lib/assetPath";
 
 const ARK_SHIP_IMAGE = assetPath("/images/global/ark-carrier.png");
+const ARK_SECTION_BUILD_MS = 60 * 24 * 60 * 60 * 1000;
 
 const STARS = [
   [7, 12, 2, .2], [13, 66, 1, 1.7], [19, 30, 2, 2.6], [25, 82, 1, .8],
@@ -52,6 +53,24 @@ export default function HomePage() {
   const { playerProfile, isLoading, isInitialSetupDone, handleTap, getUpgradeLevel, toggleCommander, toggleMusic, isMusicPlaying } = useGame();
   const { toast } = useToast();
   const [tapBurst, setTapBurst] = useState(0);
+  const [arkBuildRemaining, setArkBuildRemaining] = useState(ARK_SECTION_BUILD_MS);
+
+  useEffect(() => {
+    const storageKey = "forgeite-ark-section-deadline";
+    const updateCountdown = () => {
+      const saved = Number(window.localStorage.getItem(storageKey));
+      const deadline = saved > Date.now() ? saved : Date.now() + ARK_SECTION_BUILD_MS;
+      if (deadline !== saved) window.localStorage.setItem(storageKey, String(deadline));
+      setArkBuildRemaining(Math.max(0, deadline - Date.now()));
+    };
+    updateCountdown();
+    const timer = window.setInterval(updateCountdown, 60_000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  const buildDays = Math.floor(arkBuildRemaining / 86_400_000);
+  const buildHours = Math.floor((arkBuildRemaining % 86_400_000) / 3_600_000);
+  const buildMinutes = Math.floor((arkBuildRemaining % 3_600_000) / 60_000);
   const commanderImage = useMemo(() => {
     if (!playerProfile) return images.commanders.female_full;
     return playerProfile.commanderSex === "male" ? images.commanders.male_full : images.commanders.female_full;
@@ -118,7 +137,7 @@ export default function HomePage() {
       </div>
 
       <aside className="order-3 space-y-3">
-        <motion.div className="forge-ark relative mx-auto h-32 w-full max-w-[320px] cursor-pointer sm:h-40 sm:max-w-[400px] lg:h-48 lg:max-w-[430px]" animate={{ y: [0, -10, 0], rotate: [-1, 1, -1] }} transition={{ duration: 5, repeat: Infinity }} onClick={() => handleTap(true)}>
+        <motion.div className="forge-ark relative mx-auto h-32 w-full max-w-[320px] cursor-pointer sm:h-40 sm:max-w-[400px] lg:h-56 lg:max-w-[520px]" animate={{ y: [0, -10, 0], rotate: [-1, 1, -1] }} transition={{ duration: 5, repeat: Infinity }} onClick={() => handleTap(true)}>
           <span className="forge-ark-ring absolute inset-[8%] rounded-full border border-cyan-300/50" />
           <span className="absolute inset-[18%] rounded-full bg-cyan-400/20 blur-2xl" />
           <Image src={ARK_SHIP_IMAGE} alt="ARK carrier starship" fill unoptimized priority className="object-contain drop-shadow-[0_0_22px_rgba(34,211,238,.75)]" />
@@ -126,6 +145,15 @@ export default function HomePage() {
         </motion.div>
         <div className="rounded-xl border border-cyan-300/30 bg-slate-950/65 p-4 text-center backdrop-blur-xl">
           <div className="mb-1 flex items-center justify-center gap-2 text-cyan-200"><Sparkles className="h-4 w-4" /> ARK CORE</div><p className="text-2xl font-black">100%</p><p className="text-[10px] uppercase tracking-[.28em] text-cyan-300/75">Flight ready</p>
+        </div>
+        <div className="rounded-xl border border-amber-300/35 bg-gradient-to-r from-amber-950/75 via-slate-950/80 to-cyan-950/75 p-3 text-center shadow-[0_0_24px_rgba(251,191,36,.12)] backdrop-blur-xl">
+          <div className="mb-2 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-[.2em] text-amber-200"><Clock3 className="h-4 w-4" /> Next section · Port Hangar</div>
+          <div className="grid grid-cols-3 gap-2">
+            <span><strong className="block text-xl text-white">{buildDays}</strong><small className="uppercase text-slate-400">days</small></span>
+            <span><strong className="block text-xl text-white">{buildHours}</strong><small className="uppercase text-slate-400">hours</small></span>
+            <span><strong className="block text-xl text-white">{buildMinutes}</strong><small className="uppercase text-slate-400">min</small></span>
+          </div>
+          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-gradient-to-r from-amber-300 to-cyan-300" style={{ width: `${Math.max(1, 100 - arkBuildRemaining / ARK_SECTION_BUILD_MS * 100)}%` }} /></div>
         </div>
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-1">
           <HoloAction label={isMusicPlaying ? "Sound on" : "Sound off"} icon={isMusicPlaying ? Music : Music2} tone="violet" onClick={toggleMusic} />
