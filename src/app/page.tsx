@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
@@ -53,6 +53,8 @@ export default function HomePage() {
   const { playerProfile, isLoading, isInitialSetupDone, handleTap, getUpgradeLevel, toggleCommander, toggleMusic, isMusicPlaying } = useGame();
   const { toast } = useToast();
   const [tapBurst, setTapBurst] = useState(0);
+  const [levelCelebration, setLevelCelebration] = useState<number | null>(null);
+  const previousLevelRef = useRef<number | null>(null);
   const [arkBuildRemaining, setArkBuildRemaining] = useState(ARK_SECTION_BUILD_MS);
 
   useEffect(() => {
@@ -71,6 +73,20 @@ export default function HomePage() {
   const buildDays = Math.floor(arkBuildRemaining / 86_400_000);
   const buildHours = Math.floor((arkBuildRemaining % 86_400_000) / 3_600_000);
   const buildMinutes = Math.floor((arkBuildRemaining % 3_600_000) / 60_000);
+
+  useEffect(() => {
+    const level = playerProfile?.level;
+    if (!level) return;
+    if (previousLevelRef.current !== null && level > previousLevelRef.current) {
+      setLevelCelebration(level);
+      const timer = window.setTimeout(() => setLevelCelebration(null), 3200);
+      previousLevelRef.current = level;
+      return () => window.clearTimeout(timer);
+    }
+    previousLevelRef.current = level;
+  }, [playerProfile?.level]);
+
+  const levelProgress = playerProfile ? Math.min(100, Math.round((playerProfile.xp / Math.max(1, playerProfile.xpToNextLevel)) * 100)) : 0;
   const commanderImage = useMemo(() => {
     if (!playerProfile) return images.commanders.female_full;
     return playerProfile.commanderSex === "male" ? images.commanders.male_full : images.commanders.female_full;
@@ -110,7 +126,10 @@ export default function HomePage() {
         <p className="text-[10px] uppercase tracking-[0.35em] text-cyan-300">Command deck</p>
         <p className="font-bold tracking-wide">ARK // FORGEITE FRENZY</p>
       </div>
-      <div className="flex items-center gap-2">\n        <a href="https://pilukarts.github.io/" target="_blank" rel="noopener noreferrer" aria-label="Open Pilukarts portfolio" className="flex items-center gap-2 rounded-full border border-violet-300/35 bg-violet-950/45 px-3 py-2 text-[10px] font-bold uppercase tracking-[.14em] text-violet-100 backdrop-blur-xl transition hover:border-violet-200 hover:shadow-[0_0_24px_rgba(167,139,250,.3)] sm:text-xs"><ExternalLink className="h-4 w-4" /> Portfolio</a>\n        <div className="hidden items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-950/35 px-3 py-2 text-xs text-emerald-200 sm:flex"><Radio className="h-4 w-4 animate-pulse" /> SYSTEMS ONLINE</div>\n      </div>
+      <div className="flex items-center gap-2">
+        <a href="https://pilukarts.github.io/" target="_blank" rel="noopener noreferrer" aria-label="Open Pilukarts portfolio" className="flex items-center gap-2 rounded-full border border-violet-300/35 bg-violet-950/45 px-3 py-2 text-[10px] font-bold uppercase tracking-[.14em] text-violet-100 backdrop-blur-xl transition hover:border-violet-200 hover:shadow-[0_0_24px_rgba(167,139,250,.3)] sm:text-xs"><ExternalLink className="h-4 w-4" /> Portfolio</a>
+        <div className="hidden items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-950/35 px-3 py-2 text-xs text-emerald-200 sm:flex"><Radio className="h-4 w-4 animate-pulse" /> SYSTEMS ONLINE</div>
+      </div>
     </header>
 
     <div className="relative z-20 grid min-h-[620px] grid-cols-1 items-center gap-5 px-4 pb-36 pt-2 lg:grid-cols-[minmax(210px,1fr)_minmax(320px,1.35fr)_minmax(300px,1.35fr)] lg:px-8 lg:pb-32">
@@ -125,12 +144,18 @@ export default function HomePage() {
         <motion.button type="button" aria-label="Tap commander for energy" onClick={tapCommander}
           className="forge-commander group relative h-[410px] w-[270px] outline-none sm:h-[500px] sm:w-[330px] lg:h-[570px] lg:w-[380px]"
           initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .8 }} whileTap={{ scale: .97 }}>
+          <span className="absolute inset-x-[3%] bottom-[1%] top-[3%] rounded-t-[48%] border-x border-t border-cyan-200/25 bg-gradient-to-b from-cyan-300/5 via-transparent to-violet-400/10 shadow-[inset_0_0_40px_rgba(34,211,238,.1)]" aria-hidden="true" />
+          <span className="absolute bottom-[4%] left-1/2 h-[8%] w-[86%] -translate-x-1/2 rounded-[50%] border-2 border-cyan-200/45 bg-gradient-to-r from-cyan-950 via-slate-800 to-violet-950 shadow-[0_10px_20px_rgba(0,0,0,.9),0_0_32px_rgba(34,211,238,.3)] [transform:translateX(-50%)_perspective(260px)_rotateX(58deg)]" aria-hidden="true" />
+          <span className="absolute bottom-[8%] left-[1%] h-[52%] w-3 rounded-t-full border border-cyan-200/30 bg-cyan-300/10 shadow-[0_0_18px_rgba(34,211,238,.35)]" aria-hidden="true" />
+          <span className="absolute bottom-[8%] right-[1%] h-[52%] w-3 rounded-t-full border border-violet-200/30 bg-violet-300/10 shadow-[0_0_18px_rgba(167,139,250,.35)]" aria-hidden="true" />
+          <span className="absolute bottom-[1%] left-1/2 z-20 -translate-x-1/2 rounded-full border border-cyan-200/45 bg-slate-950/90 px-4 py-1 text-[9px] font-bold uppercase tracking-[.24em] text-cyan-200 shadow-[0_0_18px_rgba(34,211,238,.25)]">Commander Energy Bay</span>
+          <span className="absolute inset-x-[-3%] bottom-[5%] top-[8%] rounded-[48%] p-[3px] opacity-85 transition duration-300 group-hover:opacity-100" style={{ background: `conic-gradient(#fbbf24 ${levelProgress}%, rgba(34,211,238,.18) ${levelProgress}% 100%)` }} aria-hidden="true"><span className="block h-full w-full rounded-[48%] bg-slate-950/20 shadow-[inset_0_0_35px_rgba(34,211,238,.18),0_0_25px_rgba(251,191,36,.18)]" /></span>
           <span className="forge-commander-aura absolute inset-x-[15%] bottom-[8%] top-[15%] rounded-[45%] bg-cyan-300/15 blur-3xl" />
           <span className="absolute bottom-[2%] left-1/2 h-[8%] w-[68%] -translate-x-1/2 rounded-[50%] bg-black/80 blur-md" />
           <span className="absolute bottom-[3%] left-1/2 h-[3%] w-[48%] -translate-x-1/2 rounded-[50%] bg-cyan-300/25 blur-md" />
           <Image src={commanderImage} alt={`${playerProfile.name}, Alliance Forge commander`} fill priority unoptimized
             className="object-contain object-bottom [filter:drop-shadow(0_0_10px_rgba(103,232,249,.35))_drop-shadow(0_20px_16px_rgba(0,0,0,.8))] transition duration-500 group-hover:[filter:drop-shadow(0_0_18px_rgba(103,232,249,.65))_drop-shadow(0_24px_18px_rgba(0,0,0,.9))]" />
-          <span className="absolute bottom-7 left-1/2 -translate-x-1/2 rounded-full border border-cyan-200/40 bg-slate-950/75 px-5 py-2 text-xs font-black uppercase tracking-[.22em] text-cyan-100 backdrop-blur-md sm:bottom-10">Tap for energy</span>
+          <span className="absolute bottom-7 left-1/2 -translate-x-1/2 rounded-full border border-cyan-200/40 bg-slate-950/75 px-5 py-2 text-xs font-black uppercase tracking-[.22em] text-cyan-100 backdrop-blur-md sm:bottom-10">Tap for energy · {levelProgress}%</span>
           <AnimatePresence>{tapBurst > 0 && <motion.span key={tapBurst} initial={{ opacity: 1, y: 0, scale: .7 }} animate={{ opacity: 0, y: -130, scale: 1.25 }} exit={{ opacity: 0 }}
             className="absolute left-1/2 top-1/3 flex -translate-x-1/2 items-center gap-1 text-2xl font-black text-amber-300 drop-shadow-[0_0_12px_rgba(251,191,36,.9)]"><Zap className="fill-current" /> +{POINTS_PER_TAP + getUpgradeLevel("tapPower")}</motion.span>}</AnimatePresence>
         </motion.button>
@@ -161,6 +186,11 @@ export default function HomePage() {
         </div>
       </aside>
     </div>
+
+    <AnimatePresence>{levelCelebration !== null && <motion.div className="pointer-events-none fixed inset-0 z-[100] grid place-items-center overflow-hidden bg-slate-950/75 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+      <motion.div className="absolute h-32 w-64" initial={{ x: '-80vw', y: 80, rotate: -4 }} animate={{ x: '80vw', y: -80, rotate: 3 }} transition={{ duration: 2.4, ease: 'easeInOut' }}><span className="absolute left-0 top-1/2 h-5 w-28 -translate-y-1/2 bg-gradient-to-l from-cyan-200/70 to-transparent blur-md" /><Image src={ARK_SHIP_IMAGE} alt="" fill unoptimized className="object-contain drop-shadow-[0_0_24px_rgba(103,232,249,.9)]" /></motion.div>
+      <motion.div className="relative rounded-3xl border border-amber-200/60 bg-slate-950/85 px-10 py-7 text-center shadow-[0_0_60px_rgba(251,191,36,.3)]" initial={{ scale: .5, y: 30 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 1.15, opacity: 0 }}><Sparkles className="mx-auto mb-2 h-9 w-9 text-amber-300" /><p className="text-xs font-bold uppercase tracking-[.35em] text-cyan-300">ARK advancing</p><p className="mt-1 text-4xl font-black text-white">LEVEL {levelCelebration.toLocaleString()}</p><p className="mt-2 text-sm text-amber-200">New star coordinate reached</p></motion.div>
+    </motion.div>}</AnimatePresence>
 
     <div className="forge-deck pointer-events-none absolute inset-x-0 bottom-0 z-10 h-36 border-t border-cyan-300/30 bg-[linear-gradient(180deg,rgba(5,10,24,.25),rgba(2,4,12,.98))] shadow-[0_-24px_70px_rgba(0,0,0,.75)]">
       <div className="absolute inset-x-[8%] top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/80 to-transparent" />
