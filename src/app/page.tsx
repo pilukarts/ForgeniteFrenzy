@@ -154,7 +154,7 @@ export default function HomePage() {
           <span className="absolute bottom-[3%] left-1/2 h-[3%] w-[48%] -translate-x-1/2 rounded-[50%] bg-cyan-300/25 blur-md" />
           <Image src={commanderImage} alt={`${playerProfile.name}, Alliance Forge commander`} fill priority unoptimized
             className="object-contain object-bottom [filter:drop-shadow(0_0_10px_rgba(103,232,249,.35))_drop-shadow(0_20px_16px_rgba(0,0,0,.8))] transition duration-500 group-hover:[filter:drop-shadow(0_0_18px_rgba(103,232,249,.65))_drop-shadow(0_24px_18px_rgba(0,0,0,.9))]" />
-          <span className="absolute bottom-7 left-1/2 -translate-x-1/2 rounded-full border border-cyan-200/40 bg-slate-950/75 px-5 py-2 text-xs font-black uppercase tracking-[.22em] text-cyan-100 backdrop-blur-md sm:bottom-10">Tap for energy · {levelProgress}%</span>
+          <span className="absolute -bottom-11 left-1/2 z-30 -translate-x-1/2 whitespace-nowrap rounded-full border border-cyan-200/40 bg-slate-950/90 px-5 py-2 text-xs font-black uppercase tracking-[.22em] text-cyan-100 shadow-[0_0_20px_rgba(34,211,238,.22)] backdrop-blur-md">Tap for energy · {levelProgress}%</span>
           <AnimatePresence>{tapBurst > 0 && <motion.span key={tapBurst} initial={{ opacity: 1, y: 0, scale: .7 }} animate={{ opacity: 0, y: -130, scale: 1.25 }} exit={{ opacity: 0 }}
             className="absolute left-1/2 top-1/3 flex -translate-x-1/2 items-center gap-1 text-2xl font-black text-amber-300 drop-shadow-[0_0_12px_rgba(251,191,36,.9)]"><Zap className="fill-current" /> +{POINTS_PER_TAP + getUpgradeLevel("tapPower")}</motion.span>}</AnimatePresence>
         </motion.button>
