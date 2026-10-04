@@ -137,7 +137,8 @@ export default function HomePage() {
         <HoloAction href="/quests" label="Missions" icon={Shield} />
         <HoloAction href="/level-map" label="Star Map" icon={Map} />
         <HoloAction href="/arcade" label="Arcade" icon={Gamepad2} tone="violet" />
-        <HoloAction href="/battle-pass" label="Rewards" icon={Trophy} tone="gold" />\n        <HoloAction label="Change Commander" icon={Bot} tone="gold" onClick={toggleCommander} />
+        <HoloAction href="/battle-pass" label="Rewards" icon={Trophy} tone="gold" />
+        <HoloAction label="Change Commander" icon={Bot} tone="gold" onClick={toggleCommander} />
       </nav>
 
       <div className="order-1 flex min-h-[420px] items-end justify-center lg:order-2 lg:min-h-[580px]">
@@ -145,7 +146,9 @@ export default function HomePage() {
           className="forge-commander group relative h-[410px] w-[270px] outline-none sm:h-[500px] sm:w-[330px] lg:h-[570px] lg:w-[380px]"
           initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .8 }} whileTap={{ scale: .97 }}>
           <span className="absolute bottom-[4%] left-1/2 h-[8%] w-[86%] -translate-x-1/2 rounded-[50%] border-2 border-cyan-200/45 bg-gradient-to-r from-cyan-950 via-slate-800 to-violet-950 shadow-[0_10px_20px_rgba(0,0,0,.9),0_0_32px_rgba(34,211,238,.3)] [transform:translateX(-50%)_perspective(260px)_rotateX(58deg)]" aria-hidden="true" />
-          <span className="absolute bottom-[2%] left-1/2 h-[11%] w-[92%] -translate-x-1/2 rounded-[50%] p-[3px] shadow-[0_12px_22px_rgba(0,0,0,.9),0_0_30px_rgba(34,211,238,.25)] [transform:translateX(-50%)_perspective(260px)_rotateX(58deg)]" style={{ background: `conic-gradient(#fbbf24 ${levelProgress}%, rgba(34,211,238,.3) ${levelProgress}% 100%)` }} aria-hidden="true"><span className="block h-full w-full rounded-[50%] border border-cyan-200/30 bg-gradient-to-r from-cyan-950 via-slate-800 to-violet-950 shadow-[inset_0_0_28px_rgba(34,211,238,.25)]" /></span>\n          <span className="absolute bottom-[5%] left-[5%] h-7 w-4 rounded-sm border border-cyan-200/35 bg-slate-800 shadow-[0_0_12px_rgba(34,211,238,.3)]" aria-hidden="true" />\n          <span className="absolute bottom-[5%] right-[5%] h-7 w-4 rounded-sm border border-violet-200/35 bg-slate-800 shadow-[0_0_12px_rgba(167,139,250,.3)]" aria-hidden="true" />
+          <span className="absolute bottom-[2%] left-1/2 h-[11%] w-[92%] -translate-x-1/2 rounded-[50%] p-[3px] shadow-[0_12px_22px_rgba(0,0,0,.9),0_0_30px_rgba(34,211,238,.25)] [transform:translateX(-50%)_perspective(260px)_rotateX(58deg)]" style={{ background: `conic-gradient(#fbbf24 ${levelProgress}%, rgba(34,211,238,.3) ${levelProgress}% 100%)` }} aria-hidden="true"><span className="block h-full w-full rounded-[50%] border border-cyan-200/30 bg-gradient-to-r from-cyan-950 via-slate-800 to-violet-950 shadow-[inset_0_0_28px_rgba(34,211,238,.25)]" /></span>
+          <span className="absolute bottom-[5%] left-[5%] h-7 w-4 rounded-sm border border-cyan-200/35 bg-slate-800 shadow-[0_0_12px_rgba(34,211,238,.3)]" aria-hidden="true" />
+          <span className="absolute bottom-[5%] right-[5%] h-7 w-4 rounded-sm border border-violet-200/35 bg-slate-800 shadow-[0_0_12px_rgba(167,139,250,.3)]" aria-hidden="true" />
           <span className="forge-commander-aura absolute inset-x-[15%] bottom-[8%] top-[15%] rounded-[45%] bg-cyan-300/15 blur-3xl" />
           <span className="absolute bottom-[2%] left-1/2 h-[8%] w-[68%] -translate-x-1/2 rounded-[50%] bg-black/80 blur-md" />
           <span className="absolute bottom-[3%] left-1/2 h-[3%] w-[48%] -translate-x-1/2 rounded-[50%] bg-cyan-300/25 blur-md" />
