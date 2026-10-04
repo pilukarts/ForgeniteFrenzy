@@ -144,6 +144,11 @@ export default function HomePage() {
         <motion.button type="button" aria-label="Tap commander for energy" onClick={tapCommander}
           className="forge-commander group relative h-[410px] w-[270px] outline-none sm:h-[500px] sm:w-[330px] lg:h-[570px] lg:w-[380px]"
           initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .8 }} whileTap={{ scale: .97 }}>
+          <span className="absolute inset-x-[3%] bottom-[1%] top-[3%] rounded-t-[48%] border-x border-t border-cyan-200/25 bg-gradient-to-b from-cyan-300/5 via-transparent to-violet-400/10 shadow-[inset_0_0_40px_rgba(34,211,238,.1)]" aria-hidden="true" />
+          <span className="absolute bottom-[4%] left-1/2 h-[8%] w-[86%] -translate-x-1/2 rounded-[50%] border-2 border-cyan-200/45 bg-gradient-to-r from-cyan-950 via-slate-800 to-violet-950 shadow-[0_10px_20px_rgba(0,0,0,.9),0_0_32px_rgba(34,211,238,.3)] [transform:translateX(-50%)_perspective(260px)_rotateX(58deg)]" aria-hidden="true" />
+          <span className="absolute bottom-[8%] left-[1%] h-[52%] w-3 rounded-t-full border border-cyan-200/30 bg-cyan-300/10 shadow-[0_0_18px_rgba(34,211,238,.35)]" aria-hidden="true" />
+          <span className="absolute bottom-[8%] right-[1%] h-[52%] w-3 rounded-t-full border border-violet-200/30 bg-violet-300/10 shadow-[0_0_18px_rgba(167,139,250,.35)]" aria-hidden="true" />
+          <span className="absolute bottom-[1%] left-1/2 z-20 -translate-x-1/2 rounded-full border border-cyan-200/45 bg-slate-950/90 px-4 py-1 text-[9px] font-bold uppercase tracking-[.24em] text-cyan-200 shadow-[0_0_18px_rgba(34,211,238,.25)]">Commander Energy Bay</span>
           <span className="absolute inset-x-[-3%] bottom-[5%] top-[8%] rounded-[48%] p-[3px] opacity-85 transition duration-300 group-hover:opacity-100" style={{ background: `conic-gradient(#fbbf24 ${levelProgress}%, rgba(34,211,238,.18) ${levelProgress}% 100%)` }} aria-hidden="true"><span className="block h-full w-full rounded-[48%] bg-slate-950/20 shadow-[inset_0_0_35px_rgba(34,211,238,.18),0_0_25px_rgba(251,191,36,.18)]" /></span>
           <span className="forge-commander-aura absolute inset-x-[15%] bottom-[8%] top-[15%] rounded-[45%] bg-cyan-300/15 blur-3xl" />
           <span className="absolute bottom-[2%] left-1/2 h-[8%] w-[68%] -translate-x-1/2 rounded-[50%] bg-black/80 blur-md" />
