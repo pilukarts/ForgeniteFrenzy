@@ -151,7 +151,7 @@ export const AF_LOGO_TAP_BONUS_MULTIPLIER = 2.5; // Tapping the logo gives 2.5x 
 export const AURON_PER_WALLET_CONNECT = 100;
 
 export const INITIAL_MAX_TAPS = 100;
-export const TAP_REGEN_COOLDOWN_MINUTES = 4;
+export const TAP_REGEN_COOLDOWN_MINUTES = 1.5;
 export const TAP_REGEN_COOLDOWN_MILLISECONDS = TAP_REGEN_COOLDOWN_MINUTES * 60 * 1000;
 export const AURON_COST_FOR_TAP_REFILL = 50;
 
