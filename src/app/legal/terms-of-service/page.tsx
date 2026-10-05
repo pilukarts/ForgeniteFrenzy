@@ -29,7 +29,7 @@ const TermsOfServicePage: React.FC = () => {
               </CardHeader>
               <CardContent className="space-y-2">
                 <p>
-                  These Terms of Service ("Terms") constitute a legally binding agreement made between you ("you" or "User") and [Your Company/Studio] ("we," "us," or "our") concerning your access to and use of the Alliance Forge game ("Game"). By accessing, playing, or registering for our Game, you agree to be bound by these Terms and our{' '}
+                  These Terms of Service ("Terms") constitute a legally binding agreement made between you ("you" or "User") and Pilukarts Studio ("we," "us," or "our") concerning your access to and use of the Alliance Forge game ("Game"). By accessing, playing, or registering for our Game, you agree to be bound by these Terms and our{' '}
                   <Link href="/legal/transparency-statement" className="text-primary hover:underline">
                     Transparency Statement
                   </Link>. If you do not agree with these Terms, you must not use the Game.
@@ -112,10 +112,11 @@ const TermsOfServicePage: React.FC = () => {
               </CardHeader>
               <CardContent>
                 <p>
-                   For questions about these Terms, please contact us through our{' '}
-                   <Link href="/support" className="text-primary hover:underline">
-                    support page
-                  </Link>.
+                   For questions about these Terms, contact Pilukarts Studio at{' '}
+                   <a href="mailto:pilukartsstudio@gmail.com" className="text-primary hover:underline">
+                    pilukartsstudio@gmail.com
+                  </a>{' '}or use our{' '}
+                   <Link href="/support" className="text-primary hover:underline">support page</Link>.
                 </p>
               </CardContent>
             </Card>
