@@ -87,7 +87,7 @@ const BattlePassPage: React.FC = () => {
             <CardFooter>
                 <Button className="w-full bg-accent text-accent-foreground hover:bg-accent/90" onClick={purchasePremiumPass}>
                     <Sparkles className="mr-2 h-4 w-4" />
-                    Unlock Premium Pass ({battlePassData.premiumCostInAuron} Auron)
+                    Unlock Premium Pass ({battlePassData.premiumCostInAuron} Vanguard Credits)
                 </Button>
             </CardFooter>
           )}

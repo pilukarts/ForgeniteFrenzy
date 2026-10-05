@@ -29,7 +29,7 @@ const TermsOfServicePage: React.FC = () => {
               </CardHeader>
               <CardContent className="space-y-2">
                 <p>
-                  These Terms of Service ("Terms") constitute a legally binding agreement made between you ("you" or "User") and Pilukarts Studio ("we," "us," or "our") concerning your access to and use of the Auron Vanguard game ("Game"). By accessing, playing, or registering for our Game, you agree to be bound by these Terms and our{' '}
+                  These Terms of Service ("Terms") constitute a legally binding agreement made between you ("you" or "User") and Pilukarts Studio ("we," "us," or "our") concerning your access to and use of the MISSION: VANGUARD game ("Game"). By accessing, playing, or registering for our Game, you agree to be bound by these Terms and our{' '}
                   <Link href="/legal/transparency-statement" className="text-primary hover:underline">
                     Transparency Statement
                   </Link>. If you do not agree with these Terms, you must not use the Game.
@@ -54,7 +54,7 @@ const TermsOfServicePage: React.FC = () => {
               </CardHeader>
               <CardContent className="space-y-2">
                 <p><strong>Our IP:</strong> The Game, including all code, graphics, characters, names, and other content, is owned by us or our licensors.</p>
-                <p><strong>Virtual Goods:</strong> We grant you a limited, non-exclusive, non-transferable, revocable license to use virtual goods (like Points and Auron) within the Game for gameplay purposes. They have no real-world monetary value and are not redeemable for cash.</p>
+                <p><strong>Virtual Goods:</strong> We grant you a limited, non-exclusive, non-transferable, revocable license to use virtual goods (like Points and Vanguard Credits) within the Game for gameplay purposes. They have no real-world monetary value and are not redeemable for cash.</p>
                 <p><strong>Non-Fungible Tokens (NFTs):</strong> By acquiring an NFT, you own the token on the blockchain. However, the intellectual property of the associated art and traits remains with us. We grant you a license to use, display, and trade your NFT for personal, non-commercial purposes.</p>
               </CardContent>
             </Card>

@@ -38,7 +38,7 @@ const DailyQuestsPage: React.FC = () => {
   const getRewardString = (quest: DailyQuest): string => {
     const rewards = [];
     if (quest.reward.points) rewards.push(`${quest.reward.points.toLocaleString()} Points`);
-    if (quest.reward.auron) rewards.push(`${quest.reward.auron} Auron`);
+    if (quest.reward.auron) rewards.push(`${quest.reward.auron} Vanguard Credits`);
     return rewards.join(', ') || 'No reward';
   };
 
@@ -56,7 +56,7 @@ const DailyQuestsPage: React.FC = () => {
             </Button>
         </div>
         <p className="text-muted-foreground px-2 sm:px-4 mb-4 sm:mb-6 text-base"> {/* Adjusted padding, margin, text size */}
-            Complete these tasks daily for valuable rewards and advance your standing in the Alliance! New quests are available each day.
+            Complete these tasks daily for valuable rewards and advance your standing in the Vanguard! New quests are available each day.
         </p>
         
          {/* Adjust height: viewport height - app header - page header (title, desc, button) - bottom nav (implicitly by AppLayout padding) */}

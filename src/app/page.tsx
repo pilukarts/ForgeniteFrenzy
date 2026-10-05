@@ -118,10 +118,10 @@ export default function HomePage() {
   };
   const shareAlliance = async () => {
     try {
-      if (navigator.share) await navigator.share({ title: "Auron Vanguard", text: "Join my Auron Vanguard crew!", url: window.location.href });
+      if (navigator.share) await navigator.share({ title: "MISSION: VANGUARD", text: "Join my MISSION: VANGUARD crew!", url: window.location.href });
       else {
         await navigator.clipboard.writeText(window.location.href);
-        toast({ title: "Alliance link copied", description: "Ready to send to your crew." });
+        toast({ title: "Mission link copied", description: "Ready to send to your crew." });
       }
     } catch {
       toast({ title: "Share cancelled", description: "No changes were made." });
@@ -168,7 +168,7 @@ export default function HomePage() {
           <span className="forge-commander-aura absolute inset-x-[15%] bottom-[8%] top-[15%] rounded-[45%] bg-cyan-300/15 blur-3xl" />
           <span className="absolute bottom-[2%] left-1/2 h-[8%] w-[68%] -translate-x-1/2 rounded-[50%] bg-black/80 blur-md" />
           <span className="absolute bottom-[3%] left-1/2 h-[3%] w-[48%] -translate-x-1/2 rounded-[50%] bg-cyan-300/25 blur-md" />
-          <Image src={commanderImage} alt={`${playerProfile.name}, Auron Vanguard commander`} fill priority unoptimized
+          <Image src={commanderImage} alt={`${playerProfile.name}, MISSION: VANGUARD commander`} fill priority unoptimized
             className="object-contain object-bottom [filter:drop-shadow(0_0_10px_rgba(103,232,249,.35))_drop-shadow(0_20px_16px_rgba(0,0,0,.8))] transition duration-500 group-hover:[filter:drop-shadow(0_0_18px_rgba(103,232,249,.65))_drop-shadow(0_24px_18px_rgba(0,0,0,.9))]" />
           <span className="absolute -top-11 left-1/2 z-30 -translate-x-1/2 whitespace-nowrap rounded-full border border-cyan-200/40 bg-slate-950/90 px-5 py-2 text-xs font-black uppercase tracking-[.22em] text-cyan-100 shadow-[0_0_20px_rgba(34,211,238,.22)] backdrop-blur-md">{playerProfile.currentTaps <= 0 ? "Energy recharging" : `Tap for energy · ${levelProgress}%`}</span>
           <AnimatePresence>{tapBurst > 0 && <motion.span key={tapBurst} initial={{ opacity: 1, y: 0, scale: .7 }} animate={{ opacity: 0, y: -130, scale: 1.25 }} exit={{ opacity: 0 }}

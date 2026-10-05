@@ -12,7 +12,7 @@ export const images = {
     commander2: "/images/global/commander-man-vanguard.png"
     },
     backgrounds: {
-    main: "/images/global/main_scene.jpg"
+    main: "/images/global/mission-vanguard-command-deck.png"
     }
     } as const;
     export default images;

@@ -8,16 +8,16 @@ const bot = new Telegraf(TOKEN);
 
 bot.start((ctx: Context) => {
   ctx.reply(
-    'Welcome to Auron Vanguard!\nType /play to launch the game or /help for more info.'
+    'Welcome to MISSION: VANGUARD!\nType /play to launch the game or /help for more info.'
   );
 });
 
 bot.help((ctx: Context) => {
   ctx.reply(
-    `This bot is your gateway to Auron Vanguard.
+    `This bot is your gateway to MISSION: VANGUARD.
 
 Available commands:
-/play - Launches the Auron Vanguard game.
+/play - Launches the MISSION: VANGUARD game.
 /help - Shows this help message.`
   );
 });
@@ -28,7 +28,7 @@ bot.command('play', (ctx: Context) => {
       keyboard: [
         [
           {
-            text: '▶️ Play Auron Vanguard',
+            text: '▶️ Play MISSION: VANGUARD',
             web_app: { url: GAME_URL }
           },
         ],

@@ -45,7 +45,7 @@ export default function ArcadePage() {
               <Zap className="h-5 w-5 text-amber-300" />
             </div>
             <CardTitle className="flex items-center text-2xl text-cyan-200"><Gem className="mr-2 h-6 w-6" /> Gemstone Burst</CardTitle>
-            <CardDescription className="text-slate-300">Align three Auronite crystals, trigger chain reactions and earn points.</CardDescription>
+            <CardDescription className="text-slate-300">Align three Astralyte crystals, trigger chain reactions and earn points.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="relative min-h-[260px] overflow-hidden rounded-2xl border border-cyan-300/25 bg-[radial-gradient(circle_at_center,rgba(8,145,178,.18),rgba(2,6,23,.95)_70%)] p-5 shadow-[inset_0_0_35px_rgba(34,211,238,.08)]">
