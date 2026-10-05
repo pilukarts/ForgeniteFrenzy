@@ -1,23 +1,23 @@
 
 import { Telegraf, Context } from 'telegraf';
 
-const TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8275463245:AAEG-X1D8Y-xtppY_7WVJobn488WMxkYLEw';
-const GAME_URL = 'https://forgeite-frenzy.web.app';
+const TOKEN = process.env.TELEGRAM_BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN || '';
+const GAME_URL = 'https://auron-vanguard.web.app';
 
 const bot = new Telegraf(TOKEN);
 
 bot.start((ctx: Context) => {
   ctx.reply(
-    'Welcome to Forgeite Frenzy!\nType /play to launch the game or /help for more info.'
+    'Welcome to Auron Vanguard!\nType /play to launch the game or /help for more info.'
   );
 });
 
 bot.help((ctx: Context) => {
   ctx.reply(
-    `This bot is your gateway to Alliance Forge.
+    `This bot is your gateway to Auron Vanguard.
 
 Available commands:
-/play - Launches the Forgeite Frenzy game.
+/play - Launches the Auron Vanguard game.
 /help - Shows this help message.`
   );
 });
@@ -28,7 +28,7 @@ bot.command('play', (ctx: Context) => {
       keyboard: [
         [
           {
-            text: '▶️ Play Forgeite Frenzy',
+            text: '▶️ Play Auron Vanguard',
             web_app: { url: GAME_URL }
           },
         ],

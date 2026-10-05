@@ -62,7 +62,7 @@ const MarketplacePage: React.FC = () => {
         purchaseWithTelegramWallet(pkg);
     } else {
         toast({
-          title: 'Open Forgeite Frenzy in Telegram',
+          title: 'Open Auron Vanguard in Telegram',
           description: 'Auron purchases are only available through the connected Telegram Wallet.',
         });
     }

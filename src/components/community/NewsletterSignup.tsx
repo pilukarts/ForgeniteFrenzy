@@ -44,7 +44,7 @@ const NewsletterSignup: React.FC = () => {
           <Mail className="mr-2 h-6 w-6" /> Stay Updated
         </CardTitle>
         <CardDescription className="text-xs sm:text-sm text-muted-foreground">
-          Sign up to get the latest news, updates, and special offers for Alliance Forge.
+          Sign up to get the latest news, updates, and special offers for Auron Vanguard.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-4 sm:p-6">

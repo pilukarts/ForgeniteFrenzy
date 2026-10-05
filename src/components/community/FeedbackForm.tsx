@@ -54,7 +54,7 @@ const FeedbackForm: React.FC = () => {
           <MessageSquarePlus className="mr-2 h-6 w-6" /> Submit Your Report
         </CardTitle>
         <CardDescription className="text-xs sm:text-sm text-muted-foreground">
-          Your input helps us improve Alliance Forge.
+          Your input helps us improve Auron Vanguard.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-4 sm:p-6">

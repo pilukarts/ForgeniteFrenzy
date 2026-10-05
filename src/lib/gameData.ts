@@ -40,10 +40,10 @@ export const SEASONS_DATA: Season[] = [
     id: 'chapter4',
     chapter: 4,
     title: 'Sanctaris Foundation',
-    description: "Gather Forgeite to establish a new home in the Sanctaris system.",
-    objectiveResourceName: 'Forgeite',
+    description: "Gather Auronite to establish a new home in the Sanctaris system.",
+    objectiveResourceName: 'Auronite',
     objectiveResourceIcon: Landmark,
-    coreBriefingObjective: "gather Forgeite to begin building a new home on Sanctaris",
+    coreBriefingObjective: "gather Auronite to begin building a new home on Sanctaris",
     unlocksCore: false,
   },
 ];
