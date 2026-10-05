@@ -18,8 +18,8 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
   }
 
   const commanderImage = playerProfile.commanderSex === 'male' 
-    ? assetPath('/images/global/commander-man-full.png')
-    : assetPath('/images/global/commander-woman-full.png');
+    ? assetPath('/images/global/commander-man-vanguard.png')
+    : assetPath('/images/global/commander-woman-vanguard.png');
 
   const dataAiHint = playerProfile.commanderSex === 'male' ? "male commander" : "female commander";
 
