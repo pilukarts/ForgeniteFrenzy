@@ -15,6 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import IntroScreen from '../intro/IntroScreen';
 import { SELECTABLE_AVATARS } from '@/lib/gameData';
+import images from '@/lib/images';
 
 
 const PlayerSetup: React.FC = () => {
@@ -49,13 +50,16 @@ const PlayerSetup: React.FC = () => {
 
 
   return (
-    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4">
-      <Card className="w-full max-w-lg bg-card text-card-foreground shadow-2xl flex flex-col h-full sm:h-auto sm:max-h-[90vh]">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-[#02030b] p-3 sm:p-5">
+      <div className="absolute inset-0 scale-105 bg-cover bg-center opacity-65" style={{ backgroundImage: `url('${images.global.main_scene}')` }} />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_38%,rgba(34,211,238,.08),rgba(2,3,11,.94)_80%)]" />
+      <Card className="relative flex h-full w-full max-w-4xl flex-col overflow-hidden border-cyan-300/30 bg-slate-950/75 text-white shadow-[0_0_55px_rgba(34,211,238,.18)] backdrop-blur-xl sm:h-auto sm:max-h-[94vh]">
 
         <CardHeader className="text-center pt-6">
-          <CardTitle className="font-headline text-3xl text-primary">Command Profile</CardTitle>
-          <CardDescription className="text-muted-foreground text-base pt-1">
-            Finalize your details to begin the mission.
+          <p className="text-[10px] font-bold uppercase tracking-[.4em] text-cyan-300">ARK Recruitment Chamber</p>
+          <CardTitle className="font-headline text-3xl text-white sm:text-4xl">Choose Your Commander</CardTitle>
+          <CardDescription className="pt-1 text-base text-slate-300">
+            Select your Alliance Forge officer and initialize a command profile.
           </CardDescription>
         </CardHeader>
 
@@ -63,18 +67,20 @@ const PlayerSetup: React.FC = () => {
           <CardContent className="space-y-6 p-6">
               {/* Avatar Selection */}
               <div className="space-y-3">
-                <Label className="text-foreground/80 text-lg font-semibold block text-center">Select Your Commander</Label>
-                <div className="flex justify-center gap-4">
+                <Label className="block text-center text-lg font-semibold text-cyan-100">Commander Candidates</Label>
+                <div className="flex justify-center gap-3 sm:gap-6">
                   {SELECTABLE_AVATARS.map((avatar) => (
                     <div
                       key={avatar.sex}
                       className={cn(
-                        "rounded-lg p-1 border-2 cursor-pointer transition-all duration-300 w-32 h-32 sm:w-40 sm:h-40",
-                        selectedCommanderSex === avatar.sex ? 'border-primary bg-primary/10 shadow-lg scale-105' : 'border-transparent opacity-70 hover:opacity-100 hover:border-primary/50'
+                        "group relative h-56 w-36 cursor-pointer overflow-hidden rounded-2xl border-2 bg-gradient-to-b from-cyan-950/40 to-slate-950/85 p-1 transition-all duration-300 sm:h-72 sm:w-48",
+                        selectedCommanderSex === avatar.sex ? 'scale-[1.03] border-amber-300 shadow-[0_0_35px_rgba(251,191,36,.25)]' : 'border-cyan-300/20 opacity-70 hover:border-cyan-200/60 hover:opacity-100'
                       )}
                       onClick={() => setSelectedCommanderSex(avatar.sex)}
                     >
-                      <Image src={avatar.portraitUrl} alt="Commander Avatar" width={150} height={150} className="rounded-md object-cover w-full h-full" data-ai-hint={avatar.hint}/>
+                      <span className="absolute inset-x-3 bottom-2 h-5 rounded-[50%] bg-cyan-300/15 blur-md" />
+                      <Image src={avatar.fullBodyUrl} alt={`${avatar.sex} commander`} fill unoptimized className="object-contain object-bottom drop-shadow-[0_12px_10px_rgba(0,0,0,.75)]" data-ai-hint={avatar.hint}/>
+                      <span className="absolute inset-x-0 bottom-0 bg-slate-950/80 py-2 text-center text-xs font-black uppercase tracking-[.22em] text-cyan-100">{avatar.sex} commander</span>
                     </div>
                   ))}
                 </div>
@@ -84,19 +90,19 @@ const PlayerSetup: React.FC = () => {
               {/* Callsign and Nation */}
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-foreground/80 text-base">Enter Callsign</Label>
+                  <Label htmlFor="name" className="text-base text-cyan-100">Enter Callsign</Label>
                   <Input
                     id="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="E.g., Commander Viper"
                     required
-                    className="bg-input border-border focus:ring-primary h-11 text-base"
+                    className="h-11 border-cyan-300/25 bg-slate-950/70 text-base focus:ring-cyan-300"
                   />
                 </div>
 
                  <div className="space-y-2">
-                  <Label className="text-foreground/80 text-base">Select Nation</Label>
+                  <Label className="text-base text-cyan-100">Select Nation</Label>
                    <Popover open={isCountryPopoverOpen} onOpenChange={setCountryPopoverOpen}>
                     <PopoverTrigger asChild>
                       <Button
@@ -145,27 +151,27 @@ const PlayerSetup: React.FC = () => {
 
 
                 <div className="space-y-2">
-                  <Label htmlFor="referredBy" className="text-foreground/80 text-base">Referral Code (Optional)</Label>
+                  <Label htmlFor="referredBy" className="text-base text-cyan-100">Referral Code (Optional)</Label>
                   <Input
                     id="referredBy"
                     value={referredBy}
                     onChange={(e) => setReferredBy(e.target.value)}
                     placeholder="Enter friend's code"
-                    className="bg-input border-border focus:ring-primary h-11 text-base"
+                    className="h-11 border-cyan-300/25 bg-slate-950/70 text-base focus:ring-cyan-300"
                   />
                 </div>
               </div>
           </CardContent>
         </ScrollArea>
-        <CardFooter className="flex-col flex-shrink-0 mt-auto p-6 bg-card/50 border-t border-border">
+        <CardFooter className="mt-auto flex-shrink-0 flex-col border-t border-cyan-300/20 bg-slate-950/70 p-5">
             <Button
               onClick={handleSubmit}
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 text-lg"
+              className="w-full bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 py-3 text-lg font-black uppercase tracking-[.18em] text-white shadow-[0_0_25px_rgba(34,211,238,.25)] hover:from-cyan-400 hover:to-violet-500"
               disabled={!isFormValid}
             >
               Engage Protocol
             </Button>
-            <p className="text-xs text-muted-foreground text-center mt-3">
+            <p className="mt-3 text-center text-xs text-slate-400">
               The fate of humanity is in your hands, Commander.
             </p>
         </CardFooter>
