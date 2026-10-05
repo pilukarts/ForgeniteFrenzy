@@ -154,13 +154,13 @@ const GalacticPacman: React.FC = () => {
     const isPlayer = playerPos.x === x && playerPos.y === y;
     const isEnemy = enemyPos.x === x && enemyPos.y === y;
 
-    if (cell === 1) return <div key={`${x}-${y}`} className="bg-border" />;
+    if (cell === 1) return <div key={`${x}-${y}`} className="border border-cyan-300/15 bg-gradient-to-br from-indigo-950 via-blue-900 to-cyan-950 shadow-[inset_0_0_8px_rgba(34,211,238,.28)]" />;
     
     return (
-      <div key={`${x}-${y}`} className="bg-background/50 flex items-center justify-center">
-        {isPlayer && <Ship className="text-primary h-5 w-5" />}
-        {isEnemy && <Bot className="text-destructive h-5 w-5" />}
-        {!isPlayer && !isEnemy && cell === 2 && <Star className="text-yellow-400 h-3 w-3 fill-current" />}
+      <div key={`${x}-${y}`} className="flex items-center justify-center bg-slate-950/75 shadow-[inset_0_0_5px_rgba(99,102,241,.12)]">
+        {isPlayer && <Ship className="h-5 w-5 rotate-90 fill-cyan-300/35 text-cyan-200 drop-shadow-[0_0_7px_rgba(34,211,238,.95)]" />}
+        {isEnemy && <Bot className="h-5 w-5 text-rose-400 drop-shadow-[0_0_7px_rgba(251,113,133,.9)]" />}
+        {!isPlayer && !isEnemy && cell === 2 && <Star className="h-3 w-3 fill-amber-300 text-amber-200 drop-shadow-[0_0_5px_rgba(251,191,36,.9)]" />}
       </div>
     );
   };
@@ -171,15 +171,15 @@ const GalacticPacman: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col items-center gap-4">
-       <Card className="w-full max-w-lg mx-auto bg-card/50">
+    <div className="flex flex-col items-center gap-4 rounded-3xl border border-cyan-300/20 bg-[radial-gradient(circle_at_top,rgba(49,46,129,.72),rgba(2,6,23,.96)_58%)] p-4 shadow-[0_0_45px_rgba(34,211,238,.12)]">
+       <Card className="mx-auto w-full max-w-lg border-cyan-300/30 bg-slate-950/70">
         <CardContent className="p-2 sm:p-4">
             <div className="flex justify-between items-center mb-2">
                 <p className="text-lg font-headline text-primary">Score: {score}</p>
                 <p className="text-lg font-headline text-primary">Star Fragments Left: {totalPellets.current - (score / POINTS_PER_PELLET)}</p>
             </div>
             <div
-                className="grid border-2 border-primary relative"
+                className="relative grid overflow-hidden rounded-xl border-2 border-cyan-300/65 bg-[radial-gradient(circle_at_50%_45%,#172554,#020617_72%)] shadow-[0_0_30px_rgba(34,211,238,.28)]"
                 style={{
                 gridTemplateColumns: `repeat(${GRID_SIZE}, ${CELL_SIZE}px)`,
                 width: GRID_SIZE * CELL_SIZE,
