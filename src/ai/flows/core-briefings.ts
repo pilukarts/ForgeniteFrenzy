@@ -30,7 +30,7 @@ const prompt = ai.definePrompt({
   name: 'coreBriefingPrompt',
   input: {schema: CoreBriefingInputSchema},
   output: {schema: CoreBriefingOutputSchema},
-  prompt: `You are C.O.R.E., an AI companion in the Alliance Forge game. You provide dynamic briefings, insights, and lore snippets to the player at the start of each season.
+  prompt: `You are C.O.R.E., an AI companion in the Auron Vanguard game. You provide dynamic briefings, insights, and lore snippets to the player at the start of each season.
 
 Current Season: {{{season}}}
 Player Progress: {{{playerProgress}}}

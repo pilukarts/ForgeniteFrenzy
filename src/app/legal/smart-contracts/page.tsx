@@ -35,7 +35,7 @@ const SmartContractsPage: React.FC = () => {
                   A smart contract is a self-executing program with the terms of the agreement between parties directly written into code. The code and the agreements contained therein exist across a decentralized blockchain network. Smart contracts permit trusted transactions and agreements to be carried out among disparate, anonymous parties without the need for a central authority, legal system, or external enforcement mechanism.
                 </p>
                 <p>
-                  In Alliance Forge, we use them to ensure ownership of unique assets, like the <strong>Founder's Ark NFT</strong>, is verifiable, immutable, and truly in the player's hands.
+                  In Auron Vanguard, we use them to ensure ownership of unique assets, like the <strong>Founder's Ark NFT</strong>, is verifiable, immutable, and truly in the player's hands.
                 </p>
               </CardContent>
             </Card>

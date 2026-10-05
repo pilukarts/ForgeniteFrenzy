@@ -36,7 +36,7 @@ const ContactForm: React.FC = () => {
   });
 
   const onSubmit: SubmitHandler<ContactFormValues> = (data) => {
-    const subject = encodeURIComponent(`[Forgeite Frenzy] ${data.subject}`);
+    const subject = encodeURIComponent(`[Auron Vanguard] ${data.subject}`);
     const body = encodeURIComponent(`Commander: ${data.name}\nReply email: ${data.email}\n\n${data.message}`);
     window.location.href = `mailto:pilukartsstudio@gmail.com?subject=${subject}&body=${body}`;
     toast({

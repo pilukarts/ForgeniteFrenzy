@@ -1,6 +1,6 @@
-# Alliance Forge: Forgeite Frenzy
+# Auron Vanguard: Auron Vanguard
 
-Welcome to the official repository for **Alliance Forge: Forgeite Frenzy**, a sci-fi themed incremental clicker game built with Next.js and integrated with Firebase. Lead humanity's escape from a doomed Earth by tapping your way to galactic dominance, upgrading your commander, and competing on a global scale.
+Welcome to the official repository for **Auron Vanguard: Auron Vanguard**, a sci-fi themed incremental clicker game built with Next.js and integrated with Firebase. Lead humanity's escape from a doomed Earth by tapping your way to galactic dominance, upgrading your commander, and competing on a global scale.
 
 ## 🚀 Game Concept
 
@@ -83,5 +83,5 @@ This project is configured for seamless deployment using **Firebase App Hosting*
 The deployment process is automated via GitHub Actions:
 1.  Push your code changes to the `main` branch of your GitHub repository.
 2.  Firebase App Hosting automatically detects the push, builds the Next.js application, and deploys it.
-3.  The live URL will be available in your Firebase project's App Hosting dashboard, which is `https://forgeite-frenzy.web.app`.
-# forgeite-frenzy-AF
+3.  The live URL will be available in your Firebase project's App Hosting dashboard, which is `https://auron-vanguard.web.app`.
+# auron-vanguard-AF

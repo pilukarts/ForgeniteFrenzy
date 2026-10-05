@@ -37,10 +37,10 @@ const IntroScreen: React.FC = () => {
         >
             <p className="mb-2 text-[10px] font-bold uppercase tracking-[.45em] text-cyan-300">Humanity awaits its commander</p>
             <h1 className="font-headline text-3xl text-amber-300 drop-shadow-[0_0_15px_rgba(251,191,36,.55)] md:text-5xl">
-                Alliance Forge™
+                Auron Vanguard™
             </h1>
             <p className="mt-1 font-body text-xl tracking-[.18em] text-white md:text-2xl">
-              <span className="text-cyan-300">Forgeite</span> Frenzy
+              <span className="text-cyan-300">Auronite</span> Frenzy
             </p>
         </motion.div>
 

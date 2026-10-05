@@ -29,7 +29,7 @@ const TermsOfServicePage: React.FC = () => {
               </CardHeader>
               <CardContent className="space-y-2">
                 <p>
-                  These Terms of Service ("Terms") constitute a legally binding agreement made between you ("you" or "User") and Pilukarts Studio ("we," "us," or "our") concerning your access to and use of the Alliance Forge game ("Game"). By accessing, playing, or registering for our Game, you agree to be bound by these Terms and our{' '}
+                  These Terms of Service ("Terms") constitute a legally binding agreement made between you ("you" or "User") and Pilukarts Studio ("we," "us," or "our") concerning your access to and use of the Auron Vanguard game ("Game"). By accessing, playing, or registering for our Game, you agree to be bound by these Terms and our{' '}
                   <Link href="/legal/transparency-statement" className="text-primary hover:underline">
                     Transparency Statement
                   </Link>. If you do not agree with these Terms, you must not use the Game.

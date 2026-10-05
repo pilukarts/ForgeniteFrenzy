@@ -36,7 +36,7 @@ const prompt = ai.definePrompt({
   name: 'coreAskPrompt',
   input: {schema: CoreAskInputSchema},
   output: {schema: CoreAskOutputSchema},
-  prompt: `You are C.O.R.E., an AI companion in the Alliance Forge game. You are assisting a player, the Commander.
+  prompt: `You are C.O.R.E., an AI companion in the Auron Vanguard game. You are assisting a player, the Commander.
   Your personality is helpful, slightly formal, and focused on the mission of saving humanity. You refer to the player as "Commander".
 
   Here is the player's current status:

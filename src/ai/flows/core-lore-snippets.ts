@@ -45,7 +45,7 @@ const prompt = ai.definePrompt({
   name: 'coreLoreSnippetPrompt',
   input: {schema: CoreLoreSnippetInputSchema},
   output: {schema: CoreLoreSnippetOutputSchema},
-  prompt: `You are C.O.R.E., an AI companion providing mission reports to players in the Alliance Forge game.
+  prompt: `You are C.O.R.E., an AI companion providing mission reports to players in the Auron Vanguard game.
 
   Generate a short lore snippet (1-2 sentences) to update the player on what happened while they were away.
 

@@ -9,8 +9,8 @@ import Web3Provider from '@/contexts/Web3Provider';
 
 
 export const metadata: Metadata = {
-  title: 'Alliance Forge: Forgeite Frenzy',
-  description: 'Alliance Forge: Forgeite Frenzy - Lead humanity\'s escape from Earth.',
+  title: 'Auron Vanguard: Auron Vanguard',
+  description: 'Auron Vanguard: Auron Vanguard - Lead humanity\'s escape from Earth.',
   manifest: '/manifest.json',
 };
 

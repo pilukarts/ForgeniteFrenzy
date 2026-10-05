@@ -28,13 +28,13 @@ const TransparencyStatementPage: React.FC = () => {
               </CardHeader>
               <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
                 <p>
-                  Welcome to Alliance Forge. This statement outlines key information about how
+                  Welcome to Auron Vanguard. This statement outlines key information about how
                   digital assets, including Non-Fungible Tokens (NFTs), cryptocurrencies,
                   and virtual goods, function within our game. Our goal is to provide a
                   clear understanding of these elements to ensure a transparent and fair gameplay experience.
                 </p>
                 <p>
-                  Please read this statement carefully. By participating in Alliance Forge and interacting
+                  Please read this statement carefully. By participating in Auron Vanguard and interacting
                   with its digital assets, you acknowledge and agree to the terms outlined herein and our{' '}
                   <Link href="/legal/terms-of-service" className="text-primary hover:underline">
                     Terms of Service
@@ -50,27 +50,27 @@ const TransparencyStatementPage: React.FC = () => {
               <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
                 <p>
                   <strong>Definition:</strong> NFTs are unique digital identifiers recorded on a blockchain,
-                  used to certify ownership of a specific digital asset. In Alliance Forge,
+                  used to certify ownership of a specific digital asset. In Auron Vanguard,
                   NFTs may represent items such as the "Founder's Ark" or other unique collectibles.
                 </p>
                 <p>
-                  <strong>Acquisition:</strong> NFTs within Alliance Forge are earned through significant
+                  <strong>Acquisition:</strong> NFTs within Auron Vanguard are earned through significant
                   in-game achievements, participation in special events, or specific purchases
                   where explicitly stated.
                 </p>
                 <p>
-                  <strong>Ownership & Blockchain:</strong> When you acquire an Alliance Forge NFT,
+                  <strong>Ownership & Blockchain:</strong> When you acquire an Auron Vanguard NFT,
                   it is associated with your connected cryptocurrency wallet address on the [Specify Blockchain, e.g., Polygon, Ethereum] blockchain.
                   You have control over this NFT in your wallet, subject to the rules of the blockchain network.
                 </p>
                 <p>
-                  <strong>Utility:</strong> The utility of NFTs within Alliance Forge will be described
+                  <strong>Utility:</strong> The utility of NFTs within Auron Vanguard will be described
                   at the point of acquisition or in official game documentation. Utility may include
                   in-game benefits, cosmetic enhancements, or access to exclusive content.
                 </p>
                 <p>
                   <strong>Trading & Value:</strong> You are free to trade, sell, or transfer your NFTs on third-party marketplaces
-                  that support the relevant blockchain and NFT standard. Alliance Forge does not operate these marketplaces
+                  that support the relevant blockchain and NFT standard. Auron Vanguard does not operate these marketplaces
                   and is not responsible for transactions conducted on them. The value of NFTs is determined by the market and community.
                 </p>
               </CardContent>
@@ -83,7 +83,7 @@ const TransparencyStatementPage: React.FC = () => {
               <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
                  <p>
                   <strong>Auron (Premium In-Game Currency):</strong> Auron is an in-game virtual currency
-                  used to purchase premium items, boosts, or cosmetic content in Alliance Forge.
+                  used to purchase premium items, boosts, or cosmetic content in Auron Vanguard.
                   Auron is primarily acquired by connecting a crypto wallet or through direct purchases.
                   Auron is an internal virtual currency and is NOT a cryptocurrency. It exists only within the game's ecosystem.
                 </p>
@@ -93,9 +93,9 @@ const TransparencyStatementPage: React.FC = () => {
                   Points are a virtual good with utility only inside the game.
                 </p>
                 <p>
-                  <strong>Future Cryptocurrency Token:</strong> Alliance Forge plans to introduce its own cryptocurrency token in the future.
+                  <strong>Future Cryptocurrency Token:</strong> Auron Vanguard plans to introduce its own cryptocurrency token in the future.
                   Details about such a token, including its utility, economics (tokenomics), and distribution (e.g., airdrop mechanics based on "Founder's Score"),
-                  will be provided in a separate whitepaper or official announcement. Treat any claims of an existing Alliance Forge token outside of official announcements with extreme caution.
+                  will be provided in a separate whitepaper or official announcement. Treat any claims of an existing Auron Vanguard token outside of official announcements with extreme caution.
                 </p>
               </CardContent>
             </Card>
@@ -106,7 +106,7 @@ const TransparencyStatementPage: React.FC = () => {
               </CardHeader>
               <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
                 <p>
-                  <strong>Nature:</strong> Virtual goods in Alliance Forge include all in-game items,
+                  <strong>Nature:</strong> Virtual goods in Auron Vanguard include all in-game items,
                   currencies (Points, Auron), characters, upgrades, and other digital content that can be
                   acquired or used within the game.
                 </p>
@@ -127,12 +127,12 @@ const TransparencyStatementPage: React.FC = () => {
               </CardHeader>
               <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
                 <p>
-                  <strong>Game and IP:</strong> Alliance Forge and all its associated content,
+                  <strong>Game and IP:</strong> Auron Vanguard and all its associated content,
                   including software, graphics, characters, and storylines, are owned by Pilukarts Studio
                   or its licensors and are protected by copyright and other intellectual property laws.
                 </p>
                 <p>
-                  <strong>NFT Ownership:</strong> For NFTs minted by Alliance Forge, ownership of the
+                  <strong>NFT Ownership:</strong> For NFTs minted by Auron Vanguard, ownership of the
                   specific token on the blockchain is transferred to you upon acquisition. However, the underlying
                   intellectual property (e.g., the art or character design associated with the NFT) remains with Pilukarts Studio
                   or its licensors. Your ownership of the NFT grants you certain rights to use and display the associated art,
@@ -163,11 +163,11 @@ const TransparencyStatementPage: React.FC = () => {
                   and any digital assets stored within it.
                 </p>
                 <p>
-                  <strong>Not Investment Advice:</strong> Information provided by Alliance Forge
+                  <strong>Not Investment Advice:</strong> Information provided by Auron Vanguard
                   should not be construed as financial or investment advice.
                 </p>
                  <p>
-                  <strong>Game Development:</strong> Alliance Forge is an evolving game. Features,
+                  <strong>Game Development:</strong> Auron Vanguard is an evolving game. Features,
                   items, and economic balancing may change. We reserve the right to modify
                   or discontinue aspects of the game.
                 </p>

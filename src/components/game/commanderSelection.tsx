@@ -27,7 +27,7 @@ export const AVAILABLE_COMMANDERS: Commander[] = [
     id: "valkyr",
     name: "Valkyr",
     title: "Commander of the Forge",
-    description: "Pioneer of the Forgenite Crusade. Master of industrial warfare and resource extraction.",
+    description: "Pioneer of the AuronVanguard Crusade. Master of industrial warfare and resource extraction.",
     rarity: "common",
     unlockRequirement: 1,
     tapPower: 1,
@@ -116,7 +116,7 @@ export default function CommanderSelection({
           Select Your Commander
         </h2>
         <p className="text-gray-400">
-          Choose your leader to begin the Forgenite Crusade
+          Choose your leader to begin the AuronVanguard Crusade
         </p>
         <div className="mt-4 text-sm text-gray-500">
           Current Level: {currentLevel}
