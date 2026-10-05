@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 
 const MAX_LEVEL = 50_000;
 const VISIBLE_LEVELS = 25;
-const ARK_IMAGE = assetPath('/images/global/ark-carrier.png');
+const ARK_IMAGE = assetPath('/images/global/ark-carrier-complete.png');
 
 function stageFor(level: number) {
   return LEVEL_STAGES.find(stage => level >= stage.startLevel && level <= stage.endLevel) || LEVEL_STAGES[LEVEL_STAGES.length - 1];

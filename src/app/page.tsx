@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import { POINTS_PER_TAP } from "@/lib/gameData";
 import { assetPath } from "@/lib/assetPath";
 
-const ARK_SHIP_IMAGE = assetPath("/images/global/ark-carrier.png");
+const ARK_SHIP_IMAGE = assetPath("/images/global/ark-carrier-complete.png");
 const ARK_SECTION_BUILD_MS = 60 * 24 * 60 * 60 * 1000;
 let hasPlayedCinematicIntro = false;
 
@@ -148,8 +148,8 @@ export default function HomePage() {
       </div>
     </header>
 
-    <div className="relative z-20 grid min-h-[620px] grid-cols-1 items-center gap-5 px-4 pb-36 pt-2 lg:grid-cols-[minmax(210px,1fr)_minmax(320px,1.35fr)_minmax(300px,1.35fr)] lg:px-8 lg:pb-32">
-      <nav className="order-2 grid grid-cols-2 gap-3 lg:order-1 lg:grid-cols-1">
+    <div className="relative z-20 grid min-h-[620px] grid-cols-1 items-center gap-8 px-4 pb-48 pt-2 lg:grid-cols-[minmax(210px,1fr)_minmax(320px,1.35fr)_minmax(300px,1.35fr)] lg:gap-5 lg:px-8 lg:pb-32">
+      <nav className="order-3 grid grid-cols-2 gap-3 lg:order-1 lg:grid-cols-1">
         <HoloAction href="/quests" label="Missions" icon={Shield} />
         <HoloAction href="/level-map" label="Star Map" icon={Map} />
         <HoloAction href="/arcade" label="Arcade" icon={Gamepad2} tone="violet" />
@@ -157,9 +157,9 @@ export default function HomePage() {
         <HoloAction label="Change Commander" icon={Bot} tone="gold" onClick={toggleCommander} />
       </nav>
 
-      <div className="order-1 flex min-h-[420px] items-end justify-center lg:order-2 lg:min-h-[580px]">
+      <div className="order-1 flex min-h-[390px] items-end justify-center sm:min-h-[470px] lg:order-2 lg:min-h-[580px]">
         <motion.button type="button" aria-label="Tap commander for energy" onClick={tapCommander}
-          className="forge-commander group relative h-[410px] w-[270px] outline-none sm:h-[500px] sm:w-[330px] lg:h-[570px] lg:w-[380px]"
+          className="forge-commander group relative h-[380px] w-[250px] outline-none sm:h-[500px] sm:w-[330px] lg:h-[570px] lg:w-[380px]"
           initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .8 }} whileTap={{ scale: .97 }}>
           <span className="absolute bottom-[4%] left-1/2 h-[8%] w-[86%] -translate-x-1/2 rounded-[50%] border-2 border-cyan-200/45 bg-gradient-to-r from-cyan-950 via-slate-800 to-violet-950 shadow-[0_10px_20px_rgba(0,0,0,.9),0_0_32px_rgba(34,211,238,.3)] [transform:translateX(-50%)_perspective(260px)_rotateX(58deg)]" aria-hidden="true" />
           <span className="absolute bottom-[2%] left-1/2 h-[11%] w-[92%] -translate-x-1/2 rounded-[50%] p-[3px] shadow-[0_12px_22px_rgba(0,0,0,.9),0_0_30px_rgba(34,211,238,.25)] [transform:translateX(-50%)_perspective(260px)_rotateX(58deg)]" style={{ background: `conic-gradient(#fbbf24 ${levelProgress}%, rgba(34,211,238,.3) ${levelProgress}% 100%)` }} aria-hidden="true"><span className="block h-full w-full rounded-[50%] border border-cyan-200/30 bg-gradient-to-r from-cyan-950 via-slate-800 to-violet-950 shadow-[inset_0_0_28px_rgba(34,211,238,.25)]" /></span>
@@ -176,8 +176,8 @@ export default function HomePage() {
         </motion.button>
       </div>
 
-      <aside className="order-3 space-y-3">
-        <motion.div className="forge-ark relative mx-auto h-32 w-full max-w-[320px] cursor-pointer sm:h-40 sm:max-w-[400px] lg:h-56 lg:max-w-[520px]" animate={{ y: [0, -10, 0], rotate: [-1, 1, -1] }} transition={{ duration: 5, repeat: Infinity }} onClick={() => handleTap(true)}>
+      <aside className="order-2 space-y-4 rounded-2xl border border-cyan-300/20 bg-slate-950/35 p-3 backdrop-blur-sm lg:order-3 lg:space-y-3 lg:border-0 lg:bg-transparent lg:p-0">
+        <div className="text-center lg:hidden"><p className="text-[10px] font-black uppercase tracking-[.3em] text-cyan-300">ARK Carrier · Full Vessel</p><p className="text-xs text-slate-400">Vanguard flagship</p></div><motion.div className="forge-ark relative mx-auto h-48 w-full max-w-[440px] cursor-pointer sm:h-56 sm:max-w-[520px] lg:h-56 lg:max-w-[520px]" animate={{ y: [0, -10, 0], rotate: [-1, 1, -1] }} transition={{ duration: 5, repeat: Infinity }} onClick={() => handleTap(true)}>
           <span className="forge-ark-ring absolute inset-[8%] rounded-full border border-cyan-300/50" />
           <span className="absolute inset-[18%] rounded-full bg-cyan-400/20 blur-2xl" />
           <Image src={ARK_SHIP_IMAGE} alt="ARK carrier starship" fill unoptimized priority className="object-contain drop-shadow-[0_0_22px_rgba(34,211,238,.75)]" />
