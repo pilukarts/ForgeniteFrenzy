@@ -9,8 +9,8 @@ import Web3Provider from '@/contexts/Web3Provider';
 
 
 export const metadata: Metadata = {
-  title: 'Auron Vanguard: Auron Vanguard',
-  description: 'Auron Vanguard: Auron Vanguard - Lead humanity\'s escape from Earth.',
+  title: 'MISSION: VANGUARD',
+  description: 'MISSION: VANGUARD - Lead humanity\'s escape from Earth.',
   manifest: '/manifest.json',
 };
 

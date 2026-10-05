@@ -2,7 +2,7 @@
 "use client";
 import React from 'react';
 import { useGame } from '@/contexts/GameContext';
-import { Hexagon, Sparkles } from 'lucide-react'; // Hexagon for points, Sparkles for Auron
+import { Hexagon, Sparkles } from 'lucide-react'; // Hexagon for points, Sparkles for Vanguard Credits
 
 interface ResourceDisplayProps {
   seasonResourceAmount: number;
@@ -27,7 +27,7 @@ const ResourceDisplay: React.FC<ResourceDisplayProps> = ({ seasonResourceAmount,
         <span className="text-xs font-semibold text-bright-gold">
           {auronCount.toLocaleString()}
         </span>
-         <span className="text-[10px] text-bright-gold/80 hidden sm:inline">Auron</span>
+         <span className="text-[10px] text-bright-gold/80 hidden sm:inline">Vanguard Credits</span>
       </div>
     </div>
   );

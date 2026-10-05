@@ -62,8 +62,8 @@ const MarketplacePage: React.FC = () => {
         purchaseWithTelegramWallet(pkg);
     } else {
         toast({
-          title: 'Open Auron Vanguard in Telegram',
-          description: 'Auron purchases are only available through the connected Telegram Wallet.',
+          title: 'Open MISSION: VANGUARD in Telegram',
+          description: 'Vanguard Credits purchases are only available through the connected Telegram Wallet.',
         });
     }
   };
@@ -85,7 +85,7 @@ const MarketplacePage: React.FC = () => {
         <div className="relative mx-2 mt-2 overflow-hidden rounded-2xl border border-cyan-300/30 bg-slate-950/70 px-4 py-4 shadow-[0_0_35px_rgba(34,211,238,0.12)] sm:mx-4 sm:flex sm:items-center sm:justify-between sm:px-6">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-cyan-300">ARK Deck 07 · Galactic Exchange</p>
-            <h1 className="mt-1 text-2xl font-headline text-white sm:text-4xl">Auron Holographic Market</h1>
+            <h1 className="mt-1 text-2xl font-headline text-white sm:text-4xl">Vanguard Credits Holographic Market</h1>
             <p className="mt-1 max-w-xl text-sm text-slate-300">Acquire field modules, recharge technology and prepare your commander for the next sector.</p>
           </div>
           <div className="mt-3 flex items-center justify-center gap-2 rounded-xl border border-amber-300/40 bg-amber-300/10 px-4 py-3 shadow-[inset_0_0_22px_rgba(251,191,36,0.08)] sm:mt-0">
@@ -103,7 +103,7 @@ const MarketplacePage: React.FC = () => {
                          <Image src={images.ui.telegram_wallet} alt="Telegram Wallet" width={48} height={48} data-ai-hint="telegram wallet" />
                         <CardTitle className="text-lg sm:text-xl font-semibold text-blue-300 mt-2">Connect Telegram Wallet</CardTitle>
                         <CardDescription className="text-base text-muted-foreground mt-1">
-                            Connect your wallet to purchase Auron with Toncoin (TON).
+                            Connect your wallet to purchase Vanguard Credits with Toncoin (TON).
                         </CardDescription>
                     </CardHeader>
                     <CardFooter className="w-full">
@@ -132,7 +132,7 @@ const MarketplacePage: React.FC = () => {
               <CardContent className="text-center">
                 <p className="text-lg font-semibold text-bright-gold flex items-center justify-center">
                   <Sparkles className="h-5 w-5 mr-1.5" />
-                  Earn {REWARDED_AD_AURON_REWARD} Auron
+                  Earn {REWARDED_AD_AURON_REWARD} Vanguard Credits
                 </p>
               </CardContent>
               <CardFooter className="w-full">
@@ -147,9 +147,9 @@ const MarketplacePage: React.FC = () => {
             </Card>
           </section>
 
-          {/* Buy Auron Section */}
+          {/* Buy Vanguard Credits Section */}
           <section className="mb-6 sm:mb-8">
-            <div className="mb-3"><p className="text-[10px] font-bold uppercase tracking-[0.3em] text-violet-300">Telegram Wallet Bay</p><h2 className="text-xl sm:text-2xl font-headline text-white">Auron Energy Crystals</h2><p className="text-sm text-slate-400">Secure purchases activate only inside Telegram with your connected wallet.</p></div>
+            <div className="mb-3"><p className="text-[10px] font-bold uppercase tracking-[0.3em] text-violet-300">Telegram Wallet Bay</p><h2 className="text-xl sm:text-2xl font-headline text-white">Vanguard Credits Energy Crystals</h2><p className="text-sm text-slate-400">Secure purchases activate only inside Telegram with your connected wallet.</p></div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               {auronPackages.map(pkg => {
                 const Icon = pkg.icon;
@@ -162,7 +162,7 @@ const MarketplacePage: React.FC = () => {
                       )}
                     <CardHeader className="items-center text-center p-3 sm:p-4">
                       <Icon className="h-8 w-8 sm:h-10 sm:w-10 text-bright-gold" />
-                      <CardTitle className="text-lg sm:text-xl font-semibold text-bright-gold mt-1">{pkg.amount.toLocaleString()} Auron</CardTitle>
+                      <CardTitle className="text-lg sm:text-xl font-semibold text-bright-gold mt-1">{pkg.amount.toLocaleString()} Vanguard Credits</CardTitle>
                     </CardHeader>
                     <CardFooter className="mt-auto p-3 sm:p-4 pt-0">
                       <Button onClick={() => handleAuronPurchase(pkg)} disabled={!isTelegramEnv} className="w-full bg-violet-500 hover:bg-violet-400 text-white text-base disabled:bg-slate-700 disabled:text-slate-400">
@@ -177,7 +177,7 @@ const MarketplacePage: React.FC = () => {
 
           {/* Item Shop Section */}
            <section>
-              <div className="mb-3"><p className="text-[10px] font-bold uppercase tracking-[0.3em] text-amber-300">Power Modules</p><h2 className="text-xl sm:text-2xl font-headline text-white">Commander Field Boosts</h2><p className="text-sm text-slate-400">Spend earned Auron on tactical boosts. Every module shows its exact strength and duration.</p></div>
+              <div className="mb-3"><p className="text-[10px] font-bold uppercase tracking-[0.3em] text-amber-300">Power Modules</p><h2 className="text-xl sm:text-2xl font-headline text-white">Commander Field Boosts</h2><p className="text-sm text-slate-400">Spend earned Vanguard Credits on tactical boosts. Every module shows its exact strength and duration.</p></div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {marketplaceItems.map(item => {
                   const Icon = item.icon || HelpCircle; 
@@ -198,7 +198,7 @@ const MarketplacePage: React.FC = () => {
                       <CardFooter className="flex-col items-stretch space-y-1.5 sm:space-y-2 p-3 sm:p-4 pt-0">
                          <div className="flex items-center justify-center text-lg font-semibold mb-1 sm:mb-2">
                             <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-bright-gold mr-1 sm:mr-1.5" />
-                            <span>{item.costInAuron} Auron</span>
+                            <span>{item.costInAuron} Vanguard Credits</span>
                         </div>
                         <Button 
                           onClick={() => purchaseMarketplaceItem(item.id)} 
@@ -206,7 +206,7 @@ const MarketplacePage: React.FC = () => {
                           className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-base py-2 sm:py-2.5"
                           size="default"
                         >
-                          {playerProfile.auron < item.costInAuron ? 'Not enough Auron' : 'Activate Module'}
+                          {playerProfile.auron < item.costInAuron ? 'Not enough Vanguard Credits' : 'Activate Module'}
                         </Button>
                       </CardFooter>
                     </Card>

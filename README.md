@@ -1,10 +1,10 @@
-# Auron Vanguard: Auron Vanguard
+# MISSION: VANGUARD
 
-Welcome to the official repository for **Auron Vanguard: Auron Vanguard**, a sci-fi themed incremental clicker game built with Next.js and integrated with Firebase. Lead humanity's escape from a doomed Earth by tapping your way to galactic dominance, upgrading your commander, and competing on a global scale.
+Welcome to the official repository for **MISSION: VANGUARD**, a sci-fi themed incremental clicker game built with Next.js and integrated with Firebase. Lead humanity's escape from a doomed Earth by tapping your way to galactic dominance, upgrading your commander, and competing on a global scale.
 
 ## 🚀 Game Concept
 
-In a desperate future, humanity must escape the clutches of the encroaching Cyber Concord. As a Commander in the Alliance, your mission is to gather critical resources to build colossal StarForge Arks and guide your people to a new home in the Sanctaris system.
+In a desperate future, humanity must escape the clutches of the encroaching Cyber Concord. As a Commander in the Vanguard, your mission is to gather critical resources to build colossal Starward Arks and guide your people to a new home in the Sanctaris system.
 
 This game is a "tap-to-earn" experience where players progress through seasons, complete quests, and climb the leaderboards.
 
@@ -19,8 +19,8 @@ This game is a "tap-to-earn" experience where players progress through seasons, 
   - **Ark Hangar:** Connect a (simulated) crypto wallet to unlock and purchase exclusive Ark upgrades.
 - **Passive Income with M.U.L.E. Drones:** Purchase M.U.L.E. Drones that passively generate points for you while you're offline.
 - **In-Game Economy:**
-  - **Dual Currency:** Earn **Points** through gameplay and use **Auron** (premium currency) for special items.
-  - **Item Shop:** Purchase temporary tap boosts and other buffs using Auron.
+  - **Dual Currency:** Earn **Points** through gameplay and use **Vanguard Credits** (premium currency) for special items.
+  - **Item Shop:** Purchase temporary tap boosts and other buffs using Vanguard Credits.
 - **Battle Pass System:**
   - Progress through a seasonal Battle Pass by earning XP.
   - Includes both **free and premium** reward tracks.
@@ -33,7 +33,7 @@ This game is a "tap-to-earn" experience where players progress through seasons, 
   - **Feedback & Support Forms:** Integrated pages for players to submit feedback or contact support.
 - **Daily Quests:** Complete daily objectives to earn valuable rewards and accelerate your progress.
 - **Web3 Integration (Simulated):**
-  - A "Connect Wallet" feature that rewards players with Auron and unlocks special game content.
+  - A "Connect Wallet" feature that rewards players with Vanguard Credits and unlocks special game content.
   - A comprehensive **Transparency Statement** page explaining the role of digital assets.
 
 ## 💻 Tech Stack

@@ -59,7 +59,7 @@ const PlayerSetup: React.FC = () => {
           <p className="text-[10px] font-bold uppercase tracking-[.4em] text-cyan-300">ARK Recruitment Chamber</p>
           <CardTitle className="font-headline text-3xl text-white sm:text-4xl">Choose Your Commander</CardTitle>
           <CardDescription className="pt-1 text-base text-slate-300">
-            Select your Auron Vanguard officer and initialize a command profile.
+            Select your MISSION: VANGUARD officer and initialize a command profile.
           </CardDescription>
         </CardHeader>
 
