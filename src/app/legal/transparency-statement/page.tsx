@@ -128,13 +128,13 @@ const TransparencyStatementPage: React.FC = () => {
               <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
                 <p>
                   <strong>Game and IP:</strong> Alliance Forge and all its associated content,
-                  including software, graphics, characters, and storylines, are owned by [Your Company/Studio]
+                  including software, graphics, characters, and storylines, are owned by Pilukarts Studio
                   or its licensors and are protected by copyright and other intellectual property laws.
                 </p>
                 <p>
                   <strong>NFT Ownership:</strong> For NFTs minted by Alliance Forge, ownership of the
                   specific token on the blockchain is transferred to you upon acquisition. However, the underlying
-                  intellectual property (e.g., the art or character design associated with the NFT) remains with [Your Company/Studio]
+                  intellectual property (e.g., the art or character design associated with the NFT) remains with Pilukarts Studio
                   or its licensors. Your ownership of the NFT grants you certain rights to use and display the associated art,
                   typically for personal, non-commercial purposes, as detailed in our{' '}
                   <Link href="/legal/terms-of-service" className="text-primary hover:underline">
@@ -180,13 +180,12 @@ const TransparencyStatementPage: React.FC = () => {
               </CardHeader>
               <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
                 <p>
-                  If you have any questions, please contact us via the{' '}
-                  <Link href="/support" className="text-primary hover:underline">
-                    support page
-                  </Link>.
+                  If you have any questions, contact Pilukarts Studio at{' '}
+                  <a href="mailto:pilukartsstudio@gmail.com" className="text-primary hover:underline">pilukartsstudio@gmail.com</a>{' '}
+                  or use the <Link href="/support" className="text-primary hover:underline">support page</Link>.
                 </p>
                 <p>
-                  Last Updated: [Current Date]
+                  Last Updated: 5 October 2026
                 </p>
               </CardContent>
             </Card>

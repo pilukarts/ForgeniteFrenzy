@@ -36,13 +36,13 @@ const ContactForm: React.FC = () => {
   });
 
   const onSubmit: SubmitHandler<ContactFormValues> = (data) => {
-    console.log('Contact Form Submitted:', data);
-    // Here you would typically send the data to a backend or email service
+    const subject = encodeURIComponent(`[Forgeite Frenzy] ${data.subject}`);
+    const body = encodeURIComponent(`Commander: ${data.name}\nReply email: ${data.email}\n\n${data.message}`);
+    window.location.href = `mailto:pilukartsstudio@gmail.com?subject=${subject}&body=${body}`;
     toast({
-      title: 'Message Sent (Simulated)',
-      description: 'Your message has been logged to the console. In a real app, this would be sent to support.',
+      title: 'Opening your email app',
+      description: 'Send the prepared message to Pilukarts Studio to complete your request.',
     });
-    form.reset();
   };
 
   return (
@@ -50,7 +50,7 @@ const ContactForm: React.FC = () => {
       <CardHeader className="p-4 sm:p-6">
         <CardTitle className="text-xl sm:text-2xl font-headline text-primary">Send Us a Message</CardTitle>
         <CardDescription className="text-xs sm:text-sm text-muted-foreground">
-          Have questions or need assistance? Fill out the form below.
+          Have questions or need assistance? Write to{' '}<a href="mailto:pilukartsstudio@gmail.com" className="text-cyan-300 hover:underline">pilukartsstudio@gmail.com</a>.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-4 sm:p-6">
