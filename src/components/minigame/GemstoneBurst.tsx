@@ -371,6 +371,18 @@ const GemstoneBurst: React.FC = () => {
       if (!ctx) return;
       
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const space = ctx.createRadialGradient(canvas.width / 2, canvas.height * .35, 20, canvas.width / 2, canvas.height / 2, canvas.height * .75);
+      space.addColorStop(0, '#1e1b4b');
+      space.addColorStop(.5, '#08122d');
+      space.addColorStop(1, '#020617');
+      ctx.fillStyle = space;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < 48; i++) {
+        const x = (i * 83) % canvas.width;
+        const y = (i * 137) % canvas.height;
+        ctx.fillStyle = i % 5 === 0 ? 'rgba(103,232,249,.8)' : 'rgba(255,255,255,.45)';
+        ctx.fillRect(x, y, i % 7 === 0 ? 2 : 1, i % 7 === 0 ? 2 : 1);
+      }
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
@@ -382,10 +394,17 @@ const GemstoneBurst: React.FC = () => {
             COLORS.forEach((c, i) => gradient.addColorStop(i / COLORS.length, c));
             ctx.fillStyle = gradient;
           } else {
-            ctx.fillStyle = bubble.color;
+            const gem = ctx.createRadialGradient(bubble.x - 5, bubble.y - 6, 2, bubble.x, bubble.y, BUBBLE_RADIUS);
+            gem.addColorStop(0, '#ffffff');
+            gem.addColorStop(.25, bubble.color);
+            gem.addColorStop(1, '#111827');
+            ctx.fillStyle = gem;
           }
+          ctx.shadowColor = bubble.special ? '#ffffff' : bubble.color;
+          ctx.shadowBlur = bubble.special ? 18 : 10;
           ctx.fill();
-          ctx.strokeStyle = "rgba(0,0,0,0.2)";
+          ctx.shadowBlur = 0;
+          ctx.strokeStyle = "rgba(255,255,255,0.45)";
           ctx.stroke();
           if (bubble.special === 'bomb') {
               ctx.fillStyle = 'white'; ctx.font = 'bold 16px sans-serif';
@@ -488,7 +507,7 @@ const GemstoneBurst: React.FC = () => {
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="text-lg font-headline text-primary">Score: {score.toLocaleString()}</div>
-      <div className="relative bg-card rounded-lg border-2 border-primary shadow-lg" style={{ width: BOARD_WIDTH, height: BOARD_HEIGHT }}>
+      <div className="relative overflow-hidden rounded-2xl border-2 border-cyan-300/60 bg-slate-950 shadow-[0_0_35px_rgba(34,211,238,.28)]" style={{ width: BOARD_WIDTH, height: BOARD_HEIGHT }}>
         <AnimatePresence>
           {gameOver && (
             <motion.div
