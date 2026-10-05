@@ -26,7 +26,7 @@ const IntroScreen: React.FC = () => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(14,116,144,.08),rgba(2,3,11,.92)_75%)]" />
         <motion.div className="absolute h-48 w-[34rem] max-w-[88vw]" initial={{ x: '-90vw', opacity: 0, scale: .7 }} animate={{ x: 0, opacity: 1, scale: 1 }} transition={{ duration: 1.6, ease: 'easeOut' }}>
           <span className="absolute left-0 top-1/2 h-6 w-40 -translate-y-1/2 bg-gradient-to-l from-cyan-200/70 to-transparent blur-lg" />
-          <Image src={assetPath('/images/global/ark-carrier.png')} alt="ARK carrier approaching" fill unoptimized className="object-contain drop-shadow-[0_0_28px_rgba(34,211,238,.75)]" />
+          <Image src={assetPath('/images/global/ark-carrier-complete.png')} alt="ARK carrier approaching" fill unoptimized className="object-contain drop-shadow-[0_0_28px_rgba(34,211,238,.75)]" />
         </motion.div>
         <motion.div className="absolute inset-x-0 top-0 h-px bg-cyan-200/70 shadow-[0_0_18px_rgba(34,211,238,.9)]" animate={{ y: ['10vh','90vh','10vh'] }} transition={{ duration: 5, repeat: Infinity, ease: 'linear' }} />
         <motion.div 
