@@ -16,6 +16,7 @@ import { assetPath } from "@/lib/assetPath";
 
 const ARK_SHIP_IMAGE = assetPath("/images/global/ark-carrier.png");
 const ARK_SECTION_BUILD_MS = 60 * 24 * 60 * 60 * 1000;
+let hasPlayedCinematicIntro = false;
 
 const STARS = [
   [7, 12, 2, .2], [13, 66, 1, 1.7], [19, 30, 2, 2.6], [25, 82, 1, .8],
@@ -52,10 +53,20 @@ function HoloAction({ href, label, icon: Icon, tone = "cyan", onClick }: ActionP
 export default function HomePage() {
   const { playerProfile, isLoading, isInitialSetupDone, handleTap, getUpgradeLevel, toggleCommander, toggleMusic, isMusicPlaying } = useGame();
   const { toast } = useToast();
+  const [isIntroPlaying, setIsIntroPlaying] = useState(() => !hasPlayedCinematicIntro);
   const [tapBurst, setTapBurst] = useState(0);
   const [levelCelebration, setLevelCelebration] = useState<number | null>(null);
   const previousLevelRef = useRef<number | null>(null);
   const [arkBuildRemaining, setArkBuildRemaining] = useState(ARK_SECTION_BUILD_MS);
+
+  useEffect(() => {
+    if (!isIntroPlaying) return;
+    const timer = window.setTimeout(() => {
+      hasPlayedCinematicIntro = true;
+      setIsIntroPlaying(false);
+    }, 4200);
+    return () => window.clearTimeout(timer);
+  }, [isIntroPlaying]);
 
   useEffect(() => {
     const storageKey = "forgeite-ark-section-deadline";
@@ -92,7 +103,7 @@ export default function HomePage() {
     return playerProfile.commanderSex === "male" ? images.commanders.male_full : images.commanders.female_full;
   }, [playerProfile]);
 
-  if (isLoading) return <IntroScreen />;
+  if (isLoading || isIntroPlaying) return <IntroScreen />;
   if (!isInitialSetupDone || !playerProfile) return <PlayerSetup />;
 
   const tapCommander = () => {
