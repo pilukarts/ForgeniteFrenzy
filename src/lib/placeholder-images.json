@@ -10,10 +10,10 @@
     "background7": "/images/global/7.jpg"
   },
   "commanders": {
-    "male_full": "/images/global/commander-man-full.png",
+    "male_full": "/images/global/commander-man-vanguard.png",
     "male_portrait": "/images/global/avatar-profile-man.png",
     "male_headshot": "/images/global/avatar-profile-man.png",
-    "female_full": "/images/global/commander-woman-full.png",
+    "female_full": "/images/global/commander-woman-vanguard.png",
     "female_portrait": "/images/global/avatar-profile-lady.png",
     "female_headshot": "/images/global/avatar-profile-lady.png"
   },

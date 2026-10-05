@@ -8,8 +8,8 @@ export const images = {
     avatar2: "/images/global/avatar-profile-man.png"
     },
     commanders: {
-    commander1: "/images/global/commander-woman-full.png",
-    commander2: "/images/global/commander-man-full.png"
+    commander1: "/images/global/commander-woman-vanguard.png",
+    commander2: "/images/global/commander-man-vanguard.png"
     },
     backgrounds: {
     main: "/images/global/main_scene.jpg"
