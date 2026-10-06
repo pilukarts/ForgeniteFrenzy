@@ -1,6 +1,6 @@
 "use client";
 import Link from 'next/link';
-import { Home, ChevronsUp, Trophy, Users, ShoppingCart, MessagesSquare, ListChecks, Swords, Map, Gamepad2, FileText, UserCircle, GalleryHorizontal, LifeBuoy, Info, Replace, Music, Music2, RefreshCw, Globe, Share2, Send, Bot } from 'lucide-react';
+import { Home, ChevronsUp, Trophy, RadioTower, Users, ShoppingCart, MessagesSquare, ListChecks, Swords, Map, Gamepad2, FileText, UserCircle, GalleryHorizontal, LifeBuoy, Info, Replace, Music, Music2, RefreshCw, Globe, Share2, Send, Bot } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useGame } from '@/contexts/GameContext';
@@ -19,6 +19,7 @@ const mainNavItems = [
   { href: '/battle-pass', label: 'Pass', icon: Swords },
   { href: '/level-map', label: 'Map', icon: Map },
   { href: '/leaderboard', label: 'Leaders', icon: Trophy },
+  { href: '/tournaments', label: 'Tournaments', icon: RadioTower },
   { href: '/marketplace', label: 'Shop', icon: ShoppingCart },
   { href: '/arcade', label: 'Arcade', icon: Gamepad2 },
   { href: '/alliance-chat', label: 'Vanguard', icon: MessagesSquare },
