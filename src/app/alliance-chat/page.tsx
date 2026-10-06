@@ -16,7 +16,7 @@ import images from '@/lib/images';
 // Helper to generate a simple unique ID compatible with all environments
 const generateUniqueId = () => `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 
-const AllianceChatPage: React.FC = () => {
+const VanguardCommsPage: React.FC = () => {
   const { playerProfile, isLoading, isInitialSetupDone } = useGame();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
@@ -30,7 +30,7 @@ const AllianceChatPage: React.FC = () => {
           id: generateUniqueId(),
           senderId: 'core_system',
           senderName: 'C.O.R.E.',
-          content: 'Welcome to the Alliance Strategic Comms, Commander. Coordinate with your allies here.',
+          content: 'Welcome to Vanguard Comms, Commander. Coordinate with your crew here.',
           timestamp: Date.now() - 20000,
           isPlayer: false,
           senderAvatar: images.core.ai_icon
@@ -105,8 +105,8 @@ const AllianceChatPage: React.FC = () => {
       {/* Use h-full to take available space from AppLayout's main content area */}
       <div className="flex flex-col h-full"> 
         <header className="p-3 sm:p-4 border-b border-border">
-          <h1 className="text-xl sm:text-2xl font-headline text-primary">Alliance Chat</h1>
-          <p className="text-sm text-muted-foreground">Coordinate with your fellow Commanders.</p>
+          <h1 className="text-xl sm:text-2xl font-headline text-primary">Vanguard Comms</h1>
+          <p className="text-sm text-muted-foreground">Coordinate missions with your fellow Commanders.</p>
         </header>
 
         <ScrollArea className="flex-grow p-2 sm:p-4" ref={scrollAreaRef}> {/* Reduced padding on mobile */}
@@ -166,4 +166,4 @@ const AllianceChatPage: React.FC = () => {
   );
 };
 
-export default AllianceChatPage;
+export default VanguardCommsPage;
