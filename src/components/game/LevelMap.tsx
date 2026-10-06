@@ -65,14 +65,32 @@ export default function LevelMap() {
           const nodeStage = stageFor(level);
           return <div id={`level-${level}`} key={level} className={cn('relative flex min-h-24 items-center', left ? 'justify-start' : 'justify-end')}>
             <div className={cn('absolute top-1/2 h-px w-[calc(50%-2.75rem)]', left ? 'left-[2.75rem]' : 'right-[2.75rem]', completed ? 'bg-cyan-300/65' : active ? 'bg-amber-300/80' : 'bg-white/15')} />
-            <motion.button whileHover={!locked ? { scale: 1.05 } : {}} whileTap={!locked ? { scale: .96 } : {}} onClick={() => !locked && setSelectedLevel(level)}
-              className={cn('relative z-10 flex h-20 w-[44%] min-w-32 items-center gap-3 rounded-2xl border p-3 text-left backdrop-blur-xl transition', completed && 'border-cyan-300/40 bg-cyan-950/65 shadow-[0_0_20px_rgba(34,211,238,.12)]', active && 'border-amber-200 bg-gradient-to-r from-amber-950/90 via-violet-950/85 to-cyan-950/90 shadow-[0_0_35px_rgba(251,191,36,.28)]', locked && 'cursor-not-allowed border-white/10 bg-slate-950/65 text-slate-500')}
-              style={active ? { borderColor: `hsl(${nodeStage.colors.primary})` } : undefined}>
-              <span className={cn('grid h-11 w-11 shrink-0 place-items-center rounded-full border text-sm font-black', completed ? 'border-cyan-200/60 bg-cyan-400/15 text-cyan-100' : active ? 'border-amber-200 bg-amber-300/15 text-amber-100' : 'border-white/15 bg-white/5')}>
-                {completed ? <Check className="h-5 w-5" /> : locked ? <Lock className="h-4 w-4" /> : level}
+            <motion.button whileHover={!locked ? { scale: 1.045, y: -3 } : {}} whileTap={!locked ? { scale: .97, y: 2 } : {}} onClick={() => !locked && setSelectedLevel(level)}
+              className={cn('group relative z-10 h-24 w-[46%] min-w-36 text-left transition [perspective:700px]', locked && 'cursor-not-allowed text-slate-500')}
+              aria-label={`Level ${level.toLocaleString()} · ${active ? 'ARK position' : completed ? 'complete' : 'locked'}`}>
+              <span className={cn('absolute inset-x-2 bottom-0 h-[72%] translate-y-2 rounded-[1.2rem] border shadow-[0_16px_24px_rgba(0,0,0,.48)]',
+                completed && 'border-cyan-500/35 bg-gradient-to-b from-cyan-800/70 to-slate-950',
+                active && 'border-amber-300/60 bg-gradient-to-b from-amber-700/75 via-violet-900/80 to-slate-950 shadow-[0_18px_30px_rgba(251,191,36,.18)]',
+                locked && 'border-slate-700/40 bg-gradient-to-b from-slate-700/45 to-slate-950')} />
+              <span className={cn('absolute inset-x-0 top-0 h-[82%] overflow-hidden rounded-[1.3rem] border backdrop-blur-xl [transform:rotateX(5deg)] [transform-origin:center_bottom]',
+                completed && 'border-cyan-200/50 bg-gradient-to-br from-cyan-700/75 via-cyan-950/90 to-slate-950 shadow-[inset_0_2px_0_rgba(255,255,255,.2),0_0_24px_rgba(34,211,238,.2)]',
+                active && 'border-amber-100/90 bg-gradient-to-br from-amber-700/80 via-violet-950/90 to-cyan-950/90 shadow-[inset_0_2px_0_rgba(255,255,255,.28),0_0_38px_rgba(251,191,36,.38)]',
+                locked && 'border-white/15 bg-gradient-to-br from-slate-700/55 via-slate-900/90 to-slate-950 shadow-[inset_0_2px_0_rgba(255,255,255,.08)]')}
+                style={active ? { borderColor: `hsl(${nodeStage.colors.primary})` } : undefined}>
+                <span className={cn('absolute inset-x-3 top-1 h-px rounded-full', completed ? 'bg-cyan-100/70' : active ? 'bg-amber-100/90' : 'bg-white/15')} />
+                <span className={cn('absolute -inset-6 rounded-full blur-2xl', completed ? 'bg-cyan-400/10' : active ? 'animate-pulse bg-amber-300/20' : 'bg-transparent')} />
               </span>
-              <span className="min-w-0"><span className="block text-[9px] uppercase tracking-[.2em] opacity-70">{isMilestone ? 'Milestone' : active ? 'ARK position' : completed ? 'Complete' : 'Locked'}</span><span className="block truncate font-black">Level {level.toLocaleString()}</span></span>
-              {isMilestone && <Crown className="ml-auto h-5 w-5 shrink-0 text-amber-300" />}
+              <span className="absolute inset-x-3 bottom-1 z-10 h-1 rounded-full bg-black/60 blur-[2px]" />
+              <span className="relative z-20 flex h-[82%] items-center gap-2.5 px-3 sm:gap-3">
+                <span className={cn('grid h-12 w-12 shrink-0 place-items-center rounded-full border-2 text-sm font-black shadow-[inset_0_-5px_10px_rgba(0,0,0,.38)]',
+                  completed ? 'border-cyan-100/70 bg-gradient-to-b from-cyan-300/35 to-cyan-950 text-cyan-50 shadow-[0_0_16px_rgba(34,211,238,.3),inset_0_-5px_10px_rgba(0,0,0,.38)]' :
+                  active ? 'border-amber-100 bg-gradient-to-b from-amber-200/40 to-amber-950 text-amber-50 shadow-[0_0_22px_rgba(251,191,36,.5),inset_0_-5px_10px_rgba(0,0,0,.38)]' :
+                  'border-white/20 bg-gradient-to-b from-slate-600/35 to-slate-950')}>
+                  {completed ? <Check className="h-5 w-5" /> : locked ? <Lock className="h-4 w-4" /> : level}
+                </span>
+                <span className="min-w-0"><span className="block text-[8px] font-bold uppercase tracking-[.18em] opacity-75 sm:text-[9px]">{isMilestone ? 'Milestone' : active ? 'ARK position' : completed ? 'Complete' : 'Locked'}</span><span className="block truncate text-sm font-black sm:text-base">Level {level.toLocaleString()}</span></span>
+                {isMilestone && <Crown className="ml-auto h-5 w-5 shrink-0 text-amber-300 drop-shadow-[0_0_7px_rgba(251,191,36,.7)]" />}
+              </span>
             </motion.button>
 
             {active && <motion.div className="pointer-events-none absolute z-20 h-20 w-36 -translate-x-1/2 -translate-y-1/2" initial={{ opacity: 0 }} animate={{ opacity: 1, left: `${left ? 44 + levelProgress * 12 : 56 - levelProgress * 12}%`, top: `${50 + levelProgress * 140}%` }} transition={{ opacity: { duration: .6 }, left: { duration: .9, ease: 'easeInOut' }, top: { duration: .9, ease: 'easeInOut' } }}>
