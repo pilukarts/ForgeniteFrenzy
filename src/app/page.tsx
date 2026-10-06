@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { Bot, Clock3, Coffee, ExternalLink, Gamepad2, Map, Music, Music2, Radio, Share2, Shield, Sparkles, Trophy, Zap } from "lucide-react";
+import { Bot, Clock3, Coffee, Crown, ExternalLink, Gamepad2, Map, Music, Music2, Radio, Share2, Shield, Sparkles, Trophy, Zap } from "lucide-react";
 import IntroScreen from "@/components/intro/IntroScreen";
 import PlayerSetup from "@/components/player/PlayerSetup";
 import { useGame } from "@/contexts/GameContext";
@@ -144,7 +144,7 @@ export default function HomePage() {
       </div>
       <div className="flex items-center gap-2">
         <a href="https://pilukarts.github.io/" target="_blank" rel="noopener noreferrer" aria-label="Open Pilukarts portfolio" className="flex items-center gap-2 rounded-full border border-violet-300/35 bg-violet-950/45 px-3 py-2 text-[10px] font-bold uppercase tracking-[.14em] text-violet-100 backdrop-blur-xl transition hover:border-violet-200 hover:shadow-[0_0_24px_rgba(167,139,250,.3)] sm:text-xs"><ExternalLink className="h-4 w-4" /> Portfolio</a>
-        <a href="https://ko-fi.com/mariadelpilarrodriguezcastillejo" target="_blank" rel="noopener noreferrer" aria-label="Support Mission Vanguard on Ko-fi" className="flex items-center gap-2 rounded-full border border-amber-300/45 bg-amber-950/50 px-3 py-2 text-[10px] font-bold uppercase tracking-[.14em] text-amber-100 backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-amber-100 hover:shadow-[0_0_24px_rgba(251,191,36,.35)] sm:text-xs"><Coffee className="h-4 w-4 text-amber-300" /><span className="hidden sm:inline">Support</span><span className="sm:hidden">Ko-fi</span></a>
+        <a href="https://ko-fi.com/s/06de4cd2a1" target="_blank" rel="noopener noreferrer" aria-label="Get the Founding Commander Pack on Ko-fi" className="flex items-center gap-2 rounded-full border border-amber-300/45 bg-amber-950/50 px-3 py-2 text-[10px] font-bold uppercase tracking-[.14em] text-amber-100 backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-amber-100 hover:shadow-[0_0_24px_rgba(251,191,36,.35)] sm:text-xs"><Coffee className="h-4 w-4 text-amber-300" /><span className="hidden sm:inline">Founding Pack</span><span className="sm:hidden">Support</span></a>
         <div className="hidden items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-950/35 px-3 py-2 text-xs text-emerald-200 sm:flex"><Radio className="h-4 w-4 animate-pulse" /> SYSTEMS ONLINE</div>
       </div>
     </header>
@@ -155,6 +155,7 @@ export default function HomePage() {
         <HoloAction href="/level-map" label="Star Map" icon={Map} />
         <HoloAction href="/arcade" label="Arcade" icon={Gamepad2} tone="violet" />
         <HoloAction href="/battle-pass" label="Rewards" icon={Trophy} tone="gold" />
+        <HoloAction href="/founding-commanders" label="Founders" icon={Crown} tone="gold" />
         <HoloAction label="Change Commander" icon={Bot} tone="gold" onClick={toggleCommander} />
       </nav>
 
