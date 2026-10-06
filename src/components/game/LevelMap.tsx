@@ -93,9 +93,17 @@ export default function LevelMap() {
               </span>
             </motion.button>
 
-            {active && <motion.div className="pointer-events-none absolute z-20 h-20 w-36 -translate-x-1/2 -translate-y-1/2" initial={{ opacity: 0 }} animate={{ opacity: 1, left: `${left ? 44 + levelProgress * 12 : 56 - levelProgress * 12}%`, top: `${50 + levelProgress * 140}%` }} transition={{ opacity: { duration: .6 }, left: { duration: .9, ease: 'easeInOut' }, top: { duration: .9, ease: 'easeInOut' } }}>
-              <span className="absolute left-1 top-1/2 h-2 w-12 -translate-y-1/2 rounded-full bg-gradient-to-l from-cyan-200/80 to-transparent blur-sm" />
-              <span className="absolute inset-3 rounded-full bg-cyan-300/25 blur-xl" /><Image src={ARK_IMAGE} alt={`ARK travelling from level ${level} to level ${Math.min(MAX_LEVEL, level + 1)}`} fill unoptimized className="object-contain drop-shadow-[0_0_12px_rgba(103,232,249,.95)]" />
+            {active && <motion.div className="pointer-events-none absolute z-20 h-24 w-40 -translate-x-1/2 -translate-y-1/2" initial={{ opacity: 0 }} animate={{ opacity: 1, left: `${left ? 44 + levelProgress * 12 : 56 - levelProgress * 12}%`, top: `${50 + levelProgress * 140}%` }} transition={{ opacity: { duration: .45 }, left: { duration: .9, ease: 'easeInOut' }, top: { duration: .9, ease: 'easeInOut' } }}>
+              <motion.span className="absolute left-1/2 top-[72%] h-5 w-24 -translate-x-1/2 rounded-full border border-cyan-100/70 bg-cyan-300/20 shadow-[0_0_24px_rgba(34,211,238,.9)]" initial={{ scale: .35, opacity: 0 }} animate={{ scale: [0.35, 1.55, 1.8], opacity: [0, .85, 0] }} transition={{ duration: 1.15, delay: 1.05, repeat: Infinity, repeatDelay: 3.4, ease: 'easeOut' }} />
+              <motion.span className="absolute left-[31%] top-[57%] h-3 w-10 -translate-y-1/2 rounded-full bg-gradient-to-l from-cyan-100 via-cyan-300/80 to-transparent blur-[2px]" animate={{ scaleX: [0.55, 1.15, .7], opacity: [.45, 1, .55] }} transition={{ duration: .32, repeat: Infinity, ease: 'easeInOut' }} />
+              <motion.span className="absolute left-[42%] top-[67%] h-4 w-8 -translate-y-1/2 rotate-12 rounded-full bg-gradient-to-l from-amber-100 via-amber-300/75 to-transparent blur-[2px]" animate={{ scaleX: [.5, 1.05, .65], opacity: [.35, .9, .45] }} transition={{ duration: .4, repeat: Infinity, ease: 'easeInOut' }} />
+              <span className="absolute inset-3 rounded-full bg-cyan-300/25 blur-xl" />
+              <motion.div className="absolute inset-0" initial={{ y: -26, scale: .92, rotate: -2 }} animate={{ y: [-26, 2, -3, 0], scale: [.92, 1, 1, 1], rotate: [-2, 1, -.5, 0] }} transition={{ duration: 1.55, times: [0, .66, .84, 1], ease: 'easeOut' }}>
+                <motion.div className="absolute inset-0" animate={{ y: [0, -2, 0], rotate: [-.35, .35, -.35] }} transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}>
+                  <Image src={ARK_IMAGE} alt={`ARK travelling from level ${level} to level ${Math.min(MAX_LEVEL, level + 1)}`} fill unoptimized className="object-contain drop-shadow-[0_0_14px_rgba(103,232,249,.98)]" />
+                </motion.div>
+              </motion.div>
+              <motion.span className="absolute left-1/2 top-[74%] -translate-x-1/2 whitespace-nowrap rounded-full border border-cyan-200/30 bg-slate-950/80 px-2 py-1 text-[7px] font-black uppercase tracking-[.22em] text-cyan-100" initial={{ opacity: 0, y: 4 }} animate={{ opacity: [0, 1, 1, 0], y: [4, 0, 0, -2] }} transition={{ duration: 2.4, times: [0, .3, .78, 1] }}>Landing sequence</motion.span>
             </motion.div>}
           </div>;
         })}
