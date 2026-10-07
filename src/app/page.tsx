@@ -69,7 +69,7 @@ export default function HomePage() {
   }, [isIntroPlaying]);
 
   useEffect(() => {
-    const storageKey = "forgeite-ark-section-deadline";
+    const storageKey = "mission-vanguard-ark-section-deadline";
     const updateCountdown = () => {
       const saved = Number(window.localStorage.getItem(storageKey));
       const deadline = saved > Date.now() ? saved : Date.now() + ARK_SECTION_BUILD_MS;
@@ -140,7 +140,7 @@ export default function HomePage() {
     <header className="relative z-30 flex items-center justify-between gap-3 px-4 py-4 sm:px-7">
       <div className="rounded-xl border border-cyan-300/25 bg-slate-950/55 px-4 py-2 backdrop-blur-xl">
         <p className="text-[10px] uppercase tracking-[0.35em] text-cyan-300">Command deck</p>
-        <p className="font-bold tracking-wide">ARK // FORGEITE FRENZY</p>
+        <p className="font-bold tracking-wide">ARK // MISSION: VANGUARD</p>
       </div>
       <div className="flex items-center gap-2">
         <a href="https://pilukarts.github.io/" target="_blank" rel="noopener noreferrer" aria-label="Open Pilukarts portfolio" className="flex items-center gap-2 rounded-full border border-violet-300/35 bg-violet-950/45 px-3 py-2 text-[10px] font-bold uppercase tracking-[.14em] text-violet-100 backdrop-blur-xl transition hover:border-violet-200 hover:shadow-[0_0_24px_rgba(167,139,250,.3)] sm:text-xs"><ExternalLink className="h-4 w-4" /> Portfolio</a>

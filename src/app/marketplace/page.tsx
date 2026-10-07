@@ -90,7 +90,7 @@ const MarketplacePage: React.FC = () => {
           </div>
           <div className="mt-3 flex items-center justify-center gap-2 rounded-xl border border-amber-300/40 bg-amber-300/10 px-4 py-3 shadow-[inset_0_0_22px_rgba(251,191,36,0.08)] sm:mt-0">
             <Sparkles className="h-6 w-6 text-bright-gold" />
-            <div><span className="block text-[10px] uppercase tracking-[0.24em] text-amber-200/70">Available balance</span><span className="text-xl font-black text-bright-gold">{playerProfile.auron.toLocaleString()} AURON</span></div>
+            <div><span className="block text-[10px] uppercase tracking-[0.24em] text-amber-200/70">Available balance</span><span className="text-xl font-black text-bright-gold">{playerProfile.auron.toLocaleString()} VANGUARD CREDITS</span></div>
           </div>
         </div>
         
@@ -120,13 +120,13 @@ const MarketplacePage: React.FC = () => {
 
           {/* Rewarded Ad Section */}
           <section className="mb-6 sm:mb-8">
-            <div className="mb-3"><p className="text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-300">Free transmission</p><h2 className="text-xl sm:text-2xl font-headline text-white">Alliance Broadcast Center</h2></div>
+            <div className="mb-3"><p className="text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-300">Free transmission</p><h2 className="text-xl sm:text-2xl font-headline text-white">Vanguard Broadcast Center</h2></div>
             <Card className="border-cyan-300/30 bg-cyan-950/30 text-card-foreground shadow-[0_0_28px_rgba(34,211,238,0.1)] flex flex-col items-center p-4">
               <CardHeader className="items-center text-center p-2">
                 <Clapperboard className="h-10 w-10 text-primary" />
                 <CardTitle className="text-lg sm:text-xl font-semibold text-primary mt-2">Watch Ad</CardTitle>
                 <CardDescription className="text-base text-muted-foreground mt-1">
-                  Watch an Alliance broadcast to receive a free reward.
+                  Watch a Vanguard broadcast to receive a free reward.
                 </CardDescription>
               </CardHeader>
               <CardContent className="text-center">

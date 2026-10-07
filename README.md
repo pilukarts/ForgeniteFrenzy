@@ -29,7 +29,7 @@ This game is a "tap-to-earn" experience where players progress through seasons, 
   - An AI-powered companion that provides dynamic mission briefings, adaptive gameplay advice, and immersive lore snippets based on player progress.
 - **Social & Community Features:**
   - **Global Leaderboards:** Compete with players worldwide for the top score.
-  - **Alliance Chat:** A simulated chat room to coordinate with fellow commanders.
+  - **Vanguard Comms:** A simulated communications room for coordinating with fellow commanders.
   - **Feedback & Support Forms:** Integrated pages for players to submit feedback or contact support.
 - **Daily Quests:** Complete daily objectives to earn valuable rewards and accelerate your progress.
 - **Web3 Integration (Simulated):**
@@ -43,7 +43,7 @@ This game is a "tap-to-earn" experience where players progress through seasons, 
 - **Styling:** [Tailwind CSS](https://tailwindcss.com/)
 - **UI Components:** [ShadCN UI](https://ui.shadcn.com/)
 - **Generative AI:** [Firebase Genkit](https://firebase.google.com/docs/genkit)
-- **Deployment:** [Firebase App Hosting](https://firebase.google.com/docs/app-hosting)
+- **Deployment:** [GitHub Pages](https://pages.github.com/)
 
 ## 🛠️ Getting Started
 
@@ -51,8 +51,8 @@ To run the project locally, follow these steps:
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/allianceforge/forgeitefrenzy.git
-    cd forgeitefrenzy
+    git clone https://github.com/pilukarts/Mission-Vanguard.git
+    cd Mission-Vanguard
     ```
 
 2.  **Install dependencies:**
@@ -78,10 +78,15 @@ To run the project locally, follow these steps:
 
 ## ☁️ Deployment
 
-This project is configured for seamless deployment using **Firebase App Hosting**. The `apphosting.yaml` file defines the hosting settings.
+The public game is deployed as a static Next.js export through **GitHub Pages**.
 
 The deployment process is automated via GitHub Actions:
-1.  Push your code changes to the `main` branch of your GitHub repository.
-2.  Firebase App Hosting automatically detects the push, builds the Next.js application, and deploys it.
-3.  The live URL will be available in your Firebase project's App Hosting dashboard, which is `https://auron-vanguard.web.app`.
-# auron-vanguard-AF
+1. Push reviewed code changes to the `main` branch.
+2. GitHub Actions builds the static application.
+3. The public game is available at [pilukarts.github.io/Mission-Vanguard](https://pilukarts.github.io/Mission-Vanguard/).
+
+## Ownership and contact
+
+Mission: Vanguard is an independent Pilukarts Studio project created by Maria Pilar Rodriguez Castillejo.
+
+Contact: [pilukartsstudio@gmail.com](mailto:pilukartsstudio@gmail.com)
