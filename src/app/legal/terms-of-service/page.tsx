@@ -1,146 +1,61 @@
-
 "use client";
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { FileText } from 'lucide-react';
-import Link from 'next/link';
 
+import Link from "next/link";
+import { FileText } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const TermsOfServicePage: React.FC = () => {
-  return (
-    <>
-      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
-        <header className="mb-6">
-          <h1 className="text-3xl sm:text-4xl font-headline text-primary flex items-center">
-            <FileText className="mr-3 h-8 w-8 sm:h-10 sm:w-10" />
-            Terms of Service
-          </h1>
-          <p className="text-sm sm:text-base text-muted-foreground mt-1">
-            Rules of engagement for all Alliance Commanders.
-          </p>
-        </header>
+const updated = "7 October 2026";
 
-        <ScrollArea className="h-[calc(100vh-var(--app-header-h,60px)-var(--page-header-h,120px)-var(--bottom-nav-h,56px)-var(--page-padding,48px))]">
-          <div className="space-y-6 text-sm sm:text-base text-foreground/90">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">1. Acceptance of Terms</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <p>
-                  These Terms of Service ("Terms") constitute a legally binding agreement made between you ("you" or "User") and Pilukarts Studio ("we," "us," or "our") concerning your access to and use of the MISSION: VANGUARD game ("Game"). By accessing, playing, or registering for our Game, you agree to be bound by these Terms and our{' '}
-                  <Link href="/legal/transparency-statement" className="text-primary hover:underline">
-                    Transparency Statement
-                  </Link>. If you do not agree with these Terms, you must not use the Game.
-                </p>
-              </CardContent>
-            </Card>
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return <Card><CardHeader><CardTitle className="text-xl text-accent">{title}</CardTitle></CardHeader><CardContent className="space-y-3 text-sm leading-6 text-foreground/90 sm:text-base">{children}</CardContent></Card>;
+}
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">2. User Account</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <p><strong>Eligibility:</strong> You must be at least 13 years old to create an account and play the Game.</p>
-                <p><strong>Responsibility:</strong> You are responsible for maintaining the confidentiality of your account and for all activities that occur under it. You agree to immediately notify us of any unauthorized use.</p>
-                <p><strong>Conduct:</strong> Cheating, exploiting, using bots, hacks, or any unauthorized third-party software to modify or automate gameplay is prohibited. Violation of this rule may result in account suspension or termination.</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">3. Digital Assets & Intellectual Property</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <p><strong>Our IP:</strong> The Game, including all code, graphics, characters, names, and other content, is owned by us or our licensors.</p>
-                <p><strong>Virtual Goods:</strong> We grant you a limited, non-exclusive, non-transferable, revocable license to use virtual goods (like Points and Vanguard Credits) within the Game for gameplay purposes. They have no real-world monetary value and are not redeemable for cash.</p>
-                <p><strong>Non-Fungible Tokens (NFTs):</strong> By acquiring an NFT, you own the token on the blockchain. However, the intellectual property of the associated art and traits remains with us. We grant you a license to use, display, and trade your NFT for personal, non-commercial purposes.</p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">4. Player Code of Conduct</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <p>You agree not to:</p>
-                <ul className="list-disc pl-5 space-y-1">
-                    <li>Use language or share content that is unlawful, abusive, hateful, or discriminatory.</li>
-                    <li>Impersonate another player, a staff member, or any other person.</li>
-                    <li>Disrupt the game or servers, or negatively affect other players' experiences.</li>
-                    <li>Engage in "real money trading" (RMT) of virtual goods or accounts outside of authorized NFT marketplace platforms.</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">5. Termination</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>
-                  We reserve the right to suspend or terminate your account and access to the Game, without notice, for any violation of these Terms.
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">6. Disclaimers and Limitation of Liability</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <p>THE GAME IS PROVIDED "AS IS." WE MAKE NO WARRANTIES OF ANY KIND. TO THE FULLEST EXTENT PERMITTED BY LAW, WE WILL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES.</p>
-                <p>The value of blockchain assets (NFTs, cryptocurrencies) is volatile. We are not responsible for any financial losses.</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">7. Changes to Terms</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>
-                  We may modify these Terms at any time. We will notify you of significant changes. Your continued use of the Game after changes constitutes your acceptance of the new Terms.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">8. Contact</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>
-                   For questions about these Terms, contact Pilukarts Studio at{' '}
-                   <a href="mailto:pilukartsstudio@gmail.com" className="text-primary hover:underline">
-                    pilukartsstudio@gmail.com
-                  </a>{' '}or use our{' '}
-                   <Link href="/support" className="text-primary hover:underline">support page</Link>.
-                </p>
-              </CardContent>
-            </Card>
-
-          </div>
-        </ScrollArea>
-        {/* CSS variables for dynamic height calculation */}
-        <style jsx>{`
-          :root {
-            --app-header-h: 60px; 
-            --page-header-h: 100px;
-            --bottom-nav-h: 56px;
-            --page-padding: 48px;
-          }
-           @media (min-width: 640px) { /* sm breakpoint */
-            :root {
-              --app-header-h: 68px;
-              --page-header-h: 110px;
-            }
-          }
-        `}</style>
-      </div>
-    </>
-  );
-};
-
-export default TermsOfServicePage;
+export default function TermsOfServicePage() {
+  return <main className="container mx-auto px-3 py-6 sm:px-6">
+    <header className="mb-6">
+      <h1 className="flex items-center text-3xl font-headline text-primary sm:text-4xl"><FileText className="mr-3 h-9 w-9" />Terms of Service</h1>
+      <p className="mt-2 text-muted-foreground">Clear rules for Mission: Vanguard players and supporters.</p>
+      <p className="mt-1 text-xs text-muted-foreground">Last updated: {updated}</p>
+    </header>
+    <div className="space-y-5">
+      <Section title="1. About these terms">
+        <p>These Terms govern access to Mission: Vanguard (the “Game”), operated by Pilukarts Studio (“we”, “us” or “our”). By using the Game, you agree to these Terms and our <Link className="text-primary hover:underline" href="/legal/privacy">Privacy Notice</Link>. If you do not agree, do not use the Game.</p>
+        <p>The Game is an evolving independent project. Features may be incomplete, experimental, changed or removed.</p>
+      </Section>
+      <Section title="2. Eligibility and player responsibility">
+        <p>You must be at least 13 to use the Game. If you are under 18, a parent or guardian should approve any purchase or voluntary financial support.</p>
+        <p>You are responsible for activity on your device, Telegram account and connected wallet. Do not share passwords, private keys or seed phrases with us or anyone claiming to represent us.</p>
+      </Section>
+      <Section title="3. Gameplay, progress and virtual items">
+        <p>Vanguard Credits, Astralyte, points, energy, levels, upgrades, badges and other virtual items are game features only. They have no cash value, are not investments, cannot be withdrawn and are not transferable unless we expressly introduce a lawful transfer feature later.</p>
+        <p>Game progress may currently be stored locally on your device. Clearing browser storage, changing device or technical failure may reset progress. We do not guarantee permanent availability of locally stored progress.</p>
+        <p>We may rebalance, correct or remove virtual items and progress where reasonably necessary for testing, fairness, security or continued development.</p>
+      </Section>
+      <Section title="4. Voluntary support and the Founding Commander Pack">
+        <p>Any contribution helps support the continued development of Mission: Vanguard. Support is voluntary and does not purchase equity, ownership, royalties, profit sharing, voting rights, investment returns or control of the project.</p>
+        <p>The Founding Commander Pack is a low-cost supporter product sold through Ko-fi. Its stated rewards are cosmetic recognition and a chosen Commander name in the credits, added manually after payment verification. It provides no competitive advantage, cryptocurrency or transferable asset.</p>
+        <p>Ko-fi and its payment processors handle payment information under their own terms and privacy notices. Contact us promptly about fulfilment or an incorrect Commander name. Refund and consumer rights required by applicable law are not limited by these Terms.</p>
+      </Section>
+      <Section title="5. Wallet and blockchain status">
+        <p>A wallet connection may be shown as an experimental interface. Connecting a wallet does not create a token, make a payment, grant ownership or guarantee a future blockchain feature.</p>
+        <p>Mission: Vanguard currently has no official cryptocurrency, active smart contract or official NFT collection. We will publish a separate notice, verified contract details and updated terms before any real blockchain functionality is offered.</p>
+      </Section>
+      <Section title="6. Acceptable use">
+        <p>Do not cheat, automate gameplay without permission, exploit vulnerabilities, harass others, impersonate Pilukarts Studio, interfere with the service, submit unlawful content or attempt to sell accounts or virtual items for real money.</p>
+        <p>Report security issues privately to <a className="text-primary hover:underline" href="mailto:pilukartsstudio@gmail.com">pilukartsstudio@gmail.com</a>.</p>
+      </Section>
+      <Section title="7. Intellectual property and names submitted">
+        <p>The Game and its original code, artwork, writing, characters, interfaces and other content are owned by Pilukarts Studio or used under licence. Open-source and third-party materials remain subject to their respective licences.</p>
+        <p>If you submit a Commander name for public credits, you confirm that it is lawful and does not impersonate or infringe another person. You give us permission to display and reasonably format that name in the Game and related project pages. We may reject or remove inappropriate names.</p>
+      </Section>
+      <Section title="8. Availability and liability">
+        <p>The Game is provided on an evolving, as-available basis. We do not promise uninterrupted access or that every experimental feature will reach final release.</p>
+        <p>Nothing in these Terms excludes legal rights or liability that cannot lawfully be excluded. Subject to that, we are not responsible for indirect losses, loss of locally stored progress, third-party platform outages or actions you take through external services.</p>
+      </Section>
+      <Section title="9. Changes and contact">
+        <p>We may update these Terms when the Game, law or services change. We will update the date above and provide reasonable notice of material changes where practical.</p>
+        <p>Questions: <a className="text-primary hover:underline" href="mailto:pilukartsstudio@gmail.com">pilukartsstudio@gmail.com</a> or our <Link className="text-primary hover:underline" href="/support">support page</Link>.</p>
+      </Section>
+    </div>
+  </main>;
+}
