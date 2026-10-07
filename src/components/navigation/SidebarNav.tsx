@@ -1,6 +1,6 @@
 "use client";
 import Link from 'next/link';
-import { Home, ChevronsUp, Trophy, RadioTower, Users, ShoppingCart, MessagesSquare, ListChecks, Swords, Map, Gamepad2, FileText, UserCircle, GalleryHorizontal, LifeBuoy, Info, Replace, Music, Music2, RefreshCw, Globe, Share2, Send, Bot } from 'lucide-react';
+import { Home, ChevronsUp, Trophy, RadioTower, Users, ShoppingCart, MessagesSquare, ListChecks, Swords, Map, Gamepad2, FileText, UserCircle, LifeBuoy, Info, Replace, Music, Music2, RefreshCw, Globe, Share2, Send, Bot } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useGame } from '@/contexts/GameContext';
@@ -26,11 +26,10 @@ const mainNavItems = [
 ];
 
 const secondaryNavItems = [
-  { href: '/nfts', label: 'NFTs', icon: GalleryHorizontal },
   { href: '/community', label: 'Community', icon: Users },
   { href: '/support', label: 'Support', icon: LifeBuoy },
   { href: '/profile', label: 'Profile', icon: UserCircle },
-  { href: '/legal/smart-contracts', label: 'Contracts', icon: FileText },
+  { href: '/legal/terms-of-service', label: 'Legal', icon: FileText },
 ];
 
 const socialLinks = [
