@@ -1,214 +1,43 @@
-
 "use client";
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { ShieldQuestion } from 'lucide-react';
-import Link from 'next/link';
 
-const TransparencyStatementPage: React.FC = () => {
-  return (
-    <>
-      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
-        <header className="mb-6">
-          <h1 className="text-3xl sm:text-4xl font-headline text-primary flex items-center">
-            <ShieldQuestion className="mr-3 h-8 w-8 sm:h-10 sm:w-10" />
-            Transparency Statement
-          </h1>
-          <p className="text-sm sm:text-base text-muted-foreground mt-1">
-            Our commitment to clarity regarding digital assets and game economies.
-          </p>
-        </header>
+import Link from "next/link";
+import { ShieldCheck } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-        <ScrollArea className="h-[calc(100vh-var(--app-header-h,60px)-var(--page-header-h,120px)-var(--bottom-nav-h,56px)-var(--page-padding,48px))]">
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Introduction</CardTitle>
-              </CardHeader>
-              <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
-                <p>
-                  Welcome to MISSION: VANGUARD. This statement outlines key information about how
-                  digital assets, including Non-Fungible Tokens (NFTs), cryptocurrencies,
-                  and virtual goods, function within our game. Our goal is to provide a
-                  clear understanding of these elements to ensure a transparent and fair gameplay experience.
-                </p>
-                <p>
-                  Please read this statement carefully. By participating in MISSION: VANGUARD and interacting
-                  with its digital assets, you acknowledge and agree to the terms outlined herein and our{' '}
-                  <Link href="/legal/terms-of-service" className="text-primary hover:underline">
-                    Terms of Service
-                  </Link>.
-                </p>
-              </CardContent>
-            </Card>
+function Status({ name, status, children }: { name: string; status: string; children: React.ReactNode }) {
+  return <Card><CardHeader><CardTitle className="flex flex-wrap items-center justify-between gap-2 text-xl text-accent"><span>{name}</span><span className="rounded-full border border-cyan-300/30 bg-cyan-950/40 px-3 py-1 text-xs uppercase tracking-wider text-cyan-200">{status}</span></CardTitle></CardHeader><CardContent className="text-sm leading-6 text-foreground/90 sm:text-base">{children}</CardContent></Card>;
+}
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Non-Fungible Tokens (NFTs)</CardTitle>
-              </CardHeader>
-              <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
-                <p>
-                  <strong>Definition:</strong> NFTs are unique digital identifiers recorded on a blockchain,
-                  used to certify ownership of a specific digital asset. In MISSION: VANGUARD,
-                  NFTs may represent items such as the "Founder's Ark" or other unique collectibles.
-                </p>
-                <p>
-                  <strong>Acquisition:</strong> NFTs within MISSION: VANGUARD are earned through significant
-                  in-game achievements, participation in special events, or specific purchases
-                  where explicitly stated.
-                </p>
-                <p>
-                  <strong>Ownership & Blockchain:</strong> When you acquire an MISSION: VANGUARD NFT,
-                  it is associated with your connected cryptocurrency wallet address on the [Specify Blockchain, e.g., Polygon, Ethereum] blockchain.
-                  You have control over this NFT in your wallet, subject to the rules of the blockchain network.
-                </p>
-                <p>
-                  <strong>Utility:</strong> The utility of NFTs within MISSION: VANGUARD will be described
-                  at the point of acquisition or in official game documentation. Utility may include
-                  in-game benefits, cosmetic enhancements, or access to exclusive content.
-                </p>
-                <p>
-                  <strong>Trading & Value:</strong> You are free to trade, sell, or transfer your NFTs on third-party marketplaces
-                  that support the relevant blockchain and NFT standard. MISSION: VANGUARD does not operate these marketplaces
-                  and is not responsible for transactions conducted on them. The value of NFTs is determined by the market and community.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Cryptocurrency & In-Game Currency</CardTitle>
-              </CardHeader>
-              <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
-                 <p>
-                  <strong>Vanguard Credits (Premium In-Game Currency):</strong> Vanguard Credits is an in-game virtual currency
-                  used to purchase premium items, boosts, or cosmetic content in MISSION: VANGUARD.
-                  Vanguard Credits is primarily acquired by connecting a crypto wallet or through direct purchases.
-                  Vanguard Credits is an internal virtual currency and is NOT a cryptocurrency. It exists only within the game's ecosystem.
-                </p>
-                <p>
-                  <strong>Points (Standard In-Game Currency):</strong> Points are the primary currency earned
-                  through gameplay (e.g., tapping, completing quests). They are used for standard upgrades and progression.
-                  Points are a virtual good with utility only inside the game.
-                </p>
-                <p>
-                  <strong>Future Cryptocurrency Token:</strong> MISSION: VANGUARD plans to introduce its own cryptocurrency token in the future.
-                  Details about such a token, including its utility, economics (tokenomics), and distribution (e.g., airdrop mechanics based on "Founder's Score"),
-                  will be provided in a separate whitepaper or official announcement. Treat any claims of an existing MISSION: VANGUARD token outside of official announcements with extreme caution.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Virtual Goods</CardTitle>
-              </CardHeader>
-              <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
-                <p>
-                  <strong>Nature:</strong> Virtual goods in MISSION: VANGUARD include all in-game items,
-                  currencies (Points, Vanguard Credits), characters, upgrades, and other digital content that can be
-                  acquired or used within the game.
-                </p>
-                <p>
-                  <strong>License:</strong> When you acquire virtual goods, you are granted a limited, non-transferable,
-                  revocable license to use these goods within the game, according to our{' '}
-                   <Link href="/legal/terms-of-service" className="text-primary hover:underline">
-                    Terms of Service
-                  </Link>.
-                  You do not own the underlying intellectual property of these virtual goods.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Ownership & Licensing</CardTitle>
-              </CardHeader>
-              <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
-                <p>
-                  <strong>Game and IP:</strong> MISSION: VANGUARD and all its associated content,
-                  including software, graphics, characters, and storylines, are owned by Pilukarts Studio
-                  or its licensors and are protected by copyright and other intellectual property laws.
-                </p>
-                <p>
-                  <strong>NFT Ownership:</strong> For NFTs minted by MISSION: VANGUARD, ownership of the
-                  specific token on the blockchain is transferred to you upon acquisition. However, the underlying
-                  intellectual property (e.g., the art or character design associated with the NFT) remains with Pilukarts Studio
-                  or its licensors. Your ownership of the NFT grants you certain rights to use and display the associated art,
-                  typically for personal, non-commercial purposes, as detailed in our{' '}
-                  <Link href="/legal/terms-of-service" className="text-primary hover:underline">
-                    Terms of Service
-                  </Link>.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Risks & Disclosures</CardTitle>
-              </CardHeader>
-              <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
-                <p>
-                  <strong>Market Volatility (NFTs & Crypto):</strong> The value of NFTs and cryptocurrencies
-                  can be extremely volatile. There is no guarantee of value or liquidity for any digital asset.
-                </p>
-                <p>
-                  <strong>Regulatory Uncertainty:</strong> The regulatory landscape for digital assets
-                  is evolving. Changes in regulation could impact the use, transfer, or value
-                  of these assets.
-                </p>
-                <p>
-                  <strong>Security:</strong> You are responsible for the security of your cryptocurrency wallet
-                  and any digital assets stored within it.
-                </p>
-                <p>
-                  <strong>Not Investment Advice:</strong> Information provided by MISSION: VANGUARD
-                  should not be construed as financial or investment advice.
-                </p>
-                 <p>
-                  <strong>Game Development:</strong> MISSION: VANGUARD is an evolving game. Features,
-                  items, and economic balancing may change. We reserve the right to modify
-                  or discontinue aspects of the game.
-                </p>
-              </CardContent>
-            </Card>
-
-             <Card>
-              <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Contact</CardTitle>
-              </CardHeader>
-              <CardContent className="text-sm sm:text-base text-foreground/90 space-y-2">
-                <p>
-                  If you have any questions, contact Pilukarts Studio at{' '}
-                  <a href="mailto:pilukartsstudio@gmail.com" className="text-primary hover:underline">pilukartsstudio@gmail.com</a>{' '}
-                  or use the <Link href="/support" className="text-primary hover:underline">support page</Link>.
-                </p>
-                <p>
-                  Last Updated: 5 October 2026
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </ScrollArea>
-        {/* CSS variables for dynamic height calculation */}
-        <style jsx>{`
-          :root {
-            --app-header-h: 60px; 
-            --page-header-h: 100px; /* Approx height of page title + desc */
-            --bottom-nav-h: 56px;
-            --page-padding: 48px; /* Sum of py-4/py-6 top and bottom padding for the page container */
-          }
-           @media (min-width: 640px) { /* sm breakpoint */
-            :root {
-              --app-header-h: 68px;
-              --page-header-h: 110px;
-            }
-          }
-        `}</style>
-      </div>
-    </>
-  );
-};
-
-export default TransparencyStatementPage;
+export default function TransparencyStatementPage() {
+  return <main className="container mx-auto px-3 py-6 sm:px-6">
+    <header className="mb-6">
+      <h1 className="flex items-center text-3xl font-headline text-primary sm:text-4xl"><ShieldCheck className="mr-3 h-9 w-9" />Game Economy & Support Transparency</h1>
+      <p className="mt-2 text-muted-foreground">What exists now, what is experimental and what is not offered.</p>
+      <p className="mt-1 text-xs text-muted-foreground">Last updated: 7 October 2026</p>
+    </header>
+    <div className="space-y-5">
+      <Status name="Vanguard Credits, Astralyte and Points" status="Live game features">
+        <p>These are fictional in-game resources earned or used for gameplay and progression. They are not cryptocurrency, money, investments or redeemable rewards. They cannot currently be withdrawn or transferred to another wallet or player.</p>
+      </Status>
+      <Status name="Tap Tap and arcade rewards" status="Gameplay only">
+        <p>Rewards generated by Tap Tap or other minigames affect game progress only. Scores and credits do not represent income and do not promise financial return.</p>
+      </Status>
+      <Status name="Wallet connection" status="Experimental">
+        <p>The interface may allow a player to connect a compatible wallet. Connection alone does not initiate payment, create a token, prove ownership of game content or grant currency. Never send us a seed phrase or private key.</p>
+      </Status>
+      <Status name="Smart contracts, tokens and NFTs" status="Not active">
+        <p>Mission: Vanguard currently has no official cryptocurrency, deployed smart contract or official NFT collection. There is no contract address to buy from. Any person claiming otherwise is not describing the current official release.</p>
+      </Status>
+      <Status name="Ko-fi support" status="Active">
+        <p>Any contribution helps support continued development. The Founding Commander Pack is a supporter purchase providing cosmetic recognition and a chosen name in the credits. It does not provide equity, project ownership, revenue share, profit, interest, investment returns or blockchain assets.</p>
+      </Status>
+      <Status name="Telegram payments" status="Not active">
+        <p>Telegram Stars may be considered for future digital cosmetic purchases. No such purchase system is active until it is implemented, tested and covered by updated terms and support procedures.</p>
+      </Status>
+      <Status name="Future changes" status="No promise">
+        <p>Ideas on a roadmap are not guaranteed features. Before introducing real-money purchases, blockchain assets or material data collection, we will publish updated information and obtain any consent required by law.</p>
+      </Status>
+      <Card><CardHeader><CardTitle className="text-xl text-accent">Questions or suspicious claims</CardTitle></CardHeader><CardContent className="space-y-2 text-sm leading-6 text-foreground/90 sm:text-base"><p>Contact Pilukarts Studio at <a className="text-primary hover:underline" href="mailto:pilukartsstudio@gmail.com">pilukartsstudio@gmail.com</a>.</p><p>Read the <Link className="text-primary hover:underline" href="/legal/terms-of-service">Terms</Link> and <Link className="text-primary hover:underline" href="/legal/privacy">Privacy Notice</Link>.</p></CardContent></Card>
+    </div>
+  </main>;
+}
