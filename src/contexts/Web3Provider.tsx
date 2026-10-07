@@ -17,7 +17,7 @@ interface Web3ProviderProps {
 }
 
 const config = getDefaultConfig({
-    appName: 'Auron Vanguard',
+    appName: 'Mission: Vanguard',
     projectId: '2d3c8d3527e02bcb7d17675be8c07e5c',
     chains: [mainnet, polygon, optimism, arbitrum, base], 
     wallets: [

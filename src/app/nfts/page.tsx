@@ -1,72 +1,64 @@
-
 "use client";
-import React from 'react';
-import { useGame } from '@/contexts/GameContext';
-import PlayerSetup from '@/components/player/PlayerSetup';
-import IntroScreen from '@/components/intro/IntroScreen';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { GalleryHorizontal, ExternalLink } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { placeholderNfts } from '@/lib/nfts';
-import Image from 'next/image';
 
-const NftsPage: React.FC = () => {
+import React from "react";
+import { GalleryHorizontal, Rocket, Shield, Sparkles } from "lucide-react";
+import IntroScreen from "@/components/intro/IntroScreen";
+import PlayerSetup from "@/components/player/PlayerSetup";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useGame } from "@/contexts/GameContext";
+
+const futureCollections = [
+  {
+    title: "Founding Crew",
+    description: "Original commanders, cadets and insignias from the first Mission: Vanguard expedition.",
+    icon: Shield,
+  },
+  {
+    title: "The Ark",
+    description: "Concept art, ship sections and mission records from humanity's Vanguard flagship.",
+    icon: Rocket,
+  },
+  {
+    title: "Astralyte Artifacts",
+    description: "Cosmetic relics and discoveries gathered across future sectors of the Vanguard Universe.",
+    icon: Sparkles,
+  },
+];
+
+export default function VanguardCollectiblesPage() {
   const { isLoading, isInitialSetupDone } = useGame();
 
-  if (isLoading) {
-    return <IntroScreen />;
-  }
-
-  if (!isInitialSetupDone) {
-    return <PlayerSetup />;
-  }
+  if (isLoading) return <IntroScreen />;
+  if (!isInitialSetupDone) return <PlayerSetup />;
 
   return (
-    <>
-      <div className="h-full flex flex-col p-2 sm:p-4">
-        <header className="mb-4 sm:mb-6">
-          <h1 className="text-2xl sm:text-3xl font-headline text-primary flex items-center">
-            <GalleryHorizontal className="mr-3 h-7 w-7" />
-            Founder's Ark NFTs
-          </h1>
-          <p className="text-base text-muted-foreground mt-1">
-            Own a piece of the Alliance. These exclusive, limited-edition ship blueprints offer unique in-game perks and true digital ownership.
-          </p>
-        </header>
+    <section className="min-h-full bg-[radial-gradient(circle_at_top,rgba(34,211,238,.13),transparent_36%),linear-gradient(180deg,#020617,#080b1d)] p-4 text-white sm:p-7">
+      <header className="mx-auto max-w-5xl text-center">
+        <GalleryHorizontal className="mx-auto h-10 w-10 text-cyan-300" />
+        <p className="mt-3 text-xs font-bold uppercase tracking-[.35em] text-cyan-300">Vanguard Archive</p>
+        <h1 className="mt-2 text-3xl font-black sm:text-5xl">Mission: Vanguard Collectibles</h1>
+        <p className="mx-auto mt-4 max-w-2xl text-slate-300">
+          A future gallery for original Mission: Vanguard artwork, characters, ships and story artifacts.
+          The collection is currently in development and nothing on this page is for sale.
+        </p>
+      </header>
 
-        <ScrollArea className="flex-grow">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {placeholderNfts.map((nft) => (
-              <Card key={nft.id} className="bg-card text-card-foreground shadow-lg flex flex-col">
-                <CardHeader>
-                  <div className="aspect-video relative w-full rounded-t-lg overflow-hidden border-b border-primary/20">
-                     <Image src={nft.imageUrl} alt={nft.name} layout="fill" objectFit="cover" data-ai-hint={nft.aiHint}/>
-                  </div>
-                  <CardTitle className="pt-4 text-xl font-headline text-accent">{nft.name}</CardTitle>
-                  <CardDescription className="text-sm">{nft.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <div className="text-xs space-y-1 text-muted-foreground">
-                    <p><strong>Collection:</strong> {nft.collection}</p>
-                    <p><strong>Rarity:</strong> {nft.rarity}</p>
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <a href={nft.purchaseUrl} target="_blank" rel="noopener noreferrer" className="w-full">
-                    <Button className="w-full">
-                      <ExternalLink className="mr-2 h-4 w-4" />
-                      View on Crypto.com
-                    </Button>
-                  </a>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-        </ScrollArea>
+      <div className="mx-auto mt-9 grid max-w-5xl gap-4 md:grid-cols-3">
+        {futureCollections.map(({ title, description, icon: Icon }) => (
+          <Card key={title} className="border-cyan-300/25 bg-slate-950/70 text-white shadow-[0_0_28px_rgba(34,211,238,.08)]">
+            <CardHeader>
+              <Icon className="h-9 w-9 text-amber-300" />
+              <CardTitle className="pt-3">{title}</CardTitle>
+            </CardHeader>
+            <CardContent className="text-sm leading-6 text-slate-300">{description}</CardContent>
+          </Card>
+        ))}
       </div>
-    </>
-  );
-};
 
-export default NftsPage;
+      <div className="mx-auto mt-7 max-w-3xl rounded-2xl border border-amber-300/25 bg-amber-300/5 p-4 text-center text-sm text-slate-300">
+        <strong className="text-amber-200">Coming later:</strong> no official NFT, token or blockchain collection has been launched.
+        Any future release will be announced with separate terms and clear ownership information.
+      </div>
+    </section>
+  );
+}

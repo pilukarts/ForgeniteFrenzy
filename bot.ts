@@ -2,7 +2,7 @@
 import { Telegraf, Context } from 'telegraf';
 
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN || '';
-const GAME_URL = 'https://auron-vanguard.web.app';
+const GAME_URL = 'https://pilukarts.github.io/Mission-Vanguard/';
 
 const bot = new Telegraf(TOKEN);
 

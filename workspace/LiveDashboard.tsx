@@ -280,7 +280,7 @@ export const LiveDashboard: React.FC = () => {
                       <div className="text-2xl font-bold text-purple-400 mb-1">
                         {playerProfile?.auron?.toLocaleString() || '0'}
                       </div>
-                      <div className="text-gray-400 text-sm">Auron Currency</div>
+                      <div className="text-gray-400 text-sm">Vanguard Credits</div>
                     </div>
                   </div>
                 </div>

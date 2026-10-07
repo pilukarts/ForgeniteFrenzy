@@ -10,13 +10,13 @@
   "theme_color": "#facc15",
   "icons": [
     {
-      "src": "/images/global/star-ark-forge.png",
+      "src": "/images/global/vanguard-ark.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/images/global/star-ark-forge.png",
+      "src": "/images/global/vanguard-ark.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

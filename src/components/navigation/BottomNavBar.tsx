@@ -1,6 +1,6 @@
 "use client";
 import Link from 'next/link';
-import { Home, ChevronsUp, Trophy, RadioTower, Users, ShoppingCart, MessagesSquare, ListChecks, Swords, Map, Gamepad2, FileText, UserCircle, LifeBuoy, Info, Globe, Send, Bot } from 'lucide-react';
+import { Home, ChevronsUp, Trophy, RadioTower, Users, ShoppingCart, MessagesSquare, ListChecks, Swords, Map, Gamepad2, FileText, UserCircle, LifeBuoy, Globe, Bot, GalleryHorizontal } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
@@ -15,6 +15,7 @@ const navItems = [
   { href: '/tournaments', label: 'Tournaments', icon: RadioTower },
   { href: '/marketplace', label: 'Shop', icon: ShoppingCart },
   { href: '/arcade', label: 'Arcade', icon: Gamepad2 },
+  { href: '/nfts', label: 'Collectibles', icon: GalleryHorizontal },
   { href: '/alliance-chat', label: 'Vanguard', icon: MessagesSquare },
 ];
 

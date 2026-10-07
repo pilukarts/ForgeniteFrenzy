@@ -396,7 +396,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setPlayerProfile(prev => {
         if (!prev) return null;
         if (prev.auron < item.costInAuron) {
-            toast({ title: "Insufficient Auron", description: `You need ${item.costInAuron} Auron.`, variant: "destructive" });
+            toast({ title: "Insufficient Vanguard Credits", description: `You need ${item.costInAuron} Vanguard Credits.`, variant: "destructive" });
             return prev;
         }
 
@@ -583,12 +583,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const refillTaps = useCallback(() => {
     setPlayerProfile(prev => {
         if (!prev || prev.auron < AURON_COST_FOR_TAP_REFILL) {
-            toast({ title: "Insufficient Auron", variant: "destructive" });
+            toast({ title: "Insufficient Vanguard Credits", variant: "destructive" });
             return prev;
         }
 
         const updatedProfile = { ...prev, auron: prev.auron - AURON_COST_FOR_TAP_REFILL, currentTaps: prev.maxTaps, tapsAvailableAt: Date.now() };
-        addCoreMessage({ type: 'system_alert', content: `Tap energy restored for ${AURON_COST_FOR_TAP_REFILL} Auron.` });
+        addCoreMessage({ type: 'system_alert', content: `Tap energy restored for ${AURON_COST_FOR_TAP_REFILL} Vanguard Credits.` });
         return updateQuestProgress(updatedProfile, 'spend_auron', AURON_COST_FOR_TAP_REFILL);
     });
   }, [toast, updateQuestProgress, addCoreMessage]);
@@ -596,7 +596,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const connectWallet = useCallback((address: string) => {
     setPlayerProfile(prev => {
       if (!prev || prev.isWalletConnected) return prev;
-      addCoreMessage({ type: 'system_alert', content: `Wallet Connected! ${AURON_PER_WALLET_CONNECT} Auron bonus and Ark Hangar unlocked.` });
+      addCoreMessage({ type: 'system_alert', content: `Wallet connected. ${AURON_PER_WALLET_CONNECT} Vanguard Credits added and the Ark Hangar unlocked.` });
       return { ...prev, isWalletConnected: true, walletAddress: address, auron: prev.auron + AURON_PER_WALLET_CONNECT };
     });
   }, [addCoreMessage]);
@@ -638,7 +638,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setTimeout(() => {
       setPlayerProfile(prev => {
         if (!prev) return null;
-        addCoreMessage({ type: 'system_alert', content: `Broadcast complete. Received ${REWARDED_AD_AURON_REWARD} Auron.` });
+        addCoreMessage({ type: 'system_alert', content: `Broadcast complete. Received ${REWARDED_AD_AURON_REWARD} Vanguard Credits.` });
         return { ...prev, auron: prev.auron + REWARDED_AD_AURON_REWARD, lastRewardedAdTimestamp: Date.now() };
       });
       setIsWatchingAd(false);
@@ -696,7 +696,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (!isTelegramEnv || !playerProfile?.isTelegramWalletConnected) return;
 
     import('@twa-dev/sdk').then(twa => {
-        twa.default.showConfirm(`Purchase ${pkg.amount} Auron for a simulated ${pkg.price} TON?`, (confirmed) => {
+        twa.default.showConfirm(`Purchase ${pkg.amount} Vanguard Credits for a simulated ${pkg.price} TON?`, (confirmed) => {
             if (confirmed) {
                 setPlayerProfile(prev => prev ? { ...prev, auron: prev.auron + pkg.amount } : null);
                 toast({ title: 'Purchase Successful (Simulated)' });
