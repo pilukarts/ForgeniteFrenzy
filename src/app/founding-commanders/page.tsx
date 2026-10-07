@@ -16,7 +16,7 @@ export default function FoundingCommandersPage() {
           <p className="text-xs font-black uppercase tracking-[.35em] text-cyan-300">Mission support programme</p>
           <h1 className="mt-3 text-4xl font-black uppercase tracking-tight sm:text-6xl">Founding Commanders</h1>
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-300 sm:text-base">
-            Help Mission: Vanguard continue its journey and become part of its first credited crew.
+            Every contribution helps support the continued development of Mission: Vanguard. Join its first credited crew.
           </p>
         </div>
 
@@ -44,7 +44,7 @@ export default function FoundingCommandersPage() {
             Get the pack on Ko-fi <ExternalLink className="h-4 w-4" />
           </a>
           <p className="mt-4 text-xs leading-5 text-slate-400">
-            Cosmetic supporter reward only. No competitive advantage, cryptocurrency, financial value or transferable asset. Rewards are added manually after purchase verification.
+            Voluntary supporter purchase. No equity, profit share, investment return, competitive advantage, cryptocurrency, financial value or transferable asset. Rewards are added manually after purchase verification.
           </p>
         </div>
 
